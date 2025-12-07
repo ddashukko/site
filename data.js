@@ -38,4 +38,13 @@ window.lessonsData = [
     link: "algebra/8/parabola-lesson.html",
     category: "lesson",
   },
+  {
+    id: 110,
+    title: " ",
+    grade: 8,
+    topic: "Алгебра",
+    link: "algebra/8/lesson-powers.html",
+    subject_code: "algebra",
+    category: "lesson",
+  },
 ];

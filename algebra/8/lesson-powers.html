@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Степені з цілим показником | Dasha Tutor</title>
+    <link rel="stylesheet" href="style_lesson.css" />
+  </head>
+  <body>
+    <header>
+      <div class="header-title">Dasha Tutor: Степені</div>
+      <div class="stats">
+        <div class="stat-box stat-correct">
+          ✅ <span id="val-correct">0</span>
+        </div>
+        <div class="stat-box stat-wrong">❌ <span id="val-wrong">0</span></div>
+      </div>
+      <div class="slide-counter" id="slide-counter">Start</div>
+    </header>
+
+    <div class="slide-container" id="slide-root"></div>
+
+    <footer id="footer-nav">
+      <button class="nav-btn" id="btn-prev" onclick="changeSlide(-1)">
+        ← Назад
+      </button>
+      <button class="nav-btn" id="btn-next" onclick="changeSlide(1)">
+        Далі →
+      </button>
+    </footer>
+
+    <script>
+      // =========================================================
+      // ДАНІ УРОКУ
+      // =========================================================
+      const lessonData = [
+        {
+          id: "10.1",
+          img: "/../../images/10.1.png",
+          instruction:
+            "Натисніть 'Так', якщо рівність правильна (є тотожністю), і 'Ні', якщо помилкова.",
+          type: "choice",
+          tasks: [
+            { label: "1)", q: "x⁴ · x⁻⁶ = x⁻²⁴", a: "Ні", opts: ["Так", "Ні"] },
+            { label: "2)", q: "b⁵ · b⁻⁸ = b⁻³", a: "Так", opts: ["Так", "Ні"] },
+            { label: "3)", q: "y³ · y⁻³ = y", a: "Ні", opts: ["Так", "Ні"] },
+            { label: "4)", q: "k⁹ : k⁻³ = k¹²", a: "Так", opts: ["Так", "Ні"] },
+            { label: "5)", q: "p² : p⁶ = p⁴", a: "Ні", opts: ["Так", "Ні"] },
+            { label: "6)", q: "(c⁴)⁻² = c⁻⁸", a: "Так", opts: ["Так", "Ні"] },
+          ],
+        },
+        {
+          id: "10.2",
+          img: "/../../images/10.2.png",
+          instruction:
+            "Подайте у вигляді степеня добуток. Оберіть правильну відповідь.",
+          type: "choice",
+          tasks: [
+            {
+              label: "1)",
+              q: "x⁶ · x⁻³",
+              a: "x³",
+              opts: ["x³", "x⁹", "x⁻³", "x²"],
+            },
+            {
+              label: "2)",
+              q: "y⁻⁵ · y⁸",
+              a: "y³",
+              opts: ["y⁻¹³", "y³", "y⁴⁰", "y⁻³"],
+            },
+            {
+              label: "3)",
+              q: "b¹² · b⁻¹²",
+              a: "1",
+              opts: ["b", "0", "1", "b²⁴"],
+            },
+            {
+              label: "4)",
+              q: "c⁻⁶ · c⁻²",
+              a: "c⁻⁸",
+              opts: ["c⁻⁴", "c¹²", "c⁻⁸", "c⁸"],
+            },
+          ],
+        },
+        {
+          id: "10.4",
+          img: "/../../images/10.4.png",
+          instruction: "Подайте у вигляді степеня частку.",
+          type: "choice",
+          tasks: [
+            {
+              label: "1)",
+              q: "a⁴ : a⁻³",
+              a: "a⁷",
+              opts: ["a¹", "a⁷", "a⁻⁷", "a¹²"],
+            },
+            {
+              label: "2)",
+              q: "b⁷ : b⁹",
+              a: "b⁻²",
+              opts: ["b²", "b¹⁶", "b⁻²", "b⁻¹⁶"],
+            },
+            {
+              label: "3)",
+              q: "z⁻⁵ : z⁻⁵",
+              a: "1",
+              opts: ["z", "0", "z⁻¹⁰", "1"],
+            },
+            {
+              label: "4)",
+              q: "n⁻² : n⁻¹⁰",
+              a: "n⁸",
+              opts: ["n⁻¹²", "n⁸", "n⁻⁸", "n¹²"],
+            },
+          ],
+        },
+        {
+          id: "10.6",
+          img: "/../../images/10.6.png",
+          instruction: "Піднесіть степінь до степеня.",
+          type: "choice",
+          tasks: [
+            {
+              label: "1)",
+              q: "(y⁻³)⁻⁴",
+              a: "y¹²",
+              opts: ["y⁻⁷", "y¹²", "y⁻¹²", "y⁷"],
+            },
+            {
+              label: "2)",
+              q: "(m⁻²)¹²",
+              a: "m⁻²⁴",
+              opts: ["m⁻¹⁰", "m¹⁰", "m⁻²⁴", "m²⁴"],
+            },
+            { label: "3)", q: "(x⁰)⁻⁸", a: "1", opts: ["x⁻⁸", "0", "1", "x⁸"] },
+            {
+              label: "4)",
+              q: "(k⁵)⁻³",
+              a: "k⁻¹⁵",
+              opts: ["k²", "k¹⁵", "k⁻¹⁵", "k⁻⁸"],
+            },
+          ],
+        },
+        {
+          id: "10.10",
+          img: "/../../images/10.10.png",
+          instruction:
+            "Обчисліть значення виразу. Введіть число або оберіть дріб.",
+          type: "mixed",
+          tasks: [
+            { label: "1)", q: "3⁸ · 3⁻⁷", a: ["3"], opts: null },
+            {
+              label: "2)",
+              q: "4⁻⁵ · 4",
+              a: "1/256",
+              opts: ["1/64", "1/256", "1/16", "-16"],
+            },
+            { label: "3)", q: "(1/3)⁻⁶ · (1/3)⁴", a: ["9"], opts: null },
+            { label: "4)", q: "(1/5)⁻⁹ · (1/5)⁷", a: ["25"], opts: null },
+            {
+              label: "5)",
+              q: "2¹⁰ : 2¹¹",
+              a: ["0.5", "0,5", "1/2"],
+              opts: null,
+            },
+            { label: "6)", q: "5⁻¹² : 5⁻¹³", a: ["5"], opts: null },
+            { label: "7)", q: "6 : 6⁻¹", a: ["36"], opts: null },
+            {
+              label: "8)",
+              q: "(3⁻²)³",
+              a: "1/729",
+              opts: ["1/243", "-729", "1/729", "1/9"],
+            },
+            {
+              label: "9)",
+              q: "((1/4)⁻¹)⁻³",
+              a: "1/64",
+              opts: ["64", "1/64", "12", "1/12"],
+            },
+          ],
+        },
+        {
+          id: "10.12",
+          img: "/../../images/10.12.png",
+          instruction: "Спростіть вираз (оберіть правильний варіант).",
+          type: "choice",
+          tasks: [
+            {
+              label: "1)",
+              q: "x⁹ : x⁴ · x⁻¹⁵",
+              a: "x⁻¹⁰",
+              opts: ["x⁻²", "x⁻¹⁰", "x²⁰", "x¹⁰"],
+            },
+            {
+              label: "2)",
+              q: "(x⁴)⁻² · x¹⁰",
+              a: "x²",
+              opts: ["x²", "x⁻²", "x¹⁸", "x⁻¹⁸"],
+            },
+            {
+              label: "3)",
+              q: "(x⁻⁶)² : x⁵",
+              a: "x⁻¹⁷",
+              opts: ["x⁻⁷", "x⁻¹⁷", "x¹⁷", "x⁻¹"],
+            },
+            {
+              label: "4)",
+              q: "x⁰ · (x⁻²)⁵ · x⁸",
+              a: "x⁻²",
+              opts: ["x²", "x⁻²", "x⁻¹⁰", "1"],
+            },
+            {
+              label: "5)",
+              q: "x⁻⁴ · x⁰ : x³ : x",
+              a: "x⁻⁸",
+              opts: ["x⁻¹", "x⁻⁷", "x⁻⁸", "x⁰"],
+            },
+            {
+              label: "6)",
+              q: "(x²)⁻⁴ · (x⁻¹)⁻⁵",
+              a: "x⁻³",
+              opts: ["x⁻³", "x⁻¹³", "x³", "x¹³"],
+            },
+          ],
+        },
+        {
+          id: "10.14",
+          img: "/../../images/10.14.png",
+          instruction: "Спростіть вираз з коефіцієнтами.",
+          type: "choice",
+          tasks: [
+            {
+              label: "1)",
+              q: "3x⁻⁵y⁴ · 6x⁸y⁻²",
+              a: "18x³y²",
+              opts: ["18x³y²", "9x³y²", "18x⁻¹³y²", "18x³y⁻²"],
+            },
+            {
+              label: "2)",
+              q: "5a⁻⁸b³ · 0.2a¹⁰b⁻⁷",
+              a: "a²b⁻⁴",
+              opts: ["a²b⁻⁴", "5a²b⁻⁴", "a⁻¹⁸b⁴", "a²b⁴"],
+            },
+            {
+              label: "3)",
+              q: "0.25p⁻⁶q⁸ · (-12p⁷q⁻⁵)",
+              a: "-3pq³",
+              opts: ["-3pq³", "3pq³", "-3p⁻¹³q³", "-48pq³"],
+            },
+            {
+              label: "4)",
+              q: "(-3/5 x⁻⁴y⁻²) · (-2.5 x⁻³y⁻⁵)",
+              a: "1.5x⁻⁷y⁻⁷",
+              opts: ["-1.5x⁻⁷y⁻⁷", "1.5x⁻⁷y⁻⁷", "1.5x¹²y¹⁰", "x⁻⁷y⁻⁷"],
+            },
+          ],
+        },
+        {
+          id: "10.16",
+          img: "/../../images/10.16.png",
+          instruction: "Подайте у вигляді добутку степенів.",
+          type: "choice",
+          tasks: [
+            {
+              label: "1)",
+              q: "(mn)⁻³",
+              a: "m⁻³n⁻³",
+              opts: ["m⁻³n⁻³", "mn⁻³", "m⁻³n", "m³n³"],
+            },
+            {
+              label: "2)",
+              q: "(xy⁻³)⁻²",
+              a: "x⁻²y⁶",
+              opts: ["x⁻²y⁻⁶", "x⁻²y⁶", "x²y⁶", "xy⁶"],
+            },
+            {
+              label: "3)",
+              q: "(a⁻⁵b²)⁻¹",
+              a: "a⁵b⁻²",
+              opts: ["a⁻⁵b⁻²", "a⁵b²", "a⁵b⁻²", "a⁻⁶b"],
+            },
+            {
+              label: "4)",
+              q: "(k⁰z⁻⁴)⁻³",
+              a: "z¹²",
+              opts: ["k⁻³z¹²", "z¹²", "z⁻¹²", "k⁰z¹²"],
+            },
+          ],
+        },
+        {
+          id: "10.18",
+          img: "/../../images/10.18.png",
+          instruction: "Подайте у вигляді степеня вираз (оберіть тотожний).",
+          type: "choice",
+          tasks: [
+            {
+              label: "1)",
+              q: "125x⁻³",
+              a: "(5x⁻¹)³",
+              opts: ["(5x)⁻³", "(5x⁻¹)³", "(125x)⁻³", "5x⁻³"],
+            },
+            {
+              label: "2)",
+              q: "0.001y⁻⁶",
+              a: "(0.1y⁻²)³",
+              opts: ["(0.1y⁻²)³", "(0.1y⁻⁶)³", "(0.01y²)³", "(0.1y)⁻⁶"],
+            },
+            {
+              label: "3)",
+              q: "0.0081a⁻⁴b¹⁶",
+              a: "(0.3a⁻¹b⁴)⁴",
+              opts: ["(0.3a⁻¹b⁴)⁴", "(0.03ab⁻⁴)⁴", "(0.9a⁻¹b⁴)⁴", "(0.3ab)⁴"],
+            },
+            {
+              label: "4)",
+              q: "2 7/9 p¹⁴q⁻¹⁸",
+              a: "(5/3 p⁷q⁻⁹)²",
+              opts: [
+                "(5/3 p⁷q⁻⁹)²",
+                "(25/9 p⁷q⁻⁹)²",
+                "(5/3 p¹²q⁻¹⁶)²",
+                "(1.6 p⁷q⁻⁹)²",
+              ],
+            },
+          ],
+        },
+        {
+          id: "10.21",
+          img: "/../../images/10.21.png",
+          instruction:
+            "Знайдіть значення виразу. Введіть число або оберіть варіант.",
+          type: "mixed",
+          tasks: [
+            {
+              label: "1)",
+              q: "81 · 3⁻⁵",
+              a: "1/3",
+              opts: ["3", "1/3", "9", "-3"],
+            },
+            {
+              label: "2)",
+              q: "27 · (3⁻²)³",
+              a: "1/27",
+              opts: ["1/27", "27", "1/9", "1"],
+            },
+            {
+              label: "3)",
+              q: "2⁻⁹ · 4⁶ : 16",
+              a: ["0.5", "0,5", "1/2"],
+              opts: null,
+            },
+            { label: "4)", q: "36⁻¹ · (1/6)⁻⁴", a: ["36"], opts: null },
+            { label: "5)", q: "(25⁻⁴ · 5⁻⁶) / (-5)⁻¹⁶", a: ["25"], opts: null },
+            {
+              label: "6)",
+              q: "(10⁻⁵ · 2⁻⁸) / 32⁻³",
+              a: "4/3125",
+              opts: ["4/3125", "125", "2/625", "0.005"],
+            },
+          ],
+        },
+      ];
+      // =========================================================
+
+      let currentIndex = 0;
+      let correctTotal = 0;
+      let wrongTotal = 0;
+
+      const root = document.getElementById("slide-root");
+      const counter = document.getElementById("slide-counter");
+      const statCorrect = document.getElementById("val-correct");
+      const statWrong = document.getElementById("val-wrong");
+      const btnPrev = document.getElementById("btn-prev");
+      const btnNext = document.getElementById("btn-next");
+      const footer = document.getElementById("footer-nav");
+
+      function init() {
+        if (lessonData.length > 0) {
+          renderSlide(0);
+        } else {
+          root.innerHTML =
+            "<h2 style='text-align:center; margin-top:50px; color:#555;'>Дані уроку ще не додано.</h2>";
+        }
+      }
+
+      function renderSlide(index) {
+        currentIndex = index;
+        const data = lessonData[index];
+
+        counter.innerText = `${index + 1} / ${lessonData.length}`;
+        btnPrev.disabled = index === 0;
+        btnNext.innerText =
+          index === lessonData.length - 1 ? "Завершити" : "Далі →";
+        btnNext.disabled = false;
+
+        let subTasksHTML = "";
+
+        data.tasks.forEach((task) => {
+          let inputHTML = "";
+
+          // Якщо є options або тип слайду choice, показуємо кнопки
+          if (task.opts && task.opts.length > 0) {
+            task.opts.forEach((opt) => {
+              // Екранування для передачі в функцію
+              const cleanOpt = opt.replace(/"/g, "&quot;");
+              const cleanA = Array.isArray(task.a) ? task.a[0] : task.a;
+              inputHTML += `<button class="choice-btn" onclick="checkChoice(this, '${cleanOpt}', '${cleanA}', this.parentElement.parentElement)">${opt}</button>`;
+            });
+          } else {
+            // Інакше поле вводу
+            // Передаємо правильні відповіді як рядок з розділювачем, якщо їх декілька
+            const answerStr = Array.isArray(task.a) ? task.a.join("|") : task.a;
+            inputHTML = `
+                        <input type="text" placeholder="?" onkeypress="handleEnter(event, this)">
+                        <button class="check-btn" onclick="checkInput(this.previousElementSibling, '${answerStr}', this.parentElement)">OK</button>
+                    `;
+          }
+
+          subTasksHTML += `
+                    <div class="subtask-row">
+                        <div class="label">${task.label}</div>
+                        <div class="question-text">${task.q}</div>
+                        <div class="interaction-area">${inputHTML}</div>
+                    </div>
+                `;
+        });
+
+        root.innerHTML = `
+                <div class="image-area">
+                    <img src="${data.img}" class="task-img" alt="Завдання ${data.id}" onerror="this.src='https://placehold.co/400x300?text=Зображення+не+знайдено';">
+                </div>
+                <div class="tasks-area">
+                    <h2>Завдання № ${data.id}</h2>
+                    <p class="instruction">${data.instruction}</p>
+                    <div class="subtasks-list">
+                        ${subTasksHTML}
+                    </div>
+                </div>
+            `;
+      }
+
+      function changeSlide(dir) {
+        const next = currentIndex + dir;
+        if (next >= lessonData.length) {
+          showResults();
+          return;
+        }
+        if (next >= 0 && next < lessonData.length) {
+          renderSlide(next);
+        }
+      }
+
+      function showResults() {
+        footer.style.display = "none";
+        counter.innerText = "Результати";
+        let detailsHTML = "";
+        lessonData.forEach((task) => {
+          const mistakes = task.errorCount || 0;
+          const rowClass = mistakes === 0 ? "row-perfect" : "row-bad";
+          const rowText =
+            mistakes === 0 ? "0 помилок (Чудово!)" : `${mistakes} помилок`;
+          detailsHTML += `<tr><td>Завдання № ${task.id}</td><td class="${rowClass}">${rowText}</td></tr>`;
+        });
+
+        root.innerHTML = `
+                <div class="results-view">
+                    <h1>Вітаю із завершенням! 🎉</h1>
+                    <div class="results-summary">
+                        <div class="res-card"><span class="res-num" style="color:var(--success)">${correctTotal}</span>Правильно</div>
+                        <div class="res-card"><span class="res-num" style="color:var(--error)">${wrongTotal}</span>Помилок</div>
+                    </div>
+                    <h3>Детальний звіт:</h3>
+                    <table class="results-table">
+                        <thead><tr><th>Завдання</th><th>Результат</th></tr></thead>
+                        <tbody>${detailsHTML}</tbody>
+                    </table>
+                    <button class="btn-restart" onclick="location.reload()">🔄 Почати знову</button>
+                </div>
+            `;
+      }
+
+      function checkInput(inputEl, correctValStr, rowEl) {
+        if (rowEl.classList.contains("solved")) return;
+
+        // Очищаємо ввід (замінюємо кому на крапку, видаляємо пробіли)
+        const val = inputEl.value.trim().replace(",", ".");
+
+        // Розбиваємо правильні варіанти (наприклад "0.5|0,5|1/2")
+        const correctVariants = correctValStr.split("|");
+
+        let isCorrect = correctVariants.includes(val);
+
+        if (isCorrect) {
+          inputEl.classList.add("correct");
+          inputEl.classList.remove("wrong");
+          rowEl.classList.add("solved");
+          correctTotal++;
+          // Блокуємо кнопку
+          inputEl.nextElementSibling.disabled = true;
+          inputEl.nextElementSibling.style.opacity = "0.5";
+        } else {
+          inputEl.classList.add("wrong");
+          wrongTotal++;
+          lessonData[currentIndex].errorCount =
+            (lessonData[currentIndex].errorCount || 0) + 1;
+        }
+        updateStats();
+      }
+
+      function checkChoice(btnEl, val, correctVal, rowEl) {
+        if (rowEl.classList.contains("solved")) return;
+        if (val == correctVal) {
+          btnEl.classList.add("selected-correct");
+          rowEl.classList.add("solved");
+          correctTotal++;
+          // Вимикаємо інші кнопки в цьому рядку
+          const btns = rowEl.querySelectorAll(".choice-btn");
+          btns.forEach((b) => (b.disabled = true));
+        } else {
+          btnEl.classList.add("selected-wrong");
+          wrongTotal++;
+          lessonData[currentIndex].errorCount =
+            (lessonData[currentIndex].errorCount || 0) + 1;
+        }
+        updateStats();
+      }
+
+      function handleEnter(e, inputEl) {
+        if (e.key === "Enter") inputEl.nextElementSibling.click();
+      }
+      function updateStats() {
+        statCorrect.innerText = correctTotal;
+        statWrong.innerText = wrongTotal;
+      }
+
+      init();
+    </script>
+  </body>
+</html>

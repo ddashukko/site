@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Новий урок | Dasha Tutor</title>
+    <link rel="stylesheet" href="style_lesson.css" />
+  </head>
+  <body>
+    <header>
+      <div class="header-title">Dasha Tutor</div>
+      <div class="stats">
+        <div class="stat-box stat-correct">
+          ✅ <span id="val-correct">0</span>
+        </div>
+        <div class="stat-box stat-wrong">❌ <span id="val-wrong">0</span></div>
+      </div>
+      <div class="slide-counter" id="slide-counter">Start</div>
+    </header>
+
+    <div class="slide-container" id="slide-root"></div>
+
+    <footer id="footer-nav">
+      <button class="nav-btn" id="btn-prev" onclick="changeSlide(-1)">
+        ← Назад
+      </button>
+      <button class="nav-btn" id="btn-next" onclick="changeSlide(1)">
+        Далі →
+      </button>
+    </footer>
+
+    <script>
+      // =========================================================
+      // СЮДИ ТИ БУДЕШ ВСТАВЛЯТИ ДАНІ, ЯКІ Я ТОБІ ГЕНЕРУВАТИМУ
+      // =========================================================
+      const lessonData = [
+        // Я буду кидати тобі код, який треба вставити сюди замість цього коментаря
+      ];
+      // =========================================================
+
+      let currentIndex = 0;
+      let correctTotal = 0;
+      let wrongTotal = 0;
+
+      const root = document.getElementById("slide-root");
+      const counter = document.getElementById("slide-counter");
+      const statCorrect = document.getElementById("val-correct");
+      const statWrong = document.getElementById("val-wrong");
+      const btnPrev = document.getElementById("btn-prev");
+      const btnNext = document.getElementById("btn-next");
+      const footer = document.getElementById("footer-nav");
+
+      function init() {
+        if (lessonData.length > 0) {
+          renderSlide(0);
+        } else {
+          root.innerHTML =
+            "<h2 style='text-align:center; margin-top:50px; color:#555;'>Дані уроку ще не додано.<br>Встав код від Gemini у змінну lessonData.</h2>";
+        }
+      }
+
+      function renderSlide(index) {
+        currentIndex = index;
+        const data = lessonData[index];
+
+        counter.innerText = `${index + 1} / ${lessonData.length}`;
+        btnPrev.disabled = index === 0;
+        btnNext.innerText =
+          index === lessonData.length - 1 ? "Завершити" : "Далі →";
+        btnNext.disabled = false;
+
+        let subTasksHTML = "";
+
+        data.tasks.forEach((task) => {
+          let inputHTML = "";
+
+          if (data.type === "choice" || task.opts) {
+            task.opts.forEach((opt) => {
+              inputHTML += `<button class="choice-btn" onclick="checkChoice(this, '${opt}', '${task.a}', this.parentElement.parentElement)">${opt}</button>`;
+            });
+          } else {
+            inputHTML = `
+                        <input type="text" placeholder="?" onkeypress="handleEnter(event, this)">
+                        <button class="check-btn" onclick="checkInput(this.previousElementSibling, '${task.a}', this.parentElement)">OK</button>
+                    `;
+          }
+
+          subTasksHTML += `
+                    <div class="subtask-row">
+                        <div class="label">${task.label}</div>
+                        <div class="question-text">${task.q}</div>
+                        <div class="interaction-area">${inputHTML}</div>
+                    </div>
+                `;
+        });
+
+        root.innerHTML = `
+                <div class="image-area">
+                    <img src="${data.img}" class="task-img" alt="Завдання" onerror="this.src='https://placehold.co/400x300?text=Немає+зображення';">
+                </div>
+                <div class="tasks-area">
+                    <h2>Завдання № ${data.id}</h2>
+                    <p class="instruction">${data.instruction}</p>
+                    <div class="subtasks-list">
+                        ${subTasksHTML}
+                    </div>
+                </div>
+            `;
+      }
+
+      function changeSlide(dir) {
+        const next = currentIndex + dir;
+        if (next >= lessonData.length) {
+          showResults();
+          return;
+        }
+        if (next >= 0 && next < lessonData.length) {
+          renderSlide(next);
+        }
+      }
+
+      function showResults() {
+        footer.style.display = "none";
+        counter.innerText = "Результати";
+        let detailsHTML = "";
+        lessonData.forEach((task) => {
+          const mistakes = task.errorCount || 0;
+          const rowClass = mistakes === 0 ? "row-perfect" : "row-bad";
+          const rowText =
+            mistakes === 0 ? "0 помилок (Чудово!)" : `${mistakes} помилок`;
+          detailsHTML += `<tr><td>Завдання № ${task.id}</td><td class="${rowClass}">${rowText}</td></tr>`;
+        });
+
+        root.innerHTML = `
+                <div class="results-view">
+                    <h1>Вітаю із завершенням! 🎉</h1>
+                    <div class="results-summary">
+                        <div class="res-card"><span class="res-num" style="color:var(--success)">${correctTotal}</span>Правильно</div>
+                        <div class="res-card"><span class="res-num" style="color:var(--error)">${wrongTotal}</span>Помилок</div>
+                    </div>
+                    <h3>Детальний звіт:</h3>
+                    <table class="results-table">
+                        <thead><tr><th>Завдання</th><th>Результат</th></tr></thead>
+                        <tbody>${detailsHTML}</tbody>
+                    </table>
+                    <button class="btn-restart" onclick="location.reload()">🔄 Почати знову</button>
+                </div>
+            `;
+      }
+
+      function checkInput(inputEl, correctVal, rowEl) {
+        if (rowEl.classList.contains("solved")) return;
+        const val = inputEl.value.trim().replace(",", ".");
+        let isCorrect = false;
+        if (Array.isArray(correctVal)) {
+          isCorrect = correctVal.includes(val);
+        } else {
+          isCorrect = val == correctVal;
+        }
+
+        if (isCorrect) {
+          inputEl.classList.add("correct");
+          inputEl.classList.remove("wrong");
+          rowEl.classList.add("solved");
+          correctTotal++;
+        } else {
+          inputEl.classList.add("wrong");
+          wrongTotal++;
+          lessonData[currentIndex].errorCount =
+            (lessonData[currentIndex].errorCount || 0) + 1;
+        }
+        updateStats();
+      }
+
+      function checkChoice(btnEl, val, correctVal, rowEl) {
+        if (rowEl.classList.contains("solved")) return;
+        if (val == correctVal) {
+          btnEl.classList.add("selected-correct");
+          rowEl.classList.add("solved");
+          correctTotal++;
+        } else {
+          btnEl.classList.add("selected-wrong");
+          wrongTotal++;
+          lessonData[currentIndex].errorCount =
+            (lessonData[currentIndex].errorCount || 0) + 1;
+        }
+        updateStats();
+      }
+
+      function handleEnter(e, inputEl) {
+        if (e.key === "Enter") inputEl.nextElementSibling.click();
+      }
+      function updateStats() {
+        statCorrect.innerText = correctTotal;
+        statWrong.innerText = wrongTotal;
+      }
+
+      init();
+    </script>
+  </body>
+</html>
