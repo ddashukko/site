@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Адмін-панель | Додати Урок</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Створити Новий Урок</h1>
+      <div class="admin-form-container">
+        <form id="lessonForm">
+          <label for="lessonTitle">Назва уроку:</label>
+          <input type="text" id="lessonTitle" required />
+
+          <label for="lessonGrade">Клас (число 1-9):</label>
+          <input type="number" id="lessonGrade" min="1" max="9" required />
+
+          <label for="lessonSubject">Предмет (код папки):</label>
+          <select id="lessonSubject" required>
+            <option value="algebra">Алгебра</option>
+            <option value="geometry">Геометрія</option>
+            <option value="math_general">Математика (1-6 класи)</option>
+          </select>
+
+          <label>Рівень складності:</label>
+          <div id="difficultyOptions">
+            <input
+              type="radio"
+              id="easy"
+              name="difficulty"
+              value="easy"
+              checked
+            />
+            <label for="easy">Легкий</label><br />
+            <input type="radio" id="medium" name="difficulty" value="medium" />
+            <label for="medium">Середній</label><br />
+            <input type="radio" id="hard" name="difficulty" value="hard" />
+            <label for="hard">Складний</label>
+          </div>
+
+          <label for="lessonFilename"
+            >Ім'я файлу уроку (тільки назва, з .html):</label
+          >
+          <input
+            type="text"
+            id="lessonFilename"
+            placeholder="test-exponent.html"
+            required
+          />
+
+          <p style="margin-top: 10px">
+            **Згенерований шлях (link):**
+            <span
+              id="generatedPath"
+              style="font-family: monospace; color: #007bff"
+              >[Оберіть предмет та клас]</span
+            >
+          </p>
+
+          <button type="submit">Згенерувати JSON та Перевірити</button>
+        </form>
+      </div>
+
+      <hr />
+
+      <div id="outputArea" style="margin-top: 20px">
+        <h2>JSON для вставки у data.js:</h2>
+        <pre
+          id="jsonOutput"
+          style="
+            background: #e9ecef;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+          "
+        >
+                Тут з'явиться готовий JSON-об'єкт.
+            </pre
+        >
+        <p
+          id="copyInstruction"
+          style="color: #dc3545; font-weight: bold; display: none"
+        >
+          ⚠️ КРОК 3: Скопіюйте код вище і вставте його у масив lessonsData у
+          файл data.js на GitHub!
+        </p>
+      </div>
+    </div>
+
+    <script src="admin-script.js"></script>
+  </body>
+</html>

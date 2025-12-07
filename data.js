@@ -1,0 +1,28 @@
+// data.js
+
+const lessonsData = [
+  {
+    id: 1,
+    title: "Прості рівняння (без переходу)",
+    grade: 2,
+    topic: "Арифметика",
+    link: "math_general/2/simple-equations.html", // Локальний шлях
+    subject_code: "math_general",
+  },
+  {
+    id: 4,
+    title: "Степінь з від'ємним показником. Частина 1",
+    grade: 8,
+    topic: "Алгебра",
+    link: "algebra/8/power-part1.html", // Локальний шлях
+    subject_code: "algebra",
+  },
+  {
+    id: 7,
+    title: "Властивості степеня. Частина 2 (Дроби)",
+    grade: 8,
+    topic: "Алгебра",
+    link: "algebra/8/power-part2.html",
+    subject_code: "algebra",
+  },
+];

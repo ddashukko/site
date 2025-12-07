@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Інтерактивний тест: Степінь з від'ємним показником</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script
+      id="MathJax-script"
+      async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+    ></script>
+    <style>
+      :root {
+        --primary: #4a90e2;
+        --success: #2ecc71;
+        --error: #e74c3c;
+        --bg: #f5f7fa;
+        --card: #ffffff;
+      }
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: var(--bg);
+        color: #333;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .header {
+        text-align: center;
+        margin-bottom: 30px;
+        padding: 20px;
+        background: var(--card);
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      }
+      h1 {
+        margin: 0;
+        color: #2c3e50;
+        font-size: 24px;
+      }
+      p {
+        color: #7f8c8d;
+      }
+
+      .level-badge {
+        display: inline-block;
+        padding: 5px 12px;
+        border-radius: 15px;
+        font-size: 0.85em;
+        font-weight: bold;
+        margin-bottom: 10px;
+        color: white;
+      }
+      .lvl-1 {
+        background-color: #3498db;
+      }
+      .lvl-2 {
+        background-color: #9b59b6;
+      }
+      .lvl-3 {
+        background-color: #e67e22;
+      }
+      .lvl-4 {
+        background-color: #c0392b;
+      }
+
+      .question-card {
+        background: var(--card);
+        padding: 20px;
+        margin-bottom: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        border-left: 5px solid transparent;
+        transition: all 0.3s ease;
+      }
+      .question-text {
+        font-size: 1.1em;
+        margin-bottom: 15px;
+        font-weight: 500;
+      }
+
+      .options {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      @media (max-width: 600px) {
+        .options {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .option-label {
+        display: block;
+        padding: 10px 15px;
+        background: #f8f9fa;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .option-label:hover {
+        border-color: var(--primary);
+        background: #eef5fc;
+      }
+      input[type="radio"] {
+        display: none;
+      }
+      input[type="radio"]:checked + .option-label {
+        border-color: var(--primary);
+        background-color: #eef5fc;
+        color: var(--primary);
+        font-weight: bold;
+      }
+
+      /* Стилі результатів */
+      .correct {
+        border-left-color: var(--success);
+      }
+      .wrong {
+        border-left-color: var(--error);
+      }
+
+      .option-label.correct-answer {
+        background-color: #d4edda;
+        border-color: #c3e6cb;
+        color: #155724;
+      }
+      .option-label.wrong-answer {
+        background-color: #f8d7da;
+        border-color: #f5c6cb;
+        color: #721c24;
+      }
+
+      #result-box {
+        display: none;
+        text-align: center;
+        padding: 20px;
+        background: var(--card);
+        border-radius: 10px;
+        margin-top: 20px;
+        font-size: 1.2em;
+        font-weight: bold;
+      }
+
+      button.submit-btn {
+        display: block;
+        width: 100%;
+        padding: 15px;
+        background-color: var(--success);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.2em;
+        cursor: pointer;
+        transition: background 0.3s;
+        margin-top: 20px;
+      }
+      button.submit-btn:hover {
+        background-color: #27ae60;
+      }
+      button.reset-btn {
+        background-color: #95a5a6;
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>Тест: Степінь із від'ємним показником</h1>
+      <p>Оберіть правильну відповідь. Успіхів!</p>
+    </div>
+
+    <form id="quiz-form">
+      <div id="quiz-container"></div>
+      <button type="button" class="submit-btn" onclick="checkAnswers()">
+        Перевірити результат
+      </button>
+      <button
+        type="button"
+        class="submit-btn reset-btn"
+        onclick="location.reload()"
+        style="display: none"
+        id="retry-btn"
+      >
+        Спроувати ще раз
+      </button>
+    </form>
+
+    <div id="result-box"></div>
+
+    <script>
+      const questions = [
+        // Рівень 1
+        {
+          q: "1. Запишіть вираз \\( 5^{-3} \\) у вигляді дробу:",
+          options: [
+            "\\( \\frac{1}{15} \\)",
+            "\\( \\frac{1}{125} \\)",
+            "\\( -125 \\)",
+            "\\( -15 \\)",
+          ],
+          correct: 1,
+          level: "lvl-1",
+          levelName: "Початковий рівень",
+        },
+        {
+          q: "2. Обчисліть \\( 2^{-4} \\):",
+          options: [
+            "\\( \\frac{1}{8} \\)",
+            "\\( -16 \\)",
+            "\\( \\frac{1}{16} \\)",
+            "\\( -8 \\)",
+          ],
+          correct: 2,
+          level: "lvl-1",
+          levelName: "Початковий рівень",
+        },
+        {
+          q: "3. Обчисліть \\( (-3)^{-3} \\):",
+          options: [
+            "\\( \\frac{1}{27} \\)",
+            "\\( -\\frac{1}{27} \\)",
+            "\\( -9 \\)",
+            "\\( 27 \\)",
+          ],
+          correct: 1,
+          level: "lvl-1",
+          levelName: "Початковий рівень",
+        },
+        {
+          q: "4. Знайдіть значення \\( (\\frac{2}{3})^{-2} \\):",
+          options: [
+            "\\( \\frac{4}{9} \\)",
+            "\\( -\\frac{9}{4} \\)",
+            "\\( \\frac{9}{4} \\)",
+            "\\( -\\frac{4}{9} \\)",
+          ],
+          correct: 2,
+          level: "lvl-1",
+          levelName: "Початковий рівень",
+        },
+        {
+          q: "5. Обчисліть \\( 10^{-2} + 4^0 \\):",
+          options: ["1,01", "0,01", "5", "101"],
+          correct: 0,
+          level: "lvl-1",
+          levelName: "Початковий рівень",
+        },
+        // Рівень 2
+        {
+          q: "6. Порівняйте з нулем \\( (-11)^{-6} \\):",
+          options: [
+            "Більше нуля (> 0)",
+            "Менше нуля (< 0)",
+            "Дорівнює нулю (= 0)",
+            "Неможливо визначити",
+          ],
+          correct: 0,
+          level: "lvl-2",
+          levelName: "Середній рівень",
+        },
+        {
+          q: "7. Порівняйте з нулем \\( (-5)^{-9} \\):",
+          options: [
+            "Більше нуля (> 0)",
+            "Менше нуля (< 0)",
+            "Дорівнює нулю (= 0)",
+            "Неможливо визначити",
+          ],
+          correct: 1,
+          level: "lvl-2",
+          levelName: "Середній рівень",
+        },
+        {
+          q: "8. Перетворіть \\( 4 a^{-5} \\) (щоб не було мінуса в степені):",
+          options: [
+            "\\( \\frac{1}{4a^5} \\)",
+            "\\( -4a^5 \\)",
+            "\\( \\frac{4}{a^5} \\)",
+            "\\( (4a)^5 \\)",
+          ],
+          correct: 2,
+          level: "lvl-2",
+          levelName: "Середній рівень",
+        },
+        {
+          q: "9. Подайте \\( \\frac{2}{x^3} \\) як добуток:",
+          options: [
+            "\\( 2x^{-3} \\)",
+            "\\( 2x^3 \\)",
+            "\\( (2x)^{-3} \\)",
+            "\\( x^{-3} \\)",
+          ],
+          correct: 0,
+          level: "lvl-2",
+          levelName: "Середній рівень",
+        },
+        {
+          q: "10. Спростіть \\( m^4 \\cdot m^{-7} \\):",
+          options: [
+            "\\( m^{11} \\)",
+            "\\( m^{-3} \\)",
+            "\\( m^{-11} \\)",
+            "\\( m^3 \\)",
+          ],
+          correct: 1,
+          level: "lvl-2",
+          levelName: "Середній рівень",
+        },
+        // Рівень 3
+        {
+          q: "11. Обчисліть \\( 0,2^{-3} - 100 \\):",
+          options: ["25", "-25", "100", "0"],
+          correct: 0,
+          level: "lvl-3",
+          levelName: "Достатній рівень",
+        },
+        {
+          q: "12. Перетворіть \\( \\frac{3 x^{-2} y^4}{z^{-3}} \\):",
+          options: [
+            "\\( \\frac{3y^4 z^3}{x^2} \\)",
+            "\\( \\frac{3x^2 y^4}{z^3} \\)",
+            "\\( \\frac{y^4}{3x^2 z^3} \\)",
+            "\\( 3x^2 y^4 z^3 \\)",
+          ],
+          correct: 0,
+          level: "lvl-3",
+          levelName: "Достатній рівень",
+        },
+        {
+          q: "13. Обчисліть \\( 36 \\cdot (-6)^{-3} \\):",
+          options: ["6", "-6", "\\( \\frac{1}{6} \\)", "\\( -\\frac{1}{6} \\)"],
+          correct: 3,
+          level: "lvl-3",
+          levelName: "Достатній рівень",
+        },
+        {
+          q: "14. Спростіть \\( (a^{-1} + b^{-1}) \\cdot (a + b)^{-1} \\):",
+          options: [
+            "\\( ab \\)",
+            "\\( \\frac{1}{ab} \\)",
+            "\\( 1 \\)",
+            "\\( \\frac{a+b}{ab} \\)",
+          ],
+          correct: 1,
+          level: "lvl-3",
+          levelName: "Достатній рівень",
+        },
+        // Рівень 4
+        {
+          q: "15. Обчисліть \\( ( 1 - ( 1 + 2^{-1} )^{-1} )^{-2} \\):",
+          options: ["9", "\\( \\frac{1}{9} \\)", "3", "\\( -9 \\)"],
+          correct: 0,
+          level: "lvl-4",
+          levelName: "Високий рівень",
+        },
+      ];
+
+      const container = document.getElementById("quiz-container");
+
+      // Генерація запитань
+      questions.forEach((item, index) => {
+        const card = document.createElement("div");
+        card.className = `question-card ${item.level}-border`;
+        card.id = `card-${index}`;
+
+        let optionsHtml = "";
+        item.options.forEach((opt, optIndex) => {
+          optionsHtml += `
+                <div>
+                    <input type="radio" name="q${index}" id="q${index}_opt${optIndex}" value="${optIndex}">
+                    <label class="option-label" for="q${index}_opt${optIndex}">${opt}</label>
+                </div>
+            `;
+        });
+
+        card.innerHTML = `
+            <span class="level-badge ${item.level}">${item.levelName}</span>
+            <div class="question-text">${item.q}</div>
+            <div class="options">${optionsHtml}</div>
+        `;
+        container.appendChild(card);
+      });
+
+      function checkAnswers() {
+        let score = 0;
+        let total = questions.length;
+
+        questions.forEach((item, index) => {
+          const selected = document.querySelector(
+            `input[name="q${index}"]:checked`
+          );
+          const card = document.getElementById(`card-${index}`);
+
+          // Скидаємо стилі
+          card.classList.remove("correct", "wrong");
+          const labels = card.querySelectorAll(".option-label");
+          labels.forEach((l) =>
+            l.classList.remove("correct-answer", "wrong-answer")
+          );
+
+          if (selected) {
+            const val = parseInt(selected.value);
+            if (val === item.correct) {
+              score++;
+              card.classList.add("correct");
+              selected.nextElementSibling.classList.add("correct-answer");
+            } else {
+              card.classList.add("wrong");
+              selected.nextElementSibling.classList.add("wrong-answer");
+              // Підсвітити правильну
+              const correctLabel = card.querySelector(
+                `label[for="q${index}_opt${item.correct}"]`
+              );
+              correctLabel.classList.add("correct-answer");
+            }
+          } else {
+            card.classList.add("wrong");
+            // Підсвітити правильну, якщо нічого не вибрано
+            const correctLabel = card.querySelector(
+              `label[for="q${index}_opt${item.correct}"]`
+            );
+            correctLabel.classList.add("correct-answer");
+          }
+        });
+
+        const resultBox = document.getElementById("result-box");
+        resultBox.style.display = "block";
+
+        let message = `Ваш результат: ${score} з ${total}`;
+        let color = score > 12 ? "green" : score > 8 ? "orange" : "red";
+
+        resultBox.innerHTML = `<span style="color:${color}">${message}</span>`;
+
+        // Прокрутка до результату
+        resultBox.scrollIntoView({ behavior: "smooth" });
+
+        document.querySelector(".submit-btn").style.display = "none";
+        document.getElementById("retry-btn").style.display = "block";
+      }
+    </script>
+  </body>
+</html>
