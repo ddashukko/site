@@ -52,7 +52,7 @@ window.lessonsData = [
     title: "Соніна Маринка учить дроби",
     grade: 6,
     topic: "Математика",
-    link: "math_general/6/Дроби інтенсив.html",
+    link: "math_general/6/Дроби_маринка.html",
     subject_code: "math_general",
     category: "lesson",
   },
