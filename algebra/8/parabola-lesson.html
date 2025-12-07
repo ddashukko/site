@@ -3,216 +3,156 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Урок: Функція y = x² | Dasha Tutor</title>
+    <title>Урок: Функція y = x²</title>
     <style>
       :root {
         --primary: #4a90e2;
-        --primary-hover: #357abd;
         --success: #28a745;
-        --success-bg: #d4edda;
-        --danger: #dc3545;
-        --danger-bg: #f8d7da;
-        --bg-color: #f4f7f6;
-        --card-bg: #ffffff;
-        --text-main: #333333;
-        --border: #e0e0e0;
-      }
-
-      * {
-        box-sizing: border-box;
-        -webkit-tap-highlight-color: transparent;
+        --error: #dc3545;
+        --bg: #f4f7f6;
+        --card: #ffffff;
+        --text: #333;
       }
 
       body {
-        font-family: "Segoe UI", sans-serif;
-        background-color: var(--bg-color);
-        color: var(--text-main);
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
         margin: 0;
-        padding: 0;
-        display: flex;
-        justify-content: center;
-      }
-
-      /* Головний контейнер */
-      .wrapper {
-        display: flex;
-        width: 100%;
-        max-width: 1200px;
-        padding: 20px;
-        gap: 20px;
-        align-items: flex-start;
-      }
-
-      /* --- САЙДБАР (СТАТИСТИКА) --- */
-      .sidebar {
-        width: 280px;
-        background: var(--card-bg);
-        padding: 20px;
-        border-radius: 12px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-        position: sticky;
-        top: 20px;
-        flex-shrink: 0;
-        border: 1px solid var(--border);
-      }
-
-      .stats-title {
-        font-size: 1.1rem;
-        font-weight: bold;
-        margin-bottom: 15px;
-        color: var(--primary);
-        text-align: center;
-      }
-
-      .stat-item {
-        display: flex;
-        justify-content: space-between;
-        padding: 10px;
-        margin-bottom: 10px;
-        border-radius: 8px;
-        font-weight: bold;
-      }
-
-      .stat-correct {
-        background: var(--success-bg);
-        color: #155724;
-        border: 1px solid #c3e6cb;
-      }
-      .stat-wrong {
-        background: var(--danger-bg);
-        color: #721c24;
-        border: 1px solid #f5c6cb;
-      }
-
-      .progress-bar-container {
-        margin-top: 15px;
-        background: #eee;
-        border-radius: 10px;
-        height: 10px;
-        overflow: hidden;
-      }
-      .progress-bar {
-        height: 100%;
-        background: var(--primary);
-        width: 0%;
-        transition: width 0.3s;
-      }
-      .progress-text {
-        text-align: center;
-        font-size: 0.9rem;
-        color: #666;
-        margin-top: 5px;
-      }
-
-      /* --- ОСНОВНИЙ КОНТЕНТ --- */
-      .main-content {
-        flex-grow: 1;
         display: flex;
         flex-direction: column;
-        gap: 25px;
-        width: 100%;
+        height: 100vh;
+        overflow: hidden;
       }
 
-      .header-mobile {
-        display: none;
-      } /* Заголовок для мобілок */
-
-      /* КАРТКА ЗАВДАННЯ */
-      .task-card {
-        background: var(--card-bg);
-        border-radius: 12px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-        padding: 25px;
-        border-left: 5px solid var(--primary);
-      }
-
-      .task-header {
+      /* --- ВЕРХНЯ ПАНЕЛЬ (СТАТИСТИКА) --- */
+      header {
+        background: var(--card);
+        padding: 10px 20px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
         display: flex;
         justify-content: space-between;
-        align-items: flex-start;
-        margin-bottom: 15px;
-        border-bottom: 1px solid #eee;
+        align-items: center;
+        height: 60px;
+        flex-shrink: 0;
+        z-index: 10;
+      }
+
+      .stats {
+        display: flex;
+        gap: 15px;
+        font-weight: bold;
+      }
+      .stat-box {
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+      }
+      .stat-correct {
+        background: #d4edda;
+        color: #155724;
+      }
+      .stat-wrong {
+        background: #f8d7da;
+        color: #721c24;
+      }
+      .slide-counter {
+        color: #666;
+      }
+
+      /* --- ГОЛОВНИЙ КОНТЕЙНЕР СЛАЙДУ --- */
+      .slide-container {
+        display: flex;
+        flex-grow: 1;
+        height: calc(100vh - 130px);
+        overflow: hidden;
+      }
+
+      /* ЛІВА ЧАСТИНА (КАРТИНКА) */
+      .image-area {
+        flex: 1;
+        background: #eef2f5;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        border-right: 1px solid #ddd;
+      }
+
+      .task-img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      /* ПРАВА ЧАСТИНА (ЗАВДАННЯ) */
+      .tasks-area {
+        flex: 1;
+        padding: 30px;
+        overflow-y: auto;
+        background: var(--card);
+      }
+
+      h2 {
+        margin-top: 0;
+        color: var(--primary);
+        border-bottom: 2px solid #eee;
         padding-bottom: 10px;
       }
-
-      .task-number {
-        font-size: 1.4rem;
-        font-weight: bold;
-        color: var(--primary);
-        background: #eef2f5;
-        padding: 5px 10px;
-        border-radius: 8px;
-      }
-
-      .task-desc {
+      .instruction {
         font-size: 1.1rem;
-        margin-top: 10px;
-        line-height: 1.5;
+        margin-bottom: 20px;
+        color: #555;
       }
 
-      .task-image {
-        max-width: 100%;
-        height: auto;
-        border-radius: 8px;
-        margin: 15px 0;
-        display: block;
-        border: 1px solid #eee;
-      }
-
-      /* ПІДПУНКТИ ЗАВДАННЯ */
+      /* СПИСОК ПІДПУНКТІВ */
       .subtasks-list {
         display: flex;
         flex-direction: column;
-        gap: 12px;
+        gap: 15px;
       }
 
       .subtask-row {
         display: flex;
         align-items: center;
-        flex-wrap: wrap;
         background: #f9f9f9;
-        padding: 10px 15px;
+        padding: 12px;
         border-radius: 8px;
         border: 1px solid #eee;
+        flex-wrap: wrap;
         gap: 10px;
-        transition: 0.3s;
       }
 
       .subtask-row.solved {
-        background: var(--success-bg);
+        background: #e8f8f5;
         border-color: var(--success);
       }
 
-      .subtask-label {
+      .label {
         font-weight: bold;
         color: var(--primary);
-        min-width: 25px;
+        width: 30px;
       }
-      .subtask-question {
+      .question-text {
         flex-grow: 1;
-        margin-right: 10px;
         font-weight: 500;
+        min-width: 150px;
       }
 
-      /* Елементи вводу */
-      .input-group {
-        display: flex;
-        gap: 5px;
-        align-items: center;
-      }
-
+      /* ЕЛЕМЕНТИ ВВОДУ */
       input[type="text"] {
-        padding: 8px 12px;
-        border: 2px solid var(--border);
+        padding: 8px;
+        border: 2px solid #ccc;
         border-radius: 6px;
         width: 100px;
-        font-size: 1rem;
         text-align: center;
-        transition: 0.2s;
+        font-size: 1rem;
       }
       input:focus {
-        border-color: var(--primary);
         outline: none;
+        border-color: var(--primary);
       }
       input.correct {
         border-color: var(--success);
@@ -221,178 +161,171 @@
         font-weight: bold;
       }
       input.wrong {
-        border-color: var(--danger);
-        background: #fff0f0;
+        border-color: var(--error);
+        background: #fff5f5;
       }
 
-      .btn-check {
+      button.check-btn {
         background: var(--primary);
         color: white;
         border: none;
+        padding: 8px 15px;
         border-radius: 6px;
-        padding: 9px 15px;
         cursor: pointer;
-        font-size: 0.9rem;
       }
-      .btn-check:hover {
-        background: var(--primary-hover);
+      button.check-btn:hover {
+        background: #357abd;
       }
 
-      /* Кнопки вибору (Choice) */
-      .choice-container {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 5px;
-      }
-      .btn-choice {
+      /* Кнопки вибору */
+      .choice-btn {
         background: white;
-        border: 1px solid var(--border);
-        padding: 8px 12px;
-        border-radius: 6px;
+        border: 1px solid #ccc;
+        padding: 6px 12px;
+        border-radius: 4px;
         cursor: pointer;
-        transition: 0.2s;
+        margin-right: 5px;
       }
-      .btn-choice:hover {
+      .choice-btn:hover {
         background: #f0f0f0;
       }
-      .btn-choice.selected-correct {
+      .choice-btn.selected-correct {
         background: var(--success);
         color: white;
         border-color: var(--success);
       }
-      .btn-choice.selected-wrong {
-        background: var(--danger);
+      .choice-btn.selected-wrong {
+        background: var(--error);
         color: white;
-        border-color: var(--danger);
+        border-color: var(--error);
       }
 
-      /* АДАПТИВНІСТЬ ДЛЯ ТЕЛЕФОНІВ */
-      @media (max-width: 850px) {
-        .wrapper {
+      /* --- НИЖНЯ ПАНЕЛЬ (НАВІГАЦІЯ) --- */
+      footer {
+        height: 70px;
+        background: var(--card);
+        border-top: 1px solid #ddd;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 30px;
+        flex-shrink: 0;
+      }
+
+      .nav-btn {
+        background: var(--primary);
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        font-size: 1rem;
+        border-radius: 8px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .nav-btn:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+      }
+      .nav-btn:hover:not(:disabled) {
+        background: #357abd;
+      }
+
+      /* Мобільна адаптація */
+      @media (max-width: 800px) {
+        .slide-container {
           flex-direction: column;
-          padding: 10px;
-          gap: 10px;
+          overflow-y: auto;
+          height: auto;
         }
-
-        .header-mobile {
-          display: block;
-          text-align: center;
-          font-weight: bold;
-          color: var(--primary);
-          font-size: 1.2rem;
-          margin-bottom: 10px;
+        .image-area {
+          min-height: 200px;
+          flex: none;
+          border-right: none;
+          border-bottom: 1px solid #ddd;
         }
-
-        .sidebar {
-          width: 100%;
+        .tasks-area {
+          overflow: visible;
+        }
+        body {
+          overflow: auto;
+          height: auto;
+        }
+        footer {
           position: sticky;
-          top: 0;
-          z-index: 100;
-          padding: 10px;
-          border-radius: 0 0 12px 12px;
-          display: flex;
-          flex-wrap: wrap;
-          justify-content: space-around;
-          align-items: center;
-          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .stats-title,
-        .progress-text,
-        .progress-bar-container {
-          display: none;
-        } /* Спрощуємо для мобілок */
-
-        .stat-item {
-          margin: 0;
-          padding: 5px 15px;
-          font-size: 0.9rem;
-        }
-
-        .task-card {
-          padding: 15px;
-        }
-        .subtask-row {
-          flex-direction: column;
-          align-items: stretch;
-        }
-        .input-group {
-          width: 100%;
-        }
-        input[type="text"] {
-          flex-grow: 1;
-        }
-        .btn-check {
-          width: auto;
+          bottom: 0;
+          box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
         }
       }
     </style>
   </head>
   <body>
-    <div class="wrapper">
-      <aside class="sidebar">
-        <div class="stats-title">Ваш прогрес</div>
-        <div class="stat-item stat-correct">
-          <span>✅ Правильно</span>
-          <span id="score-correct">0</span>
+    <header>
+      <div class="header-title">Dasha Tutor</div>
+      <div class="stats">
+        <div class="stat-box stat-correct">
+          ✅ <span id="val-correct">0</span>
         </div>
-        <div class="stat-item stat-wrong">
-          <span>❌ Помилок</span>
-          <span id="score-wrong">0</span>
-        </div>
-        <div class="progress-bar-container">
-          <div class="progress-bar" id="progress-line"></div>
-        </div>
-        <div class="progress-text" id="progress-text">0% виконано</div>
-      </aside>
+        <div class="stat-box stat-wrong">❌ <span id="val-wrong">0</span></div>
+      </div>
+      <div class="slide-counter" id="slide-counter">1 / 10</div>
+    </header>
 
-      <main class="main-content" id="tasks-container">
-        <div class="header-mobile">Функція y = x²</div>
-      </main>
-    </div>
+    <div class="slide-container" id="slide-root"></div>
+
+    <footer>
+      <button class="nav-btn" id="btn-prev" onclick="changeSlide(-1)">
+        ← Назад
+      </button>
+      <button class="nav-btn" id="btn-next" onclick="changeSlide(1)">
+        Далі →
+      </button>
+    </footer>
 
     <script>
-      // ============================================
-      // БАЗА ДАНИХ (Структура: Завдання -> Підпункти)
-      // ============================================
-      const tasks = [
+      // ==========================================
+      //  ДАНІ (Оновлені шляхи до картинок)
+      // ==========================================
+      const lessonData = [
         {
           id: "13.1",
-          desc: "Гіперболою, параболою чи прямою є графік функції?",
-          type: "choice", // Тип 'choice' генерує кнопки
-          items: [
+          img: "../../images/13.1.png",
+          instruction: "Гіперболою, параболою чи прямою є графік функції?",
+          type: "choice",
+          tasks: [
             {
-              id: "1",
+              label: "1)",
               q: "y = 6x",
               a: "Пряма",
               opts: ["Гіпербола", "Парабола", "Пряма"],
             },
             {
-              id: "2",
+              label: "2)",
               q: "y = 10/x",
               a: "Гіпербола",
               opts: ["Гіпербола", "Парабола", "Пряма"],
             },
             {
-              id: "3",
+              label: "3)",
               q: "y = x²",
               a: "Парабола",
               opts: ["Гіпербола", "Парабола", "Пряма"],
             },
             {
-              id: "4",
+              label: "4)",
               q: "y = -5",
               a: "Пряма",
               opts: ["Гіпербола", "Парабола", "Пряма"],
             },
             {
-              id: "5",
+              label: "5)",
               q: "y = -4/x",
               a: "Гіпербола",
               opts: ["Гіпербола", "Парабола", "Пряма"],
             },
             {
-              id: "6",
+              label: "6)",
               q: "y = 3x - 1",
               a: "Пряма",
               opts: ["Гіпербола", "Парабола", "Пряма"],
@@ -401,61 +334,98 @@
         },
         {
           id: "13.2",
-          desc: "Для функції y = x² знайдіть значення y (впишіть число):",
+          img: "../../images/13.2.png",
+          instruction: "Для функції y = x² знайдіть значення y:",
           type: "input",
-          items: [
-            { id: "1", q: "x = -4, y = ?", a: "16" },
-            { id: "2", q: "x = 0, y = ?", a: "0" },
-            { id: "3", q: "x = 7, y = ?", a: "49" },
+          tasks: [
+            { label: "1)", q: "x = -4", a: "16" },
+            { label: "2)", q: "x = 0", a: "0" },
+            { label: "3)", q: "x = 7", a: "49" },
           ],
         },
         {
           id: "13.4",
-          desc: "За графіком функції y = x² (див. малюнок у підручнику або стандартну параболу) знайдіть:",
-          img: "images/13.4.png", // Якщо є картинка
+          img: "../../images/13.4.png",
+          instruction: "За графіком функції y = x² знайдіть:",
           type: "input",
-          items: [
-            { id: "1", q: "y, якщо x = -1.5", a: ["2.25", "2,25"] },
-            { id: "2", q: "y, якщо x = 2.5", a: ["6.25", "6,25"] },
-            { id: "3", q: "y, якщо x = 3", a: "9" },
-            { id: "4", q: "x (додатнє), якщо y = 4", a: "2" },
-            { id: "5", q: "x (від'ємне), якщо y = 9", a: "-3" },
+          tasks: [
+            { label: "1)", q: "y, якщо x = -1.5", a: ["2.25", "2,25"] },
+            { label: "2)", q: "y, якщо x = 2.5", a: ["6.25", "6,25"] },
+            { label: "3)", q: "y, якщо x = 3", a: "9" },
+            { label: "4)", q: "x (додатнє), якщо y = 4", a: "2" },
+            { label: "5)", q: "x (від'ємне), якщо y = 9", a: "-3" },
+          ],
+        },
+        {
+          id: "13.6",
+          img: "../../images/13.6.png",
+          instruction: "Побудова графіка. Перевірка точок (введіть число):",
+          type: "input",
+          tasks: [
+            { label: "1)", q: "Чому дорівнює y(-2)?", a: "4" },
+            { label: "2)", q: "Чому дорівнює y(3)?", a: "9" },
+            { label: "3)", q: "Максимальне y на проміжку [-2; 3]", a: "9" },
           ],
         },
         {
           id: "13.8",
-          desc: "Чи проходить графік функції y = x² через точку? (Оберіть Так або Ні)",
+          img: "../../images/13.8.png",
+          instruction: "Чи проходить графік через точку?",
           type: "choice",
-          items: [
-            { id: "1", q: "A(-3; 9)", a: "Так", opts: ["Так", "Ні"] },
-            { id: "2", q: "B(4; -16)", a: "Ні", opts: ["Так", "Ні"] },
-            { id: "3", q: "C(0; 0)", a: "Так", opts: ["Так", "Ні"] },
-            { id: "4", q: "D(-1; 1)", a: "Так", opts: ["Так", "Ні"] },
+          tasks: [
+            { label: "1)", q: "A(-3; 9)", a: "Так", opts: ["Так", "Ні"] },
+            { label: "2)", q: "B(4; -16)", a: "Ні", opts: ["Так", "Ні"] },
+            { label: "3)", q: "C(0; 0)", a: "Так", opts: ["Так", "Ні"] },
+            { label: "4)", q: "D(-1; 1)", a: "Так", opts: ["Так", "Ні"] },
           ],
         },
         {
           id: "13.12",
-          desc: "Знайдіть точки перетину графіків графічно (підставте значення x):",
+          img: "../../images/13.12.png",
+          instruction: "Розв’яжіть графічно (знайдіть x):",
           type: "input",
-          items: [
-            { id: "1", q: "x² = 2x (x > 0)", a: "2" },
-            { id: "2", q: "x² = 8/x (x = ?)", a: "2" },
+          tasks: [
+            { label: "1)", q: "x² = 2x (x > 0)", a: "2" },
+            { label: "2)", q: "x² = 8/x (x = ?)", a: "2" },
+          ],
+        },
+        {
+          id: "13.14",
+          img: "../../images/13.14.png",
+          instruction: "Побудова. Вкажіть 'виколоту' точку (її координату x):",
+          type: "input",
+          tasks: [
+            { label: "1)", q: "Для виразу 1 (x ≠ ?)", a: "2" },
+            { label: "2)", q: "Для виразу 2 (x ≠ ?)", a: ["3", "-3"] },
           ],
         },
         {
           id: "13.16",
-          desc: "Для яких значень a справджується рівність?",
+          img: "../../images/13.16.png",
+          instruction: "Для яких значень a справджується рівність?",
           type: "choice",
-          items: [
+          tasks: [
             {
-              id: "1",
+              label: "1)",
               q: "(-a)² = |a|²",
               a: "Будь-яких",
               opts: ["Будь-яких", "a=0", "Жодних"],
             },
             {
-              id: "2",
+              label: "2)",
               q: "-a² = (-a)²",
+              a: "a=0",
+              opts: ["Будь-яких", "a=0", "Жодних"],
+            },
+            {
+              label: "3)",
+              q: "a² = (-a)²",
+              a: "Будь-яких",
+              opts: ["Будь-яких", "a=0", "Жодних"],
+            },
+            {
+              label: "4)",
+              q: "(2a)² = -4a²",
               a: "a=0",
               opts: ["Будь-яких", "a=0", "Жодних"],
             },
@@ -463,195 +433,157 @@
         },
         {
           id: "13.17",
-          desc: "Знайдіть найменше/найбільше значення виразу:",
+          img: "../../images/13.17.png",
+          instruction: "Знайдіть значення:",
           type: "input",
-          items: [
-            { id: "1", q: "Найменше: x² - 10", a: "-10" },
-            { id: "2", q: "Найбільше: 12 - x²", a: "12" },
-            { id: "3", q: "Найменше: 5 + (x-2)²", a: "5" },
+          tasks: [
+            { label: "1)", q: "Найменше: x² - 10", a: "-10" },
+            { label: "2)", q: "Найбільше: 12 - x²", a: "12" },
+            { label: "3)", q: "Найменше: 5 + (x-2)²", a: "5" },
           ],
         },
         {
           id: "13.18",
-          desc: "Обчисліть:",
+          img: "../../images/13.18.png",
+          instruction: "Обчисліть:",
           type: "input",
-          items: [
-            { id: "1", q: "15² + (-4)² =", a: "241" },
-            { id: "2", q: "0.2² : (-0.1)² =", a: "4" },
-            { id: "3", q: "(-5)² · (-0.4)² =", a: "4" },
+          tasks: [
+            { label: "1)", q: "15² + (-4)²", a: "241" },
+            { label: "2)", q: "(3/7)² - (10/7)²", a: ["-1.85", "-91/49"] },
+            { label: "3)", q: "0.2² : (-0.1)²", a: "4" },
+            { label: "4)", q: "(-5)² · (-0.4)²", a: "4" },
           ],
         },
       ];
 
-      // ============================================
-      // ЛОГІКА
-      // ============================================
-      let correctCount = 0;
-      let errorCount = 0;
-      let totalItems = 0;
-      let solvedItems = 0;
+      // ==========================================
+      //  ЛОГІКА
+      // ==========================================
+      let currentIndex = 0;
+      let correctTotal = 0;
+      let wrongTotal = 0;
+
+      const root = document.getElementById("slide-root");
+      const counter = document.getElementById("slide-counter");
+      const statCorrect = document.getElementById("val-correct");
+      const statWrong = document.getElementById("val-wrong");
+      const btnPrev = document.getElementById("btn-prev");
+      const btnNext = document.getElementById("btn-next");
 
       function init() {
-        const container = document.getElementById("tasks-container");
-
-        // Рахуємо загальну кількість питань
-        tasks.forEach((t) => (totalItems += t.items.length));
-
-        tasks.forEach((task, tIndex) => {
-          const card = document.createElement("div");
-          card.className = "task-card";
-
-          let html = `
-                <div class="task-header">
-                    <div class="task-number">№ ${task.id}</div>
-                </div>
-                <div class="task-desc">${task.desc}</div>
-            `;
-
-          // Якщо є картинка, розкоментувати і додати реальний шлях
-          // if(task.img) html += `<img src="${task.img}" class="task-image" alt="Графік">`;
-
-          const list = document.createElement("div");
-          list.className = "subtasks-list";
-
-          task.items.forEach((item, iIndex) => {
-            const row = document.createElement("div");
-            row.className = "subtask-row";
-            row.id = `row-${tIndex}-${iIndex}`;
-
-            // Label (1, 2, 3...)
-            const label = document.createElement("div");
-            label.className = "subtask-label";
-            label.innerText = `${item.id})`;
-            row.appendChild(label);
-
-            // Question text
-            const question = document.createElement("div");
-            question.className = "subtask-question";
-            question.innerText = item.q;
-            row.appendChild(question);
-
-            // Input area
-            const actionArea = document.createElement("div");
-
-            if (task.type === "choice" || item.opts) {
-              actionArea.className = "choice-container";
-              item.opts.forEach((opt) => {
-                const btn = document.createElement("button");
-                btn.className = "btn-choice";
-                btn.innerText = opt;
-                btn.onclick = () => checkChoice(btn, opt, item.a, row);
-                actionArea.appendChild(btn);
-              });
-            } else {
-              actionArea.className = "input-group";
-              const inp = document.createElement("input");
-              inp.type = "text";
-              inp.placeholder = "?";
-
-              const btn = document.createElement("button");
-              btn.className = "btn-check";
-              btn.innerText = "ОК";
-              btn.onclick = () => checkInput(inp, item.a, row);
-
-              // Enter key support
-              inp.addEventListener("keypress", function (event) {
-                if (event.key === "Enter") {
-                  event.preventDefault();
-                  btn.click();
-                }
-              });
-
-              actionArea.appendChild(inp);
-              actionArea.appendChild(btn);
-            }
-
-            row.appendChild(actionArea);
-            list.appendChild(row);
-          });
-
-          card.innerHTML = html;
-          card.appendChild(list);
-          container.appendChild(card);
-        });
-
-        updateStats();
+        renderSlide(0);
       }
 
-      // Перевірка введення тексту
-      function checkInput(input, correctAnswers, row) {
-        if (row.classList.contains("solved")) return;
+      function renderSlide(index) {
+        currentIndex = index;
+        const data = lessonData[index];
 
-        const val = input.value.trim().replace(",", ".");
+        // Оновлення хедера та кнопок
+        counter.innerText = `Завдання ${index + 1} / ${lessonData.length}`;
+        btnPrev.disabled = index === 0;
+        btnNext.disabled = index === lessonData.length - 1;
+
+        // Генерація HTML
+        let subTasksHTML = "";
+
+        data.tasks.forEach((task, i) => {
+          let inputHTML = "";
+
+          if (data.type === "choice" || task.opts) {
+            // Кнопки вибору
+            task.opts.forEach((opt) => {
+              inputHTML += `<button class="choice-btn" onclick="checkChoice(this, '${opt}', '${task.a}', this.parentElement.parentElement)">${opt}</button>`;
+            });
+          } else {
+            // Інпут
+            inputHTML = `
+                        <input type="text" placeholder="?" onkeypress="handleEnter(event, this)">
+                        <button class="check-btn" onclick="checkInput(this.previousElementSibling, '${task.a}', this.parentElement)">OK</button>
+                    `;
+          }
+
+          subTasksHTML += `
+                    <div class="subtask-row">
+                        <div class="label">${task.label}</div>
+                        <div class="question-text">${task.q}</div>
+                        <div class="interaction-area">${inputHTML}</div>
+                    </div>
+                `;
+        });
+
+        // Вставка в сторінку. Додано обробник помилок, щоб не ламалось якщо картинки немає
+        root.innerHTML = `
+                <div class="image-area">
+                    <img src="${data.img}" class="task-img" alt="Завдання ${data.id}" onerror="this.src='https://placehold.co/400x300?text=Зображення+не+знайдено'; this.style.opacity=0.5">
+                </div>
+                <div class="tasks-area">
+                    <h2>Завдання № ${data.id}</h2>
+                    <p class="instruction">${data.instruction}</p>
+                    <div class="subtasks-list">
+                        ${subTasksHTML}
+                    </div>
+                </div>
+            `;
+      }
+
+      function changeSlide(dir) {
+        const next = currentIndex + dir;
+        if (next >= 0 && next < lessonData.length) {
+          renderSlide(next);
+        }
+      }
+
+      // Перевірка інпуту
+      function checkInput(inputEl, correctVal, rowEl) {
+        if (rowEl.classList.contains("solved")) return;
+
+        const val = inputEl.value.trim().replace(",", ".");
         let isCorrect = false;
 
-        if (Array.isArray(correctAnswers)) {
-          isCorrect = correctAnswers.includes(val);
+        if (Array.isArray(correctVal)) {
+          isCorrect = correctVal.includes(val);
         } else {
-          isCorrect = val === correctAnswers.toString();
+          isCorrect = val == correctVal;
         }
 
         if (isCorrect) {
-          input.classList.remove("wrong");
-          input.classList.add("correct");
-          markSolved(row);
+          inputEl.classList.add("correct");
+          inputEl.classList.remove("wrong");
+          rowEl.classList.add("solved");
+          correctTotal++;
         } else {
-          input.classList.add("wrong");
-          addError();
+          inputEl.classList.add("wrong");
+          wrongTotal++;
         }
-      }
-
-      // Перевірка кнопок вибору
-      function checkChoice(btn, val, correct, row) {
-        if (row.classList.contains("solved")) return;
-
-        if (val === correct) {
-          btn.classList.add("selected-correct");
-          markSolved(row);
-        } else {
-          btn.classList.add("selected-wrong");
-          addError();
-        }
-      }
-
-      function markSolved(row) {
-        if (!row.classList.contains("solved")) {
-          row.classList.add("solved");
-          correctCount++;
-          solvedItems++;
-
-          // Disable other inputs in this row
-          const inputs = row.querySelectorAll("input, button");
-          inputs.forEach((el) => {
-            if (
-              !el.classList.contains("selected-correct") &&
-              !el.classList.contains("correct")
-            ) {
-              el.disabled = true;
-              el.style.opacity = "0.6";
-            }
-          });
-          updateStats();
-        }
-      }
-
-      function addError() {
-        errorCount++;
         updateStats();
       }
 
-      function updateStats() {
-        document.getElementById("score-correct").innerText = correctCount;
-        document.getElementById("score-wrong").innerText = errorCount;
+      // Перевірка кнопок
+      function checkChoice(btnEl, val, correctVal, rowEl) {
+        if (rowEl.classList.contains("solved")) return;
 
-        const percent =
-          totalItems > 0 ? Math.round((solvedItems / totalItems) * 100) : 0;
-        document.getElementById("progress-line").style.width = percent + "%";
-        document.getElementById("progress-text").innerText =
-          percent + "% виконано";
+        if (val == correctVal) {
+          btnEl.classList.add("selected-correct");
+          rowEl.classList.add("solved");
+          correctTotal++;
+        } else {
+          btnEl.classList.add("selected-wrong");
+          wrongTotal++;
+        }
+        updateStats();
       }
 
-      // Start
+      function handleEnter(e, inputEl) {
+        if (e.key === "Enter") {
+          inputEl.nextElementSibling.click();
+        }
+      }
+
+      function updateStats() {
+        statCorrect.innerText = correctTotal;
+        statWrong.innerText = wrongTotal;
+      }
+
       init();
     </script>
   </body>
