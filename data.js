@@ -47,4 +47,12 @@ window.lessonsData = [
     subject_code: "algebra",
     category: "lesson",
   },
+  {
+    id: 777,
+    title: "Соніна Маринка учить дроби",
+    grade: 6,
+    topic: "math_general/6/Дроби інтенсив.html",
+    subject_code: "math_general",
+    category: "lesson",
+  },
 ];
