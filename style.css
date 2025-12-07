@@ -1,164 +1,94 @@
 /* style.css */
 body {
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f4f7f6;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #f8f9fa;
     margin: 0;
     padding: 20px;
     color: #333;
 }
 
-h1 { text-align: center; color: #2c3e50; }
-p { text-align: center; color: #7f8c8d; }
+h1 { text-align: center; color: #2c3e50; margin-bottom: 10px; }
+p { text-align: center; color: #6c757d; margin-top: 0; }
 
-/* Кнопки управління */
-.controls {
-    text-align: center;
-    margin-bottom: 30px;
-}
-
+/* Кнопки фільтрів */
+.controls { text-align: center; margin-bottom: 40px; }
 .filter-btn {
-    background-color: #fff;
-    border: 2px solid #e0e0e0;
-    border-radius: 25px;
-    padding: 10px 20px;
-    margin: 5px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: all 0.2s;
+    background: white; border: 1px solid #dee2e6;
+    padding: 8px 16px; margin: 4px; border-radius: 20px;
+    cursor: pointer; transition: 0.2s; font-size: 14px;
 }
-
-.filter-btn:hover {
-    border-color: #3498db;
-    color: #3498db;
-}
-
-.filter-btn:focus {
-    background-color: #3498db;
-    color: white;
-    border-color: #3498db;
+.filter-btn:hover, .filter-btn:focus {
+    background: #007bff; color: white; border-color: #007bff;
 }
 
 /* Сітка */
 #container {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 25px;
-    max-width: 1200px;
+    gap: 20px;
+    max-width: 1100px;
     margin: 0 auto;
 }
 
-/* --- СТИЛІ КАРТКИ (ОНОВЛЕНІ) --- */
+/* --- КАРТКА (ТЕКСТОВА) --- */
 .card {
     background: white;
-    border-radius: 12px;
-    /* padding прибираємо, щоб картинка була на всю ширину */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-    transition: transform 0.2s;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    transition: transform 0.2s, box-shadow 0.2s;
     display: flex;
     flex-direction: column;
-    overflow: hidden; /* Щоб картинка не вилазила за кути */
-    height: 100%; /* Щоб усі картки були однакової висоти */
+    justify-content: space-between;
+    border-left: 5px solid #ccc; /* Сіра смужка за замовчуванням */
 }
+
+/* Кольорові смужки для предметів */
+.card.border-blue { border-left-color: #007bff; } /* Алгебра */
+.card.border-green { border-left-color: #28a745; } /* Геометрія */
+.card.border-red { border-left-color: #dc3545; } /* Англійська */
 
 .card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
 
-/* Стиль для картинки-завдання */
-.card-image {
-    width: 100%;
-    height: 180px; /* Фіксована висота */
-    background-color: #f9f9f9;
-    object-fit: contain; /* ВАЖЛИВО: Показує все завдання цілком, не обрізаючи */
-    border-bottom: 1px solid #eee;
-}
-
-/* Обгортка для тексту */
-.card-content {
-    padding: 20px;
+.card-header {
     display: flex;
-    flex-direction: column;
-    flex-grow: 1;
     justify-content: space-between;
-}
-
-.card h3 {
-    margin-top: 0;
-    font-size: 1.1em;
     margin-bottom: 15px;
-    min-height: 40px; /* Щоб заголовок займав місце */
 }
 
-.card-meta {
-    margin-bottom: 20px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
-}
-
-.tag {
-    font-size: 0.8em;
-    padding: 4px 8px;
-    border-radius: 6px;
-}
-
-.grade-tag { background-color: #e1f5fe; color: #0288d1; }
-.subject-tag { background-color: #f3e5f5; color: #7b1fa2; }
-
-.link-btn {
-    display: block;
-    text-align: center;
-    background-color: #3498db;
-    color: white;
-    text-decoration: none;
-    padding: 10px;
-    border-radius: 8px;
-    font-weight: bold;
-    transition: background 0.2s;
-}
-
-.link-btn:hover {
-    background-color: #2980b9;
-}
 .card h3 {
-  margin-top: 0;
-  font-size: 1.2em;
-  margin-bottom: 15px;
+    margin: 0 0 20px 0;
+    font-size: 1.1em;
+    font-weight: 600;
+    line-height: 1.4;
+    color: #212529;
 }
 
-.card-meta {
-  margin-bottom: 20px;
+.card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #eee;
+    padding-top: 15px;
 }
 
-.tag {
-  font-size: 0.85em;
-  padding: 4px 10px;
-  border-radius: 6px;
-  margin-right: 5px;
+/* Теги */
+.tag { font-size: 0.75em; padding: 3px 8px; border-radius: 4px; font-weight: bold; }
+.grade-tag { background: #e9ecef; color: #495057; }
+.tag-test { background: #fff3cd; color: #856404; }
+.tag-lesson { background: #d1e7dd; color: #0f5132; }
+
+.topic-text {
+    font-size: 0.9em; color: #6c757d; font-style: italic;
 }
 
-.grade-tag {
-  background-color: #e1f5fe;
-  color: #0288d1;
+.open-btn {
+    text-decoration: none;
+    color: #007bff;
+    font-weight: 600;
+    font-size: 0.9em;
 }
-.subject-tag {
-  background-color: #f3e5f5;
-  color: #7b1fa2;
-}
-
-.link-btn {
-  display: block;
-  text-align: center;
-  background-color: #3498db;
-  color: white;
-  text-decoration: none;
-  padding: 10px;
-  border-radius: 8px;
-  font-weight: bold;
-  transition: background 0.2s;
-}
-
-.link-btn:hover {
-  background-color: #2980b9;
-}
+.open-btn:hover { text-decoration: underline; }
