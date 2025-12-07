@@ -35,7 +35,7 @@ window.lessonsData = [
     grade: 8,
     topic: "Функції",
     subject_code: "algebra",
-    link: "algebra/8/shehx.html",
+    link: "algebra/8/parabola-lesson.html",
     category: "lesson",
   },
 ];
