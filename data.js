@@ -40,7 +40,7 @@ window.lessonsData = [
   },
   {
     id: 110,
-    title: " ",
+    title: "§10. Властивості степеня із цілим показником",
     grade: 8,
     topic: "Алгебра",
     link: "algebra/8/lesson-powers.html",
