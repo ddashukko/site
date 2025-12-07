@@ -1,68 +1,63 @@
 // script.js
 
 function renderLessons(filterValue) {
+    // Захист: якщо data.js поламаний, беремо пустий масив
     const lessons = window.lessonsData || [];
     const container = document.getElementById("container");
     container.innerHTML = "";
 
-    // === ЛОГІКА ФІЛЬТРАЦІЇ ===
+    // === ФІЛЬТРАЦІЯ ===
     const filteredData = lessons.filter(lesson => {
-        // 1. "Всі класи"
         if (filterValue === 'all') return true;
-
-        // 2. Фільтр за типом (Урок / Тест)
         if (filterValue === 'lesson' || filterValue === 'test') {
             return lesson.category === filterValue;
         }
-
-        // 3. Фільтр за класом (число)
         return lesson.grade == filterValue;
     });
 
-    // Якщо нічого не знайдено
+    // Якщо пусто
     if (filteredData.length === 0) {
-        container.innerHTML = "<p>Матеріалів за цим запитом не знайдено.</p>";
+        container.innerHTML = "<p style='grid-column: 1/-1; text-align: center;'>Матеріалів не знайдено.</p>";
         return;
     }
 
-    // === МАЛЮВАННЯ КАРТОК ===
+    // === МАЛЮВАННЯ (ТІЛЬКИ ТЕКСТ) ===
     filteredData.forEach(lesson => {
         const card = document.createElement("div");
-        card.className = "card";
+        card.className = "card"; // Основний клас
         
-        // Відкривати в новій вкладці, якщо це зовнішнє посилання
+        // Додаємо клас для кольорової смужки збоку в залежності від предмета
+        if (lesson.subject_code === 'algebra') card.classList.add('border-blue');
+        else if (lesson.subject_code === 'geometry') card.classList.add('border-green');
+        else if (lesson.subject_code === 'english') card.classList.add('border-red');
+        else card.classList.add('border-gray');
+
         const targetAttr = lesson.link.startsWith("http") ? "_blank" : "_self";
 
-        // Визначаємо підпис предмета
-        let subjectLabel = lesson.topic;
-        if (lesson.subject_code === "algebra") subjectLabel = "📐 Алгебра";
-        if (lesson.subject_code === "geometry") subjectLabel = "🔺 Геометрія";
-        if (lesson.subject_code === "math_general") subjectLabel = "🔢 Математика";
+        // Красиві назви
+        let subjectLabel = lesson.topic; // За замовчуванням - тема
+        if (lesson.subject_code === "math_general") subjectLabel = "Математика";
 
-        // Визначаємо тип (Урок чи Тест)
         const typeLabel = lesson.category === 'test' ? '📝 Тест' : '📖 Урок';
+        const typeClass = lesson.category === 'test' ? 'tag-test' : 'tag-lesson';
 
-        // Картинка-заглушка, якщо ти забула додати image в data.js
-        const imageSrc = lesson.image ? lesson.image : 'images/default.png'; 
-
-        // HTML картки
         card.innerHTML = `
-            <img src="${imageSrc}" class="card-image" alt="${lesson.title}">
-            <div class="card-content">
-                <h3>${lesson.title}</h3>
-                <div class="card-meta">
-                    <span class="tag grade-tag">${lesson.grade} клас</span>
-                    <span class="tag subject-tag">${subjectLabel}</span>
-                    <span class="tag" style="background:#fff3cd; color:#856404">${typeLabel}</span>
-                </div>
-                <a href="${lesson.link}" class="link-btn" target="${targetAttr}">Відкрити</a>
+            <div class="card-header">
+                <span class="tag grade-tag">${lesson.grade} клас</span>
+                <span class="tag ${typeClass}">${typeLabel}</span>
+            </div>
+            
+            <h3>${lesson.title}</h3>
+            
+            <div class="card-footer">
+                <span class="topic-text">${subjectLabel}</span>
+                <a href="${lesson.link}" class="open-btn" target="${targetAttr}">Перейти →</a>
             </div>
         `;
         container.appendChild(card);
     });
 }
 
-// Запуск при старті
 document.addEventListener("DOMContentLoaded", () => {
     renderLessons("all");
 });
