@@ -1,24 +1,57 @@
 // script.js
 
-function renderLessons(gradeFilter) {
-  // 1. Беремо дані з data.js
-  // (Якщо раптом файл не підключився, беремо порожній масив, щоб не було помилок)
-  const lessons = window.lessonsData || [];
+function renderLessons(filterValue) {
+    const lessons = window.lessonsData || [];
+    const container = document.getElementById("container");
+    container.innerHTML = "";
 
-  const container = document.getElementById("container");
-  container.innerHTML = ""; // Очистити екран
+    // === ЛОГІКА ФІЛЬТРАЦІЇ ===
+    const filteredData = lessons.filter(lesson => {
+        // 1. Якщо натиснули "Всі" -> показуємо все
+        if (filterValue === 'all') return true;
 
-  // 2. Фільтруємо
-  // Якщо gradeFilter це "all" - показуємо все. Інакше - порівнюємо цифри.
-  const filteredData =
-    gradeFilter === "all"
-      ? lessons
-      : lessons.filter((lesson) => lesson.grade == gradeFilter);
+        // 2. Якщо натиснули "lesson" або "test" -> перевіряємо категорію
+        if (filterValue === 'lesson' || filterValue === 'test') {
+            return lesson.category === filterValue;
+        }
 
-  if (filteredData.length === 0) {
-    container.innerHTML = "<p>Уроків для цього класу поки немає.</p>";
-    return;
-  }
+        // 3. Інакше -> вважаємо, що це номер класу (grade)
+        return lesson.grade == filterValue;
+    });
+    // ===========================
+
+    if (filteredData.length === 0) {
+        container.innerHTML = "<p>Матеріалів за цим запитом не знайдено.</p>";
+        return;
+    }
+
+    // Малювання карток (без змін)
+    filteredData.forEach(lesson => {
+        const card = document.createElement("div");
+        card.className = "card";
+        const targetAttr = lesson.link.startsWith("http") ? "_blank" : "_self";
+
+        let subjectLabel = lesson.topic;
+        if (lesson.subject_code === "algebra") subjectLabel = "📐 Алгебра";
+        if (lesson.subject_code === "geometry") subjectLabel = "🔺 Геометрія";
+
+        // Додаємо мітку типу (Тест чи Урок) на картку
+        const typeLabel = lesson.category === 'test' ? '📝 Тест' : '📖 Урок';
+
+        card.innerHTML = `
+            <img src="${lesson.image || 'images/default.jpg'}" class="card-image">
+            <div class="card-content">
+                <h3>${lesson.title}</h3>
+                <div class="card-meta">
+                    <span class="tag grade-tag">${lesson.grade} клас</span>
+                    <span class="tag" style="background:#fff3cd; color:#856404">${typeLabel}</span>
+                </div>
+                <a href="${lesson.link}" class="link-btn" target="${targetAttr}">Відкрити</a>
+            </div>
+        `;
+        container.appendChild(card);
+    });
+}
 
   // 3. Малюємо
   filteredData.forEach((lesson) => {

@@ -8,6 +8,7 @@ window.lessonsData = [
     topic: "Арифметика",
     link: "math_general/2/simple-equations.html", // Локальний шлях
     subject_code: "math_general",
+    category: "test",
   },
   {
     id: 4,
@@ -16,6 +17,7 @@ window.lessonsData = [
     topic: "Алгебра",
     link: "algebra/8/power-part1.html", // Локальний шлях
     subject_code: "algebra",
+    category: "test",
   },
   {
     id: 7,
@@ -24,5 +26,21 @@ window.lessonsData = [
     topic: "Алгебра",
     link: "algebra/8/power-part2.html",
     subject_code: "algebra",
+    category: "test",
+  },
+
+  {
+    id: 101, // Унікальний номер (придумай будь-який)
+    title: "§13. Функція y = x² (Парабола)",
+    grade: 8,
+    topic: "Функції",
+    subject_code: "algebra",
+
+    // Шлях до уроку, який ми створили
+    link: "algebra/8/parabola.html",
+
+    // Картинка для меню (та сама, що і в уроці)
+    image: "images/parabola_task.png",
+    category: "lesson",
   },
 ];
