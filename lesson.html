@@ -6,12 +6,12 @@
     <title>Шаблон Уроку | Dasha Tutor</title>
     <style>
       :root {
-        --primary: #4a90e2; /* Основний синій колір */
-        --success: #28a745; /* Зелений (успіх) */
-        --error: #dc3545; /* Червоний (помилка) */
-        --bg: #f4f7f6; /* Фон сторінки */
-        --card: #ffffff; /* Фон карток */
-        --text: #333; /* Колір тексту */
+        --primary: #4a90e2;
+        --success: #28a745;
+        --error: #dc3545;
+        --bg: #f4f7f6;
+        --card: #ffffff;
+        --text: #333;
       }
 
       body {
@@ -22,10 +22,10 @@
         display: flex;
         flex-direction: column;
         height: 100vh;
-        overflow: hidden; /* Заборона прокрутки всієї сторінки */
+        overflow: hidden;
       }
 
-      /* --- ХЕДЕР (ВЕРХНЯ ПАНЕЛЬ) --- */
+      /* --- ХЕДЕР --- */
       header {
         background: var(--card);
         padding: 0 20px;
@@ -71,11 +71,11 @@
         display: flex;
         flex-direction: column;
         flex-grow: 1;
-        height: calc(100vh - 110px); /* Висота мінус хедер і футер */
+        height: calc(100vh - 110px);
         overflow: hidden;
       }
 
-      /* --- ЕКРАН РЕЗУЛЬТАТІВ --- */
+      /* Екран результатів */
       .results-view {
         padding: 30px;
         overflow-y: auto;
@@ -137,7 +137,7 @@
 
       /* --- СЛАЙД ЗАВДАННЯ --- */
       .image-area {
-        flex: 0 0 40%; /* Картинка займає 40% висоти */
+        flex: 0 0 40%;
         background: #eef2f5;
         display: flex;
         justify-content: center;
@@ -206,7 +206,6 @@
         min-width: 120px;
       }
 
-      /* ЕЛЕМЕНТИ ВВОДУ */
       input[type="text"] {
         padding: 6px;
         border: 2px solid #ccc;
@@ -259,7 +258,7 @@
         border-color: var(--error);
       }
 
-      /* --- ФУТЕР (НАВІГАЦІЯ) --- */
+      /* --- ФУТЕР --- */
       footer {
         height: 60px;
         background: var(--card);
@@ -285,7 +284,6 @@
         cursor: not-allowed;
       }
 
-      /* Адаптивність для малих екранів */
       @media (max-height: 600px) {
         .image-area {
           flex: 0 0 30%;
