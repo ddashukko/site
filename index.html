@@ -3,31 +3,26 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Бібліотека уроків Dasha Tutor Library</title>
+    <title>Dasha Tutor Library</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
+    <h1>📚 Бібліотека уроків</h1>
+    <p>Оберіть клас для фільтрації матеріалів:</p>
+
     <div class="controls">
-      <h1>Бібліотека уроків</h1>
-      <p>Оберіть потрібний клас:</p>
-
-      <button onclick="renderLessons('all')">Всі класи</button>
-      <button onclick="renderLessons(2)">2 клас</button>
-      <button onclick="renderLessons(5)">5 клас</button>
-      <button onclick="renderLessons(8)">8 клас</button>
-
-      <a
-        href="admin.html"
-        class="link"
-        style="margin-left: 15px; font-weight: normal"
-        >🛠 Admin</a
-      >
+      <button class="filter-btn" onclick="renderLessons('all')">
+        Всі класи
+      </button>
+      <button class="filter-btn" onclick="renderLessons(2)">2 клас</button>
+      <button class="filter-btn" onclick="renderLessons(5)">5 клас</button>
+      <button class="filter-btn" onclick="renderLessons(8)">8 клас</button>
+      <button class="filter-btn" onclick="renderLessons(9)">9 клас</button>
     </div>
 
     <div id="container"></div>
 
     <script src="data.js"></script>
-
     <script src="script.js"></script>
   </body>
 </html>
