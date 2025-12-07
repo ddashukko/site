@@ -37,7 +37,7 @@ window.lessonsData = [
     subject_code: "algebra",
 
     // Шлях до уроку, який ми створили
-    link: "algebra/8/parabola.html",
+    link: "algebra/8/shehx.html",
 
     // Картинка для меню (та сама, що і в уроці)
     image: "images/parabola_task.png",
