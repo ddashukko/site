@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Мій Репетиторський Сайт</title>
+    <style>
+      /* CSS: Зовнішній вигляд */
+      body {
+        font-family: sans-serif;
+        background-color: #f0f2f5;
+        padding: 20px;
+      }
+
+      /* Стиль кнопок */
+      .controls {
+        margin-bottom: 20px;
+        text-align: center;
+      }
+      button {
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        background: white;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin: 5px;
+      }
+      button:hover {
+        background-color: #e6f7ff;
+        border-color: #1890ff;
+      }
+
+      /* Сітка для карток */
+      #container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+      }
+
+      /* Вигляд однієї картки */
+      .card {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        border-left: 5px solid #1890ff;
+      }
+      .card h3 {
+        margin-top: 0;
+        color: #333;
+      }
+      .tag {
+        color: #666;
+        font-size: 0.9em;
+        background: #eee;
+        padding: 2px 8px;
+        border-radius: 4px;
+      }
+      .link {
+        display: block;
+        margin-top: 15px;
+        color: #1890ff;
+        text-decoration: none;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="controls">
+      <h1>Бібліотека уроків</h1>
+      <p>Спробуй натиснути на кнопки:</p>
+      <button onclick="renderLessons('all')">Всі класи</button>
+      <button onclick="renderLessons(1)">1 клас</button>
+      <button onclick="renderLessons(5)">5 клас</button>
+      <button onclick="renderLessons(9)">9 клас</button>
+    </div>
+
+    <div id="container"></div>
+
+    <script>
+      // JAVASCRIPT: Логіка і Дані
+
+      // 1. Твоя "База Даних" (масив об'єктів)
+      const database = [
+        {
+          id: 1,
+          title: "Математика: Додавання",
+          grade: 1,
+          topic: "Арифметика",
+          link: "#",
+        },
+        {
+          id: 2,
+          title: "Англійська: Animals",
+          grade: 1,
+          topic: "Слова",
+          link: "#",
+        },
+        {
+          id: 3,
+          title: "Математика: Дроби",
+          grade: 5,
+          topic: "Арифметика",
+          link: "#",
+        },
+        {
+          id: 4,
+          title: "Історія: Єгипет",
+          grade: 5,
+          topic: "Давній світ",
+          link: "#",
+        },
+        {
+          id: 5,
+          title: "Алгебра: Функції",
+          grade: 9,
+          topic: "Графіки",
+          link: "#",
+        },
+        {
+          id: 6,
+          title: "Геометрія: Вектори",
+          grade: 9,
+          topic: "Планіметрія",
+          link: "#",
+        },
+      ];
+
+      // 2. Функція, яка малює картки на екрані
+      function renderLessons(selectedGrade) {
+        const container = document.getElementById("container");
+        container.innerHTML = ""; // Очищаємо екран перед малюванням
+
+        // Фільтруємо: якщо вибрано 'all', беремо все, інакше - тільки співпадіння
+        const filteredData =
+          selectedGrade === "all"
+            ? database
+            : database.filter((item) => item.grade === selectedGrade);
+
+        // Цикл: для кожного уроку створюємо HTML
+        filteredData.forEach((lesson) => {
+          // Створюємо div
+          const card = document.createElement("div");
+          card.className = "card";
+
+          // Наповнюємо його даними з об'єкта
+          card.innerHTML = `
+                    <h3>${lesson.title}</h3>
+                    <span class="tag">${lesson.grade} клас</span>
+                    <span class="tag">${lesson.topic}</span>
+                    <a href="${lesson.link}" class="link">Завантажити матеріал →</a>
+                `;
+
+          // Додаємо на сторінку
+          container.appendChild(card);
+        });
+      }
+
+      // Запускаємо один раз при старті, щоб показати всі уроки
+      renderLessons("all");
+    </script>
+  </body>
+</html>
