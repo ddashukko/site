@@ -1,6 +1,6 @@
 // data.js
 
-const lessonsData = [
+window.lessonsData = [
   {
     id: 1,
     title: "Прості рівняння (без переходу)",
