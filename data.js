@@ -48,6 +48,15 @@ window.lessonsData = [
     category: "lesson",
   },
   {
+    id: 300,
+    title: "Геометрія: Тренажер Логічного Мислення",
+    grade: 8,
+    topic: "Геометрія",
+    link: "geometry/8/Геометрія - пояснення логіки доведень.html",
+    subject_code: "geometry",
+    category: "lesson",
+  }
+  {
     id: 777,
     title: "Соніна Маринка учить дроби",
     grade: 6,
