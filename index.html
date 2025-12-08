@@ -8,29 +8,34 @@
   </head>
   <body>
     <h1>Бібліотека уроків</h1>
-    <p>Оберіть клас для фільтрації матеріалів:</p>
 
     <div class="controls">
-      <button class="filter-btn" onclick="renderLessons('all')">
-        Всі класи
-      </button>
-      <button class="filter-btn" onclick="renderLessons(1)">1 клас</button>
-      <button class="filter-btn" onclick="renderLessons(2)">2 клас</button>
-      <button class="filter-btn" onclick="renderLessons(3)">3 клас</button>
-      <button class="filter-btn" onclick="renderLessons(4)">4 клас</button>
-      <button class="filter-btn" onclick="renderLessons(5)">5 клас</button>
-      <button class="filter-btn" onclick="renderLessons(6)">6 клас</button>
-      <button class="filter-btn" onclick="renderLessons(7)">7 клас</button>
-      <button class="filter-btn" onclick="renderLessons(8)">8 клас</button>
-      <button class="filter-btn" onclick="renderLessons(9)">9 клас</button>
+      <div class="filter-group">
+        <label for="grade-filter">Оберіть клас:</label>
+        <select id="grade-filter" onchange="renderLessons()">
+          <option value="all">Всі класи</option>
+          <option value="1">1 клас</option>
+          <option value="2">2 клас</option>
+          <option value="3">3 клас</option>
+          <option value="4">4 клас</option>
+          <option value="5">5 клас</option>
+          <option value="6">6 клас</option>
+          <option value="7">7 клас</option>
+          <option value="8">8 клас</option>
+          <option value="9">9 клас</option>
+          <option value="10">10 клас</option>
+          <option value="11">11 клас</option>
+        </select>
+      </div>
 
-      <p style="margin-top: 15px">Фільтрувати за типом:</p>
-      <button class="filter-btn" onclick="renderLessons('lesson')">
-        📖 Тільки Уроки
-      </button>
-      <button class="filter-btn" onclick="renderLessons('test')">
-        📝 Тільки Тести
-      </button>
+      <div class="filter-group">
+        <label for="category-filter">Тип матеріалу:</label>
+        <select id="category-filter" onchange="renderLessons()">
+          <option value="all">Всі матеріали</option>
+          <option value="lesson">📖 Уроки</option>
+          <option value="test">📝 Тести</option>
+        </select>
+      </div>
     </div>
 
     <div id="container"></div>
