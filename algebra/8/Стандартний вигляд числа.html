@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Інтерактивний урок | Dasha Tutor</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
+    />
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"
+    ></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    ></script>
+
+    <style>
+      :root {
+        --primary: #2563eb;
+        --primary-light: #eff6ff;
+        --success: #16a34a;
+        --error: #dc2626;
+        --bg: #f8fafc;
+        --card: #ffffff;
+        --text: #1e293b;
+        --border: #e2e8f0;
+        --info-bg: #fff7ed;
+        --info-border: #fdba74;
+        --info-title: #c2410c;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
+        margin: 0;
+        padding: 0;
+      }
+
+      header {
+        background: var(--card);
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+      }
+
+      .header-title {
+        font-weight: 700;
+        font-size: 1.2rem;
+        color: var(--primary);
+      }
+
+      .stats-container {
+        display: flex;
+        gap: 15px;
+        font-weight: 600;
+      }
+      .stat-correct {
+        color: var(--success);
+      }
+      .stat-wrong {
+        color: var(--error);
+      }
+
+      .main-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        padding-bottom: 100px;
+      }
+
+      .exercise-block {
+        background: var(--card);
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        margin-bottom: 30px;
+        overflow: hidden;
+      }
+
+      .exercise-header {
+        background: var(--primary-light);
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .exercise-title {
+        margin: 0;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--primary);
+      }
+
+      .exercise-desc {
+        margin: 5px 0 0 0;
+        font-size: 0.9rem;
+        color: #64748b;
+      }
+
+      /* Info Block Styles */
+      .exercise-block.info-block {
+        border-color: var(--info-border);
+        background-color: var(--info-bg);
+      }
+      .exercise-block.info-block .exercise-header {
+        background-color: #ffedd5;
+        border-bottom-color: var(--info-border);
+      }
+      .exercise-block.info-block .exercise-title {
+        color: var(--info-title);
+      }
+      .info-content {
+        padding: 20px;
+        font-size: 1rem;
+        line-height: 1.6;
+        color: #431407;
+      }
+      .info-content ul {
+        padding-left: 20px;
+        margin: 0;
+      }
+      .info-content li {
+        margin-bottom: 10px;
+      }
+
+      .task-list {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .task-row {
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .task-row:last-child {
+        border-bottom: none;
+      }
+
+      /* Choice styles */
+      .task-content {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .task-number {
+        font-weight: 600;
+        color: #94a3b8;
+        min-width: 25px;
+      }
+      .task-question {
+        font-size: 1.1rem;
+        font-weight: 500;
+      }
+
+      .options-container {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 10px;
+        overflow-x: auto;
+        padding-bottom: 5px;
+      }
+
+      .option-btn {
+        flex: 1;
+        background: white;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        padding: 10px 15px;
+        font-size: 1rem;
+        cursor: pointer;
+        min-width: 70px;
+        white-space: nowrap;
+        text-align: center;
+        transition: all 0.2s;
+      }
+      .option-btn:hover:not(:disabled) {
+        border-color: var(--primary);
+        color: var(--primary);
+        background: var(--primary-light);
+      }
+      .option-btn.selected-correct {
+        background: var(--success);
+        color: white;
+        border-color: var(--success);
+      }
+      .option-btn.selected-wrong {
+        background: var(--error);
+        color: white;
+        border-color: var(--error);
+      }
+
+      /* Self-check styles */
+      .task-row.self-check-row {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+      }
+
+      .self-check-content {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-grow: 1;
+      }
+
+      .btn-reveal {
+        padding: 8px 16px;
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        white-space: nowrap;
+        font-weight: 600;
+        transition: background 0.2s;
+      }
+      .btn-reveal:hover {
+        background: #1d4ed8;
+      }
+
+      .answer-display {
+        color: var(--success);
+        font-weight: 700;
+        font-size: 1.1rem;
+        padding: 5px 10px;
+        background: #f0fdf4;
+        border-radius: 6px;
+        border: 1px solid #bbf7d0;
+        animation: fadeIn 0.3s ease-in;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-5px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .solved-correct {
+        background-color: #f0fdf4;
+      }
+      .solved-wrong {
+        background-color: #fef2f2;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="header-title">Алгебра 8 клас: Стандартний вигляд</div>
+      <div class="stats-container">
+        <span class="stat-correct">✅ <span id="val-correct">0</span></span>
+        <span class="stat-wrong">❌ <span id="val-wrong">0</span></span>
+      </div>
+    </header>
+
+    <div class="main-container" id="quiz-root"></div>
+
+    <script>
+      /* types: 
+         - "info": картка з правилами (без завдань)
+         - "choice": варіанти відповіді
+         - "self-check": кнопка "Перевірити"
+      */
+      const exercises = [
+        /* ----- КАРТКА З ПРАВИЛАМИ ----- */
+        {
+          id: "rules",
+          type: "info",
+          title: "📚 Довідничок: Основні правила",
+          desc: "Ознайомся перед початком роботи 👇",
+          content: `
+            <ul style="list-style: none; padding: 0; margin: 0;">
+              <li style="margin-bottom: 12px; border-bottom: 1px dashed #fdba74; padding-bottom: 10px;">
+                <strong>1. Стандартний вигляд числа:</strong><br>
+                $a \\cdot 10^n$, де $1 \\le a < 10$ (ціла частина — одна цифра $\\ne 0$), а $n$ — ціле число.
+              </li>
+              <li style="margin-bottom: 12px; border-bottom: 1px dashed #fdba74; padding-bottom: 10px;">
+                <strong>2. Як переносити кому:</strong><br>
+                ➡ Вправо на 1 знак — степінь зменшується ($-1$).<br>
+                ⬅ Вліво на 1 знак — степінь збільшується ($+1$).
+              </li>
+              <li style="margin-bottom: 12px;">
+                <strong>3. Дії зі степенями $10^n$:</strong><br>
+                Множення: $10^n \\cdot 10^m = 10^{n+m}$ (додаємо)<br>
+                Ділення: $10^n : 10^m = 10^{n-m}$ (віднімаємо)<br>
+                Приклад множення чисел: $(a \\cdot 10^n) \\cdot (b \\cdot 10^m) = (ab) \\cdot 10^{n+m}$
+              </li>
+            </ul>
+          `,
+        },
+        /* ------------------------------- */
+        {
+          id: "11.1",
+          title: "11.1. (Усно) Визначення стандартного вигляду",
+          desc: "Чи записано число у стандартному вигляді?",
+          type: "choice",
+          tasks: [
+            { id: "1)", q: "$0.85$", a: "Ні", opts: ["Так", "Ні"] },
+            { id: "2)", q: "$3.4 \\cdot 10^0$", a: "Так", opts: ["Так", "Ні"] },
+            {
+              id: "3)",
+              q: "$12.5 \\cdot 10^{-4}$",
+              a: "Ні",
+              opts: ["Так", "Ні"],
+            },
+            {
+              id: "4)",
+              q: "$5.01 \\cdot 10^{-15}$",
+              a: "Так",
+              opts: ["Так", "Ні"],
+            },
+            { id: "5)", q: "$25 \\cdot 10^3$", a: "Ні", opts: ["Так", "Ні"] },
+            {
+              id: "6)",
+              q: "$1.05 \\cdot 10^{-10}$",
+              a: "Так",
+              opts: ["Так", "Ні"],
+            },
+            {
+              id: "7)",
+              q: "$1.9 \\cdot 5^{-2}$",
+              a: "Ні",
+              opts: ["Так", "Ні"],
+            },
+            {
+              id: "8)",
+              q: "$10.01 \\cdot 10^5$",
+              a: "Ні",
+              opts: ["Так", "Ні"],
+            },
+          ],
+        },
+        {
+          id: "11.3",
+          title: "11.3. (Усно) Порядок числа",
+          desc: "Назвіть порядок числа:",
+          type: "choice",
+          tasks: [
+            {
+              id: "1)",
+              q: "$2.5 \\cdot 10^4$",
+              a: "4",
+              opts: ["2", "4", "2.5"],
+            },
+            {
+              id: "2)",
+              q: "$3.07 \\cdot 10^{-12}$",
+              a: "-12",
+              opts: ["-12", "12", "3"],
+            },
+            {
+              id: "3)",
+              q: "$8.9 \\cdot 10^1$",
+              a: "1",
+              opts: ["0", "1", "8.9"],
+            },
+            { id: "4)", q: "$5.6$", a: "0", opts: ["1", "0", "5"] },
+          ],
+        },
+        {
+          id: "11.5",
+          title: "11.5. Запис у стандартному вигляді",
+          desc: "Оберіть правильний запис числа:",
+          type: "choice",
+          tasks: [
+            {
+              id: "1)",
+              q: "$400\\,000$",
+              a: "$4 \\cdot 10^5$",
+              opts: ["$4 \\cdot 10^4$", "$4 \\cdot 10^5$", "$40 \\cdot 10^4$"],
+            },
+            {
+              id: "2)",
+              q: "$7200$",
+              a: "$7.2 \\cdot 10^3$",
+              opts: [
+                "$72 \\cdot 10^2$",
+                "$7.2 \\cdot 10^3$",
+                "$0.72 \\cdot 10^4$",
+              ],
+            },
+            {
+              id: "3)",
+              q: "$30\\,400$",
+              a: "$3.04 \\cdot 10^4$",
+              opts: [
+                "$3.04 \\cdot 10^4$",
+                "$30.4 \\cdot 10^3$",
+                "$3.4 \\cdot 10^4$",
+              ],
+            },
+            {
+              id: "4)",
+              q: "$915$",
+              a: "$9.15 \\cdot 10^2$",
+              opts: [
+                "$9.15 \\cdot 10^1$",
+                "$9.15 \\cdot 10^2$",
+                "$91.5 \\cdot 10^1$",
+              ],
+            },
+            {
+              id: "5)",
+              q: "$205.4$",
+              a: "$2.054 \\cdot 10^2$",
+              opts: [
+                "$2.054 \\cdot 10^2$",
+                "$20.54 \\cdot 10^1$",
+                "$2.054 \\cdot 10^3$",
+              ],
+            },
+            {
+              id: "6)",
+              q: "$48.05$",
+              a: "$4.805 \\cdot 10^1$",
+              opts: [
+                "$4.805 \\cdot 10^1$",
+                "$4.805 \\cdot 10^2$",
+                "$48.05 \\cdot 10^0$",
+              ],
+            },
+            {
+              id: "7)",
+              q: "$5100.2$",
+              a: "$5.1002 \\cdot 10^3$",
+              opts: [
+                "$5.1 \\cdot 10^3$",
+                "$5.1002 \\cdot 10^3$",
+                "$5.1002 \\cdot 10^2$",
+              ],
+            },
+            {
+              id: "8)",
+              q: "$800.5$",
+              a: "$8.005 \\cdot 10^2$",
+              opts: [
+                "$8.005 \\cdot 10^3$",
+                "$8.005 \\cdot 10^2$",
+                "$8.5 \\cdot 10^2$",
+              ],
+            },
+            {
+              id: "9)",
+              q: "$0.52$",
+              a: "$5.2 \\cdot 10^{-1}$",
+              opts: [
+                "$5.2 \\cdot 10^1$",
+                "$5.2 \\cdot 10^{-1}$",
+                "$52 \\cdot 10^{-2}$",
+              ],
+            },
+            {
+              id: "10)",
+              q: "$0.0038$",
+              a: "$3.8 \\cdot 10^{-3}$",
+              opts: [
+                "$3.8 \\cdot 10^{-2}$",
+                "$3.8 \\cdot 10^{-3}$",
+                "$3.8 \\cdot 10^{-4}$",
+              ],
+            },
+            {
+              id: "11)",
+              q: "$0.000009$",
+              a: "$9 \\cdot 10^{-6}$",
+              opts: [
+                "$9 \\cdot 10^{-5}$",
+                "$9 \\cdot 10^{-6}$",
+                "$0.9 \\cdot 10^{-5}$",
+              ],
+            },
+            {
+              id: "12)",
+              q: "$0.020504$",
+              a: "$2.0504 \\cdot 10^{-2}$",
+              opts: [
+                "$2.0504 \\cdot 10^{-2}$",
+                "$2.05 \\cdot 10^{-2}$",
+                "$2.0504 \\cdot 10^{-3}$",
+              ],
+            },
+          ],
+        },
+        /* Починаючи з 11.8 - режим "self-check" (лише кнопка перевірки) */
+        {
+          id: "11.8",
+          title: "11.8. Корекція вигляду",
+          desc: "Усно переведіть у стандартний вигляд і перевірте себе:",
+          type: "self-check",
+          tasks: [
+            { id: "1)", q: "$35 \\cdot 10^4$", a: "$3.5 \\cdot 10^5$" },
+            { id: "2)", q: "$512 \\cdot 10^{-4}$", a: "$5.12 \\cdot 10^{-2}$" },
+            { id: "3)", q: "$0.00045 \\cdot 10^6$", a: "$4.5 \\cdot 10^2$" },
+            {
+              id: "4)",
+              q: "$0.0089 \\cdot 10^{-3}$",
+              a: "$8.9 \\cdot 10^{-6}$",
+            },
+          ],
+        },
+        {
+          id: "11.9",
+          title: "11.9. Зі стандартного у звичайний",
+          desc: "Запишіть число у вигляді десяткового дробу або цілого числа:",
+          type: "self-check",
+          tasks: [
+            { id: "1)", q: "$1.6 \\cdot 10^3$", a: "$1600$" },
+            { id: "2)", q: "$5.7 \\cdot 10^5$", a: "$570\\,000$" },
+            { id: "3)", q: "$2.1 \\cdot 10^{-2}$", a: "$0.021$" },
+            { id: "4)", q: "$8 \\cdot 10^4$", a: "$80\\,000$" },
+            { id: "5)", q: "$4.05 \\cdot 10^{-3}$", a: "$0.00405$" },
+            { id: "6)", q: "$1.23 \\cdot 10^2$", a: "$123$" },
+            { id: "7)", q: "$6.58 \\cdot 10^{-1}$", a: "$0.658$" },
+            { id: "8)", q: "$9.02 \\cdot 10^6$", a: "$9\\,020\\,000$" },
+            { id: "9)", q: "$3.3 \\cdot 10^0$", a: "$3.3$" },
+            { id: "10)", q: "$7.15 \\cdot 10^{-5}$", a: "$0.0000715$" },
+            { id: "11)", q: "$5.004 \\cdot 10^4$", a: "$50\\,004$" },
+            { id: "12)", q: "$1.01 \\cdot 10^{-4}$", a: "$0.000101$" },
+          ],
+        },
+        {
+          id: "11.11",
+          title: "11.11. Округлення та запис",
+          desc: "Округліть до сотень і запишіть стандартно:",
+          type: "self-check",
+          tasks: [
+            { id: "1)", q: "$452\\,839$", a: "$4.53 \\cdot 10^5$" },
+            { id: "2)", q: "$25\\,419$", a: "$2.54 \\cdot 10^4$" },
+            { id: "3)", q: "$5286.4$", a: "$5.3 \\cdot 10^3$" },
+            { id: "4)", q: "$2000.45$", a: "$2.0 \\cdot 10^3$" },
+          ],
+        },
+        {
+          id: "11.13",
+          title: "11.13. Множення",
+          desc: "Виконайте множення:",
+          type: "self-check",
+          tasks: [
+            {
+              id: "1)",
+              q: "$(2.5 \\cdot 10^4) \\cdot (4 \\cdot 10^{-7})$",
+              a: "$1 \\cdot 10^{-2}$",
+            },
+            {
+              id: "2)",
+              q: "$(3.2 \\cdot 10^{-4}) \\cdot (5 \\cdot 10^{-3})$",
+              a: "$1.6 \\cdot 10^{-6}$",
+            },
+          ],
+        },
+        {
+          id: "11.15",
+          title: "11.15. Ділення",
+          desc: "Виконайте ділення:",
+          type: "self-check",
+          tasks: [
+            {
+              id: "1)",
+              q: "$(8.4 \\cdot 10^6) : (2.1 \\cdot 10^2)$",
+              a: "$4 \\cdot 10^4$",
+            },
+            {
+              id: "2)",
+              q: "$(1.8 \\cdot 10^4) : (3.6 \\cdot 10^{-3})$",
+              a: "$5 \\cdot 10^6$",
+            },
+          ],
+        },
+        {
+          id: "11.17",
+          title: "11.17. Порівняння",
+          desc: "Який знак треба поставити?",
+          type: "self-check",
+          tasks: [
+            { id: "1)", q: "$3.4 \\cdot 10^6$ ... $5.2 \\cdot 10^6$", a: "<" },
+            {
+              id: "2)",
+              q: "$2.1 \\cdot 10^{-3}$ ... $2.09 \\cdot 10^{-3}$",
+              a: ">",
+            },
+          ],
+        },
+        {
+          id: "11.19",
+          title: "11.19. Додавання і віднімання",
+          desc: "Обчисліть:",
+          type: "self-check",
+          tasks: [
+            {
+              id: "1)",
+              q: "$4.5 \\cdot 10^4 + 2.3 \\cdot 10^4$",
+              a: "$6.8 \\cdot 10^4$",
+            },
+            {
+              id: "2)",
+              q: "$5.9 \\cdot 10^{-12} - 2.4 \\cdot 10^{-12}$",
+              a: "$3.5 \\cdot 10^{-12}$",
+            },
+          ],
+        },
+        {
+          id: "11.21",
+          title: "11.21. Порівняння (різний порядок)",
+          desc: "Який знак треба поставити?",
+          type: "self-check",
+          tasks: [
+            { id: "1)", q: "$4.1 \\cdot 10^7$ ... $1.2 \\cdot 10^8$", a: "<" },
+            {
+              id: "2)",
+              q: "$2.03 \\cdot 10^{-6}$ ... $2.03 \\cdot 10^{-7}$",
+              a: ">",
+            },
+          ],
+        },
+        {
+          id: "11.23",
+          title: "11.23. Мішані дії",
+          desc: "Обчисліть:",
+          type: "self-check",
+          tasks: [
+            {
+              id: "1)",
+              q: "$1.5 \\cdot 10^3 + 2.4 \\cdot 10^4$",
+              a: "$2.55 \\cdot 10^4$",
+            },
+            {
+              id: "2)",
+              q: "$3.15 \\cdot 10^{-1} - 5.2 \\cdot 10^{-2}$",
+              a: "$2.63 \\cdot 10^{-1}$",
+            },
+          ],
+        },
+        {
+          id: "11.27",
+          title: "11.27. Фізичні величини",
+          desc: "Виразіть у нових одиницях:",
+          type: "self-check",
+          tasks: [
+            {
+              id: "1)",
+              q: "$5.4 \\cdot 10^5$ т у грамах",
+              a: "$5.4 \\cdot 10^{11}$ г",
+            },
+            {
+              id: "2)",
+              q: "$2.5 \\cdot 10^{-2}$ г у тоннах",
+              a: "$2.5 \\cdot 10^{-8}$ т",
+            },
+            {
+              id: "3)",
+              q: "$3.2 \\cdot 10^{-3}$ км у см",
+              a: "$3.2 \\cdot 10^2$ см",
+            },
+            {
+              id: "4)",
+              q: "$6.1 \\cdot 10^6$ см у метрах",
+              a: "$6.1 \\cdot 10^4$ м",
+            },
+          ],
+        },
+        {
+          id: "11.29",
+          title: "11.29. Бактерії",
+          desc: "Задача:",
+          type: "self-check",
+          tasks: [
+            {
+              id: "1)",
+              q: "Бактерій через 10 діб:",
+              a: "$1.1 \\cdot 10^{12}$",
+            },
+          ],
+        },
+        {
+          id: "11.30",
+          title: "11.30. Порядок числа",
+          desc: "Якщо порядок $a$ дорівнює $-18$, то порядок виразу:",
+          type: "self-check",
+          tasks: [
+            { id: "1)", q: "$100a$", a: "-16" },
+            { id: "2)", q: "$0.00001a$", a: "-23" },
+            { id: "3)", q: "$a \\cdot 10^7$", a: "-11" },
+            { id: "4)", q: "$\\frac{a}{10^{-3}}$", a: "-15" },
+          ],
+        },
+      ];
+
+      /* ======================================================== */
+
+      let totalCorrect = 0;
+      let totalWrong = 0;
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const root = document.getElementById("quiz-root");
+
+        exercises.forEach((ex) => {
+          const exBlock = document.createElement("div");
+          exBlock.className = "exercise-block";
+
+          if (ex.type === "info") {
+            exBlock.classList.add("info-block");
+          }
+
+          let headerHTML = `
+            <div class="exercise-header">
+              <h3 class="exercise-title">${ex.title}</h3>
+              <p class="exercise-desc">${ex.desc}</p>
+            </div>
+          `;
+          exBlock.innerHTML = headerHTML;
+
+          if (ex.type === "info") {
+            const contentDiv = document.createElement("div");
+            contentDiv.className = "info-content";
+            contentDiv.innerHTML = ex.content;
+            exBlock.appendChild(contentDiv);
+          } else {
+            const taskList = document.createElement("div");
+            taskList.className = "task-list";
+
+            ex.tasks.forEach((task) => {
+              const row = document.createElement("div");
+
+              if (ex.type === "self-check") {
+                row.className = "task-row self-check-row";
+                /* FIX: Double escape backslashes for JS string in HTML attribute */
+                const safeAns = task.a
+                  .replace(/\\/g, "\\\\")
+                  .replace(/"/g, "&quot;");
+                row.innerHTML = `
+                  <div class="self-check-content">
+                    <span class="task-number">${task.id}</span>
+                    <span class="task-question">${task.q}</span>
+                  </div>
+                  <button class="btn-reveal" onclick="revealAnswer(this, '${safeAns}')">Перевірити</button>
+                `;
+              } else {
+                row.className = "task-row";
+                let contentHTML = `
+                  <div class="task-content">
+                    <div class="task-number">${task.id}</div>
+                    <div class="task-question">${task.q}</div>
+                  </div>
+                `;
+
+                let actionHTML = `<div class="options-container">`;
+                task.opts.forEach((opt) => {
+                  /* FIX: Double escape here too */
+                  const safeOpt = opt
+                    .replace(/\\/g, "\\\\")
+                    .replace(/"/g, "&quot;");
+                  const safeAns = task.a
+                    .replace(/\\/g, "\\\\")
+                    .replace(/"/g, "&quot;");
+                  actionHTML += `<button class="option-btn" onclick="checkOpt(this, '${safeOpt}', '${safeAns}')">${opt}</button>`;
+                });
+                actionHTML += `</div>`;
+
+                row.innerHTML =
+                  contentHTML +
+                  `<div style="margin-top:10px;">${actionHTML}</div>`;
+              }
+
+              taskList.appendChild(row);
+            });
+            exBlock.appendChild(taskList);
+          }
+
+          root.appendChild(exBlock);
+        });
+
+        renderMathInElement(document.body, {
+          delimiters: [{ left: "$", right: "$", display: false }],
+        });
+      });
+
+      function checkOpt(btn, val, ans) {
+        const row = btn.closest(".task-row");
+        if (row.classList.contains("done")) return;
+        row.classList.add("done");
+
+        const v = val.replace(/\\/g, "");
+        const a = ans.replace(/\\/g, "");
+
+        row.querySelectorAll(".option-btn").forEach((b) => (b.disabled = true));
+
+        if (v === a) {
+          btn.classList.add("selected-correct");
+          row.classList.add("solved-correct");
+          totalCorrect++;
+        } else {
+          btn.classList.add("selected-wrong");
+          row.classList.add("solved-wrong");
+          totalWrong++;
+        }
+        updateStats();
+      }
+
+      function revealAnswer(btn, answer) {
+        const ansSpan = document.createElement("span");
+        ansSpan.className = "answer-display";
+        ansSpan.innerHTML = answer;
+        const parent = btn.parentNode;
+        parent.replaceChild(ansSpan, btn);
+        renderMathInElement(ansSpan, {
+          delimiters: [{ left: "$", right: "$", display: false }],
+        });
+      }
+
+      function updateStats() {
+        document.getElementById("val-correct").innerText = totalCorrect;
+        document.getElementById("val-wrong").innerText = totalWrong;
+      }
+    </script>
+  </body>
+</html>
