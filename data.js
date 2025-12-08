@@ -55,7 +55,7 @@ window.lessonsData = [
     link: "geometry/8/Геометрія - пояснення логіки доведень.html",
     subject_code: "geometry",
     category: "lesson",
-  }
+  },
   {
     id: 777,
     title: "Соніна Маринка учить дроби",
