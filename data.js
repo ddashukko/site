@@ -78,7 +78,7 @@ window.lessonsData = [
     title: "§11. Стандартний вигляд числа",
     grade: 8,
     topic: "Алгебра",
-    link: "algebra/8/lesson-powers.html",
+    link: "algebra/8/Стандартний вигляд числа.html",
     subject_code: "algebra",
     category: "lesson",
   },
