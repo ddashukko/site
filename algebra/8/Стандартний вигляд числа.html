@@ -244,6 +244,34 @@
         animation: fadeIn 0.3s ease-in;
       }
 
+      /* ========== НОВІ СТИЛІ ДЛЯ КНОПКИ ТЕСТУ ========== */
+      .cta-container {
+        text-align: center;
+        margin: 50px 0;
+        animation: fadeIn 0.5s ease-in;
+      }
+
+      .cta-btn {
+        background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%);
+        color: white;
+        text-decoration: none;
+        padding: 16px 40px;
+        border-radius: 50px;
+        font-size: 1.3rem;
+        font-weight: 800;
+        box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4);
+        transition: transform 0.2s, box-shadow 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .cta-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 35px rgba(59, 130, 246, 0.5);
+      }
+      /* ================================================= */
+
       @keyframes fadeIn {
         from {
           opacity: 0;
@@ -276,9 +304,10 @@
 
     <script>
       /* types: 
-         - "info": картка з правилами (без завдань)
-         - "choice": варіанти відповіді
-         - "self-check": кнопка "Перевірити"
+          - "info": картка з правилами
+          - "choice": варіанти відповіді
+          - "self-check": кнопка "Перевірити"
+          - "call-to-action": велика кнопка посилання
       */
       const exercises = [
         /* ----- КАРТКА З ПРАВИЛАМИ ----- */
@@ -537,6 +566,17 @@
             { id: "12)", q: "$1.01 \\cdot 10^{-4}$", a: "$0.000101$" },
           ],
         },
+
+        /* ============================================== */
+        /* !!! НОВИЙ БЛОК: КНОПКА НА ТЕСТУВАННЯ !!!       */
+        {
+          type: "call-to-action",
+          /* ЗАМІНИ test.html НА СВОЄ ПОСИЛАННЯ (наприклад: test.html) */
+          url: "Стандартний вигляд числа Тест1.html",
+          text: "📝 Пройти тестування",
+        },
+        /* ============================================== */
+
         {
           id: "11.11",
           title: "11.11. Округлення та запис",
@@ -700,6 +740,20 @@
         const root = document.getElementById("quiz-root");
 
         exercises.forEach((ex) => {
+          /* ПЕРЕВІРКА НА ТИП КНОПКИ-ПОСИЛАННЯ */
+          if (ex.type === "call-to-action") {
+            const container = document.createElement("div");
+            container.className = "cta-container";
+            container.innerHTML = `
+                <a href="${ex.url}" target="_blank" class="cta-btn">
+                  ${ex.text}
+                </a>
+            `;
+            root.appendChild(container);
+            return; // Пропускаємо стандартну генерацію блоку
+          }
+
+          /* СТАНДАРТНА ГЕНЕРАЦІЯ БЛОКІВ */
           const exBlock = document.createElement("div");
           exBlock.className = "exercise-block";
 
