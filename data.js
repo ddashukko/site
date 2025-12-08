@@ -11,6 +11,15 @@ window.lessonsData = [
     category: "test",
   },
   {
+    id: 2,
+    title: "Стандартний вигляд числа",
+    grade: 8,
+    topic: "Алгебра",
+    link: "algebra/8/Стандартний вигляд числа Тест1.html", // Локальний шлях
+    subject_code: "algebra",
+    category: "test",
+  },
+  {
     id: 4,
     title: "Степінь з від'ємним показником. Частина 1",
     grade: 8,
