@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mathematik Klasse 5-6: Rechenausdrücke und Terme</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
+    />
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"
+    ></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    ></script>
+
+    <style>
+      :root {
+        --primary: #2563eb;
+        --primary-light: #eff6ff;
+        --success: #16a34a;
+        --error: #dc2626;
+        --bg: #f8fafc;
+        --card: #ffffff;
+        --text: #1e293b;
+        --border: #e2e8f0;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
+        margin: 0;
+        padding: 0;
+      }
+
+      header {
+        background: var(--card);
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+      }
+
+      .header-title {
+        font-weight: 700;
+        font-size: 1.2rem;
+        color: var(--primary);
+      }
+
+      .stats-container {
+        display: flex;
+        gap: 15px;
+        font-weight: 600;
+      }
+      .stat-correct {
+        color: var(--success);
+      }
+      .stat-wrong {
+        color: var(--error);
+      }
+
+      .main-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        padding-bottom: 100px;
+      }
+
+      .exercise-block {
+        background: var(--card);
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        margin-bottom: 30px;
+        overflow: hidden;
+      }
+
+      .exercise-header {
+        background: var(--primary-light);
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .exercise-title {
+        margin: 0;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--primary);
+      }
+
+      .exercise-desc {
+        margin: 5px 0 0 0;
+        font-size: 0.9rem;
+        color: #64748b;
+      }
+
+      .visual-container {
+        display: flex;
+        justify-content: center;
+        padding: 20px;
+        background: #fff;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .task-list {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .task-row {
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .task-row:last-child {
+        border-bottom: none;
+      }
+
+      .task-row.solved-correct {
+        background-color: #f0fdf4;
+      }
+      .task-row.solved-wrong {
+        background-color: #fef2f2;
+      }
+
+      .task-content {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .task-number {
+        font-weight: 600;
+        color: #94a3b8;
+        min-width: 25px;
+      }
+      .task-question {
+        font-size: 1.1rem;
+        font-weight: 500;
+      }
+
+      .options-container {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 10px;
+        overflow-x: auto;
+        padding-bottom: 5px;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .option-btn {
+        flex: 0 0 auto;
+        background: white;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        padding: 10px 20px;
+        font-size: 1rem;
+        cursor: pointer;
+        min-width: 60px;
+        white-space: nowrap;
+        text-align: center;
+        transition: all 0.2s;
+      }
+
+      .option-btn:hover:not(:disabled) {
+        border-color: var(--primary);
+        color: var(--primary);
+        background: var(--primary-light);
+      }
+
+      .option-btn.selected-correct {
+        background: var(--success);
+        color: white;
+        border-color: var(--success);
+      }
+      .option-btn.selected-correct .katex {
+        color: white !important;
+      }
+
+      .option-btn.selected-wrong {
+        background: var(--error);
+        color: white;
+        border-color: var(--error);
+      }
+      .option-btn.selected-wrong .katex {
+        color: white !important;
+      }
+
+      .input-group {
+        display: flex;
+        gap: 10px;
+      }
+      .input-answer {
+        padding: 10px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        width: 120px;
+        font-size: 1rem;
+      }
+      .btn-check {
+        padding: 10px 20px;
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+      .input-answer.correct {
+        border-color: var(--success);
+        background: #f0fdf4;
+        color: var(--success);
+      }
+      .input-answer.wrong {
+        border-color: var(--error);
+        background: #fef2f2;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="header-title">Dasha Tutor: Rechenausdrücke</div>
+      <div class="stats-container">
+        <span class="stat-correct">✅ <span id="val-correct">0</span></span>
+        <span class="stat-wrong">❌ <span id="val-wrong">0</span></span>
+      </div>
+    </header>
+
+    <div class="main-container" id="quiz-root"></div>
+
+    <script>
+      const exercises = [
+        {
+          id: "ex1",
+          title: "1. Berechne schrittweise",
+          desc: "Welche Regel hast du angewendet? Wähle das richtige Ergebnis.",
+          tasks: [
+            {
+              id: "a)",
+              q: "$6 \\cdot (13 + 17)$",
+              a: "180",
+              opts: ["160", "180", "190", "200"],
+            },
+            {
+              id: "b)",
+              q: "$(4 + 22) \\cdot 3$",
+              a: "78",
+              opts: ["68", "78", "88", "28"],
+            },
+            {
+              id: "c)",
+              q: "$12 \\cdot (89 - 14)$",
+              a: "900",
+              opts: ["850", "890", "900", "920"],
+            },
+            {
+              id: "d)",
+              q: "$(4 + 2) \\cdot (1 + 7)$",
+              a: "48",
+              opts: ["42", "48", "56", "14"],
+            },
+            {
+              id: "e)",
+              q: "$5 \\cdot (65 - 13)$",
+              a: "260",
+              opts: ["250", "260", "312", "52"],
+            },
+            {
+              id: "f)",
+              q: "$(42 - 19) \\cdot 5$",
+              a: "115",
+              opts: ["115", "125", "230", "105"],
+            },
+          ],
+        },
+        {
+          id: "ex2",
+          title: "2. Schreibe als Term und berechne",
+          desc: "Welche Regeln für das Berechnen von Termen hast du verwendet?",
+          visual: `
+            <svg width="340" height="180" viewBox="0 0 340 180" style="display:block; margin: 0 auto;">
+              <rect x="20" y="10" width="30" height="30" fill="#fef9c3" stroke="#ca8a04" stroke-width="2"/>
+              <text x="35" y="30" text-anchor="middle" font-weight="bold" fill="#854d0e">12</text>
+              <rect x="80" y="10" width="30" height="30" fill="#fef9c3" stroke="#ca8a04" stroke-width="2"/>
+              <text x="95" y="30" text-anchor="middle" font-weight="bold" fill="#854d0e">4</text>
+              <line x1="35" y1="40" x2="65" y2="80" stroke="#94a3b8" stroke-width="2"/>
+              <line x1="95" y1="40" x2="65" y2="80" stroke="#94a3b8" stroke-width="2"/>
+              <circle cx="65" cy="80" r="12" fill="#fff" stroke="#64748b" stroke-width="2"/>
+              <text x="65" y="85" text-anchor="middle" font-weight="bold" fill="#334155">+</text>
+              <line x1="65" y1="92" x2="65" y2="120" stroke="#94a3b8" stroke-width="2"/>
+              <rect x="50" y="120" width="30" height="30" fill="#e2e8f0" stroke="#64748b" stroke-width="2"/>
+              <text x="65" y="140" text-anchor="middle" font-weight="bold" fill="#334155">?</text>
+
+              <rect x="200" y="10" width="30" height="30" fill="#fef9c3" stroke="#ca8a04" stroke-width="2"/>
+              <text x="215" y="30" text-anchor="middle" font-weight="bold" fill="#854d0e">5</text>
+              <rect x="260" y="10" width="30" height="30" fill="#fef9c3" stroke="#ca8a04" stroke-width="2"/>
+              <text x="275" y="30" text-anchor="middle" font-weight="bold" fill="#854d0e">3</text>
+               <line x1="215" y1="40" x2="245" y2="70" stroke="#94a3b8" stroke-width="2"/>
+              <line x1="275" y1="40" x2="245" y2="70" stroke="#94a3b8" stroke-width="2"/>
+              <circle cx="245" cy="70" r="12" fill="#fff" stroke="#64748b" stroke-width="2"/>
+              <text x="245" y="75" text-anchor="middle" font-weight="bold" fill="#334155">·</text>
+              <line x1="245" y1="82" x2="245" y2="110" stroke="#94a3b8" stroke-width="2"/>
+              <rect x="230" y="110" width="30" height="30" fill="#e2e8f0" stroke="#64748b" stroke-width="2"/>
+               <text x="245" y="130" text-anchor="middle" font-weight="bold" fill="#334155">?</text>
+            </svg>
+          `,
+          tasks: [
+            {
+              id: "a)",
+              q: "Linker Rechenbaum: $12 + 4 : 5$",
+              a: "3.2",
+              opts: ["16", "3.2", "4", "20"],
+            },
+            {
+              id: "b)",
+              q: "Rechter Rechenbaum: $5 \\cdot 3$",
+              a: "15",
+              opts: ["8", "15", "2", "35"],
+            },
+            {
+              id: "c)",
+              q: "Komplexer Term: $(32 - 8) : 6$",
+              a: "4",
+              opts: ["4", "24", "6", "8"],
+            },
+            {
+              id: "d)",
+              q: "Komplexer Term: $4 \\cdot (5 + 12)$",
+              a: "68",
+              opts: ["32", "68", "17", "60"],
+            },
+          ],
+        },
+        {
+          id: "ex3",
+          title: "3. Berechne",
+          desc: "Berechne den Wert der Terme.",
+          tasks: [
+            {
+              id: "a)",
+              q: "$(16 + 24) \\cdot (32 - 4 \\cdot 3 + 5)$",
+              a: "1000",
+              opts: ["850", "960", "1000", "1200"],
+            },
+            {
+              id: "b)",
+              q: "$63 - (5 + 12 \\cdot 4 + 7)$",
+              a: "3",
+              opts: ["3", "13", "0", "15"],
+            },
+            {
+              id: "c)",
+              q: "$(320 - 4 \\cdot 70 + 2 \\cdot 15 - 10) : 2$",
+              a: "30",
+              opts: ["60", "30", "45", "10"],
+            },
+            {
+              id: "d)",
+              q: "$40 + (13 + 21 : 3) \\cdot (9 - 48 : 8)$",
+              a: "100",
+              opts: ["80", "100", "120", "60"],
+            },
+          ],
+        },
+        {
+          id: "ex5",
+          title: "5. Setze Klammern",
+          desc: "Setze Klammern so, dass du das angegebene Ergebnis erhältst.",
+          tasks: [
+            {
+              id: "a)",
+              q: "$4 \\cdot 5 + 9 \\cdot 3 = 168$",
+              a: "$4 \\cdot (5 + 9) \\cdot 3$",
+              opts: [
+                "$4 \\cdot (5 + 9) \\cdot 3$",
+                "$(4 \\cdot 5 + 9) \\cdot 3$",
+                "$4 \\cdot (5 + 9 \\cdot 3)$",
+              ],
+            },
+            {
+              id: "b)",
+              q: "$2 \\cdot 3 + 11 \\cdot 5 = 85$",
+              a: "$2 \\cdot (3 + 11) \\cdot 5$",
+              opts: [
+                "$(2 \\cdot 3 + 11) \\cdot 5$",
+                "$2 \\cdot (3 + 11) \\cdot 5$",
+                "$2 \\cdot (3 + 11 \\cdot 5)$",
+              ],
+            },
+            {
+              id: "c)",
+              q: "$5 \\cdot 26 - 3 \\cdot 6 = 40$",
+              a: "$5 \\cdot (26 - 3 \\cdot 6)$",
+              opts: [
+                "$(5 \\cdot 26 - 3) \\cdot 6$",
+                "$5 \\cdot (26 - 3) \\cdot 6$",
+                "$5 \\cdot (26 - 3 \\cdot 6)$",
+              ],
+            },
+          ],
+        },
+        {
+          id: "ex22",
+          title: "22. Platzhalteraufgaben",
+          desc: "Übertrage ins Heft und setze anstelle von $\\Box$ die richtige Zahl ein.",
+          tasks: [
+            {
+              id: "a)",
+              q: "$27 + \\Box = 35$",
+              a: "8",
+              type: "input",
+            },
+            {
+              id: "b)",
+              q: "$\\Box - 12 = 38$",
+              a: "50",
+              type: "input",
+            },
+            {
+              id: "c)",
+              q: "$\\Box + 66 = 100$",
+              a: "34",
+              type: "input",
+            },
+            {
+              id: "d)",
+              q: "$19 - \\Box = 8$",
+              a: "11",
+              type: "input",
+            },
+            {
+              id: "e)",
+              q: "$\\Box \\cdot 7 = 56$",
+              a: "8",
+              type: "input",
+            },
+            {
+              id: "f)",
+              q: "$65 : \\Box = 5$",
+              a: "13",
+              type: "input",
+            },
+            {
+              id: "g)",
+              q: "$8 \\cdot \\Box = 136$",
+              a: "17",
+              type: "input",
+            },
+            {
+              id: "h)",
+              q: "$\\Box : 12 = 1$",
+              a: "12",
+              type: "input",
+            },
+          ],
+        },
+      ];
+
+      let totalCorrect = 0;
+      let totalWrong = 0;
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const root = document.getElementById("quiz-root");
+
+        exercises.forEach((ex) => {
+          const exBlock = document.createElement("div");
+          exBlock.className = "exercise-block";
+
+          let headerHTML = `
+            <div class="exercise-header">
+              <h3 class="exercise-title">${ex.title}</h3>
+              <p class="exercise-desc">${ex.desc}</p>
+            </div>
+          `;
+          exBlock.innerHTML = headerHTML;
+
+          if (ex.visual) {
+            const visualDiv = document.createElement("div");
+            visualDiv.className = "visual-container";
+            visualDiv.innerHTML = ex.visual;
+            exBlock.appendChild(visualDiv);
+          }
+
+          const taskList = document.createElement("div");
+          taskList.className = "task-list";
+
+          ex.tasks.forEach((task) => {
+            const row = document.createElement("div");
+            row.className = "task-row";
+
+            let contentHTML = `
+              <div class="task-content">
+                <div class="task-number">${task.id}</div>
+                <div class="task-question">${task.q}</div>
+              </div>
+            `;
+
+            let actionHTML = "";
+            if (task.type === "input") {
+              const answers = Array.isArray(task.a) ? task.a.join("|") : task.a;
+              actionHTML = `
+                <div class="input-group">
+                  <input type="text" class="input-answer" placeholder="?" onkeypress="if(event.key==='Enter') this.nextElementSibling.click()">
+                  <button class="btn-check" onclick="checkInput(this, '${answers}')">OK</button>
+                </div>
+              `;
+            } else {
+              actionHTML = `<div class="options-container">`;
+              task.opts.forEach((opt) => {
+                const safeOpt = opt.replace(/"/g, "&quot;");
+                const safeAns = task.a.replace(/"/g, "&quot;");
+                actionHTML += `<button class="option-btn" onclick="checkOpt(this, '${safeOpt}', '${safeAns}')">${opt}</button>`;
+              });
+              actionHTML += `</div>`;
+            }
+
+            row.innerHTML =
+              contentHTML + `<div style="margin-top:10px;">${actionHTML}</div>`;
+            taskList.appendChild(row);
+          });
+
+          exBlock.appendChild(taskList);
+          root.appendChild(exBlock);
+        });
+
+        renderMathInElement(document.body, {
+          delimiters: [{ left: "$", right: "$", display: false }],
+        });
+      });
+
+      function checkOpt(btn, val, ans) {
+        const row = btn.closest(".task-row");
+        if (row.classList.contains("done")) return;
+        row.classList.add("done");
+
+        const v = val.replace(/\\/g, "").replace(/\s/g, "");
+        const a = ans.replace(/\\/g, "").replace(/\s/g, "");
+
+        row.querySelectorAll(".option-btn").forEach((b) => (b.disabled = true));
+
+        if (v === a) {
+          btn.classList.add("selected-correct");
+          row.classList.add("solved-correct");
+          totalCorrect++;
+        } else {
+          btn.classList.add("selected-wrong");
+          row.classList.add("solved-wrong");
+          totalWrong++;
+        }
+        updateStats();
+      }
+
+      function checkInput(btn, ansStr) {
+        const row = btn.closest(".task-row");
+        const input = row.querySelector("input");
+        if (row.classList.contains("done")) return;
+
+        const val = input.value.trim().replace(",", ".");
+        const correctArr = ansStr.split("|");
+
+        row.classList.add("done");
+        input.disabled = true;
+        btn.disabled = true;
+
+        if (correctArr.includes(val)) {
+          input.classList.add("correct");
+          row.classList.add("solved-correct");
+          totalCorrect++;
+        } else {
+          input.classList.add("wrong");
+          row.classList.add("solved-wrong");
+          totalWrong++;
+        }
+        updateStats();
+      }
+
+      function updateStats() {
+        document.getElementById("val-correct").innerText = totalCorrect;
+        document.getElementById("val-wrong").innerText = totalWrong;
+      }
+    </script>
+  </body>
+</html>

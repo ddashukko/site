@@ -47,6 +47,15 @@ window.lessonsData = [
     category: "lesson",
   },
   {
+    id: 501,
+    title: "Rechenausdrücke",
+    grade: 5,
+    topic: "Математика",
+    link: "math_general/5/Rechenausdrücke.html",
+    subject_code: "math_general",
+    category: "lesson",
+  },
+  {
     id: 777,
     title: "Соніна Маринка учить дроби",
     grade: 8,
