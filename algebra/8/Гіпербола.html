@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Алгебра 8 клас: Функція y = k/x</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
+    />
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"
+    ></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    ></script>
+
+    <style>
+      :root {
+        --primary: #2563eb;
+        --primary-light: #eff6ff;
+        --success: #16a34a;
+        --error: #dc2626;
+        --bg: #f8fafc;
+        --card: #ffffff;
+        --text: #1e293b;
+        --border: #e2e8f0;
+        --accent: #8b5cf6;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
+        margin: 0;
+        padding: 0;
+      }
+
+      header {
+        background: var(--card);
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+      }
+
+      .header-title {
+        font-weight: 700;
+        font-size: 1.2rem;
+        color: var(--primary);
+      }
+
+      .stats-container {
+        display: flex;
+        gap: 15px;
+        font-weight: 600;
+      }
+      .stat-correct {
+        color: var(--success);
+      }
+      .stat-wrong {
+        color: var(--error);
+      }
+
+      .main-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        padding-bottom: 100px;
+      }
+
+      .theory-block {
+        background: linear-gradient(to right, #fdfbf7, #fff);
+        border-left: 5px solid var(--accent);
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 30px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      }
+      .theory-title {
+        color: var(--accent);
+        font-weight: bold;
+        font-size: 1.1rem;
+        margin-bottom: 10px;
+      }
+      .theory-content ul {
+        margin: 5px 0;
+        padding-left: 20px;
+      }
+      .theory-content li {
+        margin-bottom: 5px;
+        line-height: 1.5;
+      }
+
+      .exercise-block {
+        background: var(--card);
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        margin-bottom: 30px;
+        overflow: hidden;
+      }
+
+      .exercise-header {
+        background: var(--primary-light);
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .exercise-title {
+        margin: 0;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--primary);
+      }
+
+      .exercise-desc {
+        margin: 5px 0 0 0;
+        font-size: 0.95rem;
+        color: #475569;
+        line-height: 1.5;
+      }
+
+      .visual-container {
+        display: flex;
+        justify-content: center;
+        padding: 20px;
+        background: #fff;
+        border-bottom: 1px solid var(--border);
+        overflow-x: auto;
+      }
+
+      .task-list {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .task-row {
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .task-row:last-child {
+        border-bottom: none;
+      }
+
+      .task-row.solved-correct {
+        background-color: #f0fdf4;
+      }
+      .task-row.solved-wrong {
+        background-color: #fef2f2;
+      }
+
+      .task-content {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .task-number {
+        font-weight: 600;
+        color: #94a3b8;
+        min-width: 25px;
+      }
+      .task-question {
+        font-size: 1.1rem;
+        font-weight: 500;
+      }
+
+      .options-container {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 10px;
+        overflow-x: auto;
+        padding-bottom: 5px;
+      }
+      .option-btn {
+        flex: 1;
+        background: white;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        padding: 10px 15px;
+        font-size: 1rem;
+        cursor: pointer;
+        min-width: 70px;
+        white-space: nowrap;
+        transition: all 0.2s;
+      }
+      .option-btn:hover:not(:disabled) {
+        border-color: var(--primary);
+        color: var(--primary);
+        background: var(--primary-light);
+      }
+      .option-btn.selected-correct {
+        background: var(--success);
+        color: white;
+        border-color: var(--success);
+      }
+      .option-btn.selected-correct .katex {
+        color: white !important;
+      }
+      .option-btn.selected-wrong {
+        background: var(--error);
+        color: white;
+        border-color: var(--error);
+      }
+      .option-btn.selected-wrong .katex {
+        color: white !important;
+      }
+
+      .input-group {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+      .input-answer {
+        padding: 10px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        width: 140px;
+        font-size: 1rem;
+      }
+      .btn-check {
+        padding: 10px 20px;
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+      .input-answer.correct {
+        border-color: var(--success);
+        background: #f0fdf4;
+        color: var(--success);
+      }
+      .input-answer.wrong {
+        border-color: var(--error);
+        background: #fef2f2;
+      }
+
+      .math-table {
+        border-collapse: collapse;
+        width: 100%;
+        max-width: 400px;
+        margin: 0 auto;
+        font-size: 1.1rem;
+      }
+      .math-table td,
+      .math-table th {
+        border: 1px solid #cbd5e1;
+        padding: 10px;
+        text-align: center;
+      }
+      .math-table th {
+        background-color: #f1f5f9;
+        font-weight: bold;
+        color: var(--text);
+      }
+      .math-table .empty-cell {
+        color: #94a3b8;
+        font-style: italic;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="header-title">Алгебра 8: §12. Функція y = k/x</div>
+      <div class="stats-container">
+        <span class="stat-correct">✅ <span id="val-correct">0</span></span>
+        <span class="stat-wrong">❌ <span id="val-wrong">0</span></span>
+      </div>
+    </header>
+
+    <div class="main-container" id="quiz-root">
+      <div class="theory-block">
+        <div class="theory-title">📚 Шпаргалка: $y = \frac{k}{x}$</div>
+        <div class="theory-content">
+          <ul>
+            <li>Це <strong>гіпербола</strong>.</li>
+            <li>$k > 0$: графік у I та III чвертях.</li>
+            <li>$k < 0$: графік у II та IV чвертях.</li>
+            <li>
+              Графік ніколи не перетинає осі координат ($x \ne 0, y \ne 0$).
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      /* --- ТУТ ТВОЯ СІТКА SVG --- */
+      const emptyGraphSVG = `
+        <svg width="300" height="300" viewBox="0 0 300 300" style="background:#fff; border:1px solid #ccc; display:block; margin: 0 auto;">
+          <defs>
+            <pattern id="grid" width="25" height="25" patternUnits="userSpaceOnUse">
+              <path d="M 25 0 L 0 0 0 25" fill="none" stroke="#f1f5f9" stroke-width="1"/>
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#grid)" />
+          <line x1="0" y1="250" x2="300" y2="250" stroke="#334155" stroke-width="2" />
+          <line x1="150" y1="300" x2="150" y2="0" stroke="#334155" stroke-width="2" />
+          <polygon points="300,250 290,245 290,255" fill="#334155" />
+          <polygon points="150,0 145,10 155,10" fill="#334155" />
+          <line x1="175" y1="245" x2="175" y2="255" stroke="#334155" stroke-width="2" />
+          <text x="170" y="270" font-family="Arial" font-size="14" fill="#475569">1</text>
+          <line x1="145" y1="225" x2="155" y2="225" stroke="#334155" stroke-width="2" />
+          <text x="130" y="230" font-family="Arial" font-size="14" fill="#475569">1</text>
+          <text x="135" y="270" font-family="Arial" font-size="14" fill="#475569">0</text>
+          <text x="280" y="240" font-family="Arial" font-size="16" font-weight="bold" fill="#334155">x</text>
+          <text x="160" y="20" font-family="Arial" font-size="16" font-weight="bold" fill="#334155">y</text>
+        </svg>
+      `;
+
+      const exercises = [
+        {
+          id: "12.1",
+          title: "12.1.",
+          desc: "Які з функцій задають обернену пропорційність:",
+          tasks: [
+            {
+              id: "1)",
+              q: "$y = \\frac{14}{x}$",
+              a: "Так",
+              opts: ["Так", "Ні"],
+            },
+            {
+              id: "2)",
+              q: "$y = \\frac{x}{14}$",
+              a: "Ні",
+              opts: ["Так", "Ні"],
+            },
+            {
+              id: "3)",
+              q: "$y = -\\frac{5}{x}$",
+              a: "Так",
+              opts: ["Так", "Ні"],
+            },
+            { id: "4)", q: "$y = 7$", a: "Ні", opts: ["Так", "Ні"] },
+          ],
+        },
+        {
+          id: "12.3",
+          title: "12.3.",
+          desc: "У яких координатних кутах лежить графік функції:",
+          tasks: [
+            {
+              id: "1)",
+              q: "$y = \\frac{25}{x}$",
+              a: "I і III",
+              opts: ["I і II", "I і III", "II і IV"],
+            },
+            {
+              id: "2)",
+              q: "$y = -\\frac{15}{x}$",
+              a: "II і IV",
+              opts: ["I і III", "II і IV", "I і IV"],
+            },
+          ],
+        },
+        {
+          id: "12.4",
+          title: "12.4.",
+          desc: "Обчисліть значення функції $y = \\frac{24}{x}$, якщо значення аргументу дорівнює:",
+          tasks: [
+            { id: "1)", q: "-2", a: "-12", type: "input" },
+            { id: "2)", q: "6", a: "4", type: "input" },
+            { id: "3)", q: "-12", a: "-2", type: "input" },
+            { id: "4)", q: "0.5", a: "48", type: "input" },
+          ],
+        },
+        {
+          id: "12.6",
+          title: "12.6.",
+          desc: "Обернену пропорційність задано формулою $y = \\frac{100}{x}$. Перенесіть таблицю в зошит і заповніть її:",
+          visual: `
+            <table class="math-table">
+              <tr>
+                <th>x</th>
+                <td>-50</td>
+                <td>20</td>
+                <td class="empty-cell">?</td>
+                <td class="empty-cell">?</td>
+              </tr>
+              <tr>
+                <th>y</th>
+                <td class="empty-cell">?</td>
+                <td class="empty-cell">?</td>
+                <td>10</td>
+                <td>-25</td>
+              </tr>
+            </table>
+          `,
+          tasks: [
+            { id: "1)", q: "При $x = -50$, $y = $", a: "-2", type: "input" },
+            { id: "2)", q: "При $x = 20$, $y = $", a: "5", type: "input" },
+            { id: "3)", q: "При $y = 10$, $x = $", a: "10", type: "input" },
+            { id: "4)", q: "При $y = -25$, $x = $", a: "-4", type: "input" },
+          ],
+        },
+        {
+          id: "12.7",
+          title: "12.7.",
+          desc: "Обернену пропорційність задано формулою $y = \\frac{60}{x}$. Перенесіть таблицю в зошит і заповніть її:",
+          tasks: [
+            { id: "1)", q: "При $x = -30$, $y = $", a: "-2", type: "input" },
+            { id: "2)", q: "При $x = 1$, $y = $", a: "60", type: "input" },
+            { id: "3)", q: "При $y = 12$, $x = $", a: "5", type: "input" },
+          ],
+        },
+        {
+          id: "12.8",
+          title: "12.8.",
+          desc: "Побудуйте графік функції $y = -\\frac{12}{x}$, склавши таблицю значень функції для значень аргументу:",
+          visual: emptyGraphSVG,
+          tasks: [
+            { id: "1)", q: "-6", a: "2", type: "input" },
+            { id: "2)", q: "-2", a: "6", type: "input" },
+            { id: "3)", q: "4", a: "-3", type: "input" },
+            { id: "4)", q: "12", a: "-1", type: "input" },
+          ],
+        },
+        {
+          id: "12.10",
+          title: "12.10.",
+          desc: "Не виконуючи побудови графіка функції $y = \\frac{120}{x}$, з'ясуйте, чи належить йому точка:",
+          tasks: [
+            { id: "1)", q: "A(4; 30)", a: "Так", opts: ["Так", "Ні"] },
+            { id: "2)", q: "B(-6; 20)", a: "Ні", opts: ["Так", "Ні"] },
+            { id: "3)", q: "C(-2; -60)", a: "Так", opts: ["Так", "Ні"] },
+          ],
+        },
+        {
+          id: "12.12",
+          title: "12.12.",
+          desc: "(Усно.) Графіки яких функцій проходять через точку $A(2; -8)$:",
+          tasks: [
+            {
+              id: "1)",
+              q: "Варіанти:",
+              a: "$y = -\\frac{16}{x}$",
+              opts: [
+                "$y = \\frac{16}{x}$",
+                "$y = -\\frac{16}{x}$",
+                "$y = -\\frac{4}{x}$",
+              ],
+            },
+          ],
+        },
+        {
+          id: "12.13",
+          title: "12.13.",
+          desc: "Загальна вартість товару 200 грн. Ціна товару — $x$ грн, кількість — $y$ кг. Запишіть формулою залежність $y$ від $x$. Чи є ця залежність оберненою пропорційністю?",
+          tasks: [
+            {
+              id: "1)",
+              q: "Чи є залежність оберненою пропорційністю?",
+              a: "Так",
+              opts: ["Так", "Ні"],
+            },
+            {
+              id: "2)",
+              q: "Запишіть формулу:",
+              a: "$y = \\frac{200}{x}$",
+              opts: ["$y = 200x$", "$y = \\frac{200}{x}$", "$y = 200 - x$"],
+            },
+          ],
+        },
+        {
+          id: "12.14",
+          title: "12.14.",
+          desc: "Побудуйте графік функції $y = \\frac{12}{x}$. За графіком знайдіть:",
+          visual: emptyGraphSVG,
+          tasks: [
+            {
+              id: "1)",
+              q: "значення функції, якщо значення аргументу дорівнює -2",
+              a: "-6",
+              type: "input",
+            },
+            {
+              id: "2)",
+              q: "значення аргументу, для яких функція дорівнює 4",
+              a: "3",
+              type: "input",
+            },
+          ],
+        },
+        {
+          id: "12.16",
+          title: "12.16.",
+          desc: "Графік оберненої пропорційності проходить через точку $M(-3; 5)$. Задайте цю функцію формулою.",
+          tasks: [
+            { id: "1)", q: "Знайдіть k:", a: "-15", type: "input" },
+            {
+              id: "2)",
+              q: "Формула:",
+              a: "$y = -\\frac{15}{x}$",
+              opts: ["$y = \\frac{15}{x}$", "$y = -\\frac{15}{x}$"],
+            },
+          ],
+        },
+        {
+          id: "12.18",
+          title: "12.18.",
+          desc: "Функцію задано формулою $y = \\frac{24}{x}$ для $2 \\le x \\le 6$. Запишіть область значень цієї функції.",
+          tasks: [
+            { id: "1)", q: "y_max =", a: "12", type: "input" },
+            { id: "2)", q: "y_min =", a: "4", type: "input" },
+            {
+              id: "3)",
+              q: "Область значень:",
+              a: "$4 \\le y \\le 12$",
+              opts: [
+                "$2 \\le y \\le 6$",
+                "$4 \\le y \\le 12$",
+                "$0 \\le y \\le 24$",
+              ],
+            },
+          ],
+        },
+        {
+          id: "12.21",
+          title: "12.21.",
+          desc: "Побудуйте графік функції $y = \\frac{8}{|x|}$.",
+          visual: emptyGraphSVG,
+          tasks: [
+            { id: "1)", q: "y(-2) =", a: "4", type: "input" },
+            { id: "2)", q: "y(2) =", a: "4", type: "input" },
+          ],
+        },
+        {
+          id: "12.22",
+          title: "12.22.",
+          desc: "Побудуйте графік функції: $y = 8/x$ (якщо $x \\le -2$), $y = 2x$ (якщо $-2 < x < 2$), $y = 8/x$ (якщо $x \\ge 2$).",
+          visual: emptyGraphSVG,
+          tasks: [
+            { id: "1)", q: "При x = -4", a: "-2", type: "input" },
+            { id: "2)", q: "При x = 1", a: "2", type: "input" },
+            { id: "3)", q: "При x = 4", a: "2", type: "input" },
+          ],
+        },
+        {
+          id: "12.24",
+          title: "12.24.",
+          desc: "Побудуйте графік функції (попередньо спростивши вираз) $y = \\frac{6x - 12}{3x - 1.5x^2}$:",
+          visual: emptyGraphSVG,
+          tasks: [
+            {
+              id: "1)",
+              q: "Спрощена формула:",
+              a: "$y = -\\frac{4}{x}$",
+              opts: [
+                "$y = \\frac{2}{x}$",
+                "$y = -\\frac{4}{x}$",
+                "$y = \\frac{4}{x}$",
+              ],
+            },
+          ],
+        },
+        {
+          id: "12.25",
+          title: "12.25.",
+          desc: "Знайдіть значення виразу:",
+          tasks: [
+            { id: "1)", q: "$4^{-2}$", a: "0.0625", type: "input" },
+            { id: "2)", q: "$(-2)^{-3}$", a: "-0.125", type: "input" },
+            { id: "3)", q: "$(-0.2)^{-2}$", a: "25", type: "input" },
+          ],
+        },
+        {
+          id: "12.26",
+          title: "12.26.",
+          desc: "Спростіть вираз:",
+          tasks: [
+            {
+              id: "1)",
+              q: "$(\\frac{1}{2} x^{-2} y)^{-2} \\cdot (4 x^{-1} y^2)$",
+              a: "$16 x^3$",
+              opts: ["$4 x^3$", "$16 x^3$", "$16 x y^4$"],
+            },
+            {
+              id: "2)",
+              q: "$(2 a^{-1} b^2)^{-3} \\cdot 8 a^{-2} b$",
+              a: "$\\frac{a}{b^5}$",
+              opts: ["$\\frac{a}{b^5}$", "$\\frac{1}{a b^5}$", "$a b^5$"],
+            },
+          ],
+        },
+        {
+          id: "12.27",
+          title: "12.27.",
+          desc: "Обчисліть: $(1 + (1 + 2^{-1})^{-1})^{-2}$",
+          tasks: [
+            {
+              id: "1)",
+              q: "Відповідь:",
+              a: "0.36",
+              opts: ["0.36", "1.44", "0.64"],
+            },
+          ],
+        },
+      ];
+
+      /* Engine Logic */
+      let totalCorrect = 0;
+      let totalWrong = 0;
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const root = document.getElementById("quiz-root");
+
+        exercises.forEach((ex) => {
+          const exBlock = document.createElement("div");
+          exBlock.className = "exercise-block";
+
+          let headerHTML = `
+            <div class="exercise-header">
+              <h3 class="exercise-title">${ex.title}</h3>
+              <p class="exercise-desc">${ex.desc}</p>
+            </div>
+          `;
+          exBlock.innerHTML = headerHTML;
+
+          if (ex.visual) {
+            const visualDiv = document.createElement("div");
+            visualDiv.className = "visual-container";
+            visualDiv.innerHTML = ex.visual;
+            exBlock.appendChild(visualDiv);
+          }
+
+          const taskList = document.createElement("div");
+          taskList.className = "task-list";
+
+          ex.tasks.forEach((task) => {
+            const row = document.createElement("div");
+            row.className = "task-row";
+
+            let contentHTML = `
+              <div class="task-content">
+                <div class="task-number">${task.id}</div>
+                <div class="task-question">${task.q}</div>
+              </div>
+            `;
+
+            let actionHTML = "";
+            if (task.type === "input") {
+              const answers = Array.isArray(task.a) ? task.a.join("|") : task.a;
+              actionHTML = `
+                <div class="input-group">
+                  <input type="text" class="input-answer" placeholder="..." onkeypress="if(event.key==='Enter') this.nextElementSibling.click()">
+                  <button class="btn-check" onclick="checkInput(this, '${answers}')">OK</button>
+                </div>
+              `;
+            } else {
+              actionHTML = `<div class="options-container">`;
+              task.opts.forEach((opt) => {
+                const safeOpt = opt.replace(/"/g, "&quot;");
+                const safeAns = task.a.replace(/"/g, "&quot;");
+                actionHTML += `<button class="option-btn" onclick="checkOpt(this, '${safeOpt}', '${safeAns}')">${opt}</button>`;
+              });
+              actionHTML += `</div>`;
+            }
+
+            row.innerHTML =
+              contentHTML + `<div style="margin-top:10px;">${actionHTML}</div>`;
+            taskList.appendChild(row);
+          });
+
+          exBlock.appendChild(taskList);
+          root.appendChild(exBlock);
+        });
+
+        renderMathInElement(document.body, {
+          delimiters: [{ left: "$", right: "$", display: false }],
+        });
+      });
+
+      function checkOpt(btn, val, ans) {
+        const row = btn.closest(".task-row");
+        if (row.classList.contains("done")) return;
+        row.classList.add("done");
+
+        const v = val.replace(/\\/g, "").replace(/\s/g, "");
+        const a = ans.replace(/\\/g, "").replace(/\s/g, "");
+
+        row.querySelectorAll(".option-btn").forEach((b) => (b.disabled = true));
+
+        if (v === a) {
+          btn.classList.add("selected-correct");
+          row.classList.add("solved-correct");
+          totalCorrect++;
+        } else {
+          btn.classList.add("selected-wrong");
+          row.classList.add("solved-wrong");
+          totalWrong++;
+        }
+        updateStats();
+      }
+
+      function checkInput(btn, ansStr) {
+        const row = btn.closest(".task-row");
+        const input = row.querySelector("input");
+        if (row.classList.contains("done")) return;
+
+        let val = input.value.trim().replace(",", ".");
+        const correctArr = ansStr.split("|");
+
+        row.classList.add("done");
+        input.disabled = true;
+        btn.disabled = true;
+
+        if (correctArr.includes(val)) {
+          input.classList.add("correct");
+          row.classList.add("solved-correct");
+          totalCorrect++;
+        } else {
+          input.classList.add("wrong");
+          row.classList.add("solved-wrong");
+          totalWrong++;
+        }
+        updateStats();
+      }
+
+      function updateStats() {
+        document.getElementById("val-correct").innerText = totalCorrect;
+        document.getElementById("val-wrong").innerText = totalWrong;
+      }
+    </script>
+  </body>
+</html>

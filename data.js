@@ -112,6 +112,16 @@ window.lessonsData = [
     author: "Даша",
   },
   {
+    id: 8012,
+    title: "§12. Функція y = k/x",
+    grade: 8,
+    topic: "Алгебра",
+    link: "algebra/8/Гіпербола.html",
+    subject_code: "algebra",
+    category: "lesson",
+    author: "Даша",
+  },
+  {
     id: 8013,
     title: "§13. Функція y = x² (Парабола)",
     grade: 8,
