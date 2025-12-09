@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Інтерактивний урок: Відсотки (+ Повторення)</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --accent: #f59e0b;
+            --bg: #f3f4f6;
+            --surface: #ffffff;
+            --text: #1f2937;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Ліва панель - Контент */
+        .content-panel {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            border-right: 2px solid #e5e7eb;
+            max-width: 60%;
+        }
+
+        /* Права панель - Дошка */
+        .board-panel {
+            flex: 1;
+            background-color: #fff;
+            position: relative;
+            cursor: crosshair;
+            display: flex;
+            flex-direction: column;
+        }
+
+        h1, h2, h3 { color: var(--text); }
+        h1 { color: var(--primary); margin-bottom: 10px; }
+        
+        .section {
+            background: var(--surface);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+        }
+
+        /* Стиль блоку повторення */
+        .review-section {
+            background: #ecfdf5; /* Світло-зелений фон для відмінності */
+            border: 1px solid #a7f3d0;
+        }
+        .review-section h2 { color: #047857; border-bottom-color: #047857; }
+
+        /* Стиль теорії */
+        .theory-box {
+            background: #e0e7ff;
+            border-left: 5px solid var(--primary);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .theory-box h3 {
+            color: var(--primary);
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+
+        .theory-box p { margin: 5px 0; line-height: 1.5; }
+        .theory-box code { background: rgba(255,255,255,0.7); padding: 2px 6px; border-radius: 4px; font-family: monospace; font-weight: bold; color: #3730a3; }
+        .theory-box small { display: block; margin-top: 8px; color: #555; font-style: italic; }
+
+        /* Картки завдань */
+        .task-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background: #fff;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .task-card:hover {
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            transform: translateY(-2px);
+        }
+
+        .extra-task { border-left: 4px solid var(--accent); }
+
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-size: 0.9em;
+            transition: background 0.2s;
+        }
+
+        .btn:hover { background-color: #4338ca; }
+        .btn-outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
+        .btn-outline:hover { background: #e0e7ff; }
+        
+        .hint, .answer {
+            display: none;
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 6px;
+            line-height: 1.5;
+        }
+        
+        .hint { background-color: #fffbeb; border: 1px solid #fcd34d; color: #92400e; }
+        .answer { background-color: #ecfdf5; border: 1px solid #6ee7b7; color: #065f46; font-weight: bold; }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            background: #dbeafe;
+            color: #1e40af;
+            border-radius: 20px;
+            font-size: 0.75em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        /* Панель інструментів дошки */
+        .toolbar {
+            padding: 10px;
+            background: #eee;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            border-bottom: 1px solid #ccc;
+        }
+
+        canvas { touch-action: none; width: 100%; height: 100%; }
+        .grid-bg {
+            background-image: 
+                linear-gradient(#e5e7eb 1px, transparent 1px),
+                linear-gradient(90deg, #e5e7eb 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="content-panel">
+        <h1>📉 Відсоткові розрахунки</h1>
+        <p>Сьогоднішня тема: розв'язування задач на відсотки. Але спочатку — маленька розминка!</p>
+
+        <div class="section review-section">
+            <h2>🔄 Розминка: Повторення пропорцій</h2>
+            <p>Згадаємо правило: <em>Добуток крайніх членів дорівнює добутку середніх</em>.</p>
+
+            <div class="task-card">
+                <h3>Завдання №1. Знайди невідоме X</h3>
+                <p>Розв'яжи пропорцію:</p>
+                <p style="font-size: 1.2em; font-weight: bold;">x : 10 = 3 : 5</p>
+                <button class="btn btn-outline" onclick="toggle('rev-hint-1')">💡 Підказка</button>
+                <button class="btn" onclick="toggle('rev-ans-1')">Відповідь</button>
+                <div id="rev-hint-1" class="hint">5 • x = 10 • 3</div>
+                <div id="rev-ans-1" class="answer">x = 6</div>
+            </div>
+
+            <div class="task-card">
+                <h3>Завдання №2. Задача на пропорцію</h3>
+                <p>За 4 кг цукерок заплатили 240 грн. Скільки коштуватимуть 7 кг таких самих цукерок?</p>
+                <button class="btn btn-outline" onclick="toggle('rev-hint-2')">💡 Підказка</button>
+                <button class="btn" onclick="toggle('rev-ans-2')">Відповідь</button>
+                <div id="rev-hint-2" class="hint">
+                    Склади схему:<br>
+                    4 кг — 240 грн<br>
+                    7 кг — x грн<br>
+                    x = (7 • 240) : 4
+                </div>
+                <div id="rev-ans-2" class="answer">420 грн</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📚 Нова тема: Теорія</h2>
+            
+            <div class="theory-box">
+                <h3>1. Знаходження відсотка від числа</h3>
+                <p>Щоб знайти <strong>p%</strong> від числа <strong>a</strong>:</p>
+                <p><code>a • (p : 100)</code> або <code>a • 0,p</code></p>
+                <small><em>Приклад: 12% від 2500 грн = 2500 • 0.12 = 300 грн.</em></small>
+            </div>
+
+            <div class="theory-box">
+                <h3>2. Знаходження числа за його відсотком</h3>
+                <p>Якщо число <strong>b</strong> становить <strong>p%</strong> від невідомого числа:</p>
+                <p><code>b : (p : 100)</code> або <code>b : 0,p</code></p>
+                <small><em>Приклад: 63 сторінки — це 35%. Всього сторінок = 63 : 0.35 = 180.</em></small>
+            </div>
+
+            <div class="theory-box">
+                <h3>3. Відсоткове відношення</h3>
+                <p>Щоб дізнатися, скільки відсотків число <strong>a</strong> складає від <strong>b</strong>:</p>
+                <p><code>(a : b) • 100%</code></p>
+                <small><em>Приклад: 27 учнів з 30 пішли в театр. (27 : 30) • 100% = 90%.</em></small>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📖 Завдання з підручника</h2>
+
+            <div class="task-card">
+                <span class="badge">Тип 1</span>
+                <h3>№ 762. Знайди відсоток від числа</h3>
+                <p>1) 29,5% від 80</p>
+                <p>2) 45% від 3 1/9</p>
+                <button class="btn btn-outline" onclick="toggle('hint-762')">💡 Підказка</button>
+                <button class="btn" onclick="toggle('ans-762')">Перевірити відповідь</button>
+                <div id="hint-762" class="hint">29.5% = 0.295.<br>45% = 45/100 = 9/20.</div>
+                <div id="ans-762" class="answer">1) 23,6 <br> 2) 1,4 (або 7/5)</div>
+            </div>
+
+            <div class="task-card">
+                <span class="badge">Тип 1 (Задача)</span>
+                <h3>№ 763. Кредит на телевізор</h3>
+                <p>Телевізор коштує 8400 грн. Перший внесок — 30% від вартості. Скільки гривень становить перший внесок?</p>
+                <button class="btn btn-outline" onclick="toggle('hint-763')">💡 Підказка</button>
+                <button class="btn" onclick="toggle('ans-763')">Перевірити відповідь</button>
+                <div id="hint-763" class="hint">8400 • 0.30</div>
+                <div id="ans-763" class="answer">2520 грн</div>
+            </div>
+
+            <div class="task-card">
+                <span class="badge">Тип 3</span>
+                <h3>№ 736. Баскетбол</h3>
+                <p>Баскетболістка 32 рази влучила і 4 рази промазала. Скільки відсотків становлять влучення від <strong>усіх</strong> кидків? (округли до десятих)</p>
+                <button class="btn btn-outline" onclick="toggle('hint-736')">💡 Підказка</button>
+                <button class="btn" onclick="toggle('ans-736')">Перевірити відповідь</button>
+                <div id="hint-736" class="hint">Всього кидків: 32+4=36.<br> (32 : 36) • 100%</div>
+                <div id="ans-736" class="answer">≈ 88,9%</div>
+            </div>
+
+            <div class="task-card">
+                <span class="badge">Тип 1 (Збільшення)</span>
+                <h3>№ 737. Маршрут автобуса</h3>
+                <p>Маршрут став довшим на 16%. Попередній був 15 км. Яка довжина нового?</p>
+                <button class="btn btn-outline" onclick="toggle('hint-737')">💡 Підказка</button>
+                <button class="btn" onclick="toggle('ans-737')">Перевірити відповідь</button>
+                <div id="ans-737" class="answer">17,4 км</div>
+            </div>
+
+            <div class="task-card" style="border-left: 5px solid #ef4444;">
+                <span class="badge" style="background:#fee2e2; color:#991b1b;">🔥 Складне</span>
+                <h3>№ 782. Задачка про гриби</h3>
+                <p>Свіжі гриби: 90% води. Взяли 12 кг. Сушені: 70% води. Якою стала маса грибів?</p>
+                <button class="btn btn-outline" onclick="toggle('hint-782')">💡 Підказка</button>
+                <button class="btn" onclick="toggle('ans-782')">Перевірити відповідь</button>
+                <div id="hint-782" class="hint">
+                    1. Суха речовина у свіжих (10%): 1.2 кг.<br>
+                    2. Ця ж суха речовина у сушених становить 30% (бо води 70%).<br>
+                    3. 1.2 : 0.3 = ?
+                </div>
+                <div id="ans-782" class="answer">4 кг</div>
+            </div>
+        </div>
+
+        <div class="section" style="background: #fdfce8;">
+            <h2>🚀 Додаткові тренувальні завдання</h2>
+
+            <div class="task-card extra-task">
+                <span class="badge">Тип 1 (Знижка)</span>
+                <h3>Завдання А. Розпродаж</h3>
+                <p>Куртка коштувала 2500 грн. На розпродажі ціну знизили на 20%. Якою стала ціна?</p>
+                <button class="btn btn-outline" onclick="toggle('hint-new-1')">💡 Підказка</button>
+                <button class="btn" onclick="toggle('ans-new-1')">Відповідь</button>
+                <div id="ans-new-1" class="answer">2000 грн</div>
+            </div>
+
+            <div class="task-card extra-task">
+                <span class="badge">Тип 2 (Число за %)</span>
+                <h3>Завдання Б. Пройдений шлях</h3>
+                <p>Турист пройшов 12 км, що становить 40% усього маршруту. Яка довжина всього маршруту?</p>
+                <button class="btn btn-outline" onclick="toggle('hint-new-2')">💡 Підказка</button>
+                <button class="btn" onclick="toggle('ans-new-2')">Відповідь</button>
+                <div id="ans-new-2" class="answer">30 км</div>
+            </div>
+
+            <div class="task-card extra-task" style="border-left: 4px solid #9333ea;">
+                <span class="badge" style="background:#f3e8ff; color:#6b21a8;">🤔 З підвохом</span>
+                <h3>Завдання Г. Зміна ціни</h3>
+                <p>Ціна товару 1000 грн. Спочатку підвищили на 10%, потім нову ціну знизили на 10%. Яка ціна тепер?</p>
+                <button class="btn btn-outline" onclick="toggle('hint-new-4')">💡 Підказка</button>
+                <button class="btn" onclick="toggle('ans-new-4')">Відповідь</button>
+                <div id="ans-new-4" class="answer">990 грн</div>
+            </div>
+
+            <div class="task-card extra-task" style="border-left: 4px solid #ef4444;">
+                <span class="badge" style="background:#fee2e2; color:#991b1b;">🔥 Аналог грибів</span>
+                <h3>Завдання Д. Родзинки</h3>
+                <p>Скільки треба взяти свіжих абрикосів (80% води), щоб отримати 1 кг кураги (20% води)?</p>
+                <button class="btn btn-outline" onclick="toggle('hint-new-5')">💡 Підказка</button>
+                <button class="btn" onclick="toggle('ans-new-5')">Відповідь</button>
+                <div id="ans-new-5" class="answer">4 кг свіжих абрикосів</div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="board-panel grid-bg">
+        <div class="toolbar">
+            <button class="btn" onclick="setMode('draw')">🖊️ Ручка</button>
+            <button class="btn" style="background-color: #ef4444;" onclick="setMode('erase')">🧽 Гумка</button>
+            <button class="btn btn-outline" onclick="clearBoard()">🗑️ Очистити</button>
+        </div>
+        <canvas id="board"></canvas>
+    </div>
+
+    <script>
+        function toggle(id) {
+            const el = document.getElementById(id);
+            if (el.style.display === 'block') {
+                el.style.display = 'none';
+            } else {
+                el.style.display = 'block';
+            }
+        }
+
+        const canvas = document.getElementById('board');
+        const ctx = canvas.getContext('2d');
+        let painting = false;
+        let mode = 'draw'; 
+
+        function resizeCanvas() {
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight - 60;
+            ctx.lineCap = 'round';
+            ctx.lineWidth = 3;
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        function startPosition(e) { painting = true; draw(e); }
+        function endPosition() { painting = false; ctx.beginPath(); }
+
+        function draw(e) {
+            if (!painting) return;
+            const rect = canvas.getBoundingClientRect();
+            const x = (e.clientX || e.touches[0].clientX) - rect.left;
+            const y = (e.clientY || e.touches[0].clientY) - rect.top;
+
+            ctx.lineWidth = mode === 'erase' ? 25 : 3;
+            ctx.strokeStyle = mode === 'erase' ? '#ffffff' : '#1f2937';
+
+            ctx.lineTo(x, y);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+        }
+
+        canvas.addEventListener('mousedown', startPosition);
+        canvas.addEventListener('mouseup', endPosition);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('touchstart', (e) => { e.preventDefault(); startPosition(e); });
+        canvas.addEventListener('touchend', endPosition);
+        canvas.addEventListener('touchmove', (e) => { e.preventDefault(); draw(e); });
+
+        function setMode(newMode) { mode = newMode; }
+        function clearBoard() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
+    </script>
+</body>
+</html>
