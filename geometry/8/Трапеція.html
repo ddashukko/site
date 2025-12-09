@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Інтерактивний урок | Геометрія 8 клас</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
+    />
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"
+    ></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    ></script>
+
+    <style>
+      :root {
+        --primary: #2563eb;
+        --primary-light: #eff6ff;
+        --success: #16a34a;
+        --error: #dc2626;
+        --bg: #f8fafc;
+        --card: #ffffff;
+        --text: #1e293b;
+        --border: #e2e8f0;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
+        margin: 0;
+        padding: 0;
+      }
+
+      header {
+        background: var(--card);
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+      }
+
+      .header-title {
+        font-weight: 700;
+        font-size: 1.2rem;
+        color: var(--primary);
+      }
+
+      .stats-container {
+        display: flex;
+        gap: 15px;
+        font-weight: 600;
+      }
+      .stat-correct {
+        color: var(--success);
+      }
+      .stat-wrong {
+        color: var(--error);
+      }
+
+      .main-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        padding-bottom: 100px;
+      }
+
+      .exercise-block {
+        background: var(--card);
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        margin-bottom: 30px;
+        overflow: hidden;
+      }
+
+      .exercise-header {
+        background: var(--primary-light);
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .exercise-title {
+        margin: 0;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--primary);
+      }
+
+      .exercise-desc {
+        margin: 5px 0 0 0;
+        font-size: 0.9rem;
+        color: #64748b;
+      }
+
+      .visual-container {
+        display: flex;
+        justify-content: center;
+        padding: 20px;
+        background: #fff;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .task-list {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .task-row {
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .task-row:last-child {
+        border-bottom: none;
+      }
+
+      .task-row.solved-correct {
+        background-color: #f0fdf4;
+      }
+      .task-row.solved-wrong {
+        background-color: #fef2f2;
+      }
+
+      .task-content {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .task-number {
+        font-weight: 600;
+        color: #94a3b8;
+        min-width: 25px;
+      }
+      .task-question {
+        font-size: 1.1rem;
+        font-weight: 500;
+      }
+
+      .options-container {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 10px;
+        overflow-x: auto;
+        padding-bottom: 5px;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .option-btn {
+        flex: 1;
+        background: white;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        padding: 10px 15px;
+        font-size: 1rem;
+        cursor: pointer;
+        min-width: 70px;
+        white-space: nowrap;
+        text-align: center;
+        transition: all 0.2s;
+      }
+
+      .option-btn:hover:not(:disabled) {
+        border-color: var(--primary);
+        color: var(--primary);
+        background: var(--primary-light);
+      }
+
+      .option-btn.selected-correct {
+        background: var(--success);
+        color: white;
+        border-color: var(--success);
+      }
+      .option-btn.selected-correct .katex {
+        color: white !important;
+      }
+
+      .option-btn.selected-wrong {
+        background: var(--error);
+        color: white;
+        border-color: var(--error);
+      }
+      .option-btn.selected-wrong .katex {
+        color: white !important;
+      }
+
+      .input-group {
+        display: flex;
+        gap: 10px;
+      }
+      .input-answer {
+        padding: 10px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        width: 120px;
+        font-size: 1rem;
+      }
+      .btn-check {
+        padding: 10px 20px;
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+      .input-answer.correct {
+        border-color: var(--success);
+        background: #f0fdf4;
+        color: var(--success);
+      }
+      .input-answer.wrong {
+        border-color: var(--error);
+        background: #fef2f2;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="header-title">Геометрія: Середня лінія трапеції</div>
+      <div class="stats-container">
+        <span class="stat-correct">✅ <span id="val-correct">0</span></span>
+        <span class="stat-wrong">❌ <span id="val-wrong">0</span></span>
+      </div>
+    </header>
+
+    <div class="main-container" id="quiz-root"></div>
+
+    <script>
+      /* МАСИВ ЗАВДАНЬ (EXERCISES).
+         Оновлено на основі фото: Середня лінія трапеції.
+      */
+      const exercises = [
+        {
+          id: "10.2",
+          title: "10.2. Знаходження середньої лінії",
+          desc: "Знайдіть середню лінію трапеції за відомими основами.",
+          tasks: [
+            {
+              id: "1)",
+              q: "Основи трапеції дорівнюють $8\\text{ см}$ і $12\\text{ см}$. Знайдіть середню лінію.",
+              a: "10",
+              opts: ["10", "20", "4"],
+            },
+          ],
+        },
+        {
+          id: "10.4",
+          title: "10.4. Знаходження основи",
+          desc: "Знайдіть невідому основу трапеції.",
+          tasks: [
+            {
+              id: "1)",
+              q: "Одна з основ дорівнює $10\\text{ см}$, а середня лінія — $7\\text{ см}$. Знайдіть другу основу.",
+              a: "4",
+              opts: ["3.5", "4", "14"],
+            },
+          ],
+        },
+        {
+          id: "10.6",
+          title: "10.6. Відстань між серединами бічних сторін",
+          desc: "Розв'яжіть задачу, склавши рівняння.",
+          tasks: [
+            {
+              id: "1)",
+              q: "Одна з основ трапеції дорівнює $6\\text{ см}$, а друга — у $3$ рази більша за неї. Знайдіть відстань між серединами бічних сторін (середню лінію).",
+              a: "12",
+              opts: ["12", "18", "9"],
+            },
+          ],
+        },
+        {
+          id: "10.10",
+          title: "10.10. Периметр трапеції",
+          desc: "Використайте властивість середньої лінії для знаходження периметра.",
+          tasks: [
+            {
+              id: "1)",
+              q: "Бічні сторони трапеції дорівнюють $6\\text{ см}$ і $8\\text{ см}$, а її середня лінія — $12\\text{ см}$. Знайдіть периметр трапеції.",
+              a: "38",
+              opts: ["38", "26", "50"],
+            },
+          ],
+        },
+        {
+          id: "10.12",
+          title: "10.12. Аналіз властивостей",
+          desc: "Чи може середня лінія трапеції...",
+          tasks: [
+            {
+              id: "1)",
+              q: "...дорівнювати одній з основ?",
+              a: "Ні",
+              opts: ["Так", "Ні", "Іноді"],
+            },
+            {
+              id: "2)",
+              q: "...бути меншою від меншої основи?",
+              a: "Ні",
+              opts: ["Так", "Ні", "Іноді"],
+            },
+            {
+              id: "3)",
+              q: "...бути більшою за більшу основу?",
+              a: "Ні",
+              opts: ["Так", "Ні", "Іноді"],
+            },
+            {
+              id: "4)",
+              q: "...дорівнювати середньому арифметичному основ?",
+              a: "Так",
+              opts: ["Так", "Ні", "Тільки у рівнобічній"],
+            },
+          ],
+        },
+        {
+          id: "10.13",
+          title: "10.13. Середня лінія і діагональ",
+          desc: "$EF$ — середня лінія, перетинає діагональ $BD$ в точці $N$.",
+          tasks: [
+            {
+              id: "1)",
+              q: "Знайдіть основи трапеції, якщо $EN = 4\\text{ см}$, а $NF = 7\\text{ см}$.",
+              a: "8 см і 14 см",
+              opts: ["8 см і 14 см", "2 см і 3.5 см", "11 см і 11 см"],
+            },
+          ],
+        },
+      ];
+
+      /* ======================================================== */
+
+      let totalCorrect = 0;
+      let totalWrong = 0;
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const root = document.getElementById("quiz-root");
+
+        exercises.forEach((ex) => {
+          const exBlock = document.createElement("div");
+          exBlock.className = "exercise-block";
+
+          let headerHTML = `
+            <div class="exercise-header">
+              <h3 class="exercise-title">${ex.title}</h3>
+              <p class="exercise-desc">${ex.desc}</p>
+            </div>
+          `;
+          exBlock.innerHTML = headerHTML;
+
+          if (ex.visual) {
+            const visualDiv = document.createElement("div");
+            visualDiv.className = "visual-container";
+            visualDiv.innerHTML = ex.visual;
+            exBlock.appendChild(visualDiv);
+          }
+
+          const taskList = document.createElement("div");
+          taskList.className = "task-list";
+
+          ex.tasks.forEach((task) => {
+            const row = document.createElement("div");
+            row.className = "task-row";
+
+            let contentHTML = `
+              <div class="task-content">
+                <div class="task-number">${task.id}</div>
+                <div class="task-question">${task.q}</div>
+              </div>
+            `;
+
+            let actionHTML = "";
+            if (task.type === "input") {
+              const answers = task.a.join("|");
+              actionHTML = `
+                <div class="input-group">
+                  <input type="text" class="input-answer" placeholder="?" onkeypress="if(event.key==='Enter') this.nextElementSibling.click()">
+                  <button class="btn-check" onclick="checkInput(this, '${answers}')">OK</button>
+                </div>
+              `;
+            } else {
+              actionHTML = `<div class="options-container">`;
+              task.opts.forEach((opt) => {
+                const safeOpt = opt.replace(/"/g, "&quot;");
+                const safeAns = task.a.replace(/"/g, "&quot;");
+                actionHTML += `<button class="option-btn" onclick="checkOpt(this, '${safeOpt}', '${safeAns}')">${opt}</button>`;
+              });
+              actionHTML += `</div>`;
+            }
+
+            row.innerHTML =
+              contentHTML + `<div style="margin-top:10px;">${actionHTML}</div>`;
+            taskList.appendChild(row);
+          });
+
+          exBlock.appendChild(taskList);
+          root.appendChild(exBlock);
+        });
+
+        renderMathInElement(document.body, {
+          delimiters: [{ left: "$", right: "$", display: false }],
+        });
+      });
+
+      function checkOpt(btn, val, ans) {
+        const row = btn.closest(".task-row");
+        if (row.classList.contains("done")) return;
+        row.classList.add("done");
+
+        const v = val.replace(/\\/g, "");
+        const a = ans.replace(/\\/g, "");
+
+        row.querySelectorAll(".option-btn").forEach((b) => (b.disabled = true));
+
+        if (v === a) {
+          btn.classList.add("selected-correct");
+          row.classList.add("solved-correct");
+          totalCorrect++;
+        } else {
+          btn.classList.add("selected-wrong");
+          row.classList.add("solved-wrong");
+          totalWrong++;
+        }
+        updateStats();
+      }
+
+      function checkInput(btn, ansStr) {
+        const row = btn.closest(".task-row");
+        const input = row.querySelector("input");
+        if (row.classList.contains("done")) return;
+
+        const val = input.value.trim().replace(",", ".");
+        const correctArr = ansStr.split("|");
+
+        row.classList.add("done");
+        input.disabled = true;
+        btn.disabled = true;
+
+        if (correctArr.includes(val)) {
+          input.classList.add("correct");
+          row.classList.add("solved-correct");
+          totalCorrect++;
+        } else {
+          input.classList.add("wrong");
+          row.classList.add("solved-wrong");
+          totalWrong++;
+        }
+        updateStats();
+      }
+
+      function updateStats() {
+        document.getElementById("val-correct").innerText = totalCorrect;
+        document.getElementById("val-wrong").innerText = totalWrong;
+      }
+    </script>
+  </body>
+</html>
