@@ -102,6 +102,16 @@ window.lessonsData = [
     author: "Соня",
   },
   {
+    id: 779,
+    title: "Функції Настя телефон",
+    grade: 8,
+    topic: "Математика",
+    link: "algebra/9/Функції Настя Соніна телефон.html",
+    subject_code: "algebra",
+    category: "lesson",
+    author: "Соня",
+  },
+  {
     id: 8010,
     title: "§10. Властивості степеня із цілим показником",
     grade: 8,
