@@ -36,6 +36,15 @@
           <option value="test">📝 Тести</option>
         </select>
       </div>
+
+      <div class="filter-group">
+        <label for="author-filter">Автор:</label>
+        <select id="author-filter" onchange="renderLessons()">
+          <option value="all">Всі автори</option>
+          <option value="Даша">Даша</option>
+          <option value="Соня">Соня</option>
+        </select>
+      </div>
     </div>
 
     <div id="container"></div>

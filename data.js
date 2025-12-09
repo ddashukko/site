@@ -6,27 +6,30 @@ window.lessonsData = [
     title: "Прості рівняння (без переходу)",
     grade: 2,
     topic: "Арифметика",
-    link: "math_general/2/simple-equations.html", // Локальний шлях
+    link: "math_general/2/simple-equations.html",
     subject_code: "math_general",
     category: "test",
+    author: "Даша",
   },
   {
     id: 2,
     title: "Стандартний вигляд числа",
     grade: 8,
     topic: "Алгебра",
-    link: "algebra/8/Стандартний вигляд числа Тест1.html", // Локальний шлях
+    link: "algebra/8/Стандартний вигляд числа Тест1.html",
     subject_code: "algebra",
     category: "test",
+    author: "Даша",
   },
   {
     id: 4,
     title: "Степінь з від'ємним показником. Частина 1",
     grade: 8,
     topic: "Алгебра",
-    link: "algebra/8/power-part1.html", // Локальний шлях
+    link: "algebra/8/power-part1.html",
     subject_code: "algebra",
     category: "test",
+    author: "Даша",
   },
   {
     id: 7,
@@ -36,6 +39,7 @@ window.lessonsData = [
     link: "algebra/8/power-part2.html",
     subject_code: "algebra",
     category: "test",
+    author: "Даша",
   },
   {
     id: 300,
@@ -45,6 +49,7 @@ window.lessonsData = [
     link: "geometry/8/Геометрія - пояснення логіки доведень.html",
     subject_code: "geometry",
     category: "lesson",
+    author: "Даша",
   },
   {
     id: 501,
@@ -54,6 +59,7 @@ window.lessonsData = [
     link: "math_general/5/Rechenausdrücke.html",
     subject_code: "math_general",
     category: "lesson",
+    author: "Даша",
   },
   {
     id: 777,
@@ -63,6 +69,7 @@ window.lessonsData = [
     link: "math_general/6/Дроби_маринка.html",
     subject_code: "math_general",
     category: "lesson",
+    author: "Соня",
   },
   {
     id: 778,
@@ -72,6 +79,17 @@ window.lessonsData = [
     link: "algebra/8/gguv.html",
     subject_code: "algebra",
     category: "lesson",
+    author: "Соня",
+  },
+  {
+    id: 779,
+    title: "Функції Настя",
+    grade: 8,
+    topic: "Математика",
+    link: "algebra/9/Функції Настя Соніна.html",
+    subject_code: "algebra",
+    category: "lesson",
+    author: "Соня",
   },
   {
     id: 8010,
@@ -81,6 +99,7 @@ window.lessonsData = [
     link: "algebra/8/lesson-powers.html",
     subject_code: "algebra",
     category: "lesson",
+    author: "Даша",
   },
   {
     id: 8011,
@@ -90,6 +109,7 @@ window.lessonsData = [
     link: "algebra/8/Стандартний вигляд числа.html",
     subject_code: "algebra",
     category: "lesson",
+    author: "Даша",
   },
   {
     id: 8013,
@@ -99,5 +119,6 @@ window.lessonsData = [
     subject_code: "algebra",
     link: "algebra/8/parabola-lesson.html",
     category: "lesson",
+    author: "Даша",
   },
 ];
