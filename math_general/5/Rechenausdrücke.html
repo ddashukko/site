@@ -225,6 +225,106 @@
         border-color: var(--error);
         background: #fef2f2;
       }
+
+      .footer-actions {
+        display: flex;
+        justify-content: center;
+        margin-top: 40px;
+      }
+
+      .btn-finish {
+        background-color: var(--text);
+        color: white;
+        font-size: 1.2rem;
+        font-weight: 700;
+        padding: 15px 40px;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+          0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        transition: transform 0.2s, box-shadow 0.2s;
+      }
+
+      .btn-finish:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+          0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      }
+
+      .result-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+        backdrop-filter: blur(5px);
+      }
+
+      .result-card {
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        text-align: center;
+        max-width: 400px;
+        width: 90%;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      }
+
+      @keyframes popIn {
+        from {
+          transform: scale(0.8);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      .result-emoji {
+        font-size: 4rem;
+        margin-bottom: 20px;
+        display: block;
+      }
+
+      .result-title {
+        font-size: 1.8rem;
+        font-weight: 800;
+        margin: 0 0 10px 0;
+        color: var(--text);
+      }
+
+      .result-score {
+        font-size: 3rem;
+        font-weight: 800;
+        color: var(--primary);
+        margin: 10px 0;
+      }
+
+      .result-total {
+        color: #64748b;
+        font-size: 1.2rem;
+      }
+
+      .btn-restart {
+        margin-top: 25px;
+        background-color: var(--primary);
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 10px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+      }
     </style>
   </head>
   <body>
@@ -237,6 +337,27 @@
     </header>
 
     <div class="main-container" id="quiz-root"></div>
+
+    <div class="footer-actions">
+      <button class="btn-finish" onclick="finishLesson()">
+        Ergebnis prüfen
+      </button>
+    </div>
+
+    <div class="result-modal" id="resultModal">
+      <div class="result-card">
+        <span class="result-emoji" id="resEmoji">🎉</span>
+        <h2 class="result-title" id="resTitle">Ausgezeichnet!</h2>
+        <div class="result-score" id="resScore">0%</div>
+        <div class="result-total">
+          Du hast <span id="resCorrect">0</span> von
+          <span id="resTotal">0</span> Aufgaben richtig gelöst.
+        </div>
+        <button class="btn-restart" onclick="location.reload()">
+          Noch einmal versuchen
+        </button>
+      </div>
+    </div>
 
     <script>
       const exercises = [
@@ -468,11 +589,13 @@
 
       let totalCorrect = 0;
       let totalWrong = 0;
+      let totalTasks = 0;
 
       document.addEventListener("DOMContentLoaded", () => {
         const root = document.getElementById("quiz-root");
 
         exercises.forEach((ex) => {
+          totalTasks += ex.tasks.length;
           const exBlock = document.createElement("div");
           exBlock.className = "exercise-block";
 
@@ -587,6 +710,39 @@
       function updateStats() {
         document.getElementById("val-correct").innerText = totalCorrect;
         document.getElementById("val-wrong").innerText = totalWrong;
+      }
+
+      function finishLesson() {
+        const modal = document.getElementById("resultModal");
+        const emoji = document.getElementById("resEmoji");
+        const title = document.getElementById("resTitle");
+        const scoreDiv = document.getElementById("resScore");
+
+        const percent = Math.round((totalCorrect / totalTasks) * 100);
+
+        document.getElementById("resCorrect").innerText = totalCorrect;
+        document.getElementById("resTotal").innerText = totalTasks;
+        scoreDiv.innerText = percent + "%";
+
+        if (percent === 100) {
+          emoji.innerText = "🏆";
+          title.innerText = "Perfekt!";
+          title.style.color = "#16a34a";
+        } else if (percent >= 80) {
+          emoji.innerText = "🎉";
+          title.innerText = "Sehr gut!";
+          title.style.color = "#2563eb";
+        } else if (percent >= 50) {
+          emoji.innerText = "👍";
+          title.innerText = "Gut gemacht!";
+          title.style.color = "#ca8a04";
+        } else {
+          emoji.innerText = "💪";
+          title.innerText = "Übung macht den Meister!";
+          title.style.color = "#475569";
+        }
+
+        modal.style.display = "flex";
       }
     </script>
   </body>
