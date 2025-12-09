@@ -102,7 +102,7 @@ window.lessonsData = [
     author: "Соня",
   },
   {
-    id: 779,
+    id: 780,
     title: "Функції Настя телефон",
     grade: 8,
     topic: "Математика",
