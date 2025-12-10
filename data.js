@@ -161,4 +161,14 @@ window.lessonsData = [
     category: "lesson",
     author: "Даша",
   },
+  {
+    id: 9005,
+    title: "Рівняння прямої",
+    grade: 9,
+    topic: "Геометрія",
+    subject_code: "geometry",
+    link: "geometry/9/Рівняння прямої.html",
+    category: "lesson",
+    author: "Даша",
+  },
 ];

@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Інтерактивна Дошка + Тест</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
+    />
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"
+    ></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    ></script>
+
+    <style>
+      :root {
+        --primary: #2563eb;
+        --success: #16a34a;
+        --error: #dc2626;
+        --bg: #f8fafc;
+        --grid: #e2e8f0;
+      }
+
+      body {
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        display: flex;
+        font-family: sans-serif;
+        overflow: hidden; /* Щоб не скролилась вся сторінка */
+      }
+
+      /* --- ЛІВА ЧАСТИНА: ДОШКА --- */
+      #board-section {
+        flex: 1;
+        position: relative;
+        background-color: #fff;
+        border-right: 4px solid #cbd5e1;
+        /* Клітинка */
+        background-image: linear-gradient(var(--grid) 1px, transparent 1px),
+          linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+        background-size: 25px 25px;
+        cursor: crosshair;
+      }
+
+      canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+        touch-action: none; /* Важливо для малювання пальцем */
+      }
+
+      .tools {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        display: flex;
+        gap: 10px;
+        background: white;
+        padding: 8px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .btn-tool {
+        border: 1px solid #cbd5e1;
+        background: white;
+        padding: 8px 12px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+      }
+      .btn-tool.active {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+      }
+
+      /* --- ПРАВА ЧАСТИНА: ЗАДАЧІ --- */
+      #tasks-section {
+        flex: 1;
+        background: var(--bg);
+        overflow-y: auto; /* Скрол тільки тут */
+        padding: 20px;
+        box-sizing: border-box;
+      }
+
+      header {
+        background: white;
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .ex-block {
+        background: white;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      }
+
+      .task-row {
+        margin-bottom: 15px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #eee;
+      }
+      .task-row.correct {
+        background: #f0fdf4;
+        padding: 10px;
+        border-radius: 5px;
+      }
+      .task-row.wrong {
+        background: #fef2f2;
+        padding: 10px;
+        border-radius: 5px;
+      }
+
+      .opts {
+        display: flex;
+        gap: 5px;
+        flex-wrap: wrap;
+        margin-top: 10px;
+      }
+
+      .btn-opt {
+        flex: 1;
+        min-width: 60px;
+        padding: 8px;
+        border: 1px solid #cbd5e1;
+        background: white;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      .btn-opt:hover {
+        background: #eff6ff;
+        border-color: var(--primary);
+      }
+
+      .btn-opt.sel-correct {
+        background: var(--success);
+        color: white;
+        border-color: var(--success);
+      }
+      .btn-opt.sel-wrong {
+        background: var(--error);
+        color: white;
+        border-color: var(--error);
+      }
+
+      .input-group {
+        margin-top: 10px;
+        display: flex;
+        gap: 10px;
+      }
+      input {
+        padding: 8px;
+        border: 1px solid #cbd5e1;
+        border-radius: 5px;
+      }
+
+      @media (max-width: 768px) {
+        body {
+          flex-direction: column;
+        }
+        #board-section {
+          height: 40vh;
+          border-right: none;
+          border-bottom: 4px solid #cbd5e1;
+        }
+        #tasks-section {
+          height: 60vh;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="board-section">
+      <div class="tools">
+        <button class="btn-tool active" onclick="setTool('pen')" id="t-pen">
+          🖊️
+        </button>
+        <button class="btn-tool" onclick="setTool('eraser')" id="t-eraser">
+          🧹
+        </button>
+        <button class="btn-tool" onclick="clearCanvas()" style="color: red">
+          ❌
+        </button>
+      </div>
+      <canvas id="board"></canvas>
+    </div>
+
+    <div id="tasks-section">
+      <header>
+        <strong>Алгебра/Геометрія</strong>
+        <div>
+          <span style="color: var(--success)"
+            >✅ <span id="s-corr">0</span></span
+          >
+          <span style="color: var(--error); margin-left: 10px"
+            >❌ <span id="s-wrong">0</span></span
+          >
+        </div>
+      </header>
+      <div id="quiz-content"></div>
+    </div>
+
+    <script>
+      // --- ДАНІ ЗАДАЧ ---
+      const exercises = [
+        {
+          id: "154",
+          title: "154. Рівняння прямої",
+          desc: "Яке з наведених рівнянь є рівнянням прямої?",
+          tasks: [
+            { id: "1)", q: "$x^2 + y = 5$", a: "Ні", opts: ["Так", "Ні"] },
+            { id: "2)", q: "$3x - 4y + 2 = 0$", a: "Так", opts: ["Так", "Ні"] },
+            { id: "3)", q: "$x^3 - 2y - 1 = 0$", a: "Ні", opts: ["Так", "Ні"] },
+            { id: "4)", q: "$x - 5y = 0$", a: "Так", opts: ["Так", "Ні"] },
+            { id: "5)", q: "$3x - 12 = 0$", a: "Так", opts: ["Так", "Ні"] },
+            { id: "6)", q: "$x + y^2 = 4$", a: "Ні", opts: ["Так", "Ні"] },
+          ],
+        },
+        {
+          id: "156",
+          title: "156. Належність точки прямій",
+          desc: "Чи належить прямій $x + y - 8 = 0$ точка:",
+          tasks: [
+            { id: "1)", q: "$A(3; 5)$", a: "Так", opts: ["Так", "Ні"] },
+            { id: "2)", q: "$B(10; -2)$", a: "Так", opts: ["Так", "Ні"] },
+            { id: "3)", q: "$C(4; 2)$", a: "Ні", opts: ["Так", "Ні"] },
+            { id: "4)", q: "$D(0; 8)$", a: "Так", opts: ["Так", "Ні"] },
+          ],
+        },
+        {
+          id: "158",
+          title: "158. Проходження через початок координат",
+          desc: "Яка з прямих проходить через початок координат?",
+          tasks: [
+            { id: "1)", q: "$3x - 2y = 0$", a: "Так", opts: ["Так", "Ні"] },
+            { id: "2)", q: "$x + y - 5 = 0$", a: "Ні", opts: ["Так", "Ні"] },
+            { id: "3)", q: "$5x + 3y = 0$", a: "Так", opts: ["Так", "Ні"] },
+            { id: "4)", q: "$x - y + 1 = 0$", a: "Ні", opts: ["Так", "Ні"] },
+          ],
+        },
+        {
+          id: "159",
+          title: "159. Взаємне розташування прямих",
+          desc: "Чи перетинаються прямі?",
+          tasks: [
+            {
+              id: "1)",
+              q: "$y = 4x - 2$ і $y = 4x + 7$",
+              a: "Ні",
+              opts: ["Так", "Ні"],
+            },
+            {
+              id: "2)",
+              q: "$y = 2x + 1$ і $y = 5x - 3$",
+              a: "Так",
+              opts: ["Так", "Ні"],
+            },
+          ],
+        },
+        {
+          id: "163",
+          title: "163. Перетин з осями координат",
+          desc: "Знайдіть координати точок перетину прямої $4x - 2y - 12 = 0$ з осями координат (намалюйте графік зліва).",
+          tasks: [
+            {
+              id: "1)",
+              q: "Перетин з віссю $x$ (абсцис):",
+              a: "(3; 0)",
+              opts: ["(3; 0)", "(-3; 0)", "(0; 3)", "(4; 0)"],
+            },
+            {
+              id: "2)",
+              q: "Перетин з віссю $y$ (ординат):",
+              a: "(0; -6)",
+              opts: ["(0; 6)", "(0; -6)", "(-6; 0)", "(0; -3)"],
+            },
+          ],
+        },
+        {
+          id: "165",
+          title: "165. Паралельні прямі",
+          desc: "Запишіть рівняння прямої, що проходить через точку $A(-4; 5)$ і паралельна:",
+          tasks: [
+            {
+              id: "1)",
+              q: "Осі абсцис ($Ox$):",
+              a: "$y = 5$",
+              opts: ["$y = 5$", "$x = 5$", "$y = -4$", "$x = -4$"],
+            },
+            {
+              id: "2)",
+              q: "Осі ординат ($Oy$):",
+              a: "$x = -4$",
+              opts: ["$y = 5$", "$x = 5$", "$y = -4$", "$x = -4$"],
+            },
+          ],
+        },
+        {
+          id: "167",
+          title: "167. Приналежність точок",
+          desc: "Які з точок належать прямій $y = -4$?",
+          tasks: [
+            { id: "1)", q: "$A(2; -4)$", a: "Так", opts: ["Так", "Ні"] },
+            { id: "2)", q: "$B(-4; 5)$", a: "Ні", opts: ["Так", "Ні"] },
+            { id: "3)", q: "$C(0; -4)$", a: "Так", opts: ["Так", "Ні"] },
+            { id: "4)", q: "$D(-4; -4)$", a: "Так", opts: ["Так", "Ні"] },
+          ],
+        },
+        {
+          id: "169",
+          title: "169. Кутовий коефіцієнт",
+          desc: "Знайдіть кутовий коефіцієнт прямої $MN$, якщо:",
+          tasks: [
+            {
+              id: "1)",
+              q: "$M(0; 0), N(2; 8)$",
+              a: "4",
+              opts: ["4", "2", "8", "0.25"],
+            },
+            {
+              id: "2)",
+              q: "$M(1; 3), N(3; 9)$",
+              a: "3",
+              opts: ["3", "6", "2", "1.5"],
+            },
+          ],
+        },
+        {
+          id: "173",
+          title: "173. Рівняння за двома точками",
+          desc: "Складіть рівняння прямої, що проходить через точки:",
+          tasks: [
+            {
+              id: "1)",
+              q: "$A(1; 2)$ та $B(3; 4)$",
+              a: "$y = x + 1$",
+              opts: ["$y = x + 1$", "$y = 2x$", "$y = x - 1$", "$y = 2x + 1$"],
+            },
+            {
+              id: "2)",
+              q: "$M(-1; 3)$ та $N(1; 3)$",
+              a: "$y = 3$",
+              opts: ["$x = 3$", "$y = 3$", "$y = 3x$", "$y = -3$"],
+            },
+            {
+              id: "3)",
+              q: "$C(2; 5)$ та $D(2; -1)$",
+              a: "$x = 2$",
+              opts: ["$y = 2$", "$x = 2$", "$x = 5$", "$y = -1$"],
+            },
+            {
+              id: "4)",
+              q: "$K(0; 0)$ та $L(5; 5)$",
+              a: "$y = x$",
+              opts: ["$y = x$", "$y = 5x$", "$x = 5$", "$y = 5$"],
+            },
+          ],
+        },
+        {
+          id: "175",
+          title: "175. Рівняння медіани",
+          desc: "Складіть рівняння медіани $AM$ трикутника $ABC$, якщо $A(2; 1), B(-3; 4), C(5; -2)$.",
+          tasks: [
+            {
+              id: "1)",
+              q: "Координати середини $BC$ (точка $M$):",
+              a: "(1; 1)",
+              opts: ["(1; 1)", "(2; 2)", "(1; 2)", "(0; 0)"],
+            },
+            {
+              id: "2)",
+              q: "Рівняння прямої $AM$:",
+              a: "$y = 1$",
+              opts: ["$y = 1$", "$x = 2$", "$y = x$", "$x = 1$"],
+            },
+          ],
+        },
+        {
+          id: "177",
+          title: "177. Точка перетину прямих",
+          desc: "Знайдіть точку перетину прямих (використайте дошку для системи):",
+          tasks: [
+            {
+              id: "1)",
+              q: "$x - y = 2$ та $x + y = 6$",
+              a: "(4; 2)",
+              opts: ["(4; 2)", "(2; 4)", "(3; 3)", "(5; 1)"],
+            },
+          ],
+        },
+        {
+          id: "179",
+          title: "179. Пряма через точку з $k$",
+          desc: "Рівняння прямої через $A(2; 3)$ з кутовим коефіцієнтом:",
+          tasks: [
+            {
+              id: "1)",
+              q: "$k = 2$",
+              a: "$y = 2x - 1$",
+              opts: [
+                "$y = 2x + 1$",
+                "$y = 2x - 1$",
+                "$y = 2x - 3$",
+                "$y = 2x + 3$",
+              ],
+            },
+            {
+              id: "2)",
+              q: "$k = -1$",
+              a: "$y = -x + 5$",
+              opts: [
+                "$y = -x + 5$",
+                "$y = -x - 5$",
+                "$y = x + 5$",
+                "$y = -x + 1$",
+              ],
+            },
+            {
+              id: "3)",
+              q: "$k = 0$",
+              a: "$y = 3$",
+              opts: ["$y = 3$", "$x = 2$", "$y = 0$", "$x = 3$"],
+            },
+            {
+              id: "4)",
+              q: "$k = 1$",
+              a: "$y = x + 1$",
+              opts: [
+                "$y = x + 1$",
+                "$y = x - 1$",
+                "$y = x + 5$",
+                "$y = x + 2$",
+              ],
+            },
+          ],
+        },
+        {
+          id: "181",
+          title: "181. Пряма під кутом",
+          desc: "Рівняння через $N(-2; 1)$ під кутом до осі абсцис:",
+          tasks: [
+            {
+              id: "1)",
+              q: "$45^\\circ$ ($k=1$)",
+              a: "$y = x + 3$",
+              opts: [
+                "$y = x + 3$",
+                "$y = x - 1$",
+                "$y = x + 1$",
+                "$y = x - 3$",
+              ],
+            },
+            {
+              id: "2)",
+              q: "$135^\\circ$ ($k=-1$)",
+              a: "$y = -x - 1$",
+              opts: [
+                "$y = -x - 1$",
+                "$y = -x + 1$",
+                "$y = x - 1$",
+                "$y = -x + 3$",
+              ],
+            },
+          ],
+        },
+        {
+          id: "185",
+          title: "185. Колінеарність точок",
+          desc: "При якому значенні $a$ точки лежать на одній прямій?",
+          tasks: [
+            {
+              id: "1)",
+              q: "$A(0; 1), B(1; 3), C(a; 7)$",
+              a: "3",
+              opts: ["2", "3", "4", "5"],
+            },
+          ],
+        },
+        {
+          id: "187",
+          title: "187. Паралельність заданій прямій",
+          desc: "Складіть рівняння прямої через $M(2; 3)$ паралельно прямій $y = 2x - 5$.",
+          tasks: [
+            {
+              id: "1)",
+              q: "Шукане рівняння:",
+              a: "$y = 2x - 1$",
+              opts: [
+                "$y = 2x - 1$",
+                "$y = 2x + 1$",
+                "$y = 2x + 3$",
+                "$y = 2x - 7$",
+              ],
+            },
+          ],
+        },
+        {
+          id: "189",
+          title: "189. Умова перпендикулярності",
+          desc: "Чи перпендикулярні прямі?",
+          tasks: [
+            {
+              id: "1)",
+              q: "$y = 2x$ та $y = -0.5x$",
+              a: "Так",
+              opts: ["Так", "Ні"],
+            },
+            {
+              id: "2)",
+              q: "$y = 3x$ та $y = -3x$",
+              a: "Ні",
+              opts: ["Так", "Ні"],
+            },
+          ],
+        },
+        {
+          id: "190",
+          title: "190. Перпендикулярна пряма",
+          desc: "Складіть рівняння прямої через $A(2; 1)$ перпендикулярно до $y = -0.5x + 3$.",
+          tasks: [
+            {
+              id: "1)",
+              q: "Шуканий кутовий коефіцієнт $k$:",
+              a: "2",
+              opts: ["2", "-2", "0.5", "-0.5"],
+            },
+            {
+              id: "2)",
+              q: "Рівняння прямої:",
+              a: "$y = 2x - 3$",
+              opts: [
+                "$y = 2x - 3$",
+                "$y = 2x + 3$",
+                "$y = -2x + 3$",
+                "$y = 0.5x + 1$",
+              ],
+            },
+          ],
+        },
+      ];
+      // --- ЛОГІКА ДОШКИ (CANVAS) ---
+      const canvas = document.getElementById("board");
+      const ctx = canvas.getContext("2d");
+      const boardSection = document.getElementById("board-section");
+      let painting = false;
+      let tool = "pen"; // 'pen' or 'eraser'
+
+      function resizeCanvas() {
+        // Зберігаємо картинку перед зміною розміру
+        const temp = document.createElement("canvas");
+        const tempCtx = temp.getContext("2d");
+        temp.width = canvas.width;
+        temp.height = canvas.height;
+        tempCtx.drawImage(canvas, 0, 0);
+
+        // Ресайз
+        canvas.width = boardSection.offsetWidth;
+        canvas.height = boardSection.offsetHeight;
+
+        // Відновлюємо
+        ctx.drawImage(temp, 0, 0);
+        updateTool();
+      }
+
+      window.addEventListener("resize", resizeCanvas);
+      window.addEventListener("load", resizeCanvas); // Важливо викликати при завантаженні
+
+      function getMousePos(e) {
+        const rect = canvas.getBoundingClientRect();
+        // Підтримка і миші, і тача
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return {
+          x: clientX - rect.left,
+          y: clientY - rect.top,
+        };
+      }
+
+      function startPosition(e) {
+        painting = true;
+        draw(e);
+      }
+
+      function finishedPosition() {
+        painting = false;
+        ctx.beginPath();
+      }
+
+      function draw(e) {
+        if (!painting) return;
+        // Для тача, щоб не скролило
+        if (e.type.startsWith("touch")) e.preventDefault();
+
+        const pos = getMousePos(e);
+
+        ctx.lineWidth = tool === "pen" ? 3 : 25;
+        ctx.lineCap = "round";
+        ctx.strokeStyle = tool === "pen" ? "#2563eb" : "#ffffff";
+
+        // Якщо гумка - просто малюємо білим поверх (або globalCompositeOperation)
+        if (tool === "eraser") {
+          ctx.globalCompositeOperation = "destination-out"; // Робить прозорим
+        } else {
+          ctx.globalCompositeOperation = "source-over";
+        }
+
+        ctx.lineTo(pos.x, pos.y);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(pos.x, pos.y);
+      }
+
+      // Події
+      canvas.addEventListener("mousedown", startPosition);
+      canvas.addEventListener("mouseup", finishedPosition);
+      canvas.addEventListener("mousemove", draw);
+      canvas.addEventListener("mouseout", finishedPosition);
+
+      canvas.addEventListener("touchstart", startPosition);
+      canvas.addEventListener("touchend", finishedPosition);
+      canvas.addEventListener("touchmove", draw);
+
+      function setTool(t) {
+        tool = t;
+        document
+          .getElementById("t-pen")
+          .classList.toggle("active", t === "pen");
+        document
+          .getElementById("t-eraser")
+          .classList.toggle("active", t === "eraser");
+      }
+
+      function clearCanvas() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+
+      // --- ЛОГІКА ТЕСТУ ---
+      let correctCount = 0;
+      let wrongCount = 0;
+
+      function renderQuiz() {
+        const container = document.getElementById("quiz-content");
+
+        exercises.forEach((ex) => {
+          const block = document.createElement("div");
+          block.className = "ex-block";
+          block.innerHTML = `<h3>${ex.title}</h3><p style="color:grey; font-size:0.9em">${ex.desc}</p>`;
+
+          ex.tasks.forEach((task) => {
+            const row = document.createElement("div");
+            row.className = "task-row";
+
+            // Питання
+            const qDiv = document.createElement("div");
+            qDiv.innerHTML = `<b>${task.id}</b> ${task.q}`;
+            row.appendChild(qDiv);
+
+            // Варіанти відповіді
+            const ansDiv = document.createElement("div");
+
+            if (task.opts) {
+              ansDiv.className = "opts";
+              task.opts.forEach((opt) => {
+                const btn = document.createElement("button");
+                btn.className = "btn-opt";
+                btn.innerText = opt;
+                btn.onclick = () => checkAnswer(btn, opt, task.a, row);
+                ansDiv.appendChild(btn);
+              });
+            } else {
+              // Якщо раптом введення (тут в основному вибір)
+              ansDiv.className = "input-group";
+              const inp = document.createElement("input");
+              const btn = document.createElement("button");
+              btn.innerText = "OK";
+              btn.className = "btn-tool"; // Reuse style
+              btn.onclick = () => checkInput(inp, task.a, row);
+              ansDiv.appendChild(inp);
+              ansDiv.appendChild(btn);
+            }
+
+            row.appendChild(ansDiv);
+            block.appendChild(row);
+          });
+
+          container.appendChild(block);
+        });
+
+        // Рендер формул після створення елементів
+        if (window.renderMathInElement) {
+          renderMathInElement(document.body, {
+            delimiters: [{ left: "$", right: "$", display: false }],
+          });
+        } else {
+          // Якщо скрипт ще не завантажився, чекаємо
+          window.onload = () => {
+            if (window.renderMathInElement)
+              renderMathInElement(document.body, {
+                delimiters: [{ left: "$", right: "$", display: false }],
+              });
+          };
+        }
+      }
+
+      function checkAnswer(btn, val, correct, row) {
+        if (row.dataset.done) return;
+        row.dataset.done = "true";
+
+        // Очистка LaTeX слешів для перевірки
+        const v = val.replace(/\\/g, "").replace(/\$/g, "");
+        const c = correct.replace(/\\/g, "").replace(/\$/g, "");
+
+        if (v === c) {
+          btn.classList.add("sel-correct");
+          row.classList.add("correct");
+          correctCount++;
+        } else {
+          btn.classList.add("sel-wrong");
+          row.classList.add("wrong");
+          wrongCount++;
+        }
+        updateStats();
+      }
+
+      function checkInput(inp, correctArrStr, row) {
+        if (row.dataset.done) return;
+        const val = inp.value.trim();
+        // correctArrStr is array inside
+        // Тут ми спростили для input type="input" в масиві, але в поточному JSON всі opts
+      }
+
+      function updateStats() {
+        document.getElementById("s-corr").innerText = correctCount;
+        document.getElementById("s-wrong").innerText = wrongCount;
+      }
+
+      // Запуск
+      renderQuiz();
+      setTimeout(resizeCanvas, 100); // Fix initial size
+    </script>
+  </body>
+</html>
