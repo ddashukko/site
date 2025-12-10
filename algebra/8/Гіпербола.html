@@ -1,410 +1,360 @@
 <!DOCTYPE html>
 <html lang="uk">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Алгебра 8 клас: Функція y = k/x</title>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Алгебра 8: Функція y = k/x + Дошка</title>
 
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
-    />
-    <script
-      defer
-      src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"
-    ></script>
-    <script
-      defer
-      src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
-    ></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
 
     <style>
-      :root {
-        --primary: #2563eb;
-        --primary-light: #eff6ff;
-        --success: #16a34a;
-        --error: #dc2626;
-        --bg: #f8fafc;
-        --card: #ffffff;
-        --text: #1e293b;
-        --border: #e2e8f0;
-        --accent: #8b5cf6;
-      }
-
-      body {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          sans-serif;
-        background-color: var(--bg);
-        color: var(--text);
-        margin: 0;
-        padding: 0;
-      }
-
-      header {
-        background: var(--card);
-        padding: 15px 20px;
-        border-bottom: 1px solid var(--border);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        position: sticky;
-        top: 0;
-        z-index: 100;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
-      }
-
-      .header-title {
-        font-weight: 700;
-        font-size: 1.2rem;
-        color: var(--primary);
-      }
-
-      .stats-container {
-        display: flex;
-        gap: 15px;
-        font-weight: 600;
-      }
-      .stat-correct {
-        color: var(--success);
-      }
-      .stat-wrong {
-        color: var(--error);
-      }
-
-      .main-container {
-        max-width: 800px;
-        margin: 0 auto;
-        padding: 20px;
-        padding-bottom: 100px;
-      }
-
-      .theory-block {
-        background: linear-gradient(to right, #fdfbf7, #fff);
-        border-left: 5px solid var(--accent);
-        border-radius: 8px;
-        padding: 20px;
-        margin-bottom: 30px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-      }
-      .theory-title {
-        color: var(--accent);
-        font-weight: bold;
-        font-size: 1.1rem;
-        margin-bottom: 10px;
-      }
-      .theory-content ul {
-        margin: 5px 0;
-        padding-left: 20px;
-      }
-      .theory-content li {
-        margin-bottom: 5px;
-        line-height: 1.5;
-      }
-
-      .exercise-block {
-        background: var(--card);
-        border-radius: 12px;
-        border: 1px solid var(--border);
-        margin-bottom: 30px;
-        overflow: hidden;
-      }
-
-      .exercise-header {
-        background: var(--primary-light);
-        padding: 15px 20px;
-        border-bottom: 1px solid var(--border);
-      }
-
-      .exercise-title {
-        margin: 0;
-        font-size: 1.1rem;
-        font-weight: 700;
-        color: var(--primary);
-      }
-
-      .exercise-desc {
-        margin: 5px 0 0 0;
-        font-size: 0.95rem;
-        color: #475569;
-        line-height: 1.5;
-      }
-
-      .visual-container {
-        display: flex;
-        justify-content: center;
-        padding: 20px;
-        background: #fff;
-        border-bottom: 1px solid var(--border);
-        overflow-x: auto;
-      }
-
-      .task-list {
-        display: flex;
-        flex-direction: column;
-      }
-
-      .task-row {
-        padding: 15px 20px;
-        border-bottom: 1px solid var(--border);
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-      }
-      .task-row:last-child {
-        border-bottom: none;
-      }
-
-      .task-row.solved-correct {
-        background-color: #f0fdf4;
-      }
-      .task-row.solved-wrong {
-        background-color: #fef2f2;
-      }
-
-      .task-content {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
-      .task-number {
-        font-weight: 600;
-        color: #94a3b8;
-        min-width: 25px;
-      }
-      .task-question {
-        font-size: 1.1rem;
-        font-weight: 500;
-      }
-
-      .options-container {
-        display: flex;
-        flex-wrap: nowrap;
-        gap: 10px;
-        overflow-x: auto;
-        padding-bottom: 5px;
-      }
-      .option-btn {
-        flex: 1;
-        background: white;
-        border: 1px solid #cbd5e1;
-        border-radius: 8px;
-        padding: 10px 15px;
-        font-size: 1rem;
-        cursor: pointer;
-        min-width: 70px;
-        white-space: nowrap;
-        transition: all 0.2s;
-      }
-      .option-btn:hover:not(:disabled) {
-        border-color: var(--primary);
-        color: var(--primary);
-        background: var(--primary-light);
-      }
-      .option-btn.selected-correct {
-        background: var(--success);
-        color: white;
-        border-color: var(--success);
-      }
-      .option-btn.selected-correct .katex {
-        color: white !important;
-      }
-      .option-btn.selected-wrong {
-        background: var(--error);
-        color: white;
-        border-color: var(--error);
-      }
-      .option-btn.selected-wrong .katex {
-        color: white !important;
-      }
-
-      .input-group {
-        display: flex;
-        gap: 10px;
-        align-items: center;
-      }
-      .input-answer {
-        padding: 10px;
-        border: 1px solid #cbd5e1;
-        border-radius: 8px;
-        width: 140px;
-        font-size: 1rem;
-      }
-      .btn-check {
-        padding: 10px 20px;
-        background: var(--primary);
-        color: white;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        font-weight: 600;
-      }
-      .input-answer.correct {
-        border-color: var(--success);
-        background: #f0fdf4;
-        color: var(--success);
-      }
-      .input-answer.wrong {
-        border-color: var(--error);
-        background: #fef2f2;
-      }
-
-      .math-table {
-        border-collapse: collapse;
-        width: 100%;
-        max-width: 400px;
-        margin: 0 auto;
-        font-size: 1.1rem;
-      }
-      .math-table td,
-      .math-table th {
-        border: 1px solid #cbd5e1;
-        padding: 10px;
-        text-align: center;
-      }
-      .math-table th {
-        background-color: #f1f5f9;
-        font-weight: bold;
-        color: var(--text);
-      }
-      .math-table .empty-cell {
-        color: #94a3b8;
-        font-style: italic;
-      }
-
-      /* RESULT SECTION STYLES */
-      .finish-section {
-        margin-top: 40px;
-        text-align: center;
-      }
-      .btn-finish {
-        padding: 15px 40px;
-        font-size: 1.2rem;
-        font-weight: bold;
-        color: white;
-        background: var(--primary);
-        border: none;
-        border-radius: 50px;
-        cursor: pointer;
-        box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
-        transition: transform 0.2s;
-      }
-      .btn-finish:hover {
-        transform: scale(1.05);
-        background-color: #1d4ed8;
-      }
-      .result-card {
-        background: white;
-        border: 2px solid var(--primary);
-        border-radius: 12px;
-        padding: 30px;
-        margin-top: 20px;
-        display: none; /* Приховано за замовчуванням */
-        animation: fadeIn 0.5s ease;
-      }
-      .result-title {
-        font-size: 1.5rem;
-        font-weight: bold;
-        margin-bottom: 10px;
-        color: var(--text);
-      }
-      .result-score {
-        font-size: 2.5rem;
-        font-weight: 800;
-        color: var(--primary);
-        margin: 15px 0;
-      }
-      .result-msg {
-        font-size: 1.1rem;
-        color: #64748b;
-      }
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(10px);
+        :root {
+            --primary: #2563eb;
+            --primary-light: #eff6ff;
+            --success: #16a34a;
+            --error: #dc2626;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #1e293b;
+            --border: #e2e8f0;
+            --accent: #8b5cf6;
+            --grid-color: #e2e8f0;
         }
-        to {
-          opacity: 1;
-          transform: translateY(0);
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            overflow: hidden; /* Забороняємо скрол всієї сторінки */
         }
-      }
+
+        /* --- ЛІВА ЧАСТИНА: ДОШКА --- */
+        #board-section {
+            flex: 1;
+            position: relative;
+            background-color: #fff;
+            border-right: 4px solid #cbd5e1;
+            /* Малюємо клітинку CSS-градієнтом */
+            background-image: 
+                linear-gradient(var(--grid-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+            background-size: 25px 25px;
+            cursor: crosshair;
+            overflow: hidden;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            touch-action: none; /* Важливо для малювання пальцем */
+        }
+
+        .tools {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            display: flex;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 8px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border: 1px solid var(--border);
+        }
+
+        .btn-tool {
+            border: 1px solid #cbd5e1;
+            background: white;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.2rem;
+            transition: 0.2s;
+        }
+        .btn-tool:hover { background: #f1f5f9; }
+        .btn-tool.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* --- ПРАВА ЧАСТИНА: ЗАВДАННЯ --- */
+        #tasks-section {
+            flex: 1;
+            background: var(--bg);
+            overflow-y: auto; /* Скрол тільки тут */
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: var(--card);
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+        }
+
+        .header-title { font-weight: 700; font-size: 1.1rem; color: var(--primary); }
+        .stats-container { display: flex; gap: 15px; font-weight: 600; }
+        .stat-correct { color: var(--success); }
+        .stat-wrong { color: var(--error); }
+
+        .content-container {
+            padding: 20px;
+            padding-bottom: 80px;
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* Стилі теорії та завдань */
+        .theory-block {
+            background: linear-gradient(to right, #fdfbf7, #fff);
+            border-left: 5px solid var(--accent);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        .theory-title { color: var(--accent); font-weight: bold; font-size: 1.1rem; margin-bottom: 10px; }
+        .theory-content ul { margin: 5px 0; padding-left: 20px; }
+        .theory-content li { margin-bottom: 5px; line-height: 1.5; }
+
+        .exercise-block {
+            background: var(--card);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .exercise-header { background: var(--primary-light); padding: 15px 20px; border-bottom: 1px solid var(--border); }
+        .exercise-title { margin: 0; font-size: 1.1rem; font-weight: 700; color: var(--primary); }
+        .exercise-desc { margin: 5px 0 0 0; font-size: 0.95rem; color: #475569; line-height: 1.5; }
+
+        .visual-container { display: flex; justify-content: center; padding: 20px; background: #fff; border-bottom: 1px solid var(--border); overflow-x: auto; }
+        
+        .task-row { padding: 15px 20px; border-bottom: 1px solid var(--border); display: flex; flex-direction: column; gap: 12px; }
+        .task-row:last-child { border-bottom: none; }
+        .task-row.solved-correct { background-color: #f0fdf4; }
+        .task-row.solved-wrong { background-color: #fef2f2; }
+
+        .task-content { display: flex; align-items: center; gap: 10px; }
+        .task-number { font-weight: 600; color: #94a3b8; min-width: 25px; }
+        .task-question { font-size: 1.1rem; font-weight: 500; }
+
+        .options-container { display: flex; flex-wrap: nowrap; gap: 10px; overflow-x: auto; padding-bottom: 5px; }
+        .option-btn { flex: 1; background: white; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px 15px; font-size: 1rem; cursor: pointer; min-width: 70px; white-space: nowrap; transition: 0.2s; }
+        .option-btn:hover:not(:disabled) { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }
+        .option-btn.selected-correct { background: var(--success); color: white; border-color: var(--success); }
+        .option-btn.selected-correct .katex { color: white !important; }
+        .option-btn.selected-wrong { background: var(--error); color: white; border-color: var(--error); }
+        .option-btn.selected-wrong .katex { color: white !important; }
+
+        .input-group { display: flex; gap: 10px; align-items: center; }
+        .input-answer { padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; width: 140px; font-size: 1rem; }
+        .btn-check { padding: 10px 20px; background: var(--primary); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; }
+        .input-answer.correct { border-color: var(--success); background: #f0fdf4; color: var(--success); }
+        .input-answer.wrong { border-color: var(--error); background: #fef2f2; }
+
+        .math-table { border-collapse: collapse; width: 100%; max-width: 400px; margin: 0 auto; font-size: 1.1rem; }
+        .math-table td, .math-table th { border: 1px solid #cbd5e1; padding: 10px; text-align: center; }
+        .math-table th { background-color: #f1f5f9; font-weight: bold; }
+
+        /* Кнопка завершення */
+        .finish-section { margin-top: 40px; text-align: center; }
+        .btn-finish { padding: 15px 40px; font-size: 1.2rem; font-weight: bold; color: white; background: var(--primary); border: none; border-radius: 50px; cursor: pointer; box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3); transition: transform 0.2s; }
+        .btn-finish:hover { transform: scale(1.05); background-color: #1d4ed8; }
+        .result-card { background: white; border: 2px solid var(--primary); border-radius: 12px; padding: 30px; margin-top: 20px; display: none; animation: fadeIn 0.5s ease; }
+        .result-title { font-size: 1.5rem; font-weight: bold; margin-bottom: 10px; }
+        .result-score { font-size: 2.5rem; font-weight: 800; color: var(--primary); margin: 15px 0; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Адаптивність */
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            #board-section { height: 40vh; border-right: none; border-bottom: 4px solid #cbd5e1; }
+            #tasks-section { height: 60vh; }
+        }
     </style>
-  </head>
-  <body>
-    <header>
-      <div class="header-title">Алгебра 8: §12. Функція y = k/x</div>
-      <div class="stats-container">
-        <span class="stat-correct">✅ <span id="val-correct">0</span></span>
-        <span class="stat-wrong">❌ <span id="val-wrong">0</span></span>
-      </div>
-    </header>
+</head>
+<body>
 
-    <div class="main-container" id="quiz-root">
-      <div class="theory-block">
-        <div class="theory-title">📚 Шпаргалка: $y = \frac{k}{x}$</div>
-        <div class="theory-content">
-          <ul>
-            <li>Це <strong>гіпербола</strong>.</li>
-            <li>$k > 0$: графік у I та III чвертях.</li>
-            <li>$k < 0$: графік у II та IV чвертях.</li>
-            <li>
-              Графік ніколи не перетинає осі координат ($x \ne 0, y \ne 0$).
-            </li>
-          </ul>
+    <div id="board-section">
+        <div class="tools">
+            <button class="btn-tool active" onclick="setTool('pen')" id="t-pen">🖊️</button>
+            <button class="btn-tool" onclick="setTool('eraser')" id="t-eraser">🧹</button>
+            <button class="btn-tool" onclick="clearCanvas()" style="color:red;">❌</button>
         </div>
-      </div>
+        <canvas id="board"></canvas>
+    </div>
+
+    <div id="tasks-section">
+        <header>
+            <div class="header-title">Алгебра 8: Функція $y = k/x$</div>
+            <div class="stats-container">
+                <span class="stat-correct">✅ <span id="val-correct">0</span></span>
+                <span class="stat-wrong">❌ <span id="val-wrong">0</span></span>
+            </div>
+        </header>
+
+        <div class="content-container" id="quiz-root">
+            <div class="theory-block">
+                <div class="theory-title">📚 Шпаргалка: $y = \frac{k}{x}$</div>
+                <div class="theory-content">
+                  <ul>
+                    <li>Це <strong>гіпербола</strong>.</li>
+                    <li>$k > 0$: графік у I та III чвертях.</li>
+                    <li>$k < 0$: графік у II та IV чвертях.</li>
+                    <li>Графік ніколи не перетинає осі координат ($x \ne 0, y \ne 0$).</li>
+                  </ul>
+                </div>
+            </div>
+            </div>
     </div>
 
     <script>
-      /* Функція для генерації сітки */
-      function createGridSVG() {
-        const uniqueId = "grid-" + Math.random().toString(36).substr(2, 9);
-        return `
-          <svg width="300" height="300" viewBox="0 0 300 300" style="background:#fff; border:1px solid #ccc; display:block; margin: 0 auto;">
-            <defs>
-              <pattern id="${uniqueId}" width="25" height="25" patternUnits="userSpaceOnUse">
-                <path d="M 25 0 L 0 0 0 25" fill="none" stroke="#f1f5f9" stroke-width="1"/>
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#${uniqueId})" />
-            <line x1="0" y1="250" x2="300" y2="250" stroke="#334155" stroke-width="2" />
-            <line x1="150" y1="300" x2="150" y2="0" stroke="#334155" stroke-width="2" />
-            <polygon points="300,250 290,245 290,255" fill="#334155" />
-            <polygon points="150,0 145,10 155,10" fill="#334155" />
-            <line x1="175" y1="245" x2="175" y2="255" stroke="#334155" stroke-width="2" />
-            <text x="170" y="270" font-family="Arial" font-size="14" fill="#475569">1</text>
-            <line x1="145" y1="225" x2="155" y2="225" stroke="#334155" stroke-width="2" />
-            <text x="130" y="230" font-family="Arial" font-size="14" fill="#475569">1</text>
-            <text x="135" y="270" font-family="Arial" font-size="14" fill="#475569">0</text>
-            <text x="280" y="240" font-family="Arial" font-size="16" font-weight="bold" fill="#334155">x</text>
-            <text x="160" y="20" font-family="Arial" font-size="16" font-weight="bold" fill="#334155">y</text>
-          </svg>
-        `;
-      }
+        /* --- 1. ЛОГІКА ДОШКИ (CANVAS) --- */
+        const canvas = document.getElementById('board');
+        const ctx = canvas.getContext('2d');
+        const boardSection = document.getElementById('board-section');
+        let painting = false;
+        let tool = 'pen'; 
 
-      const exercises = [
+        function resizeCanvas() {
+            // Зберігаємо поточний малюнок перед зміною розміру
+            const temp = document.createElement('canvas');
+            const tempCtx = temp.getContext('2d');
+            temp.width = canvas.width;
+            temp.height = canvas.height;
+            tempCtx.drawImage(canvas, 0, 0);
+
+            // Змінюємо розмір
+            canvas.width = boardSection.offsetWidth;
+            canvas.height = boardSection.offsetHeight;
+
+            // Відновлюємо малюнок
+            ctx.drawImage(temp, 0, 0);
+            
+            // Налаштування ліній
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        window.addEventListener('load', resizeCanvas);
+
+        function getMousePos(e) {
+            const rect = canvas.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            return { x: clientX - rect.left, y: clientY - rect.top };
+        }
+
+        function startPosition(e) {
+            painting = true;
+            draw(e);
+        }
+
+        function finishedPosition() {
+            painting = false;
+            ctx.beginPath();
+        }
+
+        function draw(e) {
+            if (!painting) return;
+            // Блокуємо скрол на тачскріні, коли малюємо
+            if(e.type.startsWith('touch')) {
+                // e.preventDefault() тут не завжди спрацьовує через passive events, але touch-action в CSS допомагає
+            }
+
+            const pos = getMousePos(e);
+            
+            if (tool === 'pen') {
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = '#2563eb'; // Синій
+                ctx.globalCompositeOperation = 'source-over';
+            } else {
+                ctx.lineWidth = 25;
+                ctx.strokeStyle = '#ffffff';
+                ctx.globalCompositeOperation = 'destination-out'; // Робить прозорим, щоб видно клітинки фону
+            }
+
+            ctx.lineTo(pos.x, pos.y);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(pos.x, pos.y);
+        }
+
+        // Події миші та тачу
+        canvas.addEventListener('mousedown', startPosition);
+        canvas.addEventListener('mouseup', finishedPosition);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseout', finishedPosition);
+        
+        canvas.addEventListener('touchstart', startPosition);
+        canvas.addEventListener('touchend', finishedPosition);
+        canvas.addEventListener('touchmove', draw);
+
+        function setTool(t) {
+            tool = t;
+            document.getElementById('t-pen').classList.toggle('active', t === 'pen');
+            document.getElementById('t-eraser').classList.toggle('active', t === 'eraser');
+        }
+
+        function clearCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        /* --- 2. ЛОГІКА ЗАВДАНЬ --- */
+        function createGridSVG() {
+            const uniqueId = "grid-" + Math.random().toString(36).substr(2, 9);
+            return `
+              <svg width="300" height="300" viewBox="0 0 300 300" style="background:#fff; border:1px solid #ccc; display:block; margin: 0 auto;">
+                <defs>
+                  <pattern id="${uniqueId}" width="25" height="25" patternUnits="userSpaceOnUse">
+                    <path d="M 25 0 L 0 0 0 25" fill="none" stroke="#f1f5f9" stroke-width="1"/>
+                  </pattern>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#${uniqueId})" />
+                <line x1="0" y1="250" x2="300" y2="250" stroke="#334155" stroke-width="2" />
+                <line x1="150" y1="300" x2="150" y2="0" stroke="#334155" stroke-width="2" />
+                <polygon points="300,250 290,245 290,255" fill="#334155" />
+                <polygon points="150,0 145,10 155,10" fill="#334155" />
+                <line x1="175" y1="245" x2="175" y2="255" stroke="#334155" stroke-width="2" />
+                <text x="170" y="270" font-family="Arial" font-size="14" fill="#475569">1</text>
+                <text x="135" y="270" font-family="Arial" font-size="14" fill="#475569">0</text>
+                <text x="280" y="240" font-family="Arial" font-size="16" font-weight="bold" fill="#334155">x</text>
+                <text x="160" y="20" font-family="Arial" font-size="16" font-weight="bold" fill="#334155">y</text>
+              </svg>
+            `;
+        }
+
+        const exercises = [
         {
           id: "12.1",
           title: "12.1.",
           desc: "Які з функцій задають обернену пропорційність:",
           tasks: [
-            {
-              id: "1)",
-              q: "$y = \\frac{14}{x}$",
-              a: "Так",
-              opts: ["Так", "Ні"],
-            },
-            {
-              id: "2)",
-              q: "$y = \\frac{x}{14}$",
-              a: "Ні",
-              opts: ["Так", "Ні"],
-            },
-            {
-              id: "3)",
-              q: "$y = -\\frac{5}{x}$",
-              a: "Так",
-              opts: ["Так", "Ні"],
-            },
+            { id: "1)", q: "$y = \\frac{14}{x}$", a: "Так", opts: ["Так", "Ні"] },
+            { id: "2)", q: "$y = \\frac{x}{14}$", a: "Ні", opts: ["Так", "Ні"] },
+            { id: "3)", q: "$y = -\\frac{5}{x}$", a: "Так", opts: ["Так", "Ні"] },
             { id: "4)", q: "$y = 7$", a: "Ні", opts: ["Так", "Ні"] },
           ],
         },
@@ -413,18 +363,8 @@
           title: "12.3.",
           desc: "У яких координатних кутах лежить графік функції:",
           tasks: [
-            {
-              id: "1)",
-              q: "$y = \\frac{25}{x}$",
-              a: "I і III",
-              opts: ["I і II", "I і III", "II і IV"],
-            },
-            {
-              id: "2)",
-              q: "$y = -\\frac{15}{x}$",
-              a: "II і IV",
-              opts: ["I і III", "II і IV", "I і IV"],
-            },
+            { id: "1)", q: "$y = \\frac{25}{x}$", a: "I і III", opts: ["I і II", "I і III", "II і IV"] },
+            { id: "2)", q: "$y = -\\frac{15}{x}$", a: "II і IV", opts: ["I і III", "II і IV", "I і IV"] },
           ],
         },
         {
@@ -480,7 +420,7 @@
         {
           id: "12.8",
           title: "12.8.",
-          desc: "Побудуйте графік функції $y = -\\frac{12}{x}$, склавши таблицю значень функції для значень аргументу:",
+          desc: "Побудуйте графік функції $y = -\\frac{12}{x}$, склавши таблицю значень (використай дошку зліва):",
           visual: createGridSVG(),
           tasks: [
             { id: "1)", q: "-6", a: "2", type: "input" },
@@ -504,35 +444,16 @@
           title: "12.12.",
           desc: "(Усно.) Графіки яких функцій проходять через точку $A(2; -8)$:",
           tasks: [
-            {
-              id: "1)",
-              q: "Варіанти:",
-              a: "$y = -\\frac{16}{x}$",
-              opts: [
-                "$y = \\frac{16}{x}$",
-                "$y = -\\frac{16}{x}$",
-                "$y = -\\frac{4}{x}$",
-              ],
-            },
+            { id: "1)", q: "Варіанти:", a: "$y = -\\frac{16}{x}$", opts: ["$y = \\frac{16}{x}$", "$y = -\\frac{16}{x}$", "$y = -\\frac{4}{x}$"] },
           ],
         },
         {
           id: "12.13",
           title: "12.13.",
-          desc: "Загальна вартість товару 200 грн. Ціна товару — $x$ грн, кількість — $y$ кг. Запишіть формулою залежність $y$ від $x$. Чи є ця залежність оберненою пропорційністю?",
+          desc: "Загальна вартість товару 200 грн. Ціна товару — $x$ грн, кількість — $y$ кг.",
           tasks: [
-            {
-              id: "1)",
-              q: "Чи є залежність оберненою пропорційністю?",
-              a: "Так",
-              opts: ["Так", "Ні"],
-            },
-            {
-              id: "2)",
-              q: "Запишіть формулу:",
-              a: "$y = \\frac{200}{x}$",
-              opts: ["$y = 200x$", "$y = \\frac{200}{x}$", "$y = 200 - x$"],
-            },
+            { id: "1)", q: "Чи є залежність оберненою пропорційністю?", a: "Так", opts: ["Так", "Ні"] },
+            { id: "2)", q: "Запишіть формулу:", a: "$y = \\frac{200}{x}$", opts: ["$y = 200x$", "$y = \\frac{200}{x}$", "$y = 200 - x$"] },
           ],
         },
         {
@@ -541,32 +462,17 @@
           desc: "Побудуйте графік функції $y = \\frac{12}{x}$. За графіком знайдіть:",
           visual: createGridSVG(),
           tasks: [
-            {
-              id: "1)",
-              q: "значення функції, якщо значення аргументу дорівнює -2",
-              a: "-6",
-              type: "input",
-            },
-            {
-              id: "2)",
-              q: "значення аргументу, для яких функція дорівнює 4",
-              a: "3",
-              type: "input",
-            },
+            { id: "1)", q: "значення функції, якщо значення аргументу дорівнює -2", a: "-6", type: "input" },
+            { id: "2)", q: "значення аргументу, для яких функція дорівнює 4", a: "3", type: "input" },
           ],
         },
-        {
+{
           id: "12.16",
           title: "12.16.",
           desc: "Графік оберненої пропорційності проходить через точку $M(-3; 5)$. Задайте цю функцію формулою.",
           tasks: [
             { id: "1)", q: "Знайдіть k:", a: "-15", type: "input" },
-            {
-              id: "2)",
-              q: "Формула:",
-              a: "$y = -\\frac{15}{x}$",
-              opts: ["$y = \\frac{15}{x}$", "$y = -\\frac{15}{x}$"],
-            },
+            { id: "2)", q: "Формула:", a: "$y = -\\frac{15}{x}$", opts: ["$y = \\frac{15}{x}$", "$y = -\\frac{15}{x}$"] },
           ],
         },
         {
@@ -576,16 +482,7 @@
           tasks: [
             { id: "1)", q: "y_max =", a: "12", type: "input" },
             { id: "2)", q: "y_min =", a: "4", type: "input" },
-            {
-              id: "3)",
-              q: "Область значень:",
-              a: "$4 \\le y \\le 12$",
-              opts: [
-                "$2 \\le y \\le 6$",
-                "$4 \\le y \\le 12$",
-                "$0 \\le y \\le 24$",
-              ],
-            },
+            { id: "3)", q: "Область значень:", a: "$4 \\le y \\le 12$", opts: ["$2 \\le y \\le 6$", "$4 \\le y \\le 12$", "$0 \\le y \\le 24$"] },
           ],
         },
         {
@@ -615,16 +512,7 @@
           desc: "Побудуйте графік функції (попередньо спростивши вираз) $y = \\frac{6x - 12}{3x - 1.5x^2}$:",
           visual: createGridSVG(),
           tasks: [
-            {
-              id: "1)",
-              q: "Спрощена формула:",
-              a: "$y = -\\frac{4}{x}$",
-              opts: [
-                "$y = \\frac{2}{x}$",
-                "$y = -\\frac{4}{x}$",
-                "$y = \\frac{4}{x}$",
-              ],
-            },
+            { id: "1)", q: "Спрощена формула:", a: "$y = -\\frac{4}{x}$", opts: ["$y = \\frac{2}{x}$", "$y = -\\frac{4}{x}$", "$y = \\frac{4}{x}$"] },
           ],
         },
         {
@@ -642,18 +530,8 @@
           title: "12.26.",
           desc: "Спростіть вираз:",
           tasks: [
-            {
-              id: "1)",
-              q: "$(\\frac{1}{2} x^{-2} y)^{-2} \\cdot (4 x^{-1} y^2)$",
-              a: "$16 x^3$",
-              opts: ["$4 x^3$", "$16 x^3$", "$16 x y^4$"],
-            },
-            {
-              id: "2)",
-              q: "$(2 a^{-1} b^2)^{-3} \\cdot 8 a^{-2} b$",
-              a: "$\\frac{a}{b^5}$",
-              opts: ["$\\frac{a}{b^5}$", "$\\frac{1}{a b^5}$", "$a b^5$"],
-            },
+            { id: "1)", q: "$(\\frac{1}{2} x^{-2} y)^{-2} \\cdot (4 x^{-1} y^2)$", a: "$16 x^3$", opts: ["$4 x^3$", "$16 x^3$", "$16 x y^4$"] },
+            { id: "2)", q: "$(2 a^{-1} b^2)^{-3} \\cdot 8 a^{-2} b$", a: "$\\frac{a}{b^5}$", opts: ["$\\frac{a}{b^5}$", "$\\frac{1}{a b^5}$", "$a b^5$"] },
           ],
         },
         {
@@ -661,188 +539,181 @@
           title: "12.27.",
           desc: "Обчисліть: $(1 + (1 + 2^{-1})^{-1})^{-2}$",
           tasks: [
-            {
-              id: "1)",
-              q: "Відповідь:",
-              a: "0.36",
-              opts: ["0.36", "1.44", "0.64"],
-            },
+            { id: "1)", q: "Відповідь:", a: "0.36", opts: ["0.36", "1.44", "0.64"] },
           ],
         },
-      ];
+        ];
 
-      /* Логіка */
-      let totalCorrect = 0;
-      let totalWrong = 0;
-      let totalTasksCount = 0;
+        let totalCorrect = 0;
+        let totalWrong = 0;
+        let totalTasksCount = 0;
 
-      document.addEventListener("DOMContentLoaded", () => {
-        const root = document.getElementById("quiz-root");
+        document.addEventListener("DOMContentLoaded", () => {
+            const root = document.getElementById("quiz-root");
 
-        // Рахуємо загальну кількість завдань
-        exercises.forEach((ex) => {
-          totalTasksCount += ex.tasks.length;
-        });
+            // Рахуємо загальну кількість
+            exercises.forEach(ex => totalTasksCount += ex.tasks.length);
 
-        // Генеруємо вправи
-        exercises.forEach((ex) => {
-          const exBlock = document.createElement("div");
-          exBlock.className = "exercise-block";
+            // Генеруємо блоки
+            exercises.forEach((ex) => {
+                const exBlock = document.createElement("div");
+                exBlock.className = "exercise-block";
 
-          let headerHTML = `
-            <div class="exercise-header">
-              <h3 class="exercise-title">${ex.title}</h3>
-              <p class="exercise-desc">${ex.desc}</p>
-            </div>
-          `;
-          exBlock.innerHTML = headerHTML;
+                exBlock.innerHTML = `
+                    <div class="exercise-header">
+                        <h3 class="exercise-title">${ex.title}</h3>
+                        <p class="exercise-desc">${ex.desc}</p>
+                    </div>
+                `;
 
-          if (ex.visual) {
-            const visualDiv = document.createElement("div");
-            visualDiv.className = "visual-container";
-            visualDiv.innerHTML = ex.visual;
-            exBlock.appendChild(visualDiv);
-          }
+                if (ex.visual) {
+                    const visualDiv = document.createElement("div");
+                    visualDiv.className = "visual-container";
+                    visualDiv.innerHTML = ex.visual;
+                    exBlock.appendChild(visualDiv);
+                }
 
-          const taskList = document.createElement("div");
-          taskList.className = "task-list";
+                const taskList = document.createElement("div");
+                taskList.className = "task-list";
 
-          ex.tasks.forEach((task) => {
-            const row = document.createElement("div");
-            row.className = "task-row";
+                ex.tasks.forEach((task) => {
+                    const row = document.createElement("div");
+                    row.className = "task-row";
 
-            let contentHTML = `
-              <div class="task-content">
-                <div class="task-number">${task.id}</div>
-                <div class="task-question">${task.q}</div>
+                    let contentHTML = `
+                        <div class="task-content">
+                            <div class="task-number">${task.id}</div>
+                            <div class="task-question">${task.q}</div>
+                        </div>
+                    `;
+
+                    let actionHTML = "";
+                    if (task.type === "input") {
+                        const answers = Array.isArray(task.a) ? task.a.join("|") : task.a;
+                        actionHTML = `
+                            <div class="input-group">
+                                <input type="text" class="input-answer" placeholder="..." onkeypress="if(event.key==='Enter') this.nextElementSibling.click()">
+                                <button class="btn-check" onclick="checkInput(this, '${answers}')">OK</button>
+                            </div>
+                        `;
+                    } else {
+                        actionHTML = `<div class="options-container">`;
+                        task.opts.forEach((opt) => {
+                            const safeOpt = opt.replace(/"/g, "&quot;");
+                            const safeAns = task.a.replace(/"/g, "&quot;");
+                            actionHTML += `<button class="option-btn" onclick="checkOpt(this, '${safeOpt}', '${safeAns}')">${opt}</button>`;
+                        });
+                        actionHTML += `</div>`;
+                    }
+
+                    row.innerHTML = contentHTML + `<div style="margin-top:10px;">${actionHTML}</div>`;
+                    taskList.appendChild(row);
+                });
+
+                exBlock.appendChild(taskList);
+                root.appendChild(exBlock);
+            });
+
+            // Додаємо кнопку завершення
+            const finishSection = document.createElement("div");
+            finishSection.className = "finish-section";
+            finishSection.innerHTML = `
+              <button class="btn-finish" onclick="finishLesson()">Завершити урок</button>
+              <div id="result-card" class="result-card">
+                 <div class="result-title">Результат уроку</div>
+                 <div class="result-score"><span id="res-score">0</span> / <span id="res-total">0</span></div>
+                 <div id="res-msg" class="result-msg"></div>
               </div>
             `;
+            root.appendChild(finishSection);
 
-            let actionHTML = "";
-            if (task.type === "input") {
-              const answers = Array.isArray(task.a) ? task.a.join("|") : task.a;
-              actionHTML = `
-                <div class="input-group">
-                  <input type="text" class="input-answer" placeholder="..." onkeypress="if(event.key==='Enter') this.nextElementSibling.click()">
-                  <button class="btn-check" onclick="checkInput(this, '${answers}')">OK</button>
-                </div>
-              `;
+            if (window.renderMathInElement) {
+                renderMathInElement(document.body, { delimiters: [{ left: "$", right: "$", display: false }] });
             } else {
-              actionHTML = `<div class="options-container">`;
-              task.opts.forEach((opt) => {
-                const safeOpt = opt.replace(/"/g, "&quot;");
-                const safeAns = task.a.replace(/"/g, "&quot;");
-                actionHTML += `<button class="option-btn" onclick="checkOpt(this, '${safeOpt}', '${safeAns}')">${opt}</button>`;
-              });
-              actionHTML += `</div>`;
+                window.onload = () => renderMathInElement(document.body, { delimiters: [{ left: "$", right: "$", display: false }] });
+            }
+            
+            // Ініціалізація дошки
+            setTimeout(resizeCanvas, 100);
+        });
+
+        function checkOpt(btn, val, ans) {
+            const row = btn.closest(".task-row");
+            if (row.classList.contains("done")) return;
+            row.classList.add("done");
+
+            const v = val.replace(/\\/g, "").replace(/\s/g, "");
+            const a = ans.replace(/\\/g, "").replace(/\s/g, "");
+
+            row.querySelectorAll(".option-btn").forEach((b) => (b.disabled = true));
+
+            if (v === a) {
+                btn.classList.add("selected-correct");
+                row.classList.add("solved-correct");
+                totalCorrect++;
+            } else {
+                btn.classList.add("selected-wrong");
+                row.classList.add("solved-wrong");
+                totalWrong++;
+            }
+            updateStats();
+        }
+
+        function checkInput(btn, ansStr) {
+            const row = btn.closest(".task-row");
+            const input = row.querySelector("input");
+            if (row.classList.contains("done")) return;
+
+            let val = input.value.trim().replace(",", ".");
+            const correctArr = ansStr.split("|");
+
+            row.classList.add("done");
+            input.disabled = true;
+            btn.disabled = true;
+
+            if (correctArr.includes(val)) {
+                input.classList.add("correct");
+                row.classList.add("solved-correct");
+                totalCorrect++;
+            } else {
+                input.classList.add("wrong");
+                row.classList.add("solved-wrong");
+                totalWrong++;
+            }
+            updateStats();
+        }
+
+        function updateStats() {
+            document.getElementById("val-correct").innerText = totalCorrect;
+            document.getElementById("val-wrong").innerText = totalWrong;
+        }
+
+        function finishLesson() {
+            const card = document.getElementById("result-card");
+            const scoreSpan = document.getElementById("res-score");
+            const totalSpan = document.getElementById("res-total");
+            const msgDiv = document.getElementById("res-msg");
+
+            scoreSpan.innerText = totalCorrect;
+            totalSpan.innerText = totalTasksCount;
+
+            const percent = (totalCorrect / totalTasksCount) * 100;
+            let msg = "";
+
+            if (percent === 100) {
+                msg = "🔥 Неймовірно! Ти впоралась з усім ідеально! 🏆";
+            } else if (percent >= 85) {
+                msg = "😎 Чудовий результат! Майже все правильно.";
+            } else if (percent >= 60) {
+                msg = "👍 Непогано, але були помилки. Проаналізуй їх.";
+            } else {
+                msg = "🧐 Варто ще трохи потренуватись. Не здавайся!";
             }
 
-            row.innerHTML =
-              contentHTML + `<div style="margin-top:10px;">${actionHTML}</div>`;
-            taskList.appendChild(row);
-          });
-
-          exBlock.appendChild(taskList);
-          root.appendChild(exBlock);
-        });
-
-        // Додаємо блок завершення в кінець
-        const finishSection = document.createElement("div");
-        finishSection.className = "finish-section";
-        finishSection.innerHTML = `
-          <button class="btn-finish" onclick="finishLesson()">Завершити урок</button>
-          <div id="result-card" class="result-card">
-             <div class="result-title">Результат уроку</div>
-             <div class="result-score"><span id="res-score">0</span> / <span id="res-total">0</span></div>
-             <div id="res-msg" class="result-msg"></div>
-          </div>
-        `;
-        root.appendChild(finishSection);
-
-        renderMathInElement(document.body, {
-          delimiters: [{ left: "$", right: "$", display: false }],
-        });
-      });
-
-      function checkOpt(btn, val, ans) {
-        const row = btn.closest(".task-row");
-        if (row.classList.contains("done")) return;
-        row.classList.add("done");
-
-        const v = val.replace(/\\/g, "").replace(/\s/g, "");
-        const a = ans.replace(/\\/g, "").replace(/\s/g, "");
-
-        row.querySelectorAll(".option-btn").forEach((b) => (b.disabled = true));
-
-        if (v === a) {
-          btn.classList.add("selected-correct");
-          row.classList.add("solved-correct");
-          totalCorrect++;
-        } else {
-          btn.classList.add("selected-wrong");
-          row.classList.add("solved-wrong");
-          totalWrong++;
+            msgDiv.innerText = msg;
+            card.style.display = "block";
+            card.scrollIntoView({ behavior: "smooth" });
         }
-        updateStats();
-      }
-
-      function checkInput(btn, ansStr) {
-        const row = btn.closest(".task-row");
-        const input = row.querySelector("input");
-        if (row.classList.contains("done")) return;
-
-        let val = input.value.trim().replace(",", ".");
-        const correctArr = ansStr.split("|");
-
-        row.classList.add("done");
-        input.disabled = true;
-        btn.disabled = true;
-
-        if (correctArr.includes(val)) {
-          input.classList.add("correct");
-          row.classList.add("solved-correct");
-          totalCorrect++;
-        } else {
-          input.classList.add("wrong");
-          row.classList.add("solved-wrong");
-          totalWrong++;
-        }
-        updateStats();
-      }
-
-      function updateStats() {
-        document.getElementById("val-correct").innerText = totalCorrect;
-        document.getElementById("val-wrong").innerText = totalWrong;
-      }
-
-      function finishLesson() {
-        const card = document.getElementById("result-card");
-        const scoreSpan = document.getElementById("res-score");
-        const totalSpan = document.getElementById("res-total");
-        const msgDiv = document.getElementById("res-msg");
-
-        scoreSpan.innerText = totalCorrect;
-        totalSpan.innerText = totalTasksCount;
-
-        const percent = (totalCorrect / totalTasksCount) * 100;
-        let msg = "";
-
-        if (percent === 100) {
-          msg = "🔥 Неймовірно! Ти впоралась з усім ідеально! 🏆";
-        } else if (percent >= 85) {
-          msg = "😎 Чудовий результат! Майже все правильно.";
-        } else if (percent >= 60) {
-          msg = "👍 Непогано, але були помилки. Проаналізуй їх.";
-        } else {
-          msg = "🧐 Варто ще трохи потренуватись. Не здавайся!";
-        }
-
-        msgDiv.innerText = msg;
-        card.style.display = "block";
-
-        // Прокрутка до результату
-        card.scrollIntoView({ behavior: "smooth" });
-      }
     </script>
-  </body>
+</body>
 </html>

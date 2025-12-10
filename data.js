@@ -61,6 +61,16 @@ window.lessonsData = [
     category: "lesson",
     author: "Даша",
   },
+   {
+    id: 601,
+    title: "Відсоткові розрахунки",
+    grade: 6,
+    topic: "Математика",
+    link: "math_general/6/Вадим.html",
+    subject_code: "math_general",
+    category: "lesson",
+    author: "Соня",
+  },
   {
     id: 712,
     title: "Розклад многочлена на множники",
