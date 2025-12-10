@@ -61,7 +61,7 @@ window.lessonsData = [
     category: "lesson",
     author: "Даша",
   },
-   {
+  {
     id: 601,
     title: "Відсоткові розрахунки",
     grade: 6,
@@ -179,6 +179,26 @@ window.lessonsData = [
     subject_code: "geometry",
     link: "geometry/9/Рівняння прямої.html",
     category: "lesson",
+    author: "Даша",
+  },
+  {
+    id: 18011,
+    title: "ДЗ: Стандартний вигляд числа",
+    grade: 8,
+    topic: "Алгебра",
+    link: "algebra/8/Домашня Стандартний вигляд числа.html",
+    subject_code: "algebra",
+    category: "homework",
+    author: "Даша",
+  },
+  {
+    id: 18012,
+    title: "ДЗ: Гіпербола",
+    grade: 8,
+    topic: "Алгебра",
+    link: "algebra/8/Домашня Гіпербола.html",
+    subject_code: "algebra",
+    category: "homework",
     author: "Даша",
   },
 ];

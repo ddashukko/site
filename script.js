@@ -15,9 +15,6 @@ function renderLessons() {
     const isGradeMatch = gradeFilter === "all" || lesson.grade == gradeFilter;
     const isCategoryMatch =
       categoryFilter === "all" || lesson.category === categoryFilter;
-
-    // Перевірка автора
-    // Якщо в data.js автора не вказано, він вважається undefined і не пройде фільтр (крім 'all')
     const isAuthorMatch =
       authorFilter === "all" || lesson.author === authorFilter;
 
@@ -46,10 +43,17 @@ function renderLessons() {
     let subjectLabel = lesson.topic;
     if (lesson.subject_code === "math_general") subjectLabel = "Математика";
 
-    const typeLabel = lesson.category === "test" ? "📝 Тест" : "📖 Урок";
-    const typeClass = lesson.category === "test" ? "tag-test" : "tag-lesson";
+    let typeLabel = "📖 Урок";
+    let typeClass = "tag-lesson";
 
-    // Автоматично підставляємо автора, якщо його немає в даних — пишемо порожньо
+    if (lesson.category === "test") {
+      typeLabel = "📝 Тест";
+      typeClass = "tag-test";
+    } else if (lesson.category === "homework") {
+      typeLabel = "🏠 Д/З";
+      typeClass = "tag-homework";
+    }
+
     const authorName = lesson.author ? `👤 ${lesson.author}` : "";
 
     card.innerHTML = `
