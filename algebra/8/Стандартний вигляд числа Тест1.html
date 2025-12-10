@@ -81,13 +81,20 @@
         overflow: hidden;
       }
 
-      /* Видалено стилі заголовків блоків, оскільки ми їх прибрали */
+      .exercise-instruction {
+        padding: 15px 20px;
+        background: #f9fafb;
+        border-bottom: 1px solid var(--border);
+        font-weight: 700;
+        color: #374151;
+        font-size: 1rem;
+      }
 
       .task-container {
         padding: 20px;
         border-bottom: 1px solid var(--border);
       }
-      /* Прибираємо лінію у останнього елемента в блоці */
+
       .task-container:last-child {
         border-bottom: none;
       }
@@ -111,7 +118,6 @@
         font-weight: 600;
       }
 
-      /* Сітка варіантів - ОДИН РЯДОК */
       .options-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(10px, 1fr));
@@ -158,7 +164,6 @@
         opacity: 0.6;
       }
 
-      /* Bottom Bar */
       .bottom-bar {
         position: fixed;
         bottom: 0;
@@ -188,7 +193,6 @@
         background: #374151;
       }
 
-      /* МОДАЛЬНЕ ВІКНО */
       .modal-overlay {
         position: fixed;
         top: 0;
@@ -322,10 +326,9 @@
     </div>
 
     <script>
-      /* ДАНІ ТЕСТУ (без відображення заголовків груп) */
       const exercises = [
         {
-          // Група 1
+          instruction: "Чи записано число в стандартному вигляді?",
           tasks: [
             {
               id: "1",
@@ -342,24 +345,24 @@
           ],
         },
         {
-          // Група 2
+          instruction: "Укажіть порядок числа:",
           tasks: [
             {
               id: "3",
-              q: "Порядок $3.7 \\cdot 10^6$?",
+              q: "$3.7 \\cdot 10^6$",
               options: ["3.7", "6", "10", "7"],
               correctIndex: 1,
             },
             {
               id: "4",
-              q: "Порядок $9.1 \\cdot 10^{-4}$?",
+              q: "$9.1 \\cdot 10^{-4}$",
               options: ["-4", "4", "9", "-1"],
               correctIndex: 0,
             },
           ],
         },
         {
-          // Група 3
+          instruction: "Запишіть число в стандартному вигляді:",
           tasks: [
             {
               id: "5",
@@ -386,7 +389,7 @@
           ],
         },
         {
-          // Група 4
+          instruction: "Подайте вираз у стандартному вигляді:",
           tasks: [
             {
               id: "7",
@@ -402,7 +405,7 @@
           ],
         },
         {
-          // Група 5
+          instruction: "Запишіть у вигляді десяткового дробу або цілого числа:",
           tasks: [
             {
               id: "8",
@@ -427,7 +430,12 @@
           const block = document.createElement("div");
           block.className = "exercise-block";
 
-          // ТУТ ПРИБРАНО ДОДАВАННЯ ЗАГОЛОВКУ (ex.title)
+          if (ex.instruction) {
+            const instr = document.createElement("div");
+            instr.className = "exercise-instruction";
+            instr.innerText = ex.instruction;
+            block.appendChild(instr);
+          }
 
           ex.tasks.forEach((task) => {
             const container = document.createElement("div");
@@ -439,7 +447,7 @@
 
             const grid = document.createElement("div");
             grid.className = "options-grid";
-            // Адаптація ширини для "Так/Ні"
+
             if (task.options.length === 2) {
               grid.style.maxWidth = "300px";
             }
