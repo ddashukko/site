@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      Mathematik-Test 5. Klasse (Deutschland) – Schriftliches Rechnen
+    </title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
+    />
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"
+    ></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    ></script>
+
+    <style>
+      :root {
+        --primary: #059669; /* Смарагдово-зелений для Німеччини/Математики */
+        --primary-light: #d1fae5;
+        --success: #16a34a;
+        --error: #dc2626;
+        --bg: #f8fafc;
+        --card: #ffffff;
+        --text: #1e293b;
+        --border: #e2e8f0;
+        --accent: #059669;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      header {
+        background: var(--card);
+        width: 100%;
+        padding: 15px 20px;
+        border-bottom: 3px solid var(--accent);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      }
+
+      .header-title {
+        font-weight: 700;
+        font-size: 1.5rem;
+        color: var(--accent);
+        text-align: center;
+      }
+
+      .content-container {
+        width: 100%;
+        max-width: 800px;
+        padding: 20px;
+        box-sizing: border-box;
+      }
+
+      .quiz-block {
+        background: var(--card);
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        margin-bottom: 20px;
+        padding: 20px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      }
+
+      .question-header {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--text);
+        margin-bottom: 15px;
+        display: flex;
+        align-items: flex-start;
+      }
+      .question-number {
+        color: var(--accent);
+        font-size: 1.2rem;
+        margin-right: 10px;
+        min-width: 30px;
+      }
+
+      .options-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 10px;
+      }
+
+      .option-btn {
+        background: white;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        padding: 10px 15px;
+        font-size: 1rem;
+        cursor: pointer;
+        white-space: nowrap;
+        text-align: center;
+        transition: 0.2s;
+      }
+
+      .option-btn:hover:not(:disabled) {
+        border-color: var(--primary);
+        background: var(--primary-light);
+      }
+      .option-btn.selected-correct {
+        background: var(--success);
+        color: white;
+        border-color: var(--success);
+      }
+      .option-btn.selected-correct .katex {
+        color: white !important;
+      }
+      .option-btn.selected-wrong {
+        background: var(--error);
+        color: white;
+        border-color: var(--error);
+      }
+      .option-btn.selected-wrong .katex {
+        color: white !important;
+      }
+
+      .finish-section {
+        margin-top: 40px;
+        text-align: center;
+      }
+      .btn-finish {
+        padding: 15px 40px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: white;
+        background: var(--primary);
+        border: none;
+        border-radius: 50px;
+        box-shadow: 0 4px 15px rgba(5, 150, 105, 0.4);
+        transition: transform 0.2s;
+      }
+      .btn-finish:hover {
+        transform: scale(1.05);
+        background-color: #047857;
+      }
+
+      /* --- Modal styles --- */
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(5px);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .modal-card {
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        max-width: 450px;
+        width: 90%;
+        text-align: center;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        position: relative;
+      }
+      .modal-score-big {
+        font-size: 4rem;
+        font-weight: 900;
+        color: var(--primary);
+        line-height: 1;
+        margin: 10px 0;
+      }
+      .modal-footer-btn {
+        margin-top: 30px;
+        padding: 12px 30px;
+        background: var(--text);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        cursor: pointer;
+      }
+
+      @media (max-width: 600px) {
+        .options-container {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="header-title">
+        🇩🇪 Schriftliches Rechnen (Addition, Subtraktion, Multiplikation,
+        Division) | 5. Klasse
+      </div>
+    </header>
+
+    <div class="content-container" id="quiz-root"></div>
+
+    <div id="result-modal" class="modal-overlay">
+      <div class="modal-card">
+        <div id="modal-content-body"></div>
+      </div>
+    </div>
+
+    <script>
+      // Масив тестових питань, сфокусованих на письмових обчисленнях
+      const testQuestions = [
+        // ------------------ Addition (8) ------------------
+        {
+          id: 1,
+          q: "Berechnen Sie die Summe (schriftliche Addition):\n$45.879 + 12.345$",
+          a: "58.224",
+          opts: ["57.114", "58.224", "59.124", "57.214"],
+        },
+        {
+          id: 2,
+          q: "Berechnen Sie die Summe:\n$1.209.560 + 89.471$",
+          a: "1.299.031",
+          opts: ["1.299.031", "1.299.131", "1.309.031", "1.289.031"],
+        },
+        {
+          id: 3,
+          q: "Berechnen Sie die Summe:\n$67.892 + 9.999$",
+          a: "77.891",
+          opts: ["77.881", "78.891", "77.891", "77.991"],
+        },
+        {
+          id: 4,
+          q: "Berechnen Sie die Summe:\n$345.008 + 98.765$",
+          a: "443.773",
+          opts: ["443.773", "433.773", "442.763", "444.773"],
+        },
+        {
+          id: 5,
+          q: "Berechnen Sie die Summe:\n$803.456 + 196.544$",
+          a: "1.000.000",
+          opts: ["999.999", "1.000.000", "1.000.010", "999.000"],
+        },
+        {
+          id: 6,
+          q: "Berechnen Sie die Summe:\n$123.456 + 76.543$",
+          a: "199.999",
+          opts: ["200.000", "199.990", "199.999", "200.999"],
+        },
+        {
+          id: 7,
+          q: "Berechnen Sie die Summe:\n$4.567 + 1.234 + 5.000$",
+          a: "10.801",
+          opts: ["10.791", "10.801", "11.801", "10.701"],
+        },
+        {
+          id: 8,
+          q: "Berechnen Sie die Summe:\n$98.765 + 1.235$",
+          a: "100.000",
+          opts: ["99.000", "100.000", "99.990", "101.000"],
+        },
+        // ------------------ Subtraktion (8) ------------------
+        {
+          id: 9,
+          q: "Berechnen Sie die Differenz (schriftliche Subtraktion):\n$50.000 - 12.345$",
+          a: "37.655",
+          opts: ["37.655", "38.655", "37.755", "37.555"],
+        },
+        {
+          id: 10,
+          q: "Berechnen Sie die Differenz:\n$10.000 - 999$",
+          a: "9.001",
+          opts: ["9.001", "9.010", "9.901", "8.901"],
+        },
+        {
+          id: 11,
+          q: "Berechnen Sie die Differenz:\n$345.678 - 12.345$",
+          a: "333.333",
+          opts: ["333.333", "333.343", "333.223", "343.333"],
+        },
+        {
+          id: 12,
+          q: "Berechnen Sie die Differenz:\n$8.003 - 4.567$",
+          a: "3.436",
+          opts: ["3.546", "3.436", "4.436", "3.536"],
+        },
+        {
+          id: 13,
+          q: "Berechnen Sie die Differenz:\n$1.000.000 - 456.789$",
+          a: "543.211",
+          opts: ["543.211", "543.111", "554.211", "543.221"],
+        },
+        {
+          id: 14,
+          q: "Berechnen Sie die Differenz:\n$98.765 - 8.976$",
+          a: "89.789",
+          opts: ["89.789", "89.889", "90.789", "99.741"],
+        },
+        {
+          id: 15,
+          q: "Berechnen Sie die Differenz:\n$7.000 - 345$",
+          a: "6.655",
+          opts: ["6.655", "6.755", "6.645", "6.345"],
+        },
+        {
+          id: 16,
+          q: "Berechnen Sie die Differenz:\n$20.020 - 1.001$",
+          a: "19.019",
+          opts: ["19.119", "19.019", "19.009", "21.021"],
+        },
+        // ------------------ Multiplikation (8) ------------------
+        {
+          id: 17,
+          q: "Berechnen Sie das Produkt (schriftliche Multiplikation):\n$123 \\cdot 5$",
+          a: "615",
+          opts: ["615", "605", "515", "625"],
+        },
+        {
+          id: 18,
+          q: "Berechnen Sie das Produkt:\n$45 \\cdot 20$",
+          a: "900",
+          opts: ["900", "800", "950", "450"],
+        },
+        {
+          id: 19,
+          q: "Berechnen Sie das Produkt:\n$205 \\cdot 30$",
+          a: "6.150",
+          opts: ["6.050", "6.150", "6.250", "6.000"],
+        },
+        {
+          id: 20,
+          q: "Berechnen Sie das Produkt:\n$34 \\cdot 18$",
+          a: "612",
+          opts: ["612", "582", "542", "602"],
+        },
+        {
+          id: 21,
+          q: "Berechnen Sie das Produkt:\n$111 \\cdot 111$",
+          a: "12.321",
+          opts: ["12.331", "12.121", "12.321", "11.111"],
+        },
+        {
+          id: 22,
+          q: "Berechnen Sie das Produkt:\n$250 \\cdot 40$",
+          a: "10.000",
+          opts: ["1.000", "10.000", "100.000", "10.250"],
+        },
+        {
+          id: 23,
+          q: "Berechnen Sie das Produkt:\n$305 \\cdot 24$",
+          a: "7.320",
+          opts: ["7.220", "7.320", "7.420", "7.300"],
+        },
+        {
+          id: 24,
+          q: "Berechnen Sie das Produkt:\n$98 \\cdot 12$",
+          a: "1.176",
+          opts: ["1.166", "1.186", "1.176", "1.106"],
+        },
+        // ------------------ Division (6) ------------------
+        {
+          id: 25,
+          q: "Berechnen Sie den Quotienten (schriftliche Division):\n$250 \\div 5$",
+          a: "50",
+          opts: ["5", "50", "25", "500"],
+        },
+        {
+          id: 26,
+          q: "Berechnen Sie den Quotienten:\n$400 \\div 8$",
+          a: "50",
+          opts: ["40", "50", "80", "60"],
+        },
+        {
+          id: 27,
+          q: "Berechnen Sie den Quotienten:\n$144 \\div 12$",
+          a: "12",
+          opts: ["10", "12", "14", "16"],
+        },
+        {
+          id: 28,
+          q: "Berechnen Sie den Quotienten:\n$808 \\div 4$",
+          a: "202",
+          opts: ["22", "202", "20", "200"],
+        },
+        {
+          id: 29,
+          q: "Berechnen Sie die Division:\n$305 \\div 10$. Wie lautet der Quotient und der Rest?",
+          a: "Quotient: 30, Rest: 5",
+          opts: [
+            "Quotient: 30, Rest: 5",
+            "Quotient: 3, Rest: 5",
+            "Quotient: 35, Rest: 0",
+            "Quotient: 305, Rest: 0",
+          ],
+        },
+        {
+          id: 30,
+          q: "Berechnen Sie die Division:\n$500 \\div 7$. Wie lautet der Quotient und der Rest?",
+          a: "Quotient: 71, Rest: 3",
+          opts: [
+            "Quotient: 70, Rest: 0",
+            "Quotient: 70, Rest: 10",
+            "Quotient: 71, Rest: 3",
+            "Quotient: 71, Rest: 1",
+          ],
+        },
+      ];
+
+      let totalCorrect = 0;
+      let totalAttempted = 0;
+      let isFinished = false;
+
+      // Отримуємо посилання на глобальну функцію checkAnswer
+      window.checkAnswer = function (btn, questionId, correctAns) {
+        if (isFinished) return;
+
+        const questionBlock = btn.closest(".quiz-block");
+        if (questionBlock.classList.contains("answered")) return;
+
+        questionBlock.classList.add("answered");
+        totalAttempted++;
+
+        // Функція для очищення рядків від KaTeX-форматування та порівняння
+        const cleanString = (str) => {
+          let cleaned = str
+            .replace(/\\/g, "")
+            .replace(/\s/g, "")
+            .replace(/\$/g, "")
+            .replace(/\\cdot/g, "cdot")
+            .replace(/\\div/g, "div")
+            .replace(/\\frac/g, "/")
+            .replace(/\{/g, "")
+            .replace(/\}/g, "")
+            .replace(/\(\)/g, "");
+
+          // Нормалізація знаків порівняння
+          cleaned = cleaned.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+          // Нормалізація десяткових чисел (заміна німецької коми на крапку)
+          cleaned = cleaned.replace(/,/g, ".");
+
+          // Нормалізація чисел з роздільниками тисяч (крапка в німецькому стилі)
+          // Видаляємо крапки, оскільки вони використовуються як роздільники тисяч в німецькій мові
+          cleaned = cleaned
+            .replace(/(\d)\.(\d{3})/g, "$1$2")
+            .replace(/\./g, "");
+
+          // Спеціальна обробка для варіантів з "Quotient/Rest"
+          cleaned = cleaned.replace(/Quotient:/g, "Q:").replace(/Rest:/g, "R:");
+
+          return cleaned.trim();
+        };
+
+        const selectedValue = cleanString(btn.innerText);
+        const answerValue = cleanString(correctAns);
+
+        // Обробка відповідей з одиницями вимірювання/текстом (наприклад, "Q: 30, R: 5")
+        const isCorrect = selectedValue === answerValue;
+
+        // Додавання класів для візуалізації
+        questionBlock.querySelectorAll(".option-btn").forEach((b) => {
+          b.disabled = true;
+          const bValue = cleanString(b.innerText);
+          if (bValue === answerValue) {
+            b.classList.add("selected-correct");
+          }
+        });
+
+        if (isCorrect) {
+          totalCorrect++;
+        } else {
+          btn.classList.add("selected-wrong");
+        }
+
+        updateFinishButton();
+      };
+
+      function updateFinishButton() {
+        const finishBtn = document.getElementById("finish-test-btn");
+        if (totalAttempted === testQuestions.length) {
+          finishBtn.innerText = "Показати результат";
+          finishBtn.disabled = false;
+        } else {
+          finishBtn.innerText = `Завершити тест (${totalAttempted}/${testQuestions.length})`;
+          finishBtn.disabled = false;
+        }
+      }
+
+      window.finishTest = function () {
+        isFinished = true;
+        showModal();
+      };
+
+      function renderQuiz() {
+        const root = document.getElementById("quiz-root");
+        root.innerHTML = "";
+
+        testQuestions.forEach((q) => {
+          const block = document.createElement("div");
+          block.className = "quiz-block";
+
+          let questionHtml = `
+            <div class="question-header">
+              <span class="question-number">${q.id}.</span>
+              <span class="question-text">${q.q.replace(/\n/g, "<br>")}</span>
+            </div>
+            <div class="options-container">
+          `;
+
+          // Обробка спеціальних символів для передачі в onclick
+          const safeAns = q.a.replace(/'/g, "\\'").replace(/"/g, "&quot;");
+
+          q.opts.forEach((opt) => {
+            const safeOpt = opt.replace(/'/g, "\\'").replace(/"/g, "&quot;");
+            questionHtml += `<button class="option-btn" onclick="checkAnswer(this, ${q.id}, '${safeAns}')">${opt}</button>`;
+          });
+
+          questionHtml += `</div>`;
+          block.innerHTML = questionHtml;
+          root.appendChild(block);
+        });
+
+        const finishSection = document.createElement("div");
+        finishSection.className = "finish-section";
+        finishSection.innerHTML = `
+            <button class="btn-finish" id="finish-test-btn" onclick="finishTest()">
+              Завершити тест (0/${testQuestions.length})
+            </button>
+          `;
+        root.appendChild(finishSection);
+      }
+
+      function showModal() {
+        const modal = document.getElementById("result-modal");
+        const body = document.getElementById("modal-content-body");
+
+        const totalQuestions = testQuestions.length;
+        const score = totalCorrect;
+        const percentage = Math.round((score / totalQuestions) * 100);
+
+        let msg = "";
+        let color = "";
+
+        if (percentage === 100) {
+          msg = "Perfekt! 🇩🇪🔥";
+          color = "#16a34a";
+        } else if (percentage >= 80) {
+          msg = "Ausgezeichnetes Ergebnis! 👏";
+          color = "#2563eb";
+        } else if (percentage >= 60) {
+          msg = "Gut gemacht, aber Sie können sich verbessern. 👍";
+          color = "#f59e0b";
+        } else {
+          msg = "Es ist Zeit, mehr zu üben. ✍️";
+          color = "#dc2626";
+        }
+
+        body.innerHTML = `
+            <div style="font-size: 1.5rem; font-weight: 700; color: ${color};">${msg}</div>
+            <div style="font-size: 1rem; color: #64748b; margin-top: 10px;">Ihr Ergebnis:</div>
+            <div class="modal-score-big" style="color: ${color};">${score} / ${totalQuestions}</div>
+            <div style="font-size: 1.1rem; color: #64748b;">Genauigkeit: ${percentage}%</div>
+            <button class="modal-footer-btn" onclick="location.reload()">Nochmal versuchen</button>
+          `;
+
+        modal.style.display = "flex";
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        renderQuiz();
+        updateFinishButton();
+
+        // Рендеринг математики для всього body
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "\\[", right: "\\]", display: true },
+            { left: "$", right: "$", display: false },
+            { left: "\\(", right: "\\)", display: false },
+          ],
+          throwOnError: false,
+        });
+      });
+    </script>
+  </body>
+</html>

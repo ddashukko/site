@@ -93,6 +93,17 @@ window.lessonsData = [
     category: "lesson",
     author: "Даша",
   },
+  
+  {
+    id: 503,
+    title: "Schriftliches Rechnen",
+    grade: 5,
+    topic: "Математика",
+    link: "math_general/5/В стовбчик.html",
+    subject_code: "math_general",
+    category: "lesson",
+    author: "Даша",
+  },
   {
     id: 601,
     title: "Відсоткові розрахунки",
