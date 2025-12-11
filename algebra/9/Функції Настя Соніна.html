@@ -74,12 +74,11 @@
             display: block; text-transform: uppercase; font-size: 0.85em; letter-spacing: 1px;
         }
         
+        /* Стиль для частин завдань (щоб кнопки були біля полів) */
         .task-part {
             display: flex; align-items: center; gap: 10px; margin-top: 8px;
-            padding-top: 5px; border-top: 1px dotted #eee;
+            padding-top: 5px; 
         }
-        .task-part:first-of-type { border-top: none; }
-        .task-part p { margin: 0; }
 
         /* Поля вводу */
         input[type="text"], input[type="number"] {
@@ -94,7 +93,7 @@
             padding: 9px 20px; border-radius: 6px; cursor: pointer;
             font-size: 14px; font-weight: 600; margin-left: 10px;
             transition: background-color 0.2s;
-            white-space: nowrap; /* Важливо для OK */
+            white-space: nowrap;
         }
         button.check-btn:hover { background-color: #2980b9; }
 
@@ -107,7 +106,6 @@
         details { margin-top: 15px; border-top: 1px dashed #ddd; padding-top: 10px; }
         summary { cursor: pointer; color: #95a5a6; font-size: 14px; }
         .hint-content { background: #fdfefe; padding: 10px; border-radius: 5px; border: 1px solid #eee; margin-top: 5px; font-size: 14px; color: #555; }
-        .hint-content ol { margin: 0; } /* для списку в підказці */
 
         /* Канвас для умов */
         .condition-canvas {
@@ -115,13 +113,14 @@
             border: 1px solid #ddd; border-radius: 8px;
             max-width: 100%; background: white;
         }
+        .canvas-caption { text-align: center; font-size: 0.9em; color: #666; margin-top: -10px; margin-bottom: 20px;}
 
         /* --- ПРАВА ПАНЕЛЬ: ДОШКА --- */
         .whiteboard-panel {
             width: 55%; position: relative;
             background-color: #f0f0f0;
             display: flex; align-items: center; justify-content: center;
-            border-left: 1px solid #ccc;
+            border-left: 1px solid #ccc; /* Додав межу */
         }
         .canvas-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
         #gridLayer { z-index: 1; pointer-events: none; } 
@@ -150,11 +149,10 @@
         #btn-grid-toggle { 
             width: auto; border-radius: 20px; padding: 0 15px; font-weight: bold; font-size: 14px;
             background-color: #2ecc71; color: white; border-color: #2ecc71;
-            margin-right: 15px; /* відділити від інструментів */
+            margin-right: 15px;
         }
         #btn-grid-toggle:hover { background-color: #27ae60; }
-        
-        /* Стиль для радіокнопок */
+
         .radio-options {
             display: flex; flex-direction: column; gap: 5px; margin-top: 10px;
         }
@@ -187,13 +185,12 @@
             <span class="task-title">Завдання 1.1: Розминка з дробами</span>
             <p>Обчисли: $\frac{1}{2} - \frac{4}{3} = ?$</p>
             <div class="task-part">
-                <p>Результат:</p>
-                <input type="text" id="ans1" placeholder="-x/y" style="width: 100px;">
-                <button class="check-btn" onclick="checkAnswer('ans1', ['-5/6', '-0.83', '-0.833', '-0.8333', '-0,83', '-0,833'])">Перевірити</button>
+                <input type="text" id="ans1" placeholder="-x/y">
+                <button class="check-btn" onclick="checkAnswer('ans1', ['-5/6', '-0.83', '-0.833'])">Перевірити</button>
                 <span id="fb1" class="feedback"></span>
             </div>
             <details>
-                <summary>Показати пояснення/розв'язок</summary>
+                <summary>Показати пояснення</summary>
                 <div class="hint-content">Спільний знаменник 6: $\frac{3}{6} - \frac{8}{6} = -\frac{5}{6}$.</div>
             </details>
         </div>
@@ -202,12 +199,22 @@
             <span class="task-title">Завдання 1.2: Обережно з мінусом</span>
             <p>Дано $f(x) = x^2 - 4$. Знайди $f(-3)$.</p>
             <div class="task-part">
-                <p>$f(-3) =$</p>
-                <input type="number" id="ans1b" placeholder="?" style="width: 60px;">
+                $f(-3) =$ <input type="number" id="ans1b" placeholder="?">
                 <button class="check-btn" onclick="checkAnswer('ans1b', ['5'])">Перевірити</button>
                 <span id="fb1b" class="feedback"></span>
             </div>
-            <details><summary>Підказка</summary><div class="hint-content">Пам'ятай, що $x^2$ означає $(-3)^2$, а це $9$. Мінус зникає у квадраті. $9-4=5$.</div></details>
+            <details><summary>Підказка</summary><div class="hint-content">$(-3)^2 = 9$. Мінус зникає у квадраті.</div></details>
+        </div>
+
+        <div class="task-box">
+            <span class="task-title">Завдання 1.3: Проста підстановка</span>
+            <p>Дано просту функцію $y = 2x + 5$. Знайди $y$, якщо $x = 3$.</p>
+            <div class="task-part">
+                $y =$ <input type="number" id="ans1c" placeholder="?">
+                <button class="check-btn" onclick="checkAnswer('ans1c', ['11'])">Перевірити</button>
+                <span id="fb1c" class="feedback"></span>
+            </div>
+            <details><summary>Підказка</summary><div class="hint-content">Підстав 3 замість ікса: $2 \cdot 3 + 5$.</div></details>
         </div>
 
         <h2>2. Лінійна функція (Пряма)</h2>
@@ -224,88 +231,91 @@
         <div class="task-box">
             <span class="task-title">Завдання 2.1: Точки</span>
             <p>Дано: $y = \frac{1}{2}x - 0.75$.</p>
-            
             <div class="task-part">
-                <p>1) $x = 2 \Rightarrow y =$</p>
-                <input type="text" id="ans2a" style="width:50px" placeholder="?">
-                <button class="check-btn" onclick="checkAnswer('ans2a', ['0.25', '1/4', '0,25'])">Перевірити</button>
+                <p>1) $x = 2 \Rightarrow y =$</p> <input type="text" id="ans2a" style="width:50px">
+                <button class="check-btn" style="padding:5px 10px" onclick="checkAnswer('ans2a', ['0.25', '1/4'])">ОК</button>
                 <span id="fb2a" class="feedback"></span>
             </div>
-            <details>
-                <summary>Підказка для 1)</summary>
-                <div class="hint-content">Підстав $x=2$: $y = \frac{1}{2} \cdot 2 - 0.75 = 1 - 0.75 = 0.25$.</div>
-            </details>
+            <details><summary>Підказка 1)</summary><div class="hint-content">$0.5 \cdot 2 - 0.75 = 1 - 0.75 = 0.25$.</div></details>
             
             <div class="task-part">
-                <p>2) $x = -2 \Rightarrow y =$</p>
-                <input type="text" id="ans2b" style="width:50px" placeholder="?">
-                <button class="check-btn" onclick="checkAnswer('ans2b', ['-1.75', '-7/4', '-1,75'])">Перевірити</button>
+                <p>2) $x = -2 \Rightarrow y =$</p> <input type="text" id="ans2b" style="width:50px">
+                <button class="check-btn" style="padding:5px 10px" onclick="checkAnswer('ans2b', ['-1.75', '-7/4'])">ОК</button>
                 <span id="fb2b" class="feedback"></span>
             </div>
-            <details>
-                <summary>Підказка для 2)</summary>
-                <div class="hint-content">Підстав $x=-2$: $y = \frac{1}{2} \cdot (-2) - 0.75 = -1 - 0.75 = -1.75$.</div>
-            </details>
+            <details><summary>Підказка 2)</summary><div class="hint-content">$0.5 \cdot (-2) - 0.75 = -1 - 0.75 = -1.75$.</div></details>
+        </div>
+
+        <div class="task-box">
+            <span class="task-title">Завдання 2.2: Коефіцієнт</span>
+            <p>У функції $y = -3x + 7$, чому дорівнює коефіцієнт $k$ (нахил)?</p>
+            <div class="task-part">
+                $k =$ <input type="number" id="ans2c" placeholder="?">
+                <button class="check-btn" onclick="checkAnswer('ans2c', ['-3'])">Перевірити</button>
+                <span id="fb2c" class="feedback"></span>
+            </div>
+            <details><summary>Підказка</summary><div class="hint-content">$k$ — це число, яке стоїть перед $x$.</div></details>
         </div>
 
         <h2>3. Парабола та її рух</h2>
         <p>Квадратична функція $y = x^2$. Графік — парабола ("усмішка"). Вершина в (0;0).</p>
         
+        <canvas id="canvas-parabola-demo" class="condition-canvas" width="350" height="250"></canvas>
+        <p class="canvas-caption">Приклад: $y=x^2$ (пунктир) та $y=(x-3)^2+2$ (синя)</p>
+
         <div class="rule-box">
-            <strong>Як рухати графік ($y = a(x-x_0)^2 + y_0$)?</strong>
+            <strong>Як рухати графік ($y = (x+m)^2 + n$)?</strong>
             <ul>
-                <li>$+y_0$ в кінці формули $\to$ Зсув <strong>ВГОРУ</strong>.</li>
-                <li>$-y_0$ в кінці формули $\to$ Зсув <strong>ВНИЗ</strong>.</li>
-                <li>$(x-x_0)$ у дужках $\to$ Зсув <strong>ВПРАВО</strong> (знак міняється!).</li>
-                <li>$(x+x_0)$ у дужках $\to$ Зсув <strong>ВЛІВО</strong>.</li>
+                <li>$+n$ в кінці формули $\to$ Зсув <strong>ВГОРУ</strong>.</li>
+                <li>$-n$ в кінці формули $\to$ Зсув <strong>ВНИЗ</strong>.</li>
+                <li>$(x-m)$ у дужках $\to$ Зсув <strong>ВПРАВО</strong> (знак міняється!).</li>
+                <li>$(x+m)$ у дужках $\to$ Зсув <strong>ВЛІВО</strong>.</li>
             </ul>
-            <p>Вершина параболи: **$(x_0; y_0)$**.</p>
         </div>
 
         <div class="task-box">
-            <span class="task-title">Завдання 3.1: Координати вершини</span>
-            <p>Визнач координати вершини параболи.</p>
+            <span class="task-title">Завдання 3.1 (з 10.4): Координати вершини</span>
+            <p>Використовуй формулу $y = (x - x_0)^2 + y_0$.</p>
 
             <p><strong>А)</strong> $y = x^2 + 8$. Вершина:</p>
             <div class="task-part">
-                ( <input type="number" id="t3_x1" placeholder="x" style="width:40px"> ; <input type="number" id="t3_y1" placeholder="y" style="width:40px"> )
+                ( <input type="number" id="t3_x1" placeholder="x"> ; <input type="number" id="t3_y1" placeholder="y"> )
                 <button class="check-btn" onclick="checkCoords('t3_x1','t3_y1', 0, 8, 'fb3_1')">ОК</button>
                 <span id="fb3_1" class="feedback"></span>
             </div>
-            <details><summary>Підказка А)</summary><div class="hint-content">Немає зсуву по осі $X$, отже $x=0$. $+8$ в кінці — зсув вгору на 8.</div></details>
+            <details><summary>Підказка</summary><div class="hint-content">Вгору на 8.</div></details>
 
             <p><strong>Б)</strong> $y = (x - 4)^2 - 3$. Вершина:</p>
             <div class="task-part">
-                ( <input type="number" id="t3_x2" placeholder="x" style="width:40px"> ; <input type="number" id="t3_y2" placeholder="y" style="width:40px"> )
+                ( <input type="number" id="t3_x2" placeholder="x"> ; <input type="number" id="t3_y2" placeholder="y"> )
                 <button class="check-btn" onclick="checkCoords('t3_x2','t3_y2', 4, -3, 'fb3_2')">ОК</button>
                 <span id="fb3_2" class="feedback"></span>
             </div>
-            <details><summary>Підказка Б)</summary><div class="hint-content">$(x-4)$ означає зсув вправо на $4$. $-3$ означає зсув вниз на $3$.</div></details>
+            <details><summary>Підказка</summary><div class="hint-content">Вправо на 4, вниз на 3.</div></details>
             
             <p><strong>В)</strong> $y = (x + 8)^2$. Вершина:</p>
             <div class="task-part">
-                ( <input type="number" id="t3_x3" placeholder="x" style="width:40px"> ; <input type="number" id="t3_y3" placeholder="y" style="width:40px"> )
+                ( <input type="number" id="t3_x3" placeholder="x"> ; <input type="number" id="t3_y3" placeholder="y"> )
                 <button class="check-btn" onclick="checkCoords('t3_x3','t3_y3', -8, 0, 'fb3_3')">ОК</button>
                 <span id="fb3_3" class="feedback"></span>
             </div>
-            <details><summary>Підказка В)</summary><div class="hint-content">$(x+8)$ означає зсув вліво на $8$. По осі $Y$ зсуву немає, отже $y=0$.</div></details>
+            <details><summary>Підказка</summary><div class="hint-content">Вліво на 8.</div></details>
         </div>
 
         <h2>4. Інші функції</h2>
         <div class="task-box">
             <span class="task-title">Завдання 4.1: Гіпербола</span>
-            <p>Куди зсунеться графік гіперболи $y = \frac{5}{x - 8}$ відносно $y = \frac{5}{x}$?</p>
+            <p>Куди зсунеться графік $y = \frac{5}{x - 8}$?</p>
             <div class="radio-options">
                 <input type="radio" name="hyp" id="h1"> <label for="h1">Вгору на 8</label>
-                <input type="radio" name="hyp" id="h2"> <label for="h2">Вниз на 8</label>
                 <input type="radio" name="hyp" id="h3"> <label for="h3">Вправо на 8</label>
                 <input type="radio" name="hyp" id="h4"> <label for="h4">Вліво на 8</label>
             </div>
             <div style="margin-top: 10px;">
-                <button class="check-btn" onclick="checkRadio('hyp', 'h3', 'fbHyp')">Перевірити</button>
+                <button class="check-btn" style="margin-left:0; margin-top:10px;" onclick="checkRadio('hyp', 'h3', 'fbHyp')">Перевірити</button>
                 <span id="fbHyp" class="feedback"></span>
             </div>
-            <details><summary>Підказка</summary><div class="hint-content">Зсув по $X$ (горизонтальний) завжди має протилежний знак до того, що стоїть у знаменнику: $x-8 \Rightarrow$ вправо на 8.</div></details>
+            <details><summary>Підказка</summary><div class="hint-content">Зсув у знаменнику працює як і в дужках параболи - знак міняється.</div></details>
         </div>
 
         <h2>5. Розтяг і Стиснення</h2>
@@ -313,23 +323,37 @@
         <div class="rule-box">
             <ul>
                 <li>$k > 1$ (наприклад, $2x^2$) $\to$ <strong>Розтягується</strong> вгору (вужча).</li>
-                <li>$0 < k < 1$ (наприклад, $0.2x^2$) $\to$ <strong>Стискається</strong> (ширша).</li>
-                <li>$k < 0$ (наприклад, $-x^2$) $\to$ Перевертається вниз (відбиття відносно осі X).</li>
+                <li>$0 < k < 1$ (наприклад, $0.5x^2$) $\to$ <strong>Стискається</strong> (ширша).</li>
+                <li>$k < 0$ (наприклад, $-x^2$) $\to$ Перевертається вниз.</li>
             </ul>
         </div>
 
         <div class="task-box">
-            <span class="task-title">Завдання 5.1: Вузька чи Широка?</span>
-            <p>Яка парабола ширша: $y = x^2$ чи $y = 0.2x^2$?</p>
-            <div class="radio-options">
-                <input type="radio" name="scale" id="sc1"> <label for="sc1">Перша ($y = x^2$)</label>
-                <input type="radio" name="scale" id="sc2"> <label for="sc2">Друга ($y = 0.2x^2$)</label>
+            <span class="task-title">Завдання 5.1: Вгору чи вниз?</span>
+            <p>Куди напрямлені вітки параболи $y = -5x^2$?</p>
+             <div class="radio-options">
+                <input type="radio" name="dir" id="dir1"> <label for="dir1">Вгору</label>
+                <input type="radio" name="dir" id="dir2"> <label for="dir2">Вниз</label>
             </div>
             <div style="margin-top: 10px;">
-                <button class="check-btn" onclick="checkRadio('scale', 'sc2', 'fbScale')">Перевірити</button>
+                <button class="check-btn" onclick="checkRadio('dir', 'dir2', 'fbDir')">Перевірити</button>
+                <span id="fbDir" class="feedback"></span>
+            </div>
+            <details><summary>Підказка</summary><div class="hint-content">Мінус перевертає графік.</div></details>
+        </div>
+
+        <div class="task-box">
+            <span class="task-title">Завдання 5.2: Вузька чи Широка?</span>
+            <p>Яка парабола ширша: $y = x^2$ чи $y = 0.2x^2$?</p>
+            <div class="radio-options">
+                <input type="radio" name="scale" id="sc1"> <label for="sc1">Перша ($x^2$)</label>
+                <input type="radio" name="scale" id="sc2"> <label for="sc2">Друга ($0.2x^2$)</label>
+            </div>
+            <div style="margin-top: 10px;">
+                <button class="check-btn" style="margin-left:0; margin-top:10px;" onclick="checkRadio('scale', 'sc2', 'fbScale')">Перевірити</button>
                 <span id="fbScale" class="feedback"></span>
             </div>
-            <details><summary>Пояснення</summary><div class="hint-content">Якщо коефіцієнт $k$ менше 1 (але більше 0), парабола стискається до осі $X$, стаючи ширшою. $0.2 < 1$, тому $y = 0.2x^2$ ширша.</div></details>
+            <details><summary>Підказка</summary><div class="hint-content">Коефіцієнт менше 1 робить графік ширшим.</div></details>
         </div>
 
         <h2>6. Творче завдання (10.9)</h2>
@@ -337,46 +361,40 @@
         <canvas id="canvas-task-9" class="condition-canvas" width="400" height="200"></canvas>
         <div class="task-box">
             <span class="task-title">Завдання 6: Малюємо</span>
-            <p>1. Намалюй цей графік **чорним** на дошці.</p>
-            <p>2. Намалюй $y = f(x) + 2$ (**червоним**).</p>
-            <p>3. Намалюй $y = 2f(x)$ (**синім**) — розтягни його вдвічі вгору!</p>
-            <details><summary>Пояснення рухів</summary><div class="hint-content">
-                $y=f(x)+2$: Зсув вгору на 2 одиниці.<br>
-                $y=2f(x)$: Кожна точка $y$ в початковому графіку множиться на 2.
-            </div></details>
+            <p>1. Намалюй цей графік чорним на дошці.</p>
+            <p>2. Намалюй $y = f(x) + 2$ (червоним).</p>
+            <p><strong>Бонус:</strong> $y = 2f(x)$ (синім) — розтягни його вдвічі вгору!</p>
+            <details><summary>Підказка</summary><div class="hint-content">Чорний - як є. Червоний - підніми всі точки на 2 вгору. Синій - помнож Y кожної точки на 2.</div></details>
         </div>
 
         <h2>7. Аналіз графіків (10.20)</h2>
-        <p>Знайди формулу: $y = a(x+m)^2$. (Вершина: $(-m; 0)$).</p>
+        <p>Знайди формулу: $y = a(x+m)^2$.</p>
         <canvas id="canvas-task-20" class="condition-canvas" width="500" height="280"></canvas>
 
         <div class="task-box">
             <span class="task-title">Графік А (Ліворуч)</span>
-            <p>Вершина: $(-4; 0)$. Точка $(0; 8)$.</p>
+            <p>Вершина: $x = -4$. Точка $(0; 8)$.</p>
             <div class="task-part">
                 $y =$ <input type="text" id="in_a1" style="width:40px" placeholder="a"> $(x +$ <input type="number" id="in_m1" style="width:40px" placeholder="m"> $)^2$
                 <button class="check-btn" onclick="checkFormulaVals('in_a1', 0.5, 'in_m1', 4, 'fb_f1')">Перевірити</button>
-                <span id="fb_f1" class="feedback"></span>
             </div>
-            <details><summary>Підказка</summary><div class="hint-content">
-                1. Вершина в $(-4; 0)$, отже $m=4$ (бо $x - (-4) = x+4$).<br>
-                2. Щоб знайти $a$, підстав точку $(0; 8)$: $8 = a(0+4)^2 \Rightarrow 8 = a \cdot 16 \Rightarrow a = 8/16 = 0.5$.
-            </div></details>
+            <span id="fb_f1" class="feedback"></span>
+            <details><summary>Підказка</summary><div class="hint-content">Вершина в -4, тому $m=4$. Підстав точку, щоб знайти $a$.</div></details>
         </div>
 
         <div class="task-box">
             <span class="task-title">Графік Б (Праворуч)</span>
-            <p>Вершина: $(1; 0)$. Точка $(0; -2)$.</p>
+            <p>Вершина: $x = 1$. Точка $(0; -2)$.</p>
             <div class="task-part">
                 $y =$ <input type="text" id="in_a2" style="width:40px" placeholder="a"> $(x -$ <input type="number" id="in_m2" style="width:40px" placeholder="m"> $)^2$
                 <button class="check-btn" onclick="checkFormulaVals('in_a2', -2, 'in_m2', 1, 'fb_f2')">Перевірити</button>
-                <span id="fb_f2" class="feedback"></span>
             </div>
+            <span id="fb_f2" class="feedback"></span>
             <details>
                 <summary>Підказка</summary>
                 <div class="hint-content">
-                    1. Вершина в $(1; 0)$, отже $m=1$ (бо $x-1$).<br>
-                    2. Щоб знайти $a$, підстав точку $(0; -2)$: $-2 = a(0-1)^2 \Rightarrow -2 = a \cdot 1 \Rightarrow a = -2$.
+                    1. Зсув вправо на 1 $\to$ пиши 1.<br>
+                    2. Вітки вниз $\to$ коефіцієнт $a$ від'ємний (-2).
                 </div>
             </details>
         </div>
@@ -384,50 +402,48 @@
         <h2>8. Фінальний мікс (Бонус)</h2>
         <div class="task-box">
             <span class="task-title">Бонус 1: Парабола-мандрівниця</span>
-            <p>Вершина $y = (x + 5)^2 - 9$ знаходиться в точці:</p>
+            <p>Куди "поїхала" вершина $y = (x + 5)^2 - 9$?</p>
             <div class="task-part">
-                Вершина: ( <input type="number" id="bon1_x" placeholder="x" style="width:40px"> ; <input type="number" id="bon1_y" placeholder="y" style="width:40px"> )
+                Вершина: ( <input type="number" id="bon1_x" placeholder="x"> ; <input type="number" id="bon1_y" placeholder="y"> )
                 <button class="check-btn" onclick="checkCoords('bon1_x','bon1_y', -5, -9, 'fb_bon1')">Перевірити</button>
                 <span id="fb_bon1" class="feedback"></span>
             </div>
-            <details><summary>Підказка</summary><div class="hint-content">Зсув вліво на 5 (бо $x+5$) та вниз на 9 (бо $-9$).</div></details>
+            <details><summary>Підказка</summary><div class="hint-content">Вліво на 5, вниз на 9.</div></details>
         </div>
 
         <div class="task-box">
             <span class="task-title">Бонус 2: Що сталося з графіком?</span>
-            <p>Опис $y = -x^2 + 3$ відносно $y = x^2$:</p>
+            <p>Опис $y = -x^2 + 3$:</p>
             <div class="radio-options">
                 <input type="radio" name="mix" id="mix1"> <label for="mix1">Вгору і вправо на 3.</label>
                 <input type="radio" name="mix" id="mix2"> <label for="mix2">Перевернута і вгору на 3.</label>
-                <input type="radio" name="mix" id="mix3"> <label for="mix3">Перевернута і вниз на 3.</label>
             </div>
             <div style="margin-top: 10px;">
-                <button class="check-btn" onclick="checkRadio('mix', 'mix2', 'fb_mix')">Перевірити</button>
+                <button class="check-btn" style="margin-left:0; margin-top:10px;" onclick="checkRadio('mix', 'mix2', 'fb_mix')">Перевірити</button>
                 <span id="fb_mix" class="feedback"></span>
             </div>
-            <details><summary>Пояснення</summary><div class="hint-content">Мінус перед $x^2$ перевертає параболу, а $+3$ зсуває її вгору.</div></details>
+             <details><summary>Підказка</summary><div class="hint-content">Мінус - перевертає, +3 - піднімає.</div></details>
         </div>
 
         <div class="task-box">
             <span class="task-title">Бонус 3: Де перетин?</span>
             <p>Де пряма $y = 4x - 12$ перетинає вісь $Y$ ($x=0$)?</p>
             <div class="task-part">
-                <p>$y =$</p>
-                <input type="number" id="bon3_ans" placeholder="?" style="width: 60px;">
+                $y =$ <input type="number" id="bon3_ans" placeholder="?">
                 <button class="check-btn" onclick="checkAnswer('bon3_ans', ['-12'])">Перевірити</button>
                 <span id="fb_bon3" class="feedback"></span>
             </div>
-            <details><summary>Підказка</summary><div class="hint-content">На осі $Y$ координата $x$ завжди дорівнює $0$. Просто підстав $x=0$ у формулу.</div></details>
+             <details><summary>Підказка</summary><div class="hint-content">Якщо $x=0$, то $y = -12$.</div></details>
         </div>
         
         <div style="height: 100px;"></div>
     </div>
 
     <div class="whiteboard-panel" id="boardContainer">
-        <canvas id="gridLayer" class="canvas-layer"></canvas> 
-        <canvas id="drawLayer" class="canvas-layer"></canvas> 
+        <canvas id="gridLayer" class="canvas-layer"></canvas>
+        <canvas id="drawLayer" class="canvas-layer"></canvas>
         <div class="toolbar">
-             <button class="tool-btn" id="btn-grid-toggle" title="Показати/Приховати Сітку">Сітка: ON</button>
+            <button class="tool-btn" id="btn-grid-toggle" title="Показати/Приховати Сітку">Сітка: ON</button>
             <div style="width:1px; height:20px; background:#ddd;"></div>
             <button class="tool-btn active" id="btn-black" title="Чорний">✎</button>
             <button class="tool-btn" id="btn-red" title="Червоний" style="color: #e74c3c;">✎</button>
@@ -440,51 +456,37 @@
 </div>
 
 <script>
-    // --- JS ЛОГІКА ПЕРЕВІРОК ---
+    // --- JS ЛОГІКА ---
     function showFb(elId, isCorr, good="Правильно!", bad="Спробуй ще.") {
         const el = document.getElementById(elId); el.style.display="inline";
         el.className = isCorr ? "feedback correct" : "feedback wrong";
         el.innerText = isCorr ? good : bad;
     }
-    // Для текстових/дробових відповідей
     function checkAnswer(id, vals) {
         let v = document.getElementById(id).value.trim().replace(',','.');
         let isCorrect = vals.some(val => val.toLowerCase().replace(',','.') === v.toLowerCase());
         showFb("fb"+id.replace('ans',''), isCorrect);
     }
-    // Для координат (x; y)
     function checkCoords(ix, iy, tx, ty, fb) {
         let x = parseFloat(document.getElementById(ix).value);
         let y = parseFloat(document.getElementById(iy).value);
         showFb(fb, (x===tx && y===ty), "Супер!", "Помилка в координатах.");
     }
-    // Для радіокнопок
     function checkRadio(n, corr, fb) {
         let sel = null; document.getElementsByName(n).forEach(r=>{if(r.checked) sel=r.id});
         showFb(fb, sel===corr, "Вірно!", "Неправильний вибір.");
     }
-    // Для формул a та m
     function checkFormulaVals(ia, ta, im, tm, fb) {
-        // Дозволяємо дроби (наприклад, 1/2) в полі 'a'
         let aVal = document.getElementById(ia).value.trim().replace(',','.');
         let a;
         if (aVal.includes('/')) {
-            const parts = aVal.split('/');
-            a = parseFloat(parts[0]) / parseFloat(parts[1]);
-        } else {
-            a = parseFloat(aVal);
-        }
-        
+            const parts = aVal.split('/'); a = parseFloat(parts[0]) / parseFloat(parts[1]);
+        } else { a = parseFloat(aVal); }
         let m = parseFloat(document.getElementById(im).value);
-        
-        // Використовуємо маленьку похибку для порівняння float
-        const isA_Correct = Math.abs(a - ta) < 0.0001;
-        const isM_Correct = m === tm;
-
-        showFb(fb, (isA_Correct && isM_Correct), "Формула вірна!", "Помилка. Перевір $a$ та $m$.");
+        showFb(fb, (Math.abs(a - ta) < 0.0001 && m === tm), "Формула вірна!", "Помилка.");
     }
 
-    // --- CANVAS ЛОГІКА ДОШКИ ---
+    // --- CANVAS ---
     const container = document.getElementById('boardContainer');
     const gridCvs = document.getElementById('gridLayer');
     const drawCvs = document.getElementById('drawLayer');
@@ -500,20 +502,13 @@
         if (gridVisible) { drawGrid(); }
     }
     window.addEventListener('resize', resizeCanvas);
-    window.addEventListener('load', () => { 
-        resizeCanvas(); 
-        renderConditionGraphs(); 
-    });
+    window.addEventListener('load', () => { resizeCanvas(); renderConditionGraphs(); });
 
     function drawGrid() {
         if (!gridVisible) { return; }
         gCtx.clearRect(0,0,width,height); gCtx.fillStyle="#fff"; gCtx.fillRect(0,0,width,height);
+        const cx = Math.round(width/2/scale)*scale; const cy = Math.round(height/2/scale)*scale;
         
-        // Розрахунок центру, заокруглений до цілого кроку scale
-        const cx = Math.round(width/2/scale)*scale; 
-        const cy = Math.round(height/2/scale)*scale;
-        
-        // Лінії сітки
         gCtx.lineWidth=0.5; gCtx.strokeStyle="#e0e0e0"; gCtx.beginPath();
         for(let x=cx; x<width; x+=scale) { gCtx.moveTo(x,0); gCtx.lineTo(x,height); }
         for(let x=cx; x>0; x-=scale) { gCtx.moveTo(x,0); gCtx.lineTo(x,height); }
@@ -521,11 +516,9 @@
         for(let y=cy; y>0; y-=scale) { gCtx.moveTo(0,y); gCtx.lineTo(width,y); }
         gCtx.stroke();
 
-        // Осі координат
         gCtx.lineWidth=2; gCtx.strokeStyle="#333"; gCtx.beginPath();
         gCtx.moveTo(0,cy); gCtx.lineTo(width,cy); gCtx.moveTo(cx,0); gCtx.lineTo(cx,height); gCtx.stroke();
 
-        // ЦИФРИ
         gCtx.fillStyle="#666"; gCtx.font="11px Arial"; gCtx.textAlign="center"; gCtx.textBaseline="middle";
         for(let i=1; (i*scale)+cx<width; i++) gCtx.fillText(i, cx+i*scale, cy+15);
         for(let i=1; cx-(i*scale)>0; i++) gCtx.fillText(-i, cx-i*scale, cy+15);
@@ -533,8 +526,7 @@
         for(let i=1; cy+(i*scale)<height; i++) gCtx.fillText(-i, cx-15, cy+i*scale);
         gCtx.fillText("0", cx-10, cy+15);
     }
-
-    // Логіка перемикання сітки
+    
     document.getElementById('btn-grid-toggle').onclick = () => {
         gridVisible = !gridVisible;
         if (gridVisible) {
@@ -542,31 +534,23 @@
             document.getElementById('btn-grid-toggle').textContent = "Сітка: ON";
             document.getElementById('btn-grid-toggle').style.backgroundColor = '#2ecc71';
         } else {
-            gCtx.clearRect(0, 0, width, height); // Очистити сітку
-            gCtx.fillStyle="#fff"; gCtx.fillRect(0,0,width,height); // Залити білим
+            gCtx.clearRect(0, 0, width, height); gCtx.fillStyle="#fff"; gCtx.fillRect(0,0,width,height);
             document.getElementById('btn-grid-toggle').textContent = "Сітка: OFF";
             document.getElementById('btn-grid-toggle').style.backgroundColor = '#e74c3c';
         }
     };
 
-
-    // --- ЛОГІКА МАЛЮВАННЯ ---
     let isDrawing=false; let tool='black';
     function startDraw(e) { isDrawing=true; draw(e); }
     function endDraw() { isDrawing=false; dCtx.beginPath(); }
     function draw(e) {
         if(!isDrawing) return;
         const r = drawCvs.getBoundingClientRect();
-        const x = e.clientX - r.left; 
-        const y = e.clientY - r.top;
+        const x = e.clientX - r.left; const y = e.clientY - r.top;
         dCtx.lineCap='round'; dCtx.lineJoin='round';
-        if(tool==='eraser') { 
-            dCtx.globalCompositeOperation='destination-out'; 
-            dCtx.lineWidth=20; 
-        }
+        if(tool==='eraser') { dCtx.globalCompositeOperation='destination-out'; dCtx.lineWidth=20; }
         else { 
-            dCtx.globalCompositeOperation='source-over'; 
-            dCtx.lineWidth=2; 
+            dCtx.globalCompositeOperation='source-over'; dCtx.lineWidth=2; 
             dCtx.strokeStyle = tool==='black'?'#2c3e50':(tool==='red'?'#e74c3c':'#3498db');
         }
         dCtx.lineTo(x,y); dCtx.stroke(); dCtx.beginPath(); dCtx.moveTo(x,y);
@@ -581,60 +565,62 @@
     document.getElementById('btn-clear').onclick=()=>{dCtx.clearRect(0,0,width,height);};
     function upTools(id){ document.querySelectorAll('.tool-btn').forEach(b=>b.classList.remove('active')); document.getElementById(id).classList.add('active'); }
 
-    // --- ЛОГІКА РЕНДЕРИНГУ УМОВНИХ ГРАФІКІВ ---
     function renderConditionGraphs() {
+        // --- ДЕМО ПАРАБОЛА (АВТОМАТИЧНА) ---
+        const cDemo = document.getElementById('canvas-parabola-demo');
+        const ctxDemo = cDemo.getContext('2d');
+        const sDemo = 25; const oxDemo = 175; const oyDemo = 175;
+        drawStat(ctxDemo, 350, 250, sDemo, oxDemo, oyDemo);
+        drawParabola(ctxDemo, sDemo, oxDemo, oyDemo, 0, 0, 1, '#333', true);
+        drawParabola(ctxDemo, sDemo, oxDemo, oyDemo, 3, 2, 1, '#2563eb', false);
+
+        // --- СТАРІ ГРАФІКИ ---
         const c9=document.getElementById('canvas-task-9'); const ctx9=c9.getContext('2d');
-        // Задача 6: y=f(x) - графік кореня зсунутий
         drawStat(ctx9,400,200,25,200,150);
         ctx9.beginPath(); ctx9.strokeStyle="#2563eb"; ctx9.lineWidth=3; ctx9.moveTo(200,150);
         for(let x=0;x>=-6;x-=0.1) ctx9.lineTo(200+x*25, 150-Math.sqrt(-x)*25); ctx9.stroke();
 
         const c20=document.getElementById('canvas-task-20'); const ctx20=c20.getContext('2d');
         const s=25; 
+        drawStat(ctx20,250,280,s,130,220); // A
+        drawParabola(ctx20, s, 130, 220, -4, 0, 0.5, "#4f46e5");
         
-        // Задача 7: Графік А (Ліворуч)
-        drawStat(ctx20,250,280,s,130,220); 
-        ctx20.beginPath(); ctx20.strokeStyle="#4f46e5"; ctx20.lineWidth=2;
-        // y = 0.5(x+4)^2
-        for(let x=-6;x<=0;x+=0.1) ctx20.lineTo(130+x*s, 220-(0.5*Math.pow(x+4,2))*s); ctx20.stroke();
+        ctx20.beginPath(); ctx20.moveTo(250,0); ctx20.lineTo(250,300); ctx20.strokeStyle="#ccc"; ctx20.stroke(); // line
         
-        // Розділова лінія
-        ctx20.beginPath(); ctx20.moveTo(250,0); ctx20.lineTo(250,280); ctx20.strokeStyle="#ccc"; ctx20.stroke(); 
-        
-        // Задача 7: Графік Б (Праворуч)
-        drawStat(ctx20,500,280,s,370,220,250); // Змінив OY для Б на 220
-        ctx20.beginPath(); ctx20.strokeStyle="#4f46e5"; ctx20.lineWidth=2;
-        // y = -2(x-1)^2
-        for(let x=-1;x<=3;x+=0.1) ctx20.lineTo(370+x*s, 220-(-2*Math.pow(x-1,2))*s); ctx20.stroke();
+        drawStat(ctx20,500,280,s,370,220,250); // B (OY adjusted to match condition)
+        drawParabola(ctx20, s, 370, 220, 1, 0, -2, "#4f46e5");
     }
     
-    // Функція для малювання сітки на міні-канвасах
+    function drawParabola(ctx, scale, ox, oy, h, k, a, color, dashed=false) {
+        ctx.beginPath();
+        ctx.strokeStyle = color; ctx.lineWidth = 2;
+        if(dashed) ctx.setLineDash([5, 5]); else ctx.setLineDash([]);
+        let first = true;
+        for(let x_graph = -7; x_graph <= 7; x_graph += 0.1) {
+            let y_graph = a * Math.pow(x_graph - h, 2) + k;
+            let x_canvas = ox + x_graph * scale;
+            let y_canvas = oy - y_graph * scale; 
+            if(first) { ctx.moveTo(x_canvas, y_canvas); first=false; }
+            else { ctx.lineTo(x_canvas, y_canvas); }
+        }
+        ctx.stroke();
+        ctx.setLineDash([]); 
+    }
+
     function drawStat(ctx,w,h,s,ox,oy,sx=0) {
-        ctx.clearRect(sx, 0, w-sx, h); // Очистка області
+        ctx.clearRect(sx,0,w-sx,h); // clear rect
         ctx.strokeStyle="#eee"; ctx.lineWidth=1;
-        // Лінії сітки
         for(let x=sx;x<=w;x+=s){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke();}
         for(let y=0;y<=h;y+=s){ctx.beginPath();ctx.moveTo(sx,y);ctx.lineTo(w,y);ctx.stroke();}
-        // Осі
         ctx.strokeStyle="#555"; ctx.lineWidth=2;
         ctx.beginPath();ctx.moveTo(sx,oy);ctx.lineTo(w,oy);ctx.stroke();
         ctx.beginPath();ctx.moveTo(ox,0);ctx.lineTo(ox,h);ctx.stroke();
         
-        // Мітки осей
+        // Цифри (додав назад, бо це важливо для контексту)
         ctx.fillStyle="#666"; ctx.font="10px Arial"; ctx.textAlign="center"; ctx.textBaseline="middle";
-        // Вісь X
-        for(let i=-Math.floor((ox-sx)/s); i*s+ox<=w; i++){
-            if(i!==0){
-                ctx.fillText(i, ox+i*s, oy+10);
-            }
-        }
-        // Вісь Y
-        for(let i=-Math.floor(oy/s); i*s+oy<=h; i++){
-            if(i!==0){
-                ctx.fillText(-i, ox-10, oy+i*s);
-            }
-        }
-        ctx.fillText("0", ox-10, oy+10); // Початок координат
+        for(let i=-Math.floor((ox-sx)/s)+1; i*s+ox<w; i++){ if(i!==0) ctx.fillText(i, ox+i*s, oy+10); }
+        for(let i=-Math.floor(oy/s)+1; i*s+oy<h; i++){ if(i!==0) ctx.fillText(-i, ox-10, oy+i*s); }
+        ctx.fillText("0", ox-10, oy+10);
     }
 </script>
 </body>
