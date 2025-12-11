@@ -1,31 +1,4 @@
-// script.js (ОНОВЛЕНА ВЕРСІЯ)
-
-// Функція для визначення CSS класу бордера картки на основі класу та типу
-function getBorderClass(lesson) {
-  // 1. Колір для Тестів та Домашніх Завдань (мають пріоритет)
-  if (lesson.category === "test") {
-    return "type-test"; // Циан, як ми визначили для всіх тестів
-  }
-  if (lesson.category === "homework") {
-    return "type-homework"; // Зелений/Морський, як ми визначили для всіх ДЗ
-  }
-
-  // 2. Колір для Уроків (залежить від Класу)
-  if (lesson.category === "lesson") {
-    switch (lesson.grade) {
-      case 2:
-        return "lesson-g2"; // Рожевий
-      case 8:
-        return "lesson-g8"; // Фіолетовий
-      case 9:
-        return "lesson-g9"; // Помаранчевий
-      // Для інших класів використовується базовий колір із CSS (.card)
-      default:
-        return "";
-    }
-  }
-  return "";
-}
+// script.js (ПОВЕРНУТО ДО ЛОГІКИ ПРЕДМЕТА)
 
 function renderLessons() {
   const gradeSelect = document.getElementById("grade-filter");
@@ -36,7 +9,6 @@ function renderLessons() {
   const categoryFilter = categorySelect ? categorySelect.value : "all";
   const authorFilter = authorSelect ? authorSelect.value : "all";
 
-  // Використовуємо глобальну змінну, як у вашому data.js
   const lessons = window.lessonsData || [];
   const container = document.getElementById("container");
   container.innerHTML = "";
@@ -62,16 +34,14 @@ function renderLessons() {
     const card = document.createElement("div");
     card.className = "card";
 
-    // *** ЗМІНИЛИ ЦЕЙ РОЗДІЛ ***
-    const borderClass = getBorderClass(lesson);
-    if (borderClass) {
-      card.classList.add(borderClass);
-    } else {
-      // Якщо немає спеціального класу (якщо це урок не 2, 8, 9 класу), додаємо нейтральний бордер,
-      // хоча базовий клас 'card' його вже має.
-      card.classList.add("border-default");
-    }
-    // ************************
+    // *** ПОВЕРНУТО ЛОГІКУ КОЛЬОРУ ЗА ПРЕДМЕТОМ (subject_code) ***
+    if (lesson.subject_code === "algebra") card.classList.add("border-blue");
+    else if (lesson.subject_code === "geometry")
+      card.classList.add("border-green");
+    else if (lesson.subject_code === "english")
+      // Ваш початковий клас
+      card.classList.add("border-red");
+    else card.classList.add("border-gray"); // Базовий колір
 
     const targetAttr = lesson.link.startsWith("http") ? "_blank" : "_self";
 

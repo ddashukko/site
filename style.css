@@ -1,3 +1,5 @@
+/* style.css (ПОВНИЙ КОД, ПОВЕРНУТИЙ ДО ЛОГІКИ ПРЕДМЕТА) */
+
 body {
   font-family: "Segoe UI", sans-serif;
   background-color: #f8f9fa;
@@ -93,41 +95,25 @@ select:focus {
   flex-direction: column;
   justify-content: space-between;
 
-  /* Базовий нейтральний бордер */
+  /* Базовий сірий колір, якщо клас не визначено */
   border-left: 5px solid #ccc;
 }
 
 /* ------------------------------------------------------------- */
-/* --- КОЛЬОРИ БОРДЕРІВ ЗА КЛАСОМ/ТИПОМ --- */
+/* --- ПОВЕРНУТІ КОЛЬОРИ ЗА ПРЕДМЕТОМ (Згідно зі старими класами) --- */
 /* ------------------------------------------------------------- */
 
-/* 1. СТИЛІ ДЛЯ УРОКІВ (LESSONS) - ЗАЛЕЖНІ ВІД КЛАСУ */
-
-/* Клас 2 - Рожевий */
-.card.lesson-g2 {
-  border-left-color: #ff69b4; /* Hot Pink */
+.card.border-blue {
+  border-left-color: #007bff; /* Алгебра */
 }
-
-/* Клас 8 - Фіолетовий */
-.card.lesson-g8 {
-  border-left-color: #9932cc; /* Dark Orchid */
+.card.border-green {
+  border-left-color: #28a745; /* Геометрія */
 }
-
-/* Клас 9 - Помаранчевий */
-.card.lesson-g9 {
-  border-left-color: #ff8c00; /* Dark Orange */
+.card.border-red {
+  border-left-color: #dc3545; /* Англійська */
 }
-
-/* 2. СТИЛІ ДЛЯ ТЕСТІВ (TESTS) - ОДИН КОРІННИЙ КОЛІР */
-
-.card.type-test {
-  border-left-color: #00bcd4; /* Cyan - колір для всіх тестів */
-}
-
-/* 3. СТИЛІ ДЛЯ ДОМАШНІХ ЗАВДАНЬ (HOMEWORK) - ОДИН ЗЕЛЕНИЙ КОЛІР */
-
-.card.type-homework {
-  border-left-color: #2e8b57; /* Sea Green - колір для всіх ДЗ */
+.card.border-gray {
+  border-left-color: #adb5bd; /* Базовий сірий для інших */
 }
 
 /* ------------------------------------------------------------- */
