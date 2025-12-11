@@ -33,6 +33,16 @@ window.lessonsData = [
   },
   {
     id: 4,
+    title: "Степінь із цілим показником",
+    grade: 8,
+    topic: "Алгебра",
+    link: "algebra/8/Тест Степінь із цілим показником.html",
+    subject_code: "algebra",
+    category: "test",
+    author: "Даша",
+  },
+  {
+    id: 5,
     title: "Степінь з від'ємним показником. Частина 1",
     grade: 8,
     topic: "Алгебра",
@@ -130,6 +140,16 @@ window.lessonsData = [
     subject_code: "algebra",
     category: "lesson",
     author: "Соня",
+  },
+  {
+    id: 8009,
+    title: "§9. Степінь із цілим показником",
+    grade: 8,
+    topic: "Алгебра",
+    link: "algebra/8/Степінь із цілим показником.html",
+    subject_code: "algebra",
+    category: "lesson",
+    author: "Даша",
   },
   {
     id: 8010,
