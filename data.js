@@ -72,7 +72,6 @@ window.lessonsData = [
     category: "lesson",
     author: "Даша",
   },
-  Mathematik-Test 5. Klasse (Deutschland) – 30 Fragen
   {
     id: 501,
     title: "Rechenausdrücke",
@@ -93,7 +92,6 @@ window.lessonsData = [
     category: "lesson",
     author: "Даша",
   },
-  
   {
     id: 503,
     title: "Schriftliches Rechnen",
