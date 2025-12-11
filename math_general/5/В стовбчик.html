@@ -31,6 +31,7 @@
         --text: #1e293b;
         --border: #e2e8f0;
         --accent: #059669;
+        --toolbar-bg: #f1f5f9; /* Світло-сірий для панелі інструментів */
       }
 
       body {
@@ -61,12 +62,30 @@
         text-align: center;
       }
 
-      .content-container {
+      /* --- ОСНОВНА СТРУКТУРА ДЛЯ ВЕЛИКИХ ЕКРАНІВ (ПК/Ноутбуки) --- */
+      .main-layout {
+        display: flex;
         width: 100%;
-        max-width: 800px;
+        max-width: 1600px;
+        min-height: calc(100vh - 60px);
+      }
+
+      .content-container {
+        width: 50%;
         padding: 20px;
         box-sizing: border-box;
+        overflow-y: auto;
       }
+
+      .scrap-pad-container {
+        width: 50%;
+        background-color: var(--toolbar-bg);
+        border-left: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        padding: 10px;
+      }
+      /* ----------------------------------------------------------- */
 
       .quiz-block {
         background: var(--card);
@@ -110,6 +129,32 @@
         transition: 0.2s;
       }
 
+      /* --- Стилі для дошки (Scrap Pad) --- */
+      .drawing-canvas {
+        flex-grow: 1;
+        background-color: white;
+        border: 1px solid var(--border);
+        cursor: crosshair;
+        touch-action: none;
+      }
+      .canvas-toolbar {
+        display: flex;
+        gap: 10px;
+        padding: 10px 0;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      .toolbar-btn {
+        padding: 10px 18px; /* Збільшено padding для зручності на тачскріні */
+        border: 1px solid var(--border);
+        border-radius: 8px; /* Більш округлі кути */
+        background: var(--card);
+        cursor: pointer;
+        transition: background 0.2s, border-color 0.2s;
+        font-size: 1.1rem; /* Збільшено шрифт */
+        font-weight: 600;
+      }
+      /* Решта стилів кнопок та модалки залишаються */
       .option-btn:hover:not(:disabled) {
         border-color: var(--primary);
         background: var(--primary-light);
@@ -145,56 +190,69 @@
         border-radius: 50px;
         box-shadow: 0 4px 15px rgba(5, 150, 105, 0.4);
         transition: transform 0.2s;
+        cursor: pointer;
       }
       .btn-finish:hover {
         transform: scale(1.05);
         background-color: #047857;
       }
 
-      /* --- Modal styles --- */
-      .modal-overlay {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        backdrop-filter: blur(5px);
-        z-index: 1000;
-        justify-content: center;
-        align-items: center;
-      }
-
-      .modal-card {
-        background: white;
-        padding: 40px;
-        border-radius: 20px;
-        max-width: 450px;
-        width: 90%;
+      .scrap-pad-header {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 10px;
         text-align: center;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-        position: relative;
-      }
-      .modal-score-big {
-        font-size: 4rem;
-        font-weight: 900;
-        color: var(--primary);
-        line-height: 1;
-        margin: 10px 0;
-      }
-      .modal-footer-btn {
-        margin-top: 30px;
-        padding: 12px 30px;
-        background: var(--text);
-        color: white;
-        border: none;
-        border-radius: 8px;
-        font-size: 1rem;
-        cursor: pointer;
       }
 
-      @media (max-width: 600px) {
+      .toolbar-btn:hover {
+        background: var(--primary-light);
+        border-color: var(--primary);
+      }
+      .toolbar-btn.active {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+      }
+      .toolbar-btn.active:hover {
+        background: var(--primary);
+      }
+      .toolbar-btn.clear-btn {
+        background: var(--error);
+        color: white;
+        border-color: var(--error);
+      }
+      .toolbar-btn.clear-btn:hover {
+        background: #b91c1c;
+      }
+
+      /* --- АДАПТИВНІСТЬ ДЛЯ ПЛАНШЕТІВ ТА МОБІЛЬНИХ (ДО 900PX) --- */
+      @media (max-width: 900px) {
+        .main-layout {
+          flex-direction: column;
+        }
+        .content-container {
+          width: 100%;
+          padding: 15px; /* Трохи менші відступи */
+          order: 2; /* Контент йде після дошки */
+        }
+        .scrap-pad-container {
+          width: 100%;
+          border-left: none;
+          border-top: 1px solid var(--border);
+          padding: 15px;
+          order: 1; /* Дошка переміщується вгору */
+
+          /* ФІКСОВАНА ВИСОТА ДЛЯ ПЛАНШЕТІВ/МОБІЛЬНИХ */
+          height: 50vh;
+          min-height: 350px; /* Мінімальна висота для зручності */
+        }
+
+        .drawing-canvas {
+          /* Забезпечення, що canvas займає весь доступний простір контейнера */
+          height: calc(100% - 70px);
+        }
+
         .options-container {
           grid-template-columns: 1fr;
         }
@@ -209,7 +267,21 @@
       </div>
     </header>
 
-    <div class="content-container" id="quiz-root"></div>
+    <div class="main-layout">
+      <div class="scrap-pad-container">
+        <div class="scrap-pad-header">📝 Дошка для записів / Чернетка</div>
+        <div class="canvas-toolbar">
+          <button class="toolbar-btn active" id="pen-btn">✍️ Писати</button>
+          <button class="toolbar-btn" id="eraser-btn">🧼 Стерти</button>
+          <button class="toolbar-btn clear-btn" onclick="clearCanvas()">
+            🗑️ Очистити
+          </button>
+        </div>
+        <canvas id="drawing-canvas" class="drawing-canvas"></canvas>
+      </div>
+
+      <div class="content-container" id="quiz-root"></div>
+    </div>
 
     <div id="result-modal" class="modal-overlay">
       <div class="modal-card">
@@ -218,6 +290,10 @@
     </div>
 
     <script>
+      // ===============================================
+      // JAVASCRIPT ДЛЯ ТЕСТУ (без змін)
+      // ===============================================
+
       // Масив тестових питань, сфокусованих на письмових обчисленнях
       const testQuestions = [
         // ------------------ Addition (8) ------------------
@@ -576,9 +652,172 @@
         modal.style.display = "flex";
       }
 
+      // ===============================================
+      // JAVASCRIPT ДЛЯ CANVAS (ДОШКИ)
+      // ===============================================
+
+      const canvas = document.getElementById("drawing-canvas");
+      const ctx = canvas.getContext("2d");
+      let isDrawing = false;
+      let lastX = 0;
+      let lastY = 0;
+      let mode = "pen";
+      const PEN_COLOR = "black";
+      const PEN_SIZE = 4;
+      const ERASER_SIZE = 20; // Трохи збільшено для сенсорного екрана
+
+      // Функція для адаптації розміру canvas
+      function resizeCanvas() {
+        const container = canvas.parentElement;
+
+        // Встановлюємо розміри відповідно до батьківського контейнера
+        // Врахування margin/padding/toolbar: container.clientHeight - висота панелі інструментів
+        const toolbarHeight =
+          document.querySelector(".canvas-toolbar").offsetHeight || 50;
+        const headerHeight =
+          document.querySelector(".scrap-pad-header").offsetHeight || 25;
+        const padding = 20; // Приблизне значення padding контейнера
+
+        // Встановлюємо розміри відповідно до батьківського контейнера
+        canvas.width = container.clientWidth;
+        // На великих екранах: flex-grow займає простір
+        // На малих екранах: використовуємо фіксовану висоту з CSS, canvas повинен зайняти решту
+        if (window.innerWidth <= 900) {
+          canvas.height =
+            container.clientHeight - (toolbarHeight + headerHeight);
+        } else {
+          // На широких екранах ми покладаємося на flex-grow, але для ініціалізації потрібна висота
+          canvas.height =
+            container.clientHeight - toolbarHeight - headerHeight - padding;
+        }
+
+        // Забезпечуємо білий фон при зміні розміру, якщо він був прозорим
+        ctx.fillStyle = "white";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
+
+      // Викликаємо функцію при завантаженні та зміні розміру вікна
+      window.addEventListener("resize", resizeCanvas);
+
+      function startDrawing(e) {
+        e.preventDefault();
+        isDrawing = true;
+        [lastX, lastY] = getCoordinates(e);
+
+        ctx.beginPath();
+        ctx.moveTo(lastX, lastY);
+
+        draw(e);
+      }
+
+      function draw(e) {
+        if (!isDrawing) return;
+        e.preventDefault();
+
+        let [currentX, currentY] = getCoordinates(e);
+
+        ctx.strokeStyle = mode === "pen" ? PEN_COLOR : "white";
+        ctx.lineWidth = mode === "pen" ? PEN_SIZE : ERASER_SIZE;
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+
+        if (mode === "eraser") {
+          ctx.globalCompositeOperation = "destination-out";
+        } else {
+          ctx.globalCompositeOperation = "source-over";
+        }
+
+        ctx.lineTo(currentX, currentY);
+        ctx.stroke();
+
+        [lastX, lastY] = [currentX, currentY];
+      }
+
+      function stopDrawing() {
+        if (!isDrawing) return;
+        isDrawing = false;
+        ctx.closePath();
+      }
+
+      // Допоміжна функція для отримання координат незалежно від події (миша чи дотик)
+      function getCoordinates(e) {
+        const rect = canvas.getBoundingClientRect();
+        let clientX, clientY;
+
+        if (e.touches && e.touches.length > 0) {
+          clientX = e.touches[0].clientX;
+          clientY = e.touches[0].clientY;
+        } else {
+          clientX = e.clientX;
+          clientY = e.clientY;
+        }
+
+        return [clientX - rect.left, clientY - rect.top];
+      }
+
+      // Функція повного очищення дошки
+      window.clearCanvas = function () {
+        ctx.clearRect(0, 0, canvas.width, canvas.height); // Чистимо вміст
+
+        // Перемальовуємо білий фон, щоб "destination-out" працював правильно
+        ctx.globalCompositeOperation = "source-over";
+        ctx.fillStyle = "white";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Відновлюємо попередній режим малювання
+        setMode(mode);
+      };
+
+      // Функція для зміни режиму (олівець/гумка)
+      function setMode(newMode) {
+        mode = newMode;
+
+        document.getElementById("pen-btn").classList.remove("active");
+        document.getElementById("eraser-btn").classList.remove("active");
+
+        if (newMode === "pen") {
+          document.getElementById("pen-btn").classList.add("active");
+        } else if (newMode === "eraser") {
+          document.getElementById("eraser-btn").classList.add("active");
+        }
+
+        // Для гумки ми можемо скинути globalCompositeOperation
+        if (mode === "eraser") {
+          ctx.globalCompositeOperation = "destination-out";
+        } else {
+          ctx.globalCompositeOperation = "source-over";
+        }
+      }
+
+      // Прив'язка подій для миші
+      canvas.addEventListener("mousedown", startDrawing);
+      canvas.addEventListener("mousemove", draw);
+      canvas.addEventListener("mouseup", stopDrawing);
+      canvas.addEventListener("mouseout", stopDrawing);
+
+      // Прив'язка подій для сенсорних екранів
+      canvas.addEventListener("touchstart", startDrawing);
+      canvas.addEventListener("touchmove", draw);
+      canvas.addEventListener("touchend", stopDrawing);
+      canvas.addEventListener("touchcancel", stopDrawing);
+
+      // Прив'язка кнопок до зміни режиму
+      document
+        .getElementById("pen-btn")
+        .addEventListener("click", () => setMode("pen"));
+      document
+        .getElementById("eraser-btn")
+        .addEventListener("click", () => setMode("eraser"));
+
+      // ===============================================
+      // ІНІЦІАЛІЗАЦІЯ
+      // ===============================================
+
       document.addEventListener("DOMContentLoaded", () => {
         renderQuiz();
         updateFinishButton();
+        resizeCanvas(); // Встановлюємо початковий розмір дошки
+        setMode("pen"); // Встановлюємо початковий режим
 
         // Рендеринг математики для всього body
         renderMathInElement(document.body, {
