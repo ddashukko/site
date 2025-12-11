@@ -13,6 +13,16 @@ window.lessonsData = [
   },
   {
     id: 2,
+    title: "Знаходження невідомого доданка(без переходу через десяток)",
+    grade: 2,
+    topic: "Арифметика",
+    link: "math_general/2/тест на рівняння.html",
+    subject_code: "math_general",
+    category: "test",
+    author: "Даша",
+  },
+  {
+    id: 3,
     title: "Стандартний вигляд числа",
     grade: 8,
     topic: "Алгебра",

@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Математична Пригода</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Mali:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary: #ff9aa2;
+        --secondary: #b5ead7;
+        --accent: #ffdac1;
+        --text: #555;
+        --bg: #fff9fa;
+        --correct: #95d5b2;
+        --wrong: #ffb7b2;
+      }
+
+      body {
+        font-family: "Mali", cursive;
+        background-color: var(--bg);
+        color: var(--text);
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .container {
+        background: white;
+        border-radius: 25px;
+        box-shadow: 0 10px 25px rgba(255, 154, 162, 0.3);
+        width: 100%;
+        max-width: 600px;
+        padding: 30px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        border: 4px solid var(--secondary);
+      }
+
+      h1 {
+        color: var(--primary);
+        font-size: 2.2em;
+        margin-bottom: 10px;
+      }
+
+      .progress-bar {
+        width: 100%;
+        height: 15px;
+        background-color: #f0f0f0;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        overflow: hidden;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background-color: var(--primary);
+        width: 0%;
+        transition: width 0.5s ease;
+      }
+
+      .question-box {
+        font-size: 1.8em;
+        margin: 30px 0;
+        padding: 20px;
+        background-color: var(--accent);
+        border-radius: 15px;
+        font-weight: bold;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100px;
+        white-space: nowrap;
+        overflow-x: auto;
+      }
+
+      .options-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+      }
+
+      button.option-btn {
+        background: white;
+        border: 3px solid var(--secondary);
+        border-radius: 15px;
+        padding: 15px;
+        font-size: 1.4em;
+        font-family: "Mali", cursive;
+        cursor: pointer;
+        transition: transform 0.2s, background 0.3s;
+        color: var(--text);
+      }
+
+      button.option-btn:hover {
+        transform: scale(1.05);
+        background-color: #f0fff4;
+      }
+
+      button.option-btn:active {
+        transform: scale(0.95);
+      }
+
+      button.start-btn,
+      button.restart-btn {
+        background: var(--primary);
+        color: white;
+        border: none;
+        padding: 15px 40px;
+        font-size: 1.5em;
+        border-radius: 50px;
+        cursor: pointer;
+        box-shadow: 0 5px 15px rgba(255, 154, 162, 0.4);
+        font-family: "Mali", cursive;
+        margin-top: 20px;
+      }
+
+      button.start-btn:hover {
+        transform: scale(1.05);
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      .correct-anim {
+        background-color: var(--correct) !important;
+        border-color: #52b788 !important;
+        color: white !important;
+        animation: bounce 0.5s;
+      }
+
+      .wrong-anim {
+        background-color: var(--wrong) !important;
+        border-color: #ff6b6b !important;
+        color: white !important;
+        animation: shake 0.5s;
+      }
+
+      @keyframes bounce {
+        0%,
+        20%,
+        50%,
+        80%,
+        100% {
+          transform: translateY(0);
+        }
+        40% {
+          transform: translateY(-10px);
+        }
+        60% {
+          transform: translateY(-5px);
+        }
+      }
+
+      @keyframes shake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        25% {
+          transform: translateX(-10px);
+        }
+        75% {
+          transform: translateX(10px);
+        }
+      }
+
+      .mascot {
+        font-size: 3em;
+        margin-bottom: 10px;
+        display: block;
+      }
+
+      .feedback-text {
+        font-size: 1.2em;
+        height: 30px;
+        margin-top: 10px;
+        color: var(--primary);
+        font-weight: bold;
+      }
+
+      .emoji-equ {
+        letter-spacing: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container" id="start-screen">
+      <span class="mascot">🦄</span>
+      <h1>Математична Пригода</h1>
+      <p>Привіт! Допоможи знайти заховані числа.</p>
+      <p>На тебе чекає 30 цікавих завдань!</p>
+      <button class="start-btn" onclick="startGame()">Почати гру!</button>
+    </div>
+
+    <div class="container hidden" id="quiz-screen">
+      <div class="progress-bar">
+        <div class="progress-fill" id="progress"></div>
+      </div>
+      <div
+        id="question-number"
+        style="color: #aaa; font-size: 0.9em; margin-bottom: 5px"
+      >
+        Питання 1 з 30
+      </div>
+
+      <div class="question-box" id="question-text">Loading...</div>
+
+      <div class="options-grid" id="options-container"></div>
+
+      <div class="feedback-text" id="feedback"></div>
+    </div>
+
+    <div class="container hidden" id="result-screen">
+      <span class="mascot">🏆</span>
+      <h1>Ти молодець!</h1>
+      <p>Твій результат:</p>
+      <h2
+        id="final-score"
+        style="font-size: 3em; color: var(--primary); margin: 10px 0"
+      ></h2>
+      <p id="final-message"></p>
+      <button class="restart-btn" onclick="location.reload()">
+        Спробувати ще раз
+      </button>
+    </div>
+
+    <script>
+      const totalQuestions = 30;
+      let currentQuestionIndex = 0;
+      let score = 0;
+      let questions = [];
+
+      const emojis = ["🍎", "🍬", "🎈", "🐱", "⭐️", "🌸"];
+
+      function generateQuestions() {
+        const q = [];
+
+        // 1-5: Малюнки
+        for (let i = 0; i < 5; i++) {
+          let icon = emojis[Math.floor(Math.random() * emojis.length)];
+          let a = Math.floor(Math.random() * 4) + 1;
+          let b = Math.floor(Math.random() * 4) + 1;
+          let sum = a + b;
+
+          let strA = icon.repeat(a);
+          let strSum = icon.repeat(sum);
+
+          q.push({
+            type: "image",
+            text: `${strA} + ❓ = ${strSum}`,
+            correct: b,
+            options: generateDistractors(b, 10),
+          });
+        }
+
+        // 6-10: Числа до 20
+        for (let i = 0; i < 5; i++) {
+          let sum = Math.floor(Math.random() * 9) + 11;
+          let a = Math.floor(Math.random() * (sum - 2)) + 1;
+          let b = sum - a;
+
+          let hideFirst = Math.random() > 0.5;
+
+          q.push({
+            type: "text",
+            text: hideFirst ? `❓ + ${b} = ${sum}` : `${a} + ❓ = ${sum}`,
+            correct: hideFirst ? a : b,
+            options: generateDistractors(hideFirst ? a : b, 20),
+          });
+        }
+
+        // 11-20: Середні рівняння (без переходу)
+        for (let i = 0; i < 10; i++) {
+          q.push(generateSafeEquation(20, 50));
+        }
+
+        // 21-30: Складніші рівняння (без переходу)
+        for (let i = 0; i < 10; i++) {
+          q.push(generateSafeEquation(50, 99));
+        }
+
+        return q;
+      }
+
+      function generateSafeEquation(minSum, maxSum) {
+        // 1. Генеруємо суму
+        let sum = Math.floor(Math.random() * (maxSum - minSum + 1)) + minSum;
+
+        let sumTens = Math.floor(sum / 10);
+        let sumUnits = sum % 10;
+
+        // 2. Генеруємо десятки першого доданка (не більше десятків суми)
+        let aTens = Math.floor(Math.random() * (sumTens + 1));
+        // Запобіжник: якщо десятки рівні, то одиниці не можуть призвести до перебору
+        if (aTens === sumTens && sumUnits === 0) aTens = sumTens - 1;
+        if (aTens === 0 && sumTens > 1) aTens = 1;
+
+        // 3. Генеруємо одиниці першого доданка (не більше одиниць суми - ЦЕ ГОЛОВНЕ ДЛЯ "БЕЗ ПЕРЕХОДУ")
+        let aUnits = Math.floor(Math.random() * (sumUnits + 1));
+
+        let valA = aTens * 10 + aUnits;
+
+        // Запобіжники на нуль і рівність сумі
+        if (valA === 0) valA = 1;
+        if (valA === sum) valA = sum - 1;
+
+        let valB = sum - valA;
+
+        let hideFirst = Math.random() > 0.5;
+        let correctVal = hideFirst ? valA : valB;
+
+        return {
+          type: "text",
+          text: hideFirst ? `x + ${valB} = ${sum}` : `${valA} + x = ${sum}`,
+          correct: correctVal,
+          options: generateSmartDistractors(correctVal, sum),
+        };
+      }
+
+      // Функція для простих питань (гарантовано 4 варіанти з правильним)
+      function generateDistractors(correct, maxRange) {
+        let opts = new Set();
+        while (opts.size < 3) {
+          // Шукаємо тільки 3 неправильних
+          let offset = Math.floor(Math.random() * 5) + 1;
+          let direction = Math.random() > 0.5 ? 1 : -1;
+          let wrong = correct + offset * direction;
+
+          if (wrong > 0 && wrong < maxRange + 10 && wrong !== correct) {
+            opts.add(wrong);
+          }
+        }
+        // Додаємо правильну відповідь до масиву
+        let result = Array.from(opts);
+        result.push(correct);
+
+        // Перемішуємо
+        return result.sort(() => Math.random() - 0.5);
+      }
+
+      // Функція для складних питань (гарантовано правильна відповідь + розумні помилки)
+      function generateSmartDistractors(correct, sum) {
+        let incorrectOpts = new Set();
+
+        // Створюємо пул потенційних помилок
+        let potentialWrongs = [
+          correct + 10,
+          correct - 10,
+          correct + 1,
+          correct - 1,
+          correct + 2,
+          correct - 2,
+          // Помилка: дитина додає числа замість віднімання (якщо результат не занадто великий)
+          sum + (sum - correct),
+        ];
+
+        // Фільтруємо і додаємо у множину неправильних
+        potentialWrongs.forEach((val) => {
+          if (val > 0 && val !== correct && val < 150) {
+            // розумні межі
+            incorrectOpts.add(val);
+          }
+        });
+
+        // Якщо помилок замало, додаємо випадкові
+        while (incorrectOpts.size < 3) {
+          let wrong = correct + Math.floor(Math.random() * 20) - 10;
+          if (wrong > 0 && wrong !== correct) incorrectOpts.add(wrong);
+        }
+
+        // Перетворюємо на масив, перемішуємо і беремо ТІЛЬКИ 3 НЕПРАВИЛЬНИХ
+        let finalOpts = Array.from(incorrectOpts)
+          .sort(() => Math.random() - 0.5)
+          .slice(0, 3);
+
+        // Додаємо ПРАВИЛЬНУ відповідь (тепер вона точно є)
+        finalOpts.push(correct);
+
+        // Перемішуємо фінальний набір з 4 кнопок
+        return finalOpts.sort(() => Math.random() - 0.5);
+      }
+
+      function startGame() {
+        questions = generateQuestions();
+        document.getElementById("start-screen").classList.add("hidden");
+        document.getElementById("quiz-screen").classList.remove("hidden");
+        renderQuestion();
+      }
+
+      function renderQuestion() {
+        const q = questions[currentQuestionIndex];
+        document.getElementById("question-number").innerText = `Завдання ${
+          currentQuestionIndex + 1
+        } з ${totalQuestions}`;
+
+        const progressPercent = (currentQuestionIndex / totalQuestions) * 100;
+        document.getElementById("progress").style.width = `${progressPercent}%`;
+
+        const qBox = document.getElementById("question-text");
+        qBox.innerText = q.text;
+        if (q.type === "image") {
+          qBox.classList.add("emoji-equ");
+        } else {
+          qBox.classList.remove("emoji-equ");
+        }
+
+        const container = document.getElementById("options-container");
+        container.innerHTML = "";
+        document.getElementById("feedback").innerText = "";
+
+        q.options.forEach((opt) => {
+          const btn = document.createElement("button");
+          btn.className = "option-btn";
+          btn.innerText = opt;
+
+          btn.onclick = () => checkAnswer(btn, opt, q.correct);
+          container.appendChild(btn);
+        });
+      }
+
+      function checkAnswer(btn, selected, correct) {
+        const allBtns = document.querySelectorAll(".option-btn");
+        allBtns.forEach((b) => (b.disabled = true));
+
+        if (selected === correct) {
+          btn.classList.add("correct-anim");
+          document.getElementById("feedback").innerText = "Чудово! 🎉";
+          score++;
+          setTimeout(nextQuestion, 1500);
+        } else {
+          btn.classList.add("wrong-anim");
+          document.getElementById(
+            "feedback"
+          ).innerText = `Правильна відповідь: ${correct}`;
+
+          allBtns.forEach((b) => {
+            let val = parseInt(b.innerText);
+            if (val === correct) b.classList.add("correct-anim");
+          });
+
+          setTimeout(nextQuestion, 2000);
+        }
+      }
+
+      function nextQuestion() {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < totalQuestions) {
+          renderQuestion();
+        } else {
+          showResults();
+        }
+      }
+
+      function showResults() {
+        document.getElementById("quiz-screen").classList.add("hidden");
+        document.getElementById("result-screen").classList.remove("hidden");
+
+        const scoreEl = document.getElementById("final-score");
+        const msgEl = document.getElementById("final-message");
+
+        scoreEl.innerText = `${score} / ${totalQuestions}`;
+
+        if (score === totalQuestions) {
+          msgEl.innerText = "Неймовірно! Ти справжня королева математики! 👑";
+        } else if (score > 25) {
+          msgEl.innerText = "Дуже гарний результат! Ти майже все знаєш! 🌟";
+        } else if (score > 15) {
+          msgEl.innerText = "Хороша робота! Тренуйся ще, і буде ідеально! 💪";
+        } else {
+          msgEl.innerText = "Не засмучуйся! Спробуй ще раз, ти зможеш! ☀️";
+        }
+      }
+    </script>
+  </body>
+</html>
