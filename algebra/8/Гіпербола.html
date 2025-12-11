@@ -1,360 +1,785 @@
 <!DOCTYPE html>
 <html lang="uk">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Алгебра 8: Функція y = k/x + Дошка</title>
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
+    />
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"
+    ></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    ></script>
 
     <style>
-        :root {
-            --primary: #2563eb;
-            --primary-light: #eff6ff;
-            --success: #16a34a;
-            --error: #dc2626;
-            --bg: #f8fafc;
-            --card: #ffffff;
-            --text: #1e293b;
-            --border: #e2e8f0;
-            --accent: #8b5cf6;
-            --grid-color: #e2e8f0;
-        }
+      :root {
+        --primary: #2563eb;
+        --primary-light: #eff6ff;
+        --success: #16a34a;
+        --error: #dc2626;
+        --bg: #f8fafc;
+        --card: #ffffff;
+        --text: #1e293b;
+        --border: #e2e8f0;
+        --accent: #8b5cf6;
+        --grid-color: #e2e8f0;
+      }
 
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        display: flex;
+        overflow: hidden;
+      }
+
+      /* --- ЛІВА ЧАСТИНА: ЗАВДАННЯ --- */
+      #tasks-section {
+        flex: 1;
+        background: var(--bg);
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* --- ПРАВА ЧАСТИНА: ДОШКА --- */
+      #board-section {
+        flex: 1;
+        position: relative;
+        background-color: #fff;
+        border-left: 4px solid #cbd5e1;
+        background-image: linear-gradient(
+            var(--grid-color) 1px,
+            transparent 1px
+          ),
+          linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+        background-size: 25px 25px;
+        cursor: crosshair;
+        overflow: hidden;
+      }
+
+      canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+        touch-action: none;
+      }
+
+      .tools {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        display: flex;
+        gap: 10px;
+        background: rgba(255, 255, 255, 0.95);
+        padding: 8px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        border: 1px solid var(--border);
+        flex-wrap: wrap;
+      }
+
+      .btn-tool {
+        border: 1px solid #cbd5e1;
+        background: white;
+        padding: 8px 12px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 1.2rem;
+        transition: 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 40px;
+      }
+      .btn-tool:hover {
+        background: #f1f5f9;
+      }
+      .btn-tool.active {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+      }
+
+      header {
+        background: var(--card);
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+      }
+
+      .header-title {
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: var(--primary);
+      }
+      .stats-container {
+        display: flex;
+        gap: 15px;
+        font-weight: 600;
+      }
+      .stat-correct {
+        color: var(--success);
+      }
+      .stat-wrong {
+        color: var(--error);
+      }
+
+      .content-container {
+        padding: 20px;
+        padding-bottom: 80px;
+        max-width: 800px;
+        margin: 0 auto;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      .theory-block {
+        background: linear-gradient(to right, #fdfbf7, #fff);
+        border-left: 5px solid var(--accent);
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 30px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      }
+      .theory-title {
+        color: var(--accent);
+        font-weight: bold;
+        font-size: 1.1rem;
+        margin-bottom: 10px;
+      }
+      .theory-content ul {
+        margin: 5px 0;
+        padding-left: 20px;
+      }
+      .theory-content li {
+        margin-bottom: 5px;
+        line-height: 1.5;
+      }
+
+      .exercise-block {
+        background: var(--card);
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        margin-bottom: 30px;
+        overflow: hidden;
+      }
+
+      .exercise-header {
+        background: var(--primary-light);
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border);
+      }
+      .exercise-title {
+        margin: 0;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--primary);
+      }
+      .exercise-desc {
+        margin: 5px 0 0 0;
+        font-size: 0.95rem;
+        color: #475569;
+        line-height: 1.5;
+      }
+
+      .visual-container {
+        display: flex;
+        justify-content: center;
+        padding: 20px;
+        background: #fff;
+        border-bottom: 1px solid var(--border);
+        overflow-x: auto;
+      }
+
+      .task-row {
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .task-row:last-child {
+        border-bottom: none;
+      }
+      .task-row.solved-correct {
+        background-color: #f0fdf4;
+      }
+      .task-row.solved-wrong {
+        background-color: #fef2f2;
+      }
+
+      .task-content {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .task-number {
+        font-weight: 600;
+        color: #94a3b8;
+        min-width: 25px;
+      }
+      .task-question {
+        font-size: 1.1rem;
+        font-weight: 500;
+      }
+
+      .options-container {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 10px;
+        overflow-x: auto;
+        padding-bottom: 5px;
+      }
+      .option-btn {
+        flex: 1;
+        background: white;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        padding: 10px 15px;
+        font-size: 1rem;
+        cursor: pointer;
+        min-width: 70px;
+        white-space: nowrap;
+        transition: 0.2s;
+      }
+      .option-btn:hover:not(:disabled) {
+        border-color: var(--primary);
+        color: var(--primary);
+        background: var(--primary-light);
+      }
+      .option-btn.selected-correct {
+        background: var(--success);
+        color: white;
+        border-color: var(--success);
+      }
+      .option-btn.selected-correct .katex {
+        color: white !important;
+      }
+      .option-btn.selected-wrong {
+        background: var(--error);
+        color: white;
+        border-color: var(--error);
+      }
+      .option-btn.selected-wrong .katex {
+        color: white !important;
+      }
+
+      .input-group {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+      .input-answer {
+        padding: 10px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        width: 140px;
+        font-size: 1rem;
+      }
+      .btn-check {
+        padding: 10px 20px;
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+      .input-answer.correct {
+        border-color: var(--success);
+        background: #f0fdf4;
+        color: var(--success);
+      }
+      .input-answer.wrong {
+        border-color: var(--error);
+        background: #fef2f2;
+      }
+
+      .math-table {
+        border-collapse: collapse;
+        width: 100%;
+        max-width: 600px;
+        margin: 0 auto;
+        font-size: 1.1rem;
+      }
+      .math-table td,
+      .math-table th {
+        border: 1px solid #cbd5e1;
+        padding: 8px;
+        text-align: center;
+      }
+      .math-table th {
+        background-color: #f1f5f9;
+        font-weight: bold;
+      }
+
+      .table-input {
+        width: 45px;
+        text-align: center;
+        padding: 6px;
+        border: 1px solid #cbd5e1;
+        border-radius: 6px;
+        font-size: 1rem;
+        outline: none;
+        transition: background-color 0.2s;
+      }
+      .table-input:focus {
+        border-color: var(--primary);
+      }
+      .table-input.correct {
+        background: #f0fdf4;
+        border-color: var(--success);
+        color: var(--success);
+        font-weight: bold;
+      }
+      .table-input.wrong {
+        background: #fef2f2;
+        border-color: var(--error);
+        color: var(--error);
+      }
+
+      .finish-section {
+        margin-top: 40px;
+        text-align: center;
+      }
+      .btn-finish {
+        padding: 15px 40px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: white;
+        background: var(--primary);
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+        transition: transform 0.2s;
+      }
+      .btn-finish:hover {
+        transform: scale(1.05);
+        background-color: #1d4ed8;
+      }
+
+      /* --- СТИЛІ ДЛЯ МОДАЛЬНОГО ВІКНА --- */
+      .modal-overlay {
+        display: none; /* Приховано за замовчуванням */
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5); /* Напівпрозорий фон */
+        backdrop-filter: blur(5px);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+        animation: fadeInOverlay 0.3s ease;
+      }
+
+      .modal-card {
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        max-width: 450px;
+        width: 90%;
+        text-align: center;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        position: relative;
+        animation: scaleInModal 0.3s ease;
+      }
+
+      .modal-close-btn {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: #94a3b8;
+        cursor: pointer;
+      }
+      .modal-close-btn:hover {
+        color: var(--error);
+      }
+
+      .modal-result-title {
+        font-size: 2rem;
+        font-weight: 800;
+        color: var(--primary);
+        margin-bottom: 20px;
+      }
+      .modal-score-big {
+        font-size: 4rem;
+        font-weight: 900;
+        color: var(--primary);
+        line-height: 1;
+        margin: 10px 0;
+      }
+      .modal-score-sub {
+        font-size: 1rem;
+        color: #64748b;
+        margin-bottom: 20px;
+      }
+
+      .modal-progress-container {
+        background: #f1f5f9;
+        border-radius: 10px;
+        padding: 15px;
+        margin-top: 20px;
+      }
+      .modal-bar-bg {
+        width: 100%;
+        height: 12px;
+        background: #e2e8f0;
+        border-radius: 6px;
+        overflow: hidden;
+        margin-top: 10px;
+      }
+      .modal-bar-fill {
+        height: 100%;
+        background: var(--primary);
+        transition: width 1s ease;
+      }
+
+      .modal-footer-btn {
+        margin-top: 30px;
+        padding: 12px 30px;
+        background: var(--text);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+      .modal-footer-btn:hover {
+        background: black;
+      }
+
+      @keyframes fadeInOverlay {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      @keyframes scaleInModal {
+        from {
+          transform: scale(0.8);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      @media (max-width: 768px) {
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            display: flex;
-            overflow: hidden; /* Забороняємо скрол всієї сторінки */
+          flex-direction: column;
         }
-
-        /* --- ЛІВА ЧАСТИНА: ДОШКА --- */
         #board-section {
-            flex: 1;
-            position: relative;
-            background-color: #fff;
-            border-right: 4px solid #cbd5e1;
-            /* Малюємо клітинку CSS-градієнтом */
-            background-image: 
-                linear-gradient(var(--grid-color) 1px, transparent 1px),
-                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
-            background-size: 25px 25px;
-            cursor: crosshair;
-            overflow: hidden;
+          height: 40vh;
+          border-left: none;
+          border-top: 4px solid #cbd5e1;
+          order: 2;
         }
-
-        canvas {
-            display: block;
-            width: 100%;
-            height: 100%;
-            touch-action: none; /* Важливо для малювання пальцем */
-        }
-
-        .tools {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            display: flex;
-            gap: 10px;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 8px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            border: 1px solid var(--border);
-        }
-
-        .btn-tool {
-            border: 1px solid #cbd5e1;
-            background: white;
-            padding: 8px 12px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 1.2rem;
-            transition: 0.2s;
-        }
-        .btn-tool:hover { background: #f1f5f9; }
-        .btn-tool.active {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
-
-        /* --- ПРАВА ЧАСТИНА: ЗАВДАННЯ --- */
         #tasks-section {
-            flex: 1;
-            background: var(--bg);
-            overflow-y: auto; /* Скрол тільки тут */
-            display: flex;
-            flex-direction: column;
+          height: 60vh;
+          order: 1;
         }
-
-        header {
-            background: var(--card);
-            padding: 15px 20px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+        .math-table {
+          font-size: 0.9rem;
         }
-
-        .header-title { font-weight: 700; font-size: 1.1rem; color: var(--primary); }
-        .stats-container { display: flex; gap: 15px; font-weight: 600; }
-        .stat-correct { color: var(--success); }
-        .stat-wrong { color: var(--error); }
-
-        .content-container {
-            padding: 20px;
-            padding-bottom: 80px;
-            max-width: 800px;
-            margin: 0 auto;
-            width: 100%;
-            box-sizing: border-box;
+        .table-input {
+          width: 35px;
+          padding: 4px;
         }
-
-        /* Стилі теорії та завдань */
-        .theory-block {
-            background: linear-gradient(to right, #fdfbf7, #fff);
-            border-left: 5px solid var(--accent);
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 30px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-        }
-        .theory-title { color: var(--accent); font-weight: bold; font-size: 1.1rem; margin-bottom: 10px; }
-        .theory-content ul { margin: 5px 0; padding-left: 20px; }
-        .theory-content li { margin-bottom: 5px; line-height: 1.5; }
-
-        .exercise-block {
-            background: var(--card);
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            margin-bottom: 30px;
-            overflow: hidden;
-        }
-
-        .exercise-header { background: var(--primary-light); padding: 15px 20px; border-bottom: 1px solid var(--border); }
-        .exercise-title { margin: 0; font-size: 1.1rem; font-weight: 700; color: var(--primary); }
-        .exercise-desc { margin: 5px 0 0 0; font-size: 0.95rem; color: #475569; line-height: 1.5; }
-
-        .visual-container { display: flex; justify-content: center; padding: 20px; background: #fff; border-bottom: 1px solid var(--border); overflow-x: auto; }
-        
-        .task-row { padding: 15px 20px; border-bottom: 1px solid var(--border); display: flex; flex-direction: column; gap: 12px; }
-        .task-row:last-child { border-bottom: none; }
-        .task-row.solved-correct { background-color: #f0fdf4; }
-        .task-row.solved-wrong { background-color: #fef2f2; }
-
-        .task-content { display: flex; align-items: center; gap: 10px; }
-        .task-number { font-weight: 600; color: #94a3b8; min-width: 25px; }
-        .task-question { font-size: 1.1rem; font-weight: 500; }
-
-        .options-container { display: flex; flex-wrap: nowrap; gap: 10px; overflow-x: auto; padding-bottom: 5px; }
-        .option-btn { flex: 1; background: white; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px 15px; font-size: 1rem; cursor: pointer; min-width: 70px; white-space: nowrap; transition: 0.2s; }
-        .option-btn:hover:not(:disabled) { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }
-        .option-btn.selected-correct { background: var(--success); color: white; border-color: var(--success); }
-        .option-btn.selected-correct .katex { color: white !important; }
-        .option-btn.selected-wrong { background: var(--error); color: white; border-color: var(--error); }
-        .option-btn.selected-wrong .katex { color: white !important; }
-
-        .input-group { display: flex; gap: 10px; align-items: center; }
-        .input-answer { padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; width: 140px; font-size: 1rem; }
-        .btn-check { padding: 10px 20px; background: var(--primary); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; }
-        .input-answer.correct { border-color: var(--success); background: #f0fdf4; color: var(--success); }
-        .input-answer.wrong { border-color: var(--error); background: #fef2f2; }
-
-        .math-table { border-collapse: collapse; width: 100%; max-width: 400px; margin: 0 auto; font-size: 1.1rem; }
-        .math-table td, .math-table th { border: 1px solid #cbd5e1; padding: 10px; text-align: center; }
-        .math-table th { background-color: #f1f5f9; font-weight: bold; }
-
-        /* Кнопка завершення */
-        .finish-section { margin-top: 40px; text-align: center; }
-        .btn-finish { padding: 15px 40px; font-size: 1.2rem; font-weight: bold; color: white; background: var(--primary); border: none; border-radius: 50px; cursor: pointer; box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3); transition: transform 0.2s; }
-        .btn-finish:hover { transform: scale(1.05); background-color: #1d4ed8; }
-        .result-card { background: white; border: 2px solid var(--primary); border-radius: 12px; padding: 30px; margin-top: 20px; display: none; animation: fadeIn 0.5s ease; }
-        .result-title { font-size: 1.5rem; font-weight: bold; margin-bottom: 10px; }
-        .result-score { font-size: 2.5rem; font-weight: 800; color: var(--primary); margin: 15px 0; }
-        
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Адаптивність */
-        @media (max-width: 768px) {
-            body { flex-direction: column; }
-            #board-section { height: 40vh; border-right: none; border-bottom: 4px solid #cbd5e1; }
-            #tasks-section { height: 60vh; }
-        }
+      }
     </style>
-</head>
-<body>
-
-    <div id="board-section">
-        <div class="tools">
-            <button class="btn-tool active" onclick="setTool('pen')" id="t-pen">🖊️</button>
-            <button class="btn-tool" onclick="setTool('eraser')" id="t-eraser">🧹</button>
-            <button class="btn-tool" onclick="clearCanvas()" style="color:red;">❌</button>
+  </head>
+  <body>
+    <div id="tasks-section">
+      <header>
+        <div class="header-title">Алгебра 8: Функція $y = k/x$</div>
+        <div class="stats-container">
+          <span class="stat-correct">✅ <span id="val-correct">0</span></span>
+          <span class="stat-wrong">❌ <span id="val-wrong">0</span></span>
         </div>
-        <canvas id="board"></canvas>
+      </header>
+
+      <div class="content-container" id="quiz-root">
+        <div class="theory-block">
+          <div class="theory-title">📚 Шпаргалка: $y = \frac{k}{x}$</div>
+          <div class="theory-content">
+            <ul>
+              <li>Це <strong>гіпербола</strong>.</li>
+              <li>$k > 0$: графік у I та III чвертях.</li>
+              <li>$k < 0$: графік у II та IV чвертях.</li>
+              <li>
+                Графік ніколи не перетинає осі координат ($x \ne 0, y \ne 0$).
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div id="tasks-section">
-        <header>
-            <div class="header-title">Алгебра 8: Функція $y = k/x$</div>
-            <div class="stats-container">
-                <span class="stat-correct">✅ <span id="val-correct">0</span></span>
-                <span class="stat-wrong">❌ <span id="val-wrong">0</span></span>
-            </div>
-        </header>
+    <div id="board-section">
+      <div class="tools">
+        <button
+          class="btn-tool active"
+          onclick="setTool('pen')"
+          id="t-pen"
+          title="Ручка"
+        >
+          🖊️
+        </button>
+        <button
+          class="btn-tool"
+          onclick="setTool('eraser')"
+          id="t-eraser"
+          title="Гумка"
+        >
+          🧹
+        </button>
+        <button
+          class="btn-tool"
+          onclick="drawSystem()"
+          title="Додати координатну пряму"
+        >
+          📉
+        </button>
+        <button
+          class="btn-tool"
+          onclick="clearCanvasSafe()"
+          style="color: red; border-color: #fee2e2"
+          title="Очистити все"
+        >
+          ❌
+        </button>
+      </div>
+      <canvas id="board"></canvas>
+    </div>
 
-        <div class="content-container" id="quiz-root">
-            <div class="theory-block">
-                <div class="theory-title">📚 Шпаргалка: $y = \frac{k}{x}$</div>
-                <div class="theory-content">
-                  <ul>
-                    <li>Це <strong>гіпербола</strong>.</li>
-                    <li>$k > 0$: графік у I та III чвертях.</li>
-                    <li>$k < 0$: графік у II та IV чвертях.</li>
-                    <li>Графік ніколи не перетинає осі координат ($x \ne 0, y \ne 0$).</li>
-                  </ul>
-                </div>
-            </div>
-            </div>
+    <div id="result-modal" class="modal-overlay">
+      <div class="modal-card">
+        <button class="modal-close-btn" onclick="closeModal()">×</button>
+        <div id="modal-content-body"></div>
+      </div>
     </div>
 
     <script>
-        /* --- 1. ЛОГІКА ДОШКИ (CANVAS) --- */
-        const canvas = document.getElementById('board');
-        const ctx = canvas.getContext('2d');
-        const boardSection = document.getElementById('board-section');
-        let painting = false;
-        let tool = 'pen'; 
+      /* --- 1. ЛОГІКА ДОШКИ (CANVAS) --- */
+      const canvas = document.getElementById("board");
+      const ctx = canvas.getContext("2d");
+      const boardSection = document.getElementById("board-section");
+      let painting = false;
+      let tool = "pen";
 
-        function resizeCanvas() {
-            // Зберігаємо поточний малюнок перед зміною розміру
-            const temp = document.createElement('canvas');
-            const tempCtx = temp.getContext('2d');
-            temp.width = canvas.width;
-            temp.height = canvas.height;
-            tempCtx.drawImage(canvas, 0, 0);
-
-            // Змінюємо розмір
-            canvas.width = boardSection.offsetWidth;
-            canvas.height = boardSection.offsetHeight;
-
-            // Відновлюємо малюнок
-            ctx.drawImage(temp, 0, 0);
-            
-            // Налаштування ліній
-            ctx.lineCap = 'round';
-            ctx.lineJoin = 'round';
+      function resizeCanvas() {
+        const temp = document.createElement("canvas");
+        const tempCtx = temp.getContext("2d");
+        temp.width = canvas.width;
+        temp.height = canvas.height;
+        if (canvas.width > 0 && canvas.height > 0) {
+          tempCtx.drawImage(canvas, 0, 0);
         }
 
-        window.addEventListener('resize', resizeCanvas);
-        window.addEventListener('load', resizeCanvas);
+        canvas.width = boardSection.offsetWidth;
+        canvas.height = boardSection.offsetHeight;
 
-        function getMousePos(e) {
-            const rect = canvas.getBoundingClientRect();
-            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-            return { x: clientX - rect.left, y: clientY - rect.top };
+        ctx.drawImage(temp, 0, 0);
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+      }
+
+      window.addEventListener("resize", resizeCanvas);
+      window.addEventListener("load", resizeCanvas);
+
+      function getMousePos(e) {
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return { x: clientX - rect.left, y: clientY - rect.top };
+      }
+
+      function startPosition(e) {
+        painting = true;
+        draw(e);
+      }
+
+      function finishedPosition() {
+        painting = false;
+        ctx.beginPath();
+      }
+
+      function draw(e) {
+        if (!painting) return;
+        if (e.type.startsWith("touch")) {
         }
 
-        function startPosition(e) {
-            painting = true;
-            draw(e);
+        const pos = getMousePos(e);
+
+        if (tool === "pen") {
+          ctx.lineWidth = 2;
+          ctx.strokeStyle = "#2563eb";
+          ctx.globalCompositeOperation = "source-over";
+        } else {
+          ctx.lineWidth = 25;
+          ctx.strokeStyle = "#ffffff";
+          ctx.globalCompositeOperation = "destination-out";
         }
 
-        function finishedPosition() {
-            painting = false;
-            ctx.beginPath();
+        ctx.lineTo(pos.x, pos.y);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(pos.x, pos.y);
+      }
+
+      canvas.addEventListener("mousedown", startPosition);
+      canvas.addEventListener("mouseup", finishedPosition);
+      canvas.addEventListener("mousemove", draw);
+      canvas.addEventListener("mouseout", finishedPosition);
+
+      canvas.addEventListener("touchstart", startPosition);
+      canvas.addEventListener("touchend", finishedPosition);
+      canvas.addEventListener("touchmove", draw);
+
+      function setTool(t) {
+        tool = t;
+        document
+          .getElementById("t-pen")
+          .classList.toggle("active", t === "pen");
+        document
+          .getElementById("t-eraser")
+          .classList.toggle("active", t === "eraser");
+      }
+
+      function clearCanvasSafe() {
+        if (
+          confirm(
+            "Ви точно хочете очистити дошку? Це видалить всі ваші записи."
+          )
+        ) {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
         }
+      }
 
-        function draw(e) {
-            if (!painting) return;
-            // Блокуємо скрол на тачскріні, коли малюємо
-            if(e.type.startsWith('touch')) {
-                // e.preventDefault() тут не завжди спрацьовує через passive events, але touch-action в CSS допомагає
-            }
+      function drawSystem() {
+        const prevStrokeStyle = ctx.strokeStyle;
+        const prevLineWidth = ctx.lineWidth;
+        const prevComposite = ctx.globalCompositeOperation;
 
-            const pos = getMousePos(e);
-            
-            if (tool === 'pen') {
-                ctx.lineWidth = 2;
-                ctx.strokeStyle = '#2563eb'; // Синій
-                ctx.globalCompositeOperation = 'source-over';
-            } else {
-                ctx.lineWidth = 25;
-                ctx.strokeStyle = '#ffffff';
-                ctx.globalCompositeOperation = 'destination-out'; // Робить прозорим, щоб видно клітинки фону
-            }
+        ctx.globalCompositeOperation = "source-over";
+        ctx.strokeStyle = "#334155";
+        ctx.lineWidth = 2;
+        ctx.fillStyle = "#334155";
+        ctx.font = "16px Arial";
 
-            ctx.lineTo(pos.x, pos.y);
-            ctx.stroke();
-            ctx.beginPath();
-            ctx.moveTo(pos.x, pos.y);
+        const w = canvas.width;
+        const h = canvas.height;
+        const cx = Math.floor(w / 2);
+        const cy = Math.floor(h / 2);
+        const step = 25;
+
+        ctx.beginPath();
+        // X
+        ctx.moveTo(0, cy);
+        ctx.lineTo(w, cy);
+        ctx.lineTo(w - 10, cy - 5);
+        ctx.moveTo(w, cy);
+        ctx.lineTo(w - 10, cy + 5);
+        // Y
+        ctx.moveTo(cx, h);
+        ctx.lineTo(cx, 0);
+        ctx.lineTo(cx - 5, 10);
+        ctx.moveTo(cx, 0);
+        ctx.lineTo(cx + 5, 10);
+
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.lineWidth = 1;
+
+        for (let x = cx + step; x < w; x += step) {
+          ctx.moveTo(x, cy - 3);
+          ctx.lineTo(x, cy + 3);
         }
-
-        // Події миші та тачу
-        canvas.addEventListener('mousedown', startPosition);
-        canvas.addEventListener('mouseup', finishedPosition);
-        canvas.addEventListener('mousemove', draw);
-        canvas.addEventListener('mouseout', finishedPosition);
-        
-        canvas.addEventListener('touchstart', startPosition);
-        canvas.addEventListener('touchend', finishedPosition);
-        canvas.addEventListener('touchmove', draw);
-
-        function setTool(t) {
-            tool = t;
-            document.getElementById('t-pen').classList.toggle('active', t === 'pen');
-            document.getElementById('t-eraser').classList.toggle('active', t === 'eraser');
+        for (let x = cx - step; x > 0; x -= step) {
+          ctx.moveTo(x, cy - 3);
+          ctx.lineTo(x, cy + 3);
         }
-
-        function clearCanvas() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (let y = cy + step; y < h; y += step) {
+          ctx.moveTo(cx - 3, y);
+          ctx.lineTo(cx + 3, y);
         }
-
-        /* --- 2. ЛОГІКА ЗАВДАНЬ --- */
-        function createGridSVG() {
-            const uniqueId = "grid-" + Math.random().toString(36).substr(2, 9);
-            return `
-              <svg width="300" height="300" viewBox="0 0 300 300" style="background:#fff; border:1px solid #ccc; display:block; margin: 0 auto;">
-                <defs>
-                  <pattern id="${uniqueId}" width="25" height="25" patternUnits="userSpaceOnUse">
-                    <path d="M 25 0 L 0 0 0 25" fill="none" stroke="#f1f5f9" stroke-width="1"/>
-                  </pattern>
-                </defs>
-                <rect width="100%" height="100%" fill="url(#${uniqueId})" />
-                <line x1="0" y1="250" x2="300" y2="250" stroke="#334155" stroke-width="2" />
-                <line x1="150" y1="300" x2="150" y2="0" stroke="#334155" stroke-width="2" />
-                <polygon points="300,250 290,245 290,255" fill="#334155" />
-                <polygon points="150,0 145,10 155,10" fill="#334155" />
-                <line x1="175" y1="245" x2="175" y2="255" stroke="#334155" stroke-width="2" />
-                <text x="170" y="270" font-family="Arial" font-size="14" fill="#475569">1</text>
-                <text x="135" y="270" font-family="Arial" font-size="14" fill="#475569">0</text>
-                <text x="280" y="240" font-family="Arial" font-size="16" font-weight="bold" fill="#334155">x</text>
-                <text x="160" y="20" font-family="Arial" font-size="16" font-weight="bold" fill="#334155">y</text>
-              </svg>
-            `;
+        for (let y = cy - step; y > 0; y -= step) {
+          ctx.moveTo(cx - 3, y);
+          ctx.lineTo(cx + 3, y);
         }
+        ctx.stroke();
 
-        const exercises = [
+        ctx.fillText("x", w - 20, cy + 20);
+        ctx.fillText("y", cx + 15, 20);
+        ctx.fillText("0", cx - 15, cy + 20);
+        ctx.fillText("1", cx + step - 3, cy + 20);
+
+        ctx.beginPath();
+        ctx.strokeStyle = prevStrokeStyle;
+        ctx.lineWidth = prevLineWidth;
+        ctx.globalCompositeOperation = prevComposite;
+
+        if (tool === "eraser") {
+          setTool("pen");
+        }
+      }
+
+      /* --- 2. ЛОГІКА ЗАВДАНЬ --- */
+
+      const exercises = [
         {
           id: "12.1",
           title: "12.1.",
           desc: "Які з функцій задають обернену пропорційність:",
           tasks: [
-            { id: "1)", q: "$y = \\frac{14}{x}$", a: "Так", opts: ["Так", "Ні"] },
-            { id: "2)", q: "$y = \\frac{x}{14}$", a: "Ні", opts: ["Так", "Ні"] },
-            { id: "3)", q: "$y = -\\frac{5}{x}$", a: "Так", opts: ["Так", "Ні"] },
+            {
+              id: "1)",
+              q: "$y = \\frac{14}{x}$",
+              a: "Так",
+              opts: ["Так", "Ні"],
+            },
+            {
+              id: "2)",
+              q: "$y = \\frac{x}{14}$",
+              a: "Ні",
+              opts: ["Так", "Ні"],
+            },
+            {
+              id: "3)",
+              q: "$y = -\\frac{5}{x}$",
+              a: "Так",
+              opts: ["Так", "Ні"],
+            },
             { id: "4)", q: "$y = 7$", a: "Ні", opts: ["Так", "Ні"] },
           ],
         },
@@ -363,8 +788,18 @@
           title: "12.3.",
           desc: "У яких координатних кутах лежить графік функції:",
           tasks: [
-            { id: "1)", q: "$y = \\frac{25}{x}$", a: "I і III", opts: ["I і II", "I і III", "II і IV"] },
-            { id: "2)", q: "$y = -\\frac{15}{x}$", a: "II і IV", opts: ["I і III", "II і IV", "I і IV"] },
+            {
+              id: "1)",
+              q: "$y = \\frac{25}{x}$",
+              a: "I і III",
+              opts: ["I і II", "I і III", "II і IV"],
+            },
+            {
+              id: "2)",
+              q: "$y = -\\frac{15}{x}$",
+              a: "II і IV",
+              opts: ["I і III", "II і IV", "I і IV"],
+            },
           ],
         },
         {
@@ -420,14 +855,33 @@
         {
           id: "12.8",
           title: "12.8.",
-          desc: "Побудуйте графік функції $y = -\\frac{12}{x}$, склавши таблицю значень (використай дошку зліва):",
-          visual: createGridSVG(),
-          tasks: [
-            { id: "1)", q: "-6", a: "2", type: "input" },
-            { id: "2)", q: "-2", a: "6", type: "input" },
-            { id: "3)", q: "4", a: "-3", type: "input" },
-            { id: "4)", q: "12", a: "-1", type: "input" },
-          ],
+          desc: "Побудуйте графік функції $y = -\\frac{12}{x}$. Заповніть таблицю та натисніть кнопку перевірки:",
+          manualPoints: 8,
+          visual: `
+            <div style="width: 100%; overflow-x: auto; padding-bottom: 10px;">
+                <table class="math-table" id="table-12-8" style="min-width: 500px;">
+                    <tr>
+                        <th>x</th>
+                        <td>-12</td><td>-6</td><td>-4</td><td>-3</td><td>3</td><td>4</td><td>6</td><td>12</td>
+                    </tr>
+                    <tr>
+                        <th>y</th>
+                        <td><input type="text" class="table-input" data-ans="1" oninput="this.classList.remove('wrong')"></td>
+                        <td><input type="text" class="table-input" data-ans="2" oninput="this.classList.remove('wrong')"></td>
+                        <td><input type="text" class="table-input" data-ans="3" oninput="this.classList.remove('wrong')"></td>
+                        <td><input type="text" class="table-input" data-ans="4" oninput="this.classList.remove('wrong')"></td>
+                        <td><input type="text" class="table-input" data-ans="-4" oninput="this.classList.remove('wrong')"></td>
+                        <td><input type="text" class="table-input" data-ans="-3" oninput="this.classList.remove('wrong')"></td>
+                        <td><input type="text" class="table-input" data-ans="-2" oninput="this.classList.remove('wrong')"></td>
+                        <td><input type="text" class="table-input" data-ans="-1" oninput="this.classList.remove('wrong')"></td>
+                    </tr>
+                </table>
+            </div>
+            <div style="text-align: center; margin-top: 15px;">
+                <button class="btn-check" onclick="checkTable('table-12-8', this)">Перевірити таблицю</button>
+            </div>
+          `,
+          tasks: [],
         },
         {
           id: "12.10",
@@ -444,7 +898,16 @@
           title: "12.12.",
           desc: "(Усно.) Графіки яких функцій проходять через точку $A(2; -8)$:",
           tasks: [
-            { id: "1)", q: "Варіанти:", a: "$y = -\\frac{16}{x}$", opts: ["$y = \\frac{16}{x}$", "$y = -\\frac{16}{x}$", "$y = -\\frac{4}{x}$"] },
+            {
+              id: "1)",
+              q: "Варіанти:",
+              a: "$y = -\\frac{16}{x}$",
+              opts: [
+                "$y = \\frac{16}{x}$",
+                "$y = -\\frac{16}{x}$",
+                "$y = -\\frac{4}{x}$",
+              ],
+            },
           ],
         },
         {
@@ -452,27 +915,51 @@
           title: "12.13.",
           desc: "Загальна вартість товару 200 грн. Ціна товару — $x$ грн, кількість — $y$ кг.",
           tasks: [
-            { id: "1)", q: "Чи є залежність оберненою пропорційністю?", a: "Так", opts: ["Так", "Ні"] },
-            { id: "2)", q: "Запишіть формулу:", a: "$y = \\frac{200}{x}$", opts: ["$y = 200x$", "$y = \\frac{200}{x}$", "$y = 200 - x$"] },
+            {
+              id: "1)",
+              q: "Чи є залежність оберненою пропорційністю?",
+              a: "Так",
+              opts: ["Так", "Ні"],
+            },
+            {
+              id: "2)",
+              q: "Запишіть формулу:",
+              a: "$y = \\frac{200}{x}$",
+              opts: ["$y = 200x$", "$y = \\frac{200}{x}$", "$y = 200 - x$"],
+            },
           ],
         },
         {
           id: "12.14",
           title: "12.14.",
           desc: "Побудуйте графік функції $y = \\frac{12}{x}$. За графіком знайдіть:",
-          visual: createGridSVG(),
           tasks: [
-            { id: "1)", q: "значення функції, якщо значення аргументу дорівнює -2", a: "-6", type: "input" },
-            { id: "2)", q: "значення аргументу, для яких функція дорівнює 4", a: "3", type: "input" },
+            {
+              id: "1)",
+              q: "значення функції, якщо значення аргументу дорівнює -2",
+              a: "-6",
+              type: "input",
+            },
+            {
+              id: "2)",
+              q: "значення аргументу, для яких функція дорівнює 4",
+              a: "3",
+              type: "input",
+            },
           ],
         },
-{
+        {
           id: "12.16",
           title: "12.16.",
           desc: "Графік оберненої пропорційності проходить через точку $M(-3; 5)$. Задайте цю функцію формулою.",
           tasks: [
             { id: "1)", q: "Знайдіть k:", a: "-15", type: "input" },
-            { id: "2)", q: "Формула:", a: "$y = -\\frac{15}{x}$", opts: ["$y = \\frac{15}{x}$", "$y = -\\frac{15}{x}$"] },
+            {
+              id: "2)",
+              q: "Формула:",
+              a: "$y = -\\frac{15}{x}$",
+              opts: ["$y = \\frac{15}{x}$", "$y = -\\frac{15}{x}$"],
+            },
           ],
         },
         {
@@ -482,24 +969,60 @@
           tasks: [
             { id: "1)", q: "y_max =", a: "12", type: "input" },
             { id: "2)", q: "y_min =", a: "4", type: "input" },
-            { id: "3)", q: "Область значень:", a: "$4 \\le y \\le 12$", opts: ["$2 \\le y \\le 6$", "$4 \\le y \\le 12$", "$0 \\le y \\le 24$"] },
+            {
+              id: "3)",
+              q: "Область значень:",
+              a: "$4 \\le y \\le 12$",
+              opts: [
+                "$2 \\le y \\le 6$",
+                "$4 \\le y \\le 12$",
+                "$0 \\le y \\le 24$",
+              ],
+            },
           ],
         },
         {
           id: "12.21",
           title: "12.21.",
-          desc: "Побудуйте графік функції $y = \\frac{8}{|x|}$.",
-          visual: createGridSVG(),
-          tasks: [
-            { id: "1)", q: "y(-2) =", a: "4", type: "input" },
-            { id: "2)", q: "y(2) =", a: "4", type: "input" },
-          ],
+          desc: "Побудуйте графік функції $y = \\frac{8}{|x|}$. Складіть таблицю значень (ви самі обираєте значення x та обчислюєте y):",
+          manualPoints: 16,
+          visual: `
+            <div style="width: 100%; overflow-x: auto; padding-bottom: 10px;">
+                <table class="math-table" id="table-12-21" style="min-width: 500px;">
+                    <tr>
+                        <th>x</th>
+                        <td><input type="text" class="table-input flex-x" oninput="this.classList.remove('wrong')"></td>
+                        <td><input type="text" class="table-input flex-x" oninput="this.classList.remove('wrong')"></td>
+                        <td><input type="text" class="table-input flex-x" oninput="this.classList.remove('wrong')"></td>
+                        <td><input type="text" class="table-input flex-x" oninput="this.classList.remove('wrong')"></td>
+                        <td><input type="text" class="table-input flex-x" oninput="this.classList.remove('wrong')"></td>
+                        <td><input type="text" class="table-input flex-x" oninput="this.classList.remove('wrong')"></td>
+                        <td><input type="text" class="table-input flex-x" oninput="this.classList.remove('wrong')"></td>
+                        <td><input type="text" class="table-input flex-x" oninput="this.classList.remove('wrong')"></td>
+                    </tr>
+                    <tr>
+                        <th>y</th>
+                        <td><input type="text" class="table-input flex-y" oninput="this.classList.remove('wrong')"></td>
+                        <td><input type="text" class="table-input flex-y" oninput="this.classList.remove('wrong')"></td>
+                        <td><input type="text" class="table-input flex-y" oninput="this.classList.remove('wrong')"></td>
+                        <td><input type="text" class="table-input flex-y" oninput="this.classList.remove('wrong')"></td>
+                        <td><input type="text" class="table-input flex-y" oninput="this.classList.remove('wrong')"></td>
+                        <td><input type="text" class="table-input flex-y" oninput="this.classList.remove('wrong')"></td>
+                        <td><input type="text" class="table-input flex-y" oninput="this.classList.remove('wrong')"></td>
+                        <td><input type="text" class="table-input flex-y" oninput="this.classList.remove('wrong')"></td>
+                    </tr>
+                </table>
+            </div>
+            <div style="text-align: center; margin-top: 15px;">
+                <button class="btn-check" onclick="checkFlexibleTable('table-12-21', this, (x) => 8 / Math.abs(x))">Перевірити розрахунки</button>
+            </div>
+          `,
+          tasks: [],
         },
         {
           id: "12.22",
           title: "12.22.",
-          desc: "Побудуйте графік функції: $y = 8/x$ (якщо $x \\le -2$), $y = 2x$ (якщо $-2 < x < 2$), $y = 8/x$ (якщо $x \\ge 2$).",
-          visual: createGridSVG(),
+          desc: "Побудуйте графік функції: \\[ y = \\begin{cases} \\frac{8}{x}, & \\text{якщо } x \\le -2 \\\\\\\\ 2x, & \\text{якщо } -2 < x < 2 \\\\\\\\ \\frac{8}{x}, & \\text{якщо } x \\ge 2 \\end{cases} \\]",
           tasks: [
             { id: "1)", q: "При x = -4", a: "-2", type: "input" },
             { id: "2)", q: "При x = 1", a: "2", type: "input" },
@@ -510,9 +1033,17 @@
           id: "12.24",
           title: "12.24.",
           desc: "Побудуйте графік функції (попередньо спростивши вираз) $y = \\frac{6x - 12}{3x - 1.5x^2}$:",
-          visual: createGridSVG(),
           tasks: [
-            { id: "1)", q: "Спрощена формула:", a: "$y = -\\frac{4}{x}$", opts: ["$y = \\frac{2}{x}$", "$y = -\\frac{4}{x}$", "$y = \\frac{4}{x}$"] },
+            {
+              id: "1)",
+              q: "Спрощена формула:",
+              a: "$y = -\\frac{4}{x}$",
+              opts: [
+                "$y = \\frac{2}{x}$",
+                "$y = -\\frac{4}{x}$",
+                "$y = \\frac{4}{x}$",
+              ],
+            },
           ],
         },
         {
@@ -530,8 +1061,18 @@
           title: "12.26.",
           desc: "Спростіть вираз:",
           tasks: [
-            { id: "1)", q: "$(\\frac{1}{2} x^{-2} y)^{-2} \\cdot (4 x^{-1} y^2)$", a: "$16 x^3$", opts: ["$4 x^3$", "$16 x^3$", "$16 x y^4$"] },
-            { id: "2)", q: "$(2 a^{-1} b^2)^{-3} \\cdot 8 a^{-2} b$", a: "$\\frac{a}{b^5}$", opts: ["$\\frac{a}{b^5}$", "$\\frac{1}{a b^5}$", "$a b^5$"] },
+            {
+              id: "1)",
+              q: "$(\\frac{1}{2} x^{-2} y)^{-2} \\cdot (4 x^{-1} y^2)$",
+              a: "$16 x^3$",
+              opts: ["$4 x^3$", "$16 x^3$", "$16 x y^4$"],
+            },
+            {
+              id: "2)",
+              q: "$(2 a^{-1} b^2)^{-3} \\cdot 8 a^{-2} b$",
+              a: "$\\frac{a}{b^5}$",
+              opts: ["$\\frac{a}{b^5}$", "$\\frac{1}{a b^5}$", "$a b^5$"],
+            },
           ],
         },
         {
@@ -539,181 +1080,350 @@
           title: "12.27.",
           desc: "Обчисліть: $(1 + (1 + 2^{-1})^{-1})^{-2}$",
           tasks: [
-            { id: "1)", q: "Відповідь:", a: "0.36", opts: ["0.36", "1.44", "0.64"] },
+            {
+              id: "1)",
+              q: "Відповідь:",
+              a: "0.36",
+              opts: ["0.36", "1.44", "0.64"],
+            },
           ],
         },
-        ];
+      ];
 
-        let totalCorrect = 0;
-        let totalWrong = 0;
-        let totalTasksCount = 0;
+      let totalCorrect = 0;
+      let totalWrong = 0;
+      let totalTasksCount = 0;
 
-        document.addEventListener("DOMContentLoaded", () => {
-            const root = document.getElementById("quiz-root");
+      document.addEventListener("DOMContentLoaded", () => {
+        const root = document.getElementById("quiz-root");
 
-            // Рахуємо загальну кількість
-            exercises.forEach(ex => totalTasksCount += ex.tasks.length);
+        exercises.forEach((ex) => {
+          totalTasksCount += ex.tasks.length;
+          if (ex.manualPoints) totalTasksCount += ex.manualPoints;
+        });
 
-            // Генеруємо блоки
-            exercises.forEach((ex) => {
-                const exBlock = document.createElement("div");
-                exBlock.className = "exercise-block";
+        exercises.forEach((ex) => {
+          const exBlock = document.createElement("div");
+          exBlock.className = "exercise-block";
 
-                exBlock.innerHTML = `
+          exBlock.innerHTML = `
                     <div class="exercise-header">
                         <h3 class="exercise-title">${ex.title}</h3>
                         <p class="exercise-desc">${ex.desc}</p>
                     </div>
                 `;
 
-                if (ex.visual) {
-                    const visualDiv = document.createElement("div");
-                    visualDiv.className = "visual-container";
-                    visualDiv.innerHTML = ex.visual;
-                    exBlock.appendChild(visualDiv);
-                }
+          if (ex.visual) {
+            const visualDiv = document.createElement("div");
+            visualDiv.className = "visual-container";
+            visualDiv.innerHTML = ex.visual;
+            exBlock.appendChild(visualDiv);
+          }
 
-                const taskList = document.createElement("div");
-                taskList.className = "task-list";
+          const taskList = document.createElement("div");
+          taskList.className = "task-list";
 
-                ex.tasks.forEach((task) => {
-                    const row = document.createElement("div");
-                    row.className = "task-row";
+          ex.tasks.forEach((task) => {
+            const row = document.createElement("div");
+            row.className = "task-row";
 
-                    let contentHTML = `
+            let contentHTML = `
                         <div class="task-content">
                             <div class="task-number">${task.id}</div>
                             <div class="task-question">${task.q}</div>
                         </div>
                     `;
 
-                    let actionHTML = "";
-                    if (task.type === "input") {
-                        const answers = Array.isArray(task.a) ? task.a.join("|") : task.a;
-                        actionHTML = `
+            let actionHTML = "";
+            if (task.type === "input") {
+              const answers = Array.isArray(task.a) ? task.a.join("|") : task.a;
+              actionHTML = `
                             <div class="input-group">
                                 <input type="text" class="input-answer" placeholder="..." onkeypress="if(event.key==='Enter') this.nextElementSibling.click()">
                                 <button class="btn-check" onclick="checkInput(this, '${answers}')">OK</button>
                             </div>
                         `;
-                    } else {
-                        actionHTML = `<div class="options-container">`;
-                        task.opts.forEach((opt) => {
-                            const safeOpt = opt.replace(/"/g, "&quot;");
-                            const safeAns = task.a.replace(/"/g, "&quot;");
-                            actionHTML += `<button class="option-btn" onclick="checkOpt(this, '${safeOpt}', '${safeAns}')">${opt}</button>`;
-                        });
-                        actionHTML += `</div>`;
-                    }
-
-                    row.innerHTML = contentHTML + `<div style="margin-top:10px;">${actionHTML}</div>`;
-                    taskList.appendChild(row);
-                });
-
-                exBlock.appendChild(taskList);
-                root.appendChild(exBlock);
-            });
-
-            // Додаємо кнопку завершення
-            const finishSection = document.createElement("div");
-            finishSection.className = "finish-section";
-            finishSection.innerHTML = `
-              <button class="btn-finish" onclick="finishLesson()">Завершити урок</button>
-              <div id="result-card" class="result-card">
-                 <div class="result-title">Результат уроку</div>
-                 <div class="result-score"><span id="res-score">0</span> / <span id="res-total">0</span></div>
-                 <div id="res-msg" class="result-msg"></div>
-              </div>
-            `;
-            root.appendChild(finishSection);
-
-            if (window.renderMathInElement) {
-                renderMathInElement(document.body, { delimiters: [{ left: "$", right: "$", display: false }] });
             } else {
-                window.onload = () => renderMathInElement(document.body, { delimiters: [{ left: "$", right: "$", display: false }] });
+              actionHTML = `<div class="options-container">`;
+              task.opts.forEach((opt) => {
+                const safeOpt = opt.replace(/"/g, "&quot;");
+                const safeAns = task.a.replace(/"/g, "&quot;");
+                actionHTML += `<button class="option-btn" onclick="checkOpt(this, '${safeOpt}', '${safeAns}')">${opt}</button>`;
+              });
+              actionHTML += `</div>`;
             }
-            
-            // Ініціалізація дошки
-            setTimeout(resizeCanvas, 100);
+
+            row.innerHTML =
+              contentHTML + `<div style="margin-top:10px;">${actionHTML}</div>`;
+            taskList.appendChild(row);
+          });
+
+          exBlock.appendChild(taskList);
+          root.appendChild(exBlock);
         });
 
-        function checkOpt(btn, val, ans) {
-            const row = btn.closest(".task-row");
-            if (row.classList.contains("done")) return;
-            row.classList.add("done");
+        const finishSection = document.createElement("div");
+        finishSection.className = "finish-section";
+        finishSection.innerHTML = `
+              <button class="btn-finish" onclick="finishLesson()">Завершити урок</button>
+            `;
+        root.appendChild(finishSection);
 
-            const v = val.replace(/\\/g, "").replace(/\s/g, "");
-            const a = ans.replace(/\\/g, "").replace(/\s/g, "");
-
-            row.querySelectorAll(".option-btn").forEach((b) => (b.disabled = true));
-
-            if (v === a) {
-                btn.classList.add("selected-correct");
-                row.classList.add("solved-correct");
-                totalCorrect++;
-            } else {
-                btn.classList.add("selected-wrong");
-                row.classList.add("solved-wrong");
-                totalWrong++;
-            }
-            updateStats();
+        if (window.renderMathInElement) {
+          renderMathInElement(document.body, {
+            delimiters: [
+              { left: "$$", right: "$$", display: true },
+              { left: "\\[", right: "\\]", display: true },
+              { left: "$", right: "$", display: false },
+              { left: "\\(", right: "\\)", display: false },
+            ],
+            throwOnError: false,
+          });
+        } else {
+          window.onload = () =>
+            renderMathInElement(document.body, {
+              delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "\\[", right: "\\]", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+              ],
+              throwOnError: false,
+            });
         }
 
-        function checkInput(btn, ansStr) {
-            const row = btn.closest(".task-row");
-            const input = row.querySelector("input");
-            if (row.classList.contains("done")) return;
+        setTimeout(resizeCanvas, 100);
+      });
 
-            let val = input.value.trim().replace(",", ".");
-            const correctArr = ansStr.split("|");
+      function checkTable(tableId, btn) {
+        const table = document.getElementById(tableId);
+        const inputs = table.querySelectorAll("input.table-input");
+        let allCorrect = true;
 
-            row.classList.add("done");
+        inputs.forEach((input) => {
+          if (input.disabled) return;
+
+          const val = input.value.trim().replace(",", ".");
+          const correctAns = input.getAttribute("data-ans");
+
+          if (val === "") {
+            allCorrect = false;
+            return;
+          }
+
+          if (val === correctAns) {
+            input.classList.add("correct");
+            input.classList.remove("wrong");
             input.disabled = true;
-            btn.disabled = true;
+            totalCorrect++;
+          } else {
+            input.classList.add("wrong");
+            totalWrong++;
+            allCorrect = false;
+          }
+        });
 
-            if (correctArr.includes(val)) {
-                input.classList.add("correct");
-                row.classList.add("solved-correct");
-                totalCorrect++;
-            } else {
-                input.classList.add("wrong");
-                row.classList.add("solved-wrong");
-                totalWrong++;
-            }
-            updateStats();
+        const activeInputs = table.querySelectorAll(
+          "input.table-input:not(:disabled)"
+        );
+        if (activeInputs.length === 0) {
+          btn.disabled = true;
+          btn.innerText = "Перевірено";
         }
 
-        function updateStats() {
-            document.getElementById("val-correct").innerText = totalCorrect;
-            document.getElementById("val-wrong").innerText = totalWrong;
+        updateStats();
+      }
+
+      function checkFlexibleTable(tableId, btn, calculateLogic) {
+        const table = document.getElementById(tableId);
+        const xInputs = table.querySelectorAll(".flex-x");
+        const yInputs = table.querySelectorAll(".flex-y");
+
+        for (let i = 0; i < xInputs.length; i++) {
+          const inputX = xInputs[i];
+          const inputY = yInputs[i];
+
+          if (inputX.disabled) continue;
+
+          const valXStr = inputX.value.trim().replace(",", ".");
+          const valYStr = inputY.value.trim().replace(",", ".");
+
+          if (valXStr === "" || valYStr === "") {
+            continue;
+          }
+
+          const x = parseFloat(valXStr);
+          const y = parseFloat(valYStr);
+
+          if (isNaN(x) || isNaN(y)) {
+            inputX.classList.add("wrong");
+            inputY.classList.add("wrong");
+            totalWrong += 2;
+            continue;
+          }
+
+          if (x === 0) {
+            inputX.classList.add("wrong");
+            inputY.classList.add("wrong");
+            totalWrong += 2;
+            continue;
+          }
+
+          const expectedY = calculateLogic(x);
+
+          if (Math.abs(y - expectedY) < 0.0001) {
+            inputX.classList.add("correct");
+            inputX.classList.remove("wrong");
+
+            inputY.classList.add("correct");
+            inputY.classList.remove("wrong");
+
+            inputX.disabled = true;
+            inputY.disabled = true;
+            totalCorrect += 2;
+          } else {
+            inputY.classList.add("wrong");
+            inputX.classList.add("wrong");
+            totalWrong += 2;
+          }
         }
 
-        function finishLesson() {
-            const card = document.getElementById("result-card");
-            const scoreSpan = document.getElementById("res-score");
-            const totalSpan = document.getElementById("res-total");
-            const msgDiv = document.getElementById("res-msg");
-
-            scoreSpan.innerText = totalCorrect;
-            totalSpan.innerText = totalTasksCount;
-
-            const percent = (totalCorrect / totalTasksCount) * 100;
-            let msg = "";
-
-            if (percent === 100) {
-                msg = "🔥 Неймовірно! Ти впоралась з усім ідеально! 🏆";
-            } else if (percent >= 85) {
-                msg = "😎 Чудовий результат! Майже все правильно.";
-            } else if (percent >= 60) {
-                msg = "👍 Непогано, але були помилки. Проаналізуй їх.";
-            } else {
-                msg = "🧐 Варто ще трохи потренуватись. Не здавайся!";
-            }
-
-            msgDiv.innerText = msg;
-            card.style.display = "block";
-            card.scrollIntoView({ behavior: "smooth" });
+        const activeX = table.querySelectorAll(".flex-x:not(:disabled)");
+        if (activeX.length === 0) {
+          btn.disabled = true;
+          btn.innerText = "Перевірено";
         }
+        updateStats();
+      }
+
+      function checkOpt(btn, val, ans) {
+        const row = btn.closest(".task-row");
+        if (row.classList.contains("done")) return;
+        row.classList.add("done");
+
+        const v = val.replace(/\\/g, "").replace(/\s/g, "");
+        const a = ans.replace(/\\/g, "").replace(/\s/g, "");
+
+        row.querySelectorAll(".option-btn").forEach((b) => (b.disabled = true));
+
+        if (v === a) {
+          btn.classList.add("selected-correct");
+          row.classList.add("solved-correct");
+          totalCorrect++;
+        } else {
+          btn.classList.add("selected-wrong");
+          row.classList.add("solved-wrong");
+          totalWrong++;
+        }
+        updateStats();
+      }
+
+      function checkInput(btn, ansStr) {
+        const row = btn.closest(".task-row");
+        const input = row.querySelector("input");
+        if (row.classList.contains("done")) return;
+
+        let val = input.value.trim().replace(",", ".");
+        const correctArr = ansStr.split("|");
+
+        row.classList.add("done");
+        input.disabled = true;
+        btn.disabled = true;
+
+        if (correctArr.includes(val)) {
+          input.classList.add("correct");
+          row.classList.add("solved-correct");
+          totalCorrect++;
+        } else {
+          input.classList.add("wrong");
+          row.classList.add("solved-wrong");
+          totalWrong++;
+        }
+        updateStats();
+      }
+
+      function updateStats() {
+        document.getElementById("val-correct").innerText = totalCorrect;
+        document.getElementById("val-wrong").innerText = totalWrong;
+      }
+
+      /* --- ЛОГІКА МОДАЛЬНОГО ВІКНА --- */
+      function finishLesson() {
+        const modal = document.getElementById("result-modal");
+        const body = document.getElementById("modal-content-body");
+
+        // 1. Рахуємо унікальні заповнені відповіді (Прогрес)
+        const correctInputs = document.querySelectorAll(
+          ".input-answer.correct, .table-input.correct, .option-btn.selected-correct"
+        ).length;
+        const wrongInputs = document.querySelectorAll(
+          ".input-answer.wrong, .table-input.wrong, .option-btn.selected-wrong"
+        ).length;
+        const distinctAnswered = correctInputs + wrongInputs;
+
+        // 2. Рахуємо точність (Оцінка)
+        const attempts = totalCorrect + totalWrong;
+        let efficiency = 0;
+        if (attempts > 0) {
+          efficiency = Math.round((totalCorrect / attempts) * 100);
+        }
+
+        let html = ``;
+        if (distinctAnswered === 0) {
+          html = `<div class="modal-result-title">Упс... 😶</div>
+                        <div style="font-size:1.1rem; margin:15px 0; color:#475569;">Ти не дав жодної відповіді. Спробуй розв'язати хоча б щось!</div>
+                        <button class="modal-footer-btn" onclick="closeModal()">Повернутись</button>`;
+        } else {
+          let msg = "";
+          let color = "#2563eb";
+          if (efficiency === 100) {
+            msg = "Ідеально!";
+            color = "#16a34a";
+          } else if (efficiency >= 85) {
+            msg = "Чудово!";
+            color = "#2563eb";
+          } else if (efficiency >= 60) {
+            msg = "Добре!";
+            color = "#f59e0b";
+          } else {
+            msg = "Тренуйся!";
+            color = "#dc2626";
+          }
+
+          html = `
+                    <div class="modal-result-title" style="color:${color}">${msg}</div>
+                    
+                    <div>
+                        <div style="font-size: 1rem; color: #64748b;">Твоя точність</div>
+                        <div class="modal-score-big" style="color:${color}">${efficiency}%</div>
+                        <div class="modal-score-sub">
+                            (Правильних спроб: ${totalCorrect} з ${attempts})
+                        </div>
+                    </div>
+
+                    <div class="modal-progress-container">
+                         <div style="font-size: 1rem; color: #334155; display:flex; justify-content:space-between;">
+                            <span>Прогрес уроку:</span>
+                            <strong>${distinctAnswered} / ${totalTasksCount}</strong>
+                         </div>
+                         <div class="modal-bar-bg">
+                            <div class="modal-bar-fill" style="width: ${
+                              (distinctAnswered / totalTasksCount) * 100
+                            }%; background: ${color};"></div>
+                         </div>
+                    </div>
+
+                    <button class="modal-footer-btn" onclick="closeModal()">Закрити</button>
+                `;
+        }
+
+        body.innerHTML = html;
+        modal.style.display = "flex";
+      }
+
+      function closeModal() {
+        document.getElementById("result-modal").style.display = "none";
+      }
     </script>
-</body>
+  </body>
 </html>
