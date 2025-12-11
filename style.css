@@ -17,6 +17,7 @@ p {
   margin-top: 0;
 }
 
+/* --- КОНТРОЛІ ФІЛЬТРІВ (SELECT) --- */
 .controls {
   display: flex;
   justify-content: center;
@@ -54,6 +55,7 @@ select {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
   transition: all 0.2s ease;
   appearance: none;
+  /* Кастомна стрілка для SELECT */
   background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23007CB2%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
   background-repeat: no-repeat;
   background-position: right 12px top 50%;
@@ -71,6 +73,7 @@ select:focus {
   box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15);
 }
 
+/* --- КОНТЕЙНЕР КАРТОК --- */
 #container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -79,6 +82,7 @@ select:focus {
   margin: 0 auto;
 }
 
+/* --- СТИЛІ КАРТОК --- */
 .card {
   background: white;
   border-radius: 8px;
@@ -88,18 +92,46 @@ select:focus {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+
+  /* Базовий нейтральний бордер */
   border-left: 5px solid #ccc;
 }
 
-.card.border-blue {
-  border-left-color: #007bff;
+/* ------------------------------------------------------------- */
+/* --- КОЛЬОРИ БОРДЕРІВ ЗА КЛАСОМ/ТИПОМ --- */
+/* ------------------------------------------------------------- */
+
+/* 1. СТИЛІ ДЛЯ УРОКІВ (LESSONS) - ЗАЛЕЖНІ ВІД КЛАСУ */
+
+/* Клас 2 - Рожевий */
+.card.lesson-g2 {
+  border-left-color: #ff69b4; /* Hot Pink */
 }
-.card.border-green {
-  border-left-color: #28a745;
+
+/* Клас 8 - Фіолетовий */
+.card.lesson-g8 {
+  border-left-color: #9932cc; /* Dark Orchid */
 }
-.card.border-red {
-  border-left-color: #dc3545;
+
+/* Клас 9 - Помаранчевий */
+.card.lesson-g9 {
+  border-left-color: #ff8c00; /* Dark Orange */
 }
+
+/* 2. СТИЛІ ДЛЯ ТЕСТІВ (TESTS) - ОДИН КОРІННИЙ КОЛІР */
+
+.card.type-test {
+  border-left-color: #00bcd4; /* Cyan - колір для всіх тестів */
+}
+
+/* 3. СТИЛІ ДЛЯ ДОМАШНІХ ЗАВДАНЬ (HOMEWORK) - ОДИН ЗЕЛЕНИЙ КОЛІР */
+
+.card.type-homework {
+  border-left-color: #2e8b57; /* Sea Green - колір для всіх ДЗ */
+}
+
+/* ------------------------------------------------------------- */
+/* ------------------------------------------------------------- */
 
 .card:hover {
   transform: translateY(-3px);
@@ -128,6 +160,7 @@ select:focus {
   padding-top: 15px;
 }
 
+/* --- СТИЛІ ТЕГІВ (TAGS) --- */
 .tag {
   font-size: 0.75em;
   padding: 3px 8px;
@@ -166,42 +199,40 @@ select:focus {
 .open-btn:hover {
   text-decoration: underline;
 }
-/* --- ВИПРАВЛЕНИЙ БАНЕР --- */
+
+/* --- СТИЛІ ПРОМО-БАНЕРА --- */
 .promo-container {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border-radius: 16px;
-  padding: 40px 50px; /* Більше відступів всередині */
+  padding: 40px 50px;
   margin: 20px auto 50px auto;
-
-  /* ЗМІНА ТУТ: Робимо ширину такою ж, як сітка уроків */
   max-width: 1100px;
-  width: 90%; /* Щоб на мобільному не прилипало до країв */
-
+  width: 90%;
   color: white;
   display: flex;
   align-items: center;
   justify-content: space-between;
   box-shadow: 0 10px 25px rgba(118, 75, 162, 0.3);
-  box-sizing: border-box; /* Щоб відступи не ламали ширину */
+  box-sizing: border-box;
 }
 
 .promo-text {
   flex: 1;
-  padding-right: 20px; /* Відступ від тексту до смайлика */
+  padding-right: 20px;
 }
 
 .promo-text h2 {
   color: white;
   margin-top: 0;
   margin-bottom: 15px;
-  font-size: 2.2rem; /* Збільшив заголовок */
+  font-size: 2.2rem;
   line-height: 1.2;
   text-align: left;
 }
 
 .promo-text p {
   color: #e0d4fc;
-  font-size: 1.2rem; /* Трохи більший текст опису */
+  font-size: 1.2rem;
   margin-bottom: 25px;
   text-align: left;
   max-width: 600px;
@@ -221,13 +252,13 @@ select:focus {
   font-weight: 500;
   display: flex;
   align-items: center;
-  gap: 10px; /* Відступ між галочкою і текстом */
+  gap: 10px;
 }
 
 .promo-btn {
   background-color: white;
   color: #764ba2;
-  padding: 15px 35px; /* Більша кнопка */
+  padding: 15px 35px;
   border-radius: 50px;
   text-decoration: none;
   font-weight: 800;
@@ -244,9 +275,9 @@ select:focus {
 }
 
 .promo-image {
-  font-size: 160px; /* Великий смайлик для ноута */
+  font-size: 160px;
   animation: float 4s ease-in-out infinite;
-  flex-shrink: 0; /* Щоб смайлик не сплющувало */
+  flex-shrink: 0;
 }
 
 @keyframes float {
@@ -261,13 +292,13 @@ select:focus {
   }
 }
 
-/* Адаптивність (Планшет і телефон) */
+/* --- АДАПТИВНІСТЬ (ПЛАНШЕТ І ТЕЛЕФОН) --- */
 @media (max-width: 900px) {
   .promo-container {
-    flex-direction: column-reverse; /* Смайлик нагору */
+    flex-direction: column-reverse;
     text-align: center;
     padding: 30px 20px;
-    width: 95%; /* Ширше на мобільному */
+    width: 95%;
   }
 
   .promo-text {
@@ -285,12 +316,12 @@ select:focus {
   }
 
   .promo-features {
-    display: inline-block; /* Центруємо список */
+    display: inline-block;
     text-align: left;
   }
 
   .promo-image {
     margin-bottom: 20px;
-    font-size: 100px; /* Менший смайлик на телефоні */
+    font-size: 100px;
   }
 }
