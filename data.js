@@ -23,16 +23,6 @@ window.lessonsData = [
   },
   {
     id: 3,
-    title: "Стандартний вигляд числа",
-    grade: 8,
-    topic: "Алгебра",
-    link: "algebra/8/Стандартний вигляд числа Тест1.html",
-    subject_code: "algebra",
-    category: "test",
-    author: "Даша",
-  },
-  {
-    id: 4,
     title: "Степінь із цілим показником",
     grade: 8,
     topic: "Алгебра",
@@ -41,6 +31,17 @@ window.lessonsData = [
     category: "test",
     author: "Даша",
   },
+  {
+    id: 4,
+    title: "Стандартний вигляд числа",
+    grade: 8,
+    topic: "Алгебра",
+    link: "algebra/8/Стандартний вигляд числа Тест1.html",
+    subject_code: "algebra",
+    category: "test",
+    author: "Даша",
+  },
+
   {
     id: 5,
     title: "Степінь з від'ємним показником. Частина 1",
