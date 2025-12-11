@@ -72,12 +72,23 @@ window.lessonsData = [
     category: "lesson",
     author: "Даша",
   },
+  Mathematik-Test 5. Klasse (Deutschland) – 30 Fragen
   {
     id: 501,
     title: "Rechenausdrücke",
     grade: 5,
     topic: "Математика",
     link: "math_general/5/Rechenausdrücke.html",
+    subject_code: "math_general",
+    category: "lesson",
+    author: "Даша",
+  },
+  {
+    id: 502,
+    title: "Mathematik-Test 5. Klasse (Deutschland)",
+    grade: 5,
+    topic: "Математика",
+    link: "math_general/5/Zahlen und Rechnen.html",
     subject_code: "math_general",
     category: "lesson",
     author: "Даша",

@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mathematik-Test 5. Klasse (Deutschland) – Zahlen und Rechnen</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
+    />
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"
+    ></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    ></script>
+
+    <style>
+      :root {
+        --primary: #059669; /* Смарагдово-зелений для Німеччини/Математики */
+        --primary-light: #d1fae5;
+        --success: #16a34a;
+        --error: #dc2626;
+        --bg: #f8fafc;
+        --card: #ffffff;
+        --text: #1e293b;
+        --border: #e2e8f0;
+        --accent: #059669;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      header {
+        background: var(--card);
+        width: 100%;
+        padding: 15px 20px;
+        border-bottom: 3px solid var(--accent);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      }
+
+      .header-title {
+        font-weight: 700;
+        font-size: 1.5rem;
+        color: var(--accent);
+        text-align: center;
+      }
+
+      .content-container {
+        width: 100%;
+        max-width: 800px;
+        padding: 20px;
+        box-sizing: border-box;
+      }
+
+      .quiz-block {
+        background: var(--card);
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        margin-bottom: 20px;
+        padding: 20px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      }
+
+      .question-header {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--text);
+        margin-bottom: 15px;
+        display: flex;
+        align-items: flex-start;
+      }
+      .question-number {
+        color: var(--accent);
+        font-size: 1.2rem;
+        margin-right: 10px;
+        min-width: 30px;
+      }
+
+      .options-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 10px;
+      }
+
+      .option-btn {
+        background: white;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        padding: 10px 15px;
+        font-size: 1rem;
+        cursor: pointer;
+        text-align: center;
+        white-space: nowrap;
+        transition: 0.2s;
+      }
+
+      .option-btn:hover:not(:disabled) {
+        border-color: var(--primary);
+        background: var(--primary-light);
+      }
+      .option-btn.selected-correct {
+        background: var(--success);
+        color: white;
+        border-color: var(--success);
+      }
+      .option-btn.selected-correct .katex {
+        color: white !important;
+      }
+      .option-btn.selected-wrong {
+        background: var(--error);
+        color: white;
+        border-color: var(--error);
+      }
+      .option-btn.selected-wrong .katex {
+        color: white !important;
+      }
+
+      .finish-section {
+        margin-top: 40px;
+        text-align: center;
+      }
+      .btn-finish {
+        padding: 15px 40px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: white;
+        background: var(--primary);
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(5, 150, 105, 0.4);
+        transition: transform 0.2s;
+      }
+      .btn-finish:hover {
+        transform: scale(1.05);
+        background-color: #047857;
+      }
+
+      /* --- Modal styles --- */
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(5px);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .modal-card {
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        max-width: 450px;
+        width: 90%;
+        text-align: center;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        position: relative;
+      }
+      .modal-score-big {
+        font-size: 4rem;
+        font-weight: 900;
+        color: var(--primary);
+        line-height: 1;
+        margin: 10px 0;
+      }
+      .modal-footer-btn {
+        margin-top: 30px;
+        padding: 12px 30px;
+        background: var(--text);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        cursor: pointer;
+      }
+
+      @media (max-width: 600px) {
+        .options-container {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="header-title">
+        🇩🇪 Mathematik-Test 5. Klasse (Deutschland) – 30 Fragen
+      </div>
+    </header>
+
+    <div class="content-container" id="quiz-root"></div>
+
+    <div id="result-modal" class="modal-overlay">
+      <div class="modal-card">
+        <div id="modal-content-body"></div>
+      </div>
+    </div>
+
+    <script>
+      // Масив тестових питань
+      const testQuestions = [
+        {
+          id: 1,
+          q: "Wie schreibt man die Zahl „Zwei Millionen vierhundertfünfzehntausenddreiundneunzig“ in Ziffern?",
+          a: "2.415.093",
+          opts: ["24.150.93", "2.415.093", "2.400.150.093", "2.415.930"],
+        },
+        {
+          id: 2,
+          q: "Welchen Stellenwert hat die Ziffer $6$ in der Zahl $12.634.905$?",
+          a: "Hunderttausender",
+          opts: ["Zehntausender", "Million", "Hunderttausender", "Zehner"],
+        },
+        {
+          id: 3,
+          q: "Runden Sie die Zahl $34.721.588$ auf die nächste Million.",
+          a: "35.000.000",
+          opts: ["34.000.000", "34.700.000", "35.000.000", "30.000.000"],
+        },
+        {
+          id: 4,
+          q: "Welches Zeichen passt in die Lücke: $705.421 \\, \\square \\, 705.412$?",
+          a: ">",
+          opts: ["<", ">", "=", "Keines davon"],
+        },
+        {
+          id: 5,
+          q: "Was ist der Nachfolger der Zahl $1.999.999$?",
+          a: "2.000.000",
+          opts: ["1.999.998", "2.000.000", "1.000.000", "2.000.001"],
+        },
+        {
+          id: 6,
+          q: "Was ist der Vorgänger der Zahl $40.000.000$?",
+          a: "39.999.999",
+          opts: ["39.999.999", "40.000.001", "39.000.000", "40.000.000"],
+        },
+        {
+          id: 7,
+          q: "Berechnen Sie die Summe: $15.489 + 7.625$.",
+          a: "23.114",
+          opts: ["22.014", "23.114", "23.014", "22.114"],
+        },
+        {
+          id: 8,
+          q: "Berechnen Sie die Differenz: $9.003 - 4.178$.",
+          a: "4.825",
+          opts: ["5.825", "4.825", "4.925", "5.925"],
+        },
+        {
+          id: 9,
+          q: "Berechnen Sie das Produkt: $234 \\cdot 45$.",
+          a: "10.530",
+          opts: ["10.430", "10.530", "11.700", "9.360"],
+        },
+        {
+          id: 10,
+          q: "Berechnen Sie $567 \\div 8$. Welcher Rest bleibt übrig?",
+          a: "Rest 7",
+          opts: ["Rest 3", "Rest 7", "Rest 0", "Rest 1"],
+        },
+        {
+          id: 11,
+          q: "Berechnen Sie: $25 - 5 \\cdot 3$.",
+          a: "10",
+          opts: ["60", "10", "30", "20"],
+        },
+        {
+          id: 12,
+          q: "Berechnen Sie: $4 \\cdot (15 + 5) \\div 2$.",
+          a: "40",
+          opts: ["80", "25", "40", "60"],
+        },
+        {
+          id: 13,
+          q: "Ein Supermarkt verkauft am Montag $1.250$ Brote und am Dienstag $150$ Brote mehr als am Montag. Wie viele Brote wurden insgesamt an beiden Tagen verkauft?",
+          a: "2.650",
+          opts: ["1.400", "2.500", "2.650", "1.100"],
+        },
+        {
+          id: 14,
+          q: "Eine Klasse mit $32$ Schülern möchte einen Ausflug machen, der $192$ € kostet. Wie viel muss jeder Schüler bezahlen, wenn die Kosten gleichmäßig aufgeteilt werden?",
+          a: "6 €",
+          opts: ["6 €", "8 €", "10 €", "3 €"],
+        },
+        {
+          id: 15,
+          q: "Welche Zahl ist ein Vielfaches von $7$?",
+          a: "91",
+          opts: ["48", "87", "91", "101"],
+        },
+        {
+          id: 16,
+          q: "Welche Zahl ist ein Teiler von $72$?",
+          a: "9",
+          opts: ["14", "9", "16", "13"],
+        },
+        {
+          id: 17,
+          q: "Welche der folgenden Zahlen ist eine Primzahl?",
+          a: "43",
+          opts: ["39", "43", "51", "99"],
+        },
+        {
+          id: 18,
+          q: "Was ist das kleinste gemeinsame Vielfache ($\text{kgV}$) von $6$ und $8$?",
+          a: "24",
+          opts: ["48", "12", "2", "24"],
+        },
+        {
+          id: 19,
+          q: "Welche der Zahlen ist durch $3$ teilbar?",
+          a: "546",
+          opts: ["472", "546", "601", "713"],
+        },
+        {
+          id: 20,
+          q: "Welche Zahl ist eine zusammengesetzte Zahl (keine Primzahl)?",
+          a: "57",
+          opts: ["19", "57", "73", "41"],
+        },
+        {
+          id: 21,
+          q: "Wandeln Sie den Bruch $\\frac{3}{4}$ in eine Dezimalzahl um.",
+          a: "0,75",
+          opts: ["0,34", "0,75", "3,4", "0,43"],
+        },
+        {
+          id: 22,
+          q: "Wandeln Sie die Dezimalzahl $0,4$ in einen vollständig gekürzten Bruch um.",
+          a: "$\\frac{2}{5}$",
+          opts: [
+            "$\\frac{4}{10}$",
+            "$\\frac{2}{5}$",
+            "$\\frac{1}{4}$",
+            "$\\frac{40}{100}$",
+          ],
+        },
+        {
+          id: 23,
+          q: "Welchen Stellenwert hat die Ziffer $3$ in der Zahl $12,538$?",
+          a: "Hundertstel",
+          opts: ["Zehntel", "Hundertstel", "Tausendstel", "Einer"],
+        },
+        {
+          id: 24,
+          q: "Welches Zeichen passt in die Lücke: $5,6 \\, \\square \\, 5,599$?",
+          a: ">",
+          opts: ["<", ">", "=", "Keines davon"],
+        },
+        {
+          id: 25,
+          q: "Berechnen Sie die Summe: $3,25 + 1,9$.",
+          a: "5,15",
+          opts: ["4,15", "5,15", "4,24", "5,1"],
+        },
+        {
+          id: 26,
+          q: "Multiplizieren Sie: $0,045 \\cdot 1000$.",
+          a: "45",
+          opts: ["0,45", "45", "4,5", "450"],
+        },
+        {
+          id: 27,
+          q: "Berechnen Sie: $\\frac{7}{10} - \\frac{3}{10}$.",
+          a: "$\\frac{4}{10}$",
+          opts: [
+            "$\\frac{10}{10}$",
+            "$\\frac{4}{20}$",
+            "$\\frac{4}{10}$",
+            "$\\frac{7}{3}$",
+          ],
+        },
+        {
+          id: 28,
+          q: "Wie viele Zentimeter sind $4,5$ Meter?",
+          a: "450 cm",
+          opts: ["45 cm", "4.500 cm", "450 cm", "405 cm"],
+        },
+        {
+          id: 29,
+          q: "Wandeln Sie $2$ Kilogramm und $30$ Gramm in Gramm um.",
+          a: "2.030 g",
+          opts: ["230 g", "2.300 g", "2.030 g", "2,03 g"],
+        },
+        {
+          id: 30,
+          q: "Wie viele Minuten sind $3$ Stunden und $15$ Minuten?",
+          a: "195 Minuten",
+          opts: ["180 Minuten", "195 Minuten", "315 Minuten", "90 Minuten"],
+        },
+      ];
+
+      let totalCorrect = 0;
+      let totalAttempted = 0;
+      let isFinished = false;
+
+      // Отримуємо посилання на глобальну функцію checkAnswer
+      window.checkAnswer = function (btn, questionId, correctAns) {
+        if (isFinished) return;
+
+        const questionBlock = btn.closest(".quiz-block");
+        if (questionBlock.classList.contains("answered")) return;
+
+        questionBlock.classList.add("answered");
+        totalAttempted++;
+
+        // Функція для очищення рядків від KaTeX-форматування та порівняння
+        const cleanString = (str) => {
+          let cleaned = str
+            .replace(/\\/g, "")
+            .replace(/\s/g, "")
+            .replace(/\$/g, "")
+            .replace(/\\cdot/g, "cdot") // Зберігаємо оператор множення для порівняння
+            .replace(/\\div/g, "div") // Зберігаємо оператор ділення
+            .replace(/\\frac/g, "/") // Замінюємо команду дробу на /
+            .replace(/\{/g, "")
+            .replace(/\}/g, "")
+            .replace(/\(\)/g, "");
+
+          // Нормалізація знаків порівняння
+          cleaned = cleaned.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+          // Порівняння числових дробів, якщо це потрібно
+          if (cleaned.includes("/")) {
+            try {
+              // Перевірка, чи це числовий дріб (наприклад, 2/5)
+              const match = cleaned.match(/(\d+)\/(\d+)/);
+              if (match) {
+                return (parseFloat(match[1]) / parseFloat(match[2]))
+                  .toFixed(6) // Вища точність для порівняння
+                  .replace(/\.0+$/, "");
+              }
+            } catch (e) {
+              // Ігноруємо помилку, якщо це не числовий дріб
+            }
+          }
+
+          // Нормалізація десяткових чисел (заміна німецької коми на крапку)
+          cleaned = cleaned.replace(/,/g, ".");
+
+          // Нормалізація чисел з роздільниками тисяч (крапка в німецькому стилі)
+          // Видаляємо крапки, якщо це не десятковий роздільник (крапка, за якою йдуть 1, 2 або 3 цифри)
+          cleaned = cleaned.replace(/(\d)\.(\d{3})/g, "$1$2");
+
+          return cleaned.trim();
+        };
+
+        const selectedValue = cleanString(btn.innerText);
+        const answerValue = cleanString(correctAns);
+
+        // Обробка відповідей з одиницями вимірювання (наприклад, 6 €)
+        const isCorrect = selectedValue === answerValue;
+
+        // Додавання класів для візуалізації
+        questionBlock.querySelectorAll(".option-btn").forEach((b) => {
+          b.disabled = true;
+          const bValue = cleanString(b.innerText);
+          if (bValue === answerValue) {
+            b.classList.add("selected-correct");
+          }
+        });
+
+        if (isCorrect) {
+          totalCorrect++;
+        } else {
+          btn.classList.add("selected-wrong");
+        }
+
+        updateFinishButton();
+      };
+
+      function updateFinishButton() {
+        const finishBtn = document.getElementById("finish-test-btn");
+        if (totalAttempted === testQuestions.length) {
+          finishBtn.innerText = "Показати результат";
+          finishBtn.disabled = false;
+        } else {
+          finishBtn.innerText = `Завершити тест (${totalAttempted}/${testQuestions.length})`;
+          finishBtn.disabled = false;
+        }
+      }
+
+      window.finishTest = function () {
+        isFinished = true;
+        showModal();
+      };
+
+      function renderQuiz() {
+        const root = document.getElementById("quiz-root");
+        root.innerHTML = "";
+
+        testQuestions.forEach((q) => {
+          const block = document.createElement("div");
+          block.className = "quiz-block";
+
+          let questionHtml = `
+            <div class="question-header">
+              <span class="question-number">${q.id}.</span>
+              <span class="question-text">${q.q}</span>
+            </div>
+            <div class="options-container">
+          `;
+
+          // Обробка спеціальних символів для передачі в onclick
+          const safeAns = q.a.replace(/'/g, "\\'").replace(/"/g, "&quot;");
+
+          q.opts.forEach((opt) => {
+            const safeOpt = opt.replace(/'/g, "\\'").replace(/"/g, "&quot;");
+            questionHtml += `<button class="option-btn" onclick="checkAnswer(this, ${q.id}, '${safeAns}')">${opt}</button>`;
+          });
+
+          questionHtml += `</div>`;
+          block.innerHTML = questionHtml;
+          root.appendChild(block);
+        });
+
+        const finishSection = document.createElement("div");
+        finishSection.className = "finish-section";
+        finishSection.innerHTML = `
+            <button class="btn-finish" id="finish-test-btn" onclick="finishTest()">
+              Завершити тест (0/${testQuestions.length})
+            </button>
+          `;
+        root.appendChild(finishSection);
+      }
+
+      function showModal() {
+        const modal = document.getElementById("result-modal");
+        const body = document.getElementById("modal-content-body");
+
+        const totalQuestions = testQuestions.length;
+        const score = totalCorrect;
+        const percentage = Math.round((score / totalQuestions) * 100);
+
+        let msg = "";
+        let color = "";
+
+        if (percentage === 100) {
+          msg = "Perfekt! 🇩🇪🔥";
+          color = "#16a34a";
+        } else if (percentage >= 80) {
+          msg = "Ausgezeichnetes Ergebnis! 👏";
+          color = "#2563eb";
+        } else if (percentage >= 60) {
+          msg = "Gut gemacht, aber Sie können sich verbessern. 👍";
+          color = "#f59e0b";
+        } else {
+          msg = "Es ist Zeit, mehr zu üben. ✍️";
+          color = "#dc2626";
+        }
+
+        body.innerHTML = `
+            <div style="font-size: 1.5rem; font-weight: 700; color: ${color};">${msg}</div>
+            <div style="font-size: 1rem; color: #64748b; margin-top: 10px;">Ihr Ergebnis:</div>
+            <div class="modal-score-big" style="color: ${color};">${score} / ${totalQuestions}</div>
+            <div style="font-size: 1.1rem; color: #64748b;">Genauigkeit: ${percentage}%</div>
+            <button class="modal-footer-btn" onclick="location.reload()">Nochmal versuchen</button>
+          `;
+
+        modal.style.display = "flex";
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        renderQuiz();
+        updateFinishButton();
+
+        // Рендеринг математики для всього body
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "\\[", right: "\\]", display: true },
+            { left: "$", right: "$", display: false },
+            { left: "\\(", right: "\\)", display: false },
+          ],
+          throwOnError: false,
+        });
+      });
+    </script>
+  </body>
+</html>
