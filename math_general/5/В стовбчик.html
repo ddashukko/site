@@ -53,8 +53,6 @@
         width: 100%;
         padding: 15px 20px;
         border-bottom: 3px solid var(--accent);
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-        /* Фіксуємо хедер зверху */
         position: sticky;
         top: 0;
         z-index: 50;
@@ -77,25 +75,19 @@
         flex-grow: 1;
       }
 
-      /* Контейнер для тесту (ліва частина, що прокручується) */
       .quiz-scroll-container {
         width: 50%;
         padding: 20px;
         box-sizing: border-box;
         overflow-y: auto;
-        flex-shrink: 0; /* Не дозволяємо стискатися */
+        flex-shrink: 0;
       }
 
-      /* Контейнер для дошки (права частина, що закріплена) */
       .scrap-pad-container {
-        /* Зроблено ФІКСОВАНИМ */
         position: sticky;
-        top: var(--header-height); /* Починається одразу під хедером */
-
+        top: var(--header-height);
         width: 50%;
-        height: calc(
-          100vh - var(--header-height)
-        ); /* Займає всю висоту, що залишилася */
+        height: calc(100vh - var(--header-height));
 
         background-color: var(--toolbar-bg);
         border-left: 1px solid var(--border);
@@ -153,9 +145,11 @@
         flex-grow: 1;
         background-color: white;
         border: 1px solid var(--border);
-        cursor: crosshair;
         touch-action: none;
+        /* --- ЗМІНА КУРСОРУ: УВІМКНЕНО ХРЕСТИК --- */
+        cursor: crosshair;
       }
+
       .canvas-toolbar {
         display: flex;
         gap: 10px;
@@ -173,117 +167,26 @@
         font-size: 1.1rem;
         font-weight: 600;
       }
-      /* Решта стилів кнопок та модалки залишаються */
-      .option-btn:hover:not(:disabled) {
-        border-color: var(--primary);
-        background: var(--primary-light);
-      }
-      .option-btn.selected-correct {
-        background: var(--success);
-        color: white;
-        border-color: var(--success);
-      }
-      .option-btn.selected-correct .katex {
-        color: white !important;
-      }
-      .option-btn.selected-wrong {
-        background: var(--error);
-        color: white;
-        border-color: var(--error);
-      }
-      .option-btn.selected-wrong .katex {
-        color: white !important;
-      }
 
-      .finish-section {
-        margin-top: 40px;
-        text-align: center;
-      }
-      .btn-finish {
-        padding: 15px 40px;
-        font-size: 1.2rem;
-        font-weight: bold;
-        color: white;
-        background: var(--primary);
-        border: none;
-        border-radius: 50px;
-        box-shadow: 0 4px 15px rgba(5, 150, 105, 0.4);
-        transition: transform 0.2s;
-        cursor: pointer;
-      }
-      .btn-finish:hover {
-        transform: scale(1.05);
-        background-color: #047857;
-      }
-
-      .scrap-pad-header {
-        font-size: 1.2rem;
-        font-weight: 700;
-        color: var(--text);
-        margin-bottom: 10px;
-        text-align: center;
-      }
-
-      .toolbar-btn:hover {
-        background: var(--primary-light);
-        border-color: var(--primary);
-      }
-      .toolbar-btn.active {
-        background: var(--primary);
-        color: white;
-        border-color: var(--primary);
-      }
-      .toolbar-btn.active:hover {
-        background: var(--primary);
-      }
-      .toolbar-btn.clear-btn {
-        background: var(--error);
-        color: white;
-        border-color: var(--error);
-      }
-      .toolbar-btn.clear-btn:hover {
-        background: #b91c1c;
-      }
-
-      /* --- АДАПТИВНІСТЬ ДЛЯ ПЛАНШЕТІВ ТА МОБІЛЬНИХ (ДО 900PX) --- */
-      /* На малих екранах ми відключаємо sticky/fixed поведінку дошки, 
-         щоб вона знову була у верхній частині (Order: 1), 
-         але прокручувалася, як звичайний елемент, якщо необхідно.
-      */
+      /* Адаптивність залишається без змін */
       @media (max-width: 900px) {
         .content-wrapper {
           flex-direction: column;
         }
-
         .quiz-scroll-container {
           width: 100%;
           padding: 15px;
           order: 2;
         }
-
         .scrap-pad-container {
           width: 100%;
-          border-left: none;
-          border-top: 1px solid var(--border);
-          padding: 15px;
-          order: 1;
-
-          /* Відміняємо sticky та фіксовану висоту для широких екранів */
           position: static;
-          height: 50vh; /* Залишаємо фіксовану висоту 50vh для зручності */
+          height: 50vh;
           min-height: 350px;
+          order: 1;
         }
-
         .drawing-canvas {
           height: calc(100% - 70px);
-        }
-
-        .options-container {
-          grid-template-columns: 1fr;
-        }
-
-        header {
-          position: static; /* Можна прибрати sticky на мобільних, щоб не заважав */
         }
       }
     </style>
@@ -685,13 +588,12 @@
       let mode = "pen";
       const PEN_COLOR = "black";
       const PEN_SIZE = 4;
-      const ERASER_SIZE = 20;
+      const ERASER_SIZE = 40;
 
       // Функція для адаптації розміру canvas
       function resizeCanvas() {
         const container = canvas.parentElement;
 
-        // Розрахунок висоти для правильного відображення
         const toolbarHeight =
           document.querySelector(".canvas-toolbar").offsetHeight || 50;
         const headerHeight =
@@ -701,12 +603,9 @@
         canvas.width = container.clientWidth;
 
         if (window.innerWidth <= 900) {
-          // На планшетах/мобільних: займає решту висоти контейнера
           canvas.height =
             container.clientHeight - (toolbarHeight + headerHeight);
         } else {
-          // На широких екранах: займає решту висоти від viewport (завдяки sticky)
-          // Використовуємо висоту контейнера (яка вже розрахована через calc(100vh - var(--header-height)))
           canvas.height =
             container.clientHeight - toolbarHeight - headerHeight - padding;
         }
@@ -716,7 +615,6 @@
         ctx.fillRect(0, 0, canvas.width, canvas.height);
       }
 
-      // Викликаємо функцію при завантаженні та зміні розміру вікна
       window.addEventListener("resize", resizeCanvas);
 
       function startDrawing(e) {
@@ -741,10 +639,13 @@
         ctx.lineCap = "round";
         ctx.lineJoin = "round";
 
+        // *** Логіка візуалізації стирання залишається ***
         if (mode === "eraser") {
           ctx.globalCompositeOperation = "destination-out";
+          ctx.globalAlpha = 0.8;
         } else {
           ctx.globalCompositeOperation = "source-over";
+          ctx.globalAlpha = 1.0;
         }
 
         ctx.lineTo(currentX, currentY);
@@ -759,7 +660,6 @@
         ctx.closePath();
       }
 
-      // Допоміжна функція для отримання координат незалежно від події (миша чи дотик)
       function getCoordinates(e) {
         const rect = canvas.getBoundingClientRect();
         let clientX, clientY;
@@ -775,11 +675,11 @@
         return [clientX - rect.left, clientY - rect.top];
       }
 
-      // Функція повного очищення дошки
       window.clearCanvas = function () {
+        ctx.globalCompositeOperation = "source-over";
+        ctx.globalAlpha = 1.0;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        ctx.globalCompositeOperation = "source-over";
         ctx.fillStyle = "white";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -799,26 +699,27 @@
           document.getElementById("eraser-btn").classList.add("active");
         }
 
+        // Встановлюємо правильні параметри для малювання/стирання
         if (mode === "eraser") {
           ctx.globalCompositeOperation = "destination-out";
+          ctx.globalAlpha = 0.8;
         } else {
           ctx.globalCompositeOperation = "source-over";
+          ctx.globalAlpha = 1.0;
         }
       }
 
-      // Прив'язка подій для миші
+      // Прив'язка подій
       canvas.addEventListener("mousedown", startDrawing);
       canvas.addEventListener("mousemove", draw);
       canvas.addEventListener("mouseup", stopDrawing);
       canvas.addEventListener("mouseout", stopDrawing);
 
-      // Прив'язка подій для сенсорних екранів
       canvas.addEventListener("touchstart", startDrawing);
       canvas.addEventListener("touchmove", draw);
       canvas.addEventListener("touchend", stopDrawing);
       canvas.addEventListener("touchcancel", stopDrawing);
 
-      // Прив'язка кнопок до зміни режиму
       document
         .getElementById("pen-btn")
         .addEventListener("click", () => setMode("pen"));
