@@ -267,14 +267,7 @@
         color: white !important;
       }
 
-      /* Інші кнопки (не обрані), але правильні/неправильні */
-      .option-btn.reveal-correct {
-        border-color: var(--success);
-        background: #dcfce7;
-        color: var(--success);
-      }
-
-      /* --- ПОЛЯ ВВОДУ (для тесту рідше, але залишимо стиль) --- */
+      /* --- ПОЛЯ ВВОДУ --- */
       .input-group {
         display: flex;
         gap: 10px;
@@ -485,8 +478,9 @@
           id: 1,
           q: "Обчисліть значення виразу: $2^{-3}$",
           type: "choice",
-          a: "0.125",
-          opts: ["-6", "-8", "0.125", "0.25", "8"],
+          // ВІДПОВІДЬ І ВАРІАНТИ ЗМІНЕНО НА ДРОБИ
+          a: "$\\frac{1}{8}$",
+          opts: ["$-6$", "$-8$", "$\\frac{1}{8}$", "$\\frac{1}{4}$", "$8$"],
         },
         {
           id: 2,
@@ -570,9 +564,6 @@
 
           // ВАРІАНТИ ВІДПОВІДЕЙ
           if (item.type === "choice") {
-            // Перемішування варіантів (опціонально, тут просте відображення)
-            // item.opts.sort(() => Math.random() - 0.5);
-
             let btns = "";
             const safeAns = item.a;
 
@@ -656,14 +647,6 @@
           btn.classList.add("selected-wrong");
           row.classList.add("solved-wrong");
           totalWrong++;
-
-          // Підсвітити правильну (опціонально для тесту)
-          /* allBtns.forEach(b => {
-             const bTxt = b.innerText.trim(); // Це складно з Latex, краще через логіку
-             // Тут спрощено: в тесті іноді не показують правильну одразу.
-             // Але для навчання залишимо підсвітку помилки.
-          });
-          */
         }
         updateStats();
       }
@@ -673,9 +656,9 @@
         if (row.classList.contains("answered")) return;
 
         const input = row.querySelector("input");
-        const val = input.value.trim().replace(",", "."); // Заміна коми на крапку
+        const val = input.value.trim().replace(",", ".");
 
-        if (val === "") return; // Не зараховувати пустий ввід
+        if (val === "") return;
 
         row.classList.add("answered");
         input.disabled = true;
@@ -691,8 +674,6 @@
           input.classList.add("wrong");
           row.classList.add("solved-wrong");
           totalWrong++;
-          // Показати правильну відповідь?
-          // btn.innerText = "Правильно: " + variants[0];
         }
         updateStats();
       }
@@ -703,7 +684,7 @@
       }
 
       // =========================================================
-      // 3. CANVAS (ДОШКА) - той самий код
+      // 3. CANVAS (ДОШКА)
       // =========================================================
       const canvas = document.getElementById("board");
       const ctx = canvas.getContext("2d");
@@ -856,7 +837,6 @@
         const modal = document.getElementById("result-modal");
         const body = document.getElementById("modal-content-body");
 
-        // Рахуємо відсоток від загальної кількості питань (а не тільки спроб)
         let efficiency = 0;
         if (totalQuestions > 0)
           efficiency = Math.round((totalCorrect / totalQuestions) * 100);
