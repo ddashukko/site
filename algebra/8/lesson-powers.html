@@ -3,13 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Степені з цілим показником | Dasha Tutor</title>
+    <title>Степені з цілим показником | Інтерактив</title>
 
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
     />
-
     <script
       defer
       src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"
@@ -22,455 +21,440 @@
     <style>
       :root {
         --primary: #4a90e2;
-        --primary-hover: #357abd;
+        --primary-light: #eff6ff;
         --success: #28a745;
         --error: #dc3545;
-        --bg: #f0f2f5; /* Трохи темніший фон для контрасту карток */
+        --bg: #f8fafc;
         --card: #ffffff;
         --text: #2c3e50;
-        --border-radius: 16px; /* Більш округлі кути */
-        --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
-        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-          0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
-          0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        --border: #e2e8f0;
+        --grid-color: #e2e8f0;
       }
 
       body {
-        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
         background-color: var(--bg);
         color: var(--text);
         margin: 0;
-        display: flex;
-        flex-direction: column;
+        padding: 0;
         height: 100vh;
+        display: flex;
         overflow: hidden;
       }
 
-      /* --- ХЕДЕР --- */
+      /* --- ЛІВА ПАНЕЛЬ (ЗАВДАННЯ) --- */
+      #tasks-section {
+        flex: 1;
+        background: var(--bg);
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        border-right: 1px solid var(--border);
+        min-width: 320px;
+      }
+
+      /* --- ПРАВА ПАНЕЛЬ (ДОШКА) --- */
+      #board-section {
+        flex: 1;
+        position: relative;
+        background-color: #fff;
+        background-image: linear-gradient(
+            var(--grid-color) 1px,
+            transparent 1px
+          ),
+          linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+        background-size: 25px 25px;
+        cursor: crosshair;
+        overflow: hidden;
+      }
+
+      canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+        touch-action: none;
+      }
+
+      .tools {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        display: flex;
+        gap: 10px;
+        background: rgba(255, 255, 255, 0.95);
+        padding: 8px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        border: 1px solid var(--border);
+        flex-wrap: wrap;
+        z-index: 10;
+      }
+
+      .btn-tool {
+        border: 1px solid #cbd5e1;
+        background: white;
+        padding: 8px 12px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1.2rem;
+        transition: 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 40px;
+      }
+      .btn-tool:hover {
+        background: #f1f5f9;
+      }
+      .btn-tool.active {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+      }
+
+      /* --- HEADER --- */
       header {
         background: var(--card);
-        padding: 0 30px;
-        box-shadow: var(--shadow-sm);
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border);
         display: flex;
         justify-content: space-between;
         align-items: center;
-        height: 64px;
-        flex-shrink: 0;
-        z-index: 10;
-        position: relative;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
       }
 
       .header-title {
         font-weight: 800;
-        font-size: 1.3rem;
+        font-size: 1.1rem;
         color: var(--primary);
-        letter-spacing: -0.5px;
       }
-
-      .stats {
+      .stats-container {
         display: flex;
-        gap: 12px;
+        gap: 15px;
         font-weight: 600;
-        font-size: 0.95rem;
-      }
-      .stat-box {
-        padding: 6px 16px;
-        border-radius: 99px; /* Pill shape */
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        transition: transform 0.2s;
-      }
-      .stat-box:hover {
-        transform: scale(1.05);
       }
       .stat-correct {
-        background: #ecfdf5;
-        color: #059669;
-        border: 1px solid #a7f3d0;
+        color: var(--success);
       }
       .stat-wrong {
-        background: #fef2f2;
-        color: #dc2626;
-        border: 1px solid #fecaca;
-      }
-      .slide-counter {
-        color: #64748b;
-        font-size: 0.9rem;
-        font-weight: 600;
-        background: #f1f5f9;
-        padding: 6px 12px;
-        border-radius: 8px;
+        color: var(--error);
       }
 
-      /* --- ГОЛОВНИЙ КОНТЕЙНЕР (ЦЕНТРАЛЬНА КОЛОНКА) --- */
-      .slide-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center; /* Центруємо все по горизонталі */
-        flex-grow: 1;
-        overflow-y: auto; /* Скрол всього контейнера */
-        padding: 30px 20px 100px 20px; /* Нижній відступ, щоб контент не ховався за футер */
-        scroll-behavior: smooth;
-      }
-
-      /* Обмежувач ширини для всього контенту */
-      .content-wrapper {
+      /* --- КОНТЕНТ ЗАВДАНЬ --- */
+      .content-container {
+        padding: 20px;
+        padding-bottom: 80px;
+        max-width: 800px;
+        margin: 0 auto;
         width: 100%;
-        max-width: 800px; /* Оптимальна ширина для читання */
-        display: flex;
-        flex-direction: column;
-        gap: 24px;
+        box-sizing: border-box;
       }
 
-      /* --- ВЕРХНЯ КАРТКА (ОПИС ЗАВДАННЯ) --- */
-      .task-header-card {
+      .exercise-block {
         background: var(--card);
-        border-radius: var(--border-radius);
-        padding: 30px;
-        box-shadow: var(--shadow-sm);
-        border-top: 6px solid var(--primary); /* Акцент зверху */
-      }
-
-      .task-header-card h3 {
-        margin-top: 0;
-        font-size: 1.4rem;
-        color: #1e293b;
-        margin-bottom: 15px;
-      }
-
-      .task-header-card p {
-        color: #64748b;
-        font-size: 1.05rem;
-        line-height: 1.6;
-        margin: 0;
-      }
-
-      /* --- СПИСОК ЗАВДАНЬ --- */
-      .subtask-row {
-        background: var(--card);
-        padding: 30px;
-        border-radius: var(--border-radius);
-        box-shadow: var(--shadow-md);
-        border: 2px solid transparent;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-        position: relative;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        margin-bottom: 30px;
         overflow: hidden;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
       }
 
-      .subtask-row:hover {
-        box-shadow: var(--shadow-lg);
+      .exercise-header {
+        background: var(--primary-light);
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border);
+      }
+      .exercise-title {
+        margin: 0;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #1e293b;
+      }
+      .exercise-desc {
+        margin: 5px 0 0 0;
+        font-size: 0.95rem;
+        color: #475569;
+        line-height: 1.5;
       }
 
-      .subtask-row.solved {
-        border-color: var(--success);
-        background: #f0fdf4; /* Дуже світлий зелений */
-      }
-
-      /* Іконка галочки при вирішенні */
-      .subtask-row.solved::after {
-        content: "✓";
-        position: absolute;
-        top: 15px;
-        right: 20px;
-        font-size: 2rem;
-        color: var(--success);
-        opacity: 0.2;
-        font-weight: bold;
-      }
-
-      .question-header {
+      .task-row {
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border);
         display: flex;
-        align-items: baseline; /* Вирівнювання по базовій лінії тексту */
-        margin-bottom: 25px;
-        gap: 15px;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .task-row:last-child {
+        border-bottom: none;
+      }
+      .task-row.solved-correct {
+        background-color: #f0fdf4;
+      }
+      .task-row.solved-wrong {
+        background-color: #fef2f2;
       }
 
-      .label {
-        font-weight: 800;
+      .task-content {
+        display: flex;
+        align-items: baseline;
+        gap: 10px;
+      }
+      .task-number {
+        font-weight: 700;
         color: var(--primary);
+        min-width: 20px;
+      }
+      .task-question {
         font-size: 1.2rem;
-        background: #eff6ff;
-        padding: 4px 12px;
-        border-radius: 8px;
-        flex-shrink: 0;
-      }
-
-      .question-text {
         font-weight: 500;
-        font-size: 1.4rem; /* Збільшений шрифт формули */
-        color: #334155;
       }
 
-      /* --- ДИЗАЙН ВІДПОВІДЕЙ (GRID) --- */
-      .options-grid {
-        display: grid;
-        grid-template-columns: repeat(
-          auto-fit,
-          minmax(180px, 1fr)
-        ); /* Ширші кнопки */
-        gap: 16px;
-        width: 100%;
+      /* --- ВАРІАНТИ ВІДПОВІДЕЙ --- */
+      .options-container {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap; /* Дозволяє перенос, якщо екран дуже вузький, але намагається в рядок */
+        gap: 10px;
+        margin-top: 5px;
+        align-items: center;
       }
 
-      .choice-btn {
+      .option-btn {
         background: white;
         border: 2px solid #e2e8f0;
-        padding: 16px;
-        border-radius: 12px;
+        border-radius: 8px;
+        padding: 8px 16px;
+        font-size: 1rem;
         cursor: pointer;
-
-        font-size: 1.3rem;
+        min-width: 60px;
+        text-align: center;
+        transition: 0.2s;
         font-weight: 600;
         color: var(--text);
-
-        display: flex;
+        display: inline-flex;
         align-items: center;
         justify-content: center;
-        min-height: 64px;
-
-        transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
-        position: relative;
-        overflow: hidden;
       }
-
-      .choice-btn:hover:not(:disabled) {
+      .option-btn:hover:not(:disabled) {
         border-color: var(--primary);
         color: var(--primary);
-        background-color: #f8fafc;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(74, 144, 226, 0.15);
+        background: #f8fafc;
       }
-
-      .choice-btn.selected-correct {
+      .option-btn.selected-correct {
         background: var(--success);
         color: white;
         border-color: var(--success);
-        box-shadow: 0 4px 12px rgba(34, 197, 94, 0.4);
       }
-
-      .choice-btn.selected-correct .katex {
-        color: white !important;
-      }
-      .choice-btn.selected-wrong .katex {
+      .option-btn.selected-correct .katex {
         color: white !important;
       }
 
-      .choice-btn.selected-wrong {
+      .option-btn.selected-wrong {
         background: var(--error);
         color: white;
         border-color: var(--error);
-        animation: shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+      }
+      .option-btn.selected-wrong .katex {
+        color: white !important;
       }
 
-      /* Поля вводу */
-      .input-wrapper {
+      /* --- ПОЛЯ ВВОДУ --- */
+      .input-group {
         display: flex;
-        justify-content: center; /* Центруємо поле вводу */
-        gap: 12px;
+        gap: 10px;
         align-items: center;
-        background: #f8fafc;
-        padding: 20px;
-        border-radius: 12px;
+        margin-top: 5px;
       }
-
-      input[type="text"] {
-        padding: 12px 20px;
+      .input-answer {
+        padding: 8px 12px;
         border: 2px solid #cbd5e1;
-        border-radius: 10px;
-        width: 140px;
+        border-radius: 8px;
+        width: 120px;
+        font-size: 1.1rem;
         text-align: center;
-        font-size: 1.3rem;
-        transition: all 0.2s;
-        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
       }
-      input:focus {
-        outline: none;
-        border-color: var(--primary);
-        box-shadow: 0 0 0 4px rgba(74, 144, 226, 0.1);
-        background: white;
+      .btn-check {
+        padding: 8px 20px;
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
       }
-      input.correct {
+      .input-answer.correct {
         border-color: var(--success);
-        background: #ecfdf5;
+        background: #f0fdf4;
         color: var(--success);
-        font-weight: bold;
       }
-      input.wrong {
+      .input-answer.wrong {
         border-color: var(--error);
         background: #fef2f2;
       }
 
-      button.check-btn {
-        background: var(--primary);
+      .finish-section {
+        margin-top: 40px;
+        text-align: center;
+      }
+      .btn-finish {
+        padding: 15px 40px;
+        font-size: 1.2rem;
+        font-weight: bold;
         color: white;
+        background: var(--primary);
         border: none;
-        padding: 12px 24px;
-        border-radius: 10px;
-        font-size: 1.1rem;
-        cursor: pointer;
-        font-weight: 600;
-        transition: transform 0.1s, background 0.2s;
-        box-shadow: 0 4px 6px rgba(74, 144, 226, 0.2);
-      }
-      button.check-btn:hover {
-        background: var(--primary-hover);
-        transform: translateY(-1px);
-      }
-      button.check-btn:active {
-        transform: translateY(1px);
-      }
-
-      /* --- ФУТЕР --- */
-      footer {
-        height: 80px;
-        background: rgba(255, 255, 255, 0.9);
-        backdrop-filter: blur(10px); /* Ефект матового скла */
-        border-top: 1px solid #e2e8f0;
-        display: flex;
-        justify-content: center;
-        gap: 20px;
-        align-items: center;
-        padding: 0 20px;
-        flex-shrink: 0;
-        position: fixed;
-        bottom: 0;
-        width: 100%;
-        box-sizing: border-box;
-        z-index: 100;
-      }
-
-      .nav-btn {
-        background: white;
-        color: var(--text);
-        border: 2px solid #e2e8f0;
-        padding: 12px 30px;
-        font-size: 1.05rem;
-        font-weight: 700;
         border-radius: 50px;
         cursor: pointer;
-        transition: all 0.2s;
-        min-width: 140px;
+        box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
+        transition: transform 0.2s;
       }
-      .nav-btn:hover:not(:disabled) {
-        border-color: var(--primary);
-        color: var(--primary);
-        background: #f8fafc;
-      }
-      .nav-btn.primary {
-        background: var(--primary);
-        color: white;
-        border-color: var(--primary);
-        box-shadow: 0 4px 15px rgba(74, 144, 226, 0.4);
-      }
-      .nav-btn.primary:hover:not(:disabled) {
-        background: var(--primary-hover);
-        border-color: var(--primary-hover);
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(74, 144, 226, 0.5);
+      .btn-finish:hover {
+        transform: scale(1.05);
       }
 
-      .nav-btn:disabled {
-        background: #f1f5f9;
-        color: #cbd5e1;
-        border-color: transparent;
-        cursor: not-allowed;
-        box-shadow: none;
-      }
-
-      /* Екран результатів */
-      .results-view {
-        text-align: center;
+      /* --- МОДАЛЬНЕ ВІКНО --- */
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
         width: 100%;
-        animation: fadeIn 0.5s ease;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(5px);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+        animation: fadeIn 0.3s ease;
+      }
+      .modal-card {
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        max-width: 450px;
+        width: 90%;
+        text-align: center;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        position: relative;
+      }
+      .modal-close-btn {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: #94a3b8;
+        cursor: pointer;
+      }
+      .modal-result-title {
+        font-size: 2rem;
+        font-weight: 800;
+        margin-bottom: 20px;
+      }
+      .modal-score-big {
+        font-size: 4rem;
+        font-weight: 900;
+        margin: 10px 0;
+        line-height: 1;
       }
 
-      @keyframes shake {
-        10%,
-        90% {
-          transform: translate3d(-1px, 0, 0);
-        }
-        20%,
-        80% {
-          transform: translate3d(2px, 0, 0);
-        }
-        30%,
-        50%,
-        70% {
-          transform: translate3d(-4px, 0, 0);
-        }
-        40%,
-        60% {
-          transform: translate3d(4px, 0, 0);
-        }
-      }
       @keyframes fadeIn {
         from {
           opacity: 0;
-          transform: translateY(20px);
         }
         to {
           opacity: 1;
-          transform: translateY(0);
         }
       }
 
-      /* Мобільна адаптація */
-      @media (max-width: 600px) {
-        .task-header-card {
-          padding: 20px;
+      @media (max-width: 768px) {
+        body {
+          flex-direction: column;
         }
-        .subtask-row {
-          padding: 20px;
+        #board-section {
+          height: 35vh;
+          border-left: none;
+          border-top: 2px solid var(--border);
+          order: 2;
         }
-        .options-grid {
-          grid-template-columns: 1fr; /* Одна колонка на телефоні */
-        }
-        .header-title {
-          font-size: 1rem;
-        }
-        .stats {
-          display: none; /* Ховаємо статистику на дуже малих екранах, або зменшуємо */
+        #tasks-section {
+          height: 65vh;
+          order: 1;
         }
       }
     </style>
   </head>
   <body>
-    <header>
-      <div class="header-title">Dasha Tutor: Степені</div>
-      <div class="stats">
-        <div class="stat-box stat-correct">
-          ✅ <span id="val-correct">0</span>
+    <div id="tasks-section">
+      <header>
+        <div class="header-title">Dasha Tutor: Степені</div>
+        <div class="stats-container">
+          <span class="stat-correct">✅ <span id="val-correct">0</span></span>
+          <span class="stat-wrong">❌ <span id="val-wrong">0</span></span>
         </div>
-        <div class="stat-box stat-wrong">❌ <span id="val-wrong">0</span></div>
+      </header>
+
+      <div class="content-container" id="quiz-root"></div>
+    </div>
+
+    <div id="board-section">
+      <div class="tools">
+        <button
+          class="btn-tool active"
+          onclick="setTool('pen')"
+          id="t-pen"
+          title="Ручка"
+        >
+          🖊️
+        </button>
+        <button
+          class="btn-tool"
+          onclick="setTool('eraser')"
+          id="t-eraser"
+          title="Гумка"
+        >
+          🧹
+        </button>
+        <button
+          class="btn-tool"
+          onclick="drawSystem()"
+          title="Координатна площина"
+        >
+          📉
+        </button>
+        <button
+          class="btn-tool"
+          onclick="clearCanvasSafe()"
+          style="color: red; border-color: #fee2e2"
+          title="Очистити все"
+        >
+          ❌
+        </button>
       </div>
-      <div class="slide-counter" id="slide-counter">Start</div>
-    </header>
+      <canvas id="board"></canvas>
+    </div>
 
-    <div class="slide-container" id="slide-root"></div>
-
-    <footer id="footer-nav">
-      <button class="nav-btn" id="btn-prev" onclick="changeSlide(-1)">
-        ← Назад
-      </button>
-      <button class="nav-btn primary" id="btn-next" onclick="changeSlide(1)">
-        Далі →
-      </button>
-    </footer>
+    <div id="result-modal" class="modal-overlay">
+      <div class="modal-card">
+        <button class="modal-close-btn" onclick="closeModal()">×</button>
+        <div id="modal-content-body"></div>
+      </div>
+    </div>
 
     <script>
       // =========================================================
-      // ДАНІ УРОКУ
+      // 1. ДАНІ УРОКУ (КОНТЕНТ)
       // =========================================================
       const lessonData = [
         {
           id: "10.1",
-          // Заголовок та опис тепер в одному об'єкті
           title: "10.1. (Усно.) Які з рівностей є тотожностями:",
-          description:
-            "Перевірте правильність наведених нижче рівностей. Натисніть 'Так', якщо рівність правильна, і 'Ні', якщо є помилка.",
-          type: "choice",
+          description: "Перевірте правильність наведених нижче рівностей.",
           tasks: [
             {
               label: "1)",
@@ -513,9 +497,7 @@
         {
           id: "10.2",
           title: "10.2. Подайте у вигляді степеня добуток:",
-          description:
-            "Використовуйте властивість множення степенів з однаковою основою: $a^m \\cdot a^n = a^{m+n}$.",
-          type: "choice",
+          description: "Властивість: $a^m \\cdot a^n = a^{m+n}$.",
           tasks: [
             {
               label: "1)",
@@ -546,9 +528,7 @@
         {
           id: "10.4",
           title: "10.4. Подайте у вигляді степеня частку:",
-          description:
-            "При діленні степенів показники віднімаються: $a^m : a^n = a^{m-n}$.",
-          type: "choice",
+          description: "Властивість: $a^m : a^n = a^{m-n}$.",
           tasks: [
             {
               label: "1)",
@@ -579,9 +559,7 @@
         {
           id: "10.6",
           title: "10.6. Піднесіть степінь до степеня:",
-          description:
-            "При піднесенні степеня до степеня показники перемножуються: $(a^m)^n = a^{m \\cdot n}$.",
-          type: "choice",
+          description: "Властивість: $(a^m)^n = a^{m \\cdot n}$.",
           tasks: [
             {
               label: "1)",
@@ -612,11 +590,9 @@
         {
           id: "10.10",
           title: "10.10. Обчисліть:",
-          description:
-            "Знайдіть числове значення виразу. Введіть число або звичайний дріб (наприклад 1/4).",
-          type: "mixed",
+          description: "Знайдіть числове значення виразу.",
           tasks: [
-            { label: "1)", q: "$3^8 \\cdot 3^{-7}$", a: ["3"], opts: null },
+            { label: "1)", q: "$3^8 \\cdot 3^{-7}$", a: ["3"] },
             {
               label: "2)",
               q: "$4^{-5} \\cdot 4$",
@@ -627,22 +603,15 @@
               label: "3)",
               q: "$\\left(\\frac{1}{3}\\right)^{-6} \\cdot \\left(\\frac{1}{3}\\right)^4$",
               a: ["9"],
-              opts: null,
             },
             {
               label: "4)",
               q: "$\\left(\\frac{1}{5}\\right)^{-9} \\cdot \\left(\\frac{1}{5}\\right)^7$",
               a: ["25"],
-              opts: null,
             },
-            {
-              label: "5)",
-              q: "$2^{10} : 2^{11}$",
-              a: ["0.5", "0,5", "1/2"],
-              opts: null,
-            },
-            { label: "6)", q: "$5^{-12} : 5^{-13}$", a: ["5"], opts: null },
-            { label: "7)", q: "$6 : 6^{-1}$", a: ["36"], opts: null },
+            { label: "5)", q: "$2^{10} : 2^{11}$", a: ["0.5", "0,5", "1/2"] },
+            { label: "6)", q: "$5^{-12} : 5^{-13}$", a: ["5"] },
+            { label: "7)", q: "$6 : 6^{-1}$", a: ["36"] },
             {
               label: "8)",
               q: "$(3^{-2})^3$",
@@ -660,9 +629,7 @@
         {
           id: "10.12",
           title: "10.12. Спростіть вираз з основою $x$:",
-          description:
-            "Виконайте дії зі степенями та оберіть правильну відповідь.",
-          type: "choice",
+          description: "",
           tasks: [
             {
               label: "1)",
@@ -705,9 +672,7 @@
         {
           id: "10.14",
           title: "10.14. Спростіть вираз (коефіцієнти):",
-          description:
-            "Окремо перемножте числа (коефіцієнти) та окремо степені з однаковими буквами.",
-          type: "choice",
+          description: "Окремо перемножте числа та окремо степені.",
           tasks: [
             {
               label: "1)",
@@ -740,7 +705,7 @@
                 "$-1.5x^{-7}y^{-7}$",
                 "$1.5x^{-7}y^{-7}$",
                 "$1.5x^{12}y^{10}$",
-                "$x^{-7}y^{-7}$",
+                "$x^{-7}y^{-7}",
               ],
             },
           ],
@@ -748,9 +713,7 @@
         {
           id: "10.16",
           title: "10.16. Подайте у вигляді добутку степенів:",
-          description:
-            "Кожен множник у дужках піднесіть до степеня: $(ab)^n = a^n b^n$.",
-          type: "choice",
+          description: "$(ab)^n = a^n b^n$.",
           tasks: [
             {
               label: "1)",
@@ -781,9 +744,7 @@
         {
           id: "10.18",
           title: "10.18. Подайте у вигляді степеня вираз:",
-          description:
-            "Подайте число та буквений вираз як степінь з одним показником.",
-          type: "choice",
+          description: "",
           tasks: [
             {
               label: "1)",
@@ -793,7 +754,7 @@
                 "$(5x)^{-3}$",
                 "$(5x^{-1})^3$",
                 "$(125x)^{-3}$",
-                "$5x^{-3}$",
+                "$5x^{-3}",
               ],
             },
             {
@@ -804,7 +765,7 @@
                 "$(0.1y^{-2})^3$",
                 "$(0.1y^{-6})^3$",
                 "$(0.01y^2)^3$",
-                "$(0.1y)^{-6}$",
+                "$(0.1y)^{-6}",
               ],
             },
             {
@@ -834,9 +795,7 @@
         {
           id: "10.21",
           title: "10.21. Знайдіть значення виразу:",
-          description:
-            "Спростіть вираз перед підстановкою або обчисліть напряму.",
-          type: "mixed",
+          description: "",
           tasks: [
             {
               label: "1)",
@@ -854,19 +813,16 @@
               label: "3)",
               q: "$2^{-9} \\cdot 4^6 : 16$",
               a: ["0.5", "0,5", "1/2"],
-              opts: null,
             },
             {
               label: "4)",
               q: "$36^{-1} \\cdot \\left(\\frac{1}{6}\\right)^{-4}$",
               a: ["36"],
-              opts: null,
             },
             {
               label: "5)",
               q: "$\\frac{25^{-4} \\cdot 5^{-6}}{(-5)^{-16}}$",
               a: ["25"],
-              opts: null,
             },
             {
               label: "6)",
@@ -879,20 +835,81 @@
       ];
 
       // =========================================================
+      // 2. ГЕНЕРАЦІЯ ЗАВДАНЬ ТА ЛОГІКА
+      // =========================================================
 
-      let currentIndex = 0;
-      let correctTotal = 0;
-      let wrongTotal = 0;
+      let totalCorrect = 0;
+      let totalWrong = 0;
+      let totalTasksCount = 0;
 
-      const root = document.getElementById("slide-root");
-      const counter = document.getElementById("slide-counter");
-      const statCorrect = document.getElementById("val-correct");
-      const statWrong = document.getElementById("val-wrong");
-      const btnPrev = document.getElementById("btn-prev");
-      const btnNext = document.getElementById("btn-next");
-      const footer = document.getElementById("footer-nav");
+      function init() {
+        const root = document.getElementById("quiz-root");
 
-      // Допоміжна функція для рендерингу математики
+        lessonData.forEach((block) => {
+          totalTasksCount += block.tasks.length;
+
+          const exBlock = document.createElement("div");
+          exBlock.className = "exercise-block";
+
+          let content = `
+            <div class="exercise-header">
+                <h3 class="exercise-title">${block.title}</h3>
+                <p class="exercise-desc">${block.description}</p>
+            </div>
+          `;
+
+          block.tasks.forEach((task) => {
+            let answerHTML = "";
+
+            // Якщо є opts - це кнопки
+            if (task.opts && task.opts.length > 0) {
+              let btns = "";
+              const safeAns = Array.isArray(task.a) ? task.a[0] : task.a;
+              task.opts.forEach((opt) => {
+                // Екранування для HTML атрибутів
+                const safeOpt = opt.replace(/"/g, "&quot;");
+                const safeAnsAttr = safeAns.replace(/"/g, "&quot;");
+                btns += `<button class="option-btn" onclick="checkChoice(this, '${safeOpt.replace(
+                  /\\/g,
+                  "\\\\"
+                )}', '${safeAnsAttr.replace(/\\/g, "\\\\")}')">${opt}</button>`;
+              });
+              answerHTML = `<div class="options-container">${btns}</div>`;
+            } else {
+              // Якщо немає opts - це інпут
+              const ansStr = Array.isArray(task.a) ? task.a.join("|") : task.a;
+              answerHTML = `
+                <div class="input-group">
+                   <input type="text" class="input-answer" placeholder="..." onkeypress="if(event.key==='Enter') this.nextElementSibling.click()">
+                   <button class="btn-check" onclick="checkInput(this, '${ansStr}')">OK</button>
+                </div>
+              `;
+            }
+
+            content += `
+              <div class="task-row">
+                 <div class="task-content">
+                    <div class="task-number">${task.label}</div>
+                    <div class="task-question">${task.q}</div>
+                 </div>
+                 ${answerHTML}
+              </div>
+            `;
+          });
+
+          exBlock.innerHTML = content;
+          root.appendChild(exBlock);
+        });
+
+        // Кнопка завершення
+        const finishDiv = document.createElement("div");
+        finishDiv.className = "finish-section";
+        finishDiv.innerHTML = `<button class="btn-finish" onclick="finishLesson()">Завершити урок</button>`;
+        root.appendChild(finishDiv);
+
+        renderMath();
+      }
+
       function renderMath() {
         if (typeof renderMathInElement === "function") {
           renderMathInElement(document.body, {
@@ -905,194 +922,269 @@
         }
       }
 
-      function init() {
-        if (lessonData.length > 0) {
-          renderSlide(0);
-        } else {
-          root.innerHTML =
-            "<h2 style='text-align:center; margin-top:50px; color:#555;'>Дані уроку ще не додано.</h2>";
-        }
-      }
+      // Перевірка кнопок
+      function checkChoice(btn, val, ans) {
+        const row = btn.closest(".task-row");
+        if (
+          row.classList.contains("solved-correct") ||
+          row.classList.contains("solved-wrong")
+        )
+          return; // Block re-answering logic if needed, or allow fix? Let's block row once answered to match style 1 logic
 
-      function renderSlide(index) {
-        currentIndex = index;
-        const data = lessonData[index];
-
-        counter.innerText = `${index + 1} з ${lessonData.length}`;
-        btnPrev.disabled = index === 0;
-        btnNext.innerText =
-          index === lessonData.length - 1 ? "Завершити" : "Далі →";
-        btnNext.disabled = false;
-
-        let subTasksHTML = "";
-
-        data.tasks.forEach((task) => {
-          let inputHTML = "";
-
-          // Якщо є options
-          if (task.opts && task.opts.length > 0) {
-            let btnsHTML = "";
-            task.opts.forEach((opt) => {
-              const cleanOpt = opt.replace(/"/g, "&quot;");
-              const cleanA = Array.isArray(task.a) ? task.a[0] : task.a;
-              btnsHTML += `<button class="choice-btn" onclick="checkChoice(this, '${cleanOpt.replace(
-                /\\/g,
-                "\\\\"
-              )}', '${cleanA.replace(
-                /\\/g,
-                "\\\\"
-              )}', this.parentElement.parentElement.parentElement)">${opt}</button>`;
-            });
-            inputHTML = `<div class="options-grid">${btnsHTML}</div>`;
-          } else {
-            // Поле вводу
-            const answerStr = Array.isArray(task.a) ? task.a.join("|") : task.a;
-            inputHTML = `
-                        <div class="input-wrapper">
-                            <input type="text" placeholder="?" onkeypress="handleEnter(event, this)">
-                            <button class="check-btn" onclick="checkInput(this.previousElementSibling, '${answerStr}', this.parentElement.parentElement.parentElement)">OK</button>
-                        </div>
-                    `;
-          }
-
-          subTasksHTML += `
-                    <div class="subtask-row">
-                        <div class="question-header">
-                            <div class="label">${task.label}</div>
-                            <div class="question-text">${task.q}</div>
-                        </div>
-                        <div class="interaction-area">${inputHTML}</div>
-                    </div>
-                `;
-        });
-
-        // СТРУКТУРА: Одна колонка по центру (content-wrapper)
-        root.innerHTML = `
-            <div class="content-wrapper">
-                <div class="task-header-card">
-                    <h3>${data.title}</h3>
-                    <p>${data.description}</p>
-                </div>
-                
-                ${subTasksHTML}
-            </div>
-            `;
-
-        renderMath();
-        // Скролимо наверх при зміні слайду
-        document.querySelector(".slide-container").scrollTop = 0;
-      }
-
-      function changeSlide(dir) {
-        const next = currentIndex + dir;
-        if (next >= lessonData.length) {
-          showResults();
-          return;
-        }
-        if (next >= 0 && next < lessonData.length) {
-          renderSlide(next);
-        }
-      }
-
-      function showResults() {
-        footer.style.display = "none";
-        counter.innerText = "Фініш";
-        let detailsHTML = "";
-        lessonData.forEach((task) => {
-          const mistakes = task.errorCount || 0;
-          const rowStyle =
-            mistakes === 0
-              ? "color:var(--success); font-weight:bold;"
-              : "color:var(--error);";
-          const rowText = mistakes === 0 ? "Відмінно!" : `${mistakes} помилок`;
-          detailsHTML += `
-            <div style="display:flex; justify-content:space-between; padding:15px 0; border-bottom:1px solid #f1f5f9;">
-                <span style="font-weight:600; color:#475569;">Завдання ${task.id}</span>
-                <span style="${rowStyle}">${rowText}</span>
-            </div>`;
-        });
-
-        root.innerHTML = `
-                <div class="content-wrapper">
-                    <div class="task-header-card" style="text-align:center; padding: 40px;">
-                        <h1 style="font-size: 2.5rem; margin-bottom: 10px;">Вітаю! 🎉</h1>
-                        <p style="font-size: 1.2rem;">Ви пройшли всі завдання.</p>
-                        
-                        <div style="display:flex; justify-content:center; gap:30px; margin: 40px 0;">
-                             <div style="text-align:center;">
-                                <div style="font-size:3.5rem; color:var(--success); font-weight:800; line-height:1;">${correctTotal}</div>
-                                <div style="color:#64748b; font-weight:600;">Правильно</div>
-                             </div>
-                             <div style="text-align:center;">
-                                <div style="font-size:3.5rem; color:var(--error); font-weight:800; line-height:1;">${wrongTotal}</div>
-                                <div style="color:#64748b; font-weight:600;">Помилок</div>
-                             </div>
-                        </div>
-
-                        <div style="text-align:left; background:#f8fafc; padding:20px; border-radius:12px; margin-bottom:30px;">
-                            ${detailsHTML}
-                        </div>
-
-                        <button class="nav-btn primary" onclick="location.reload()">🔄 Почати знову</button>
-                    </div>
-                </div>
-            `;
-      }
-
-      function checkInput(inputEl, correctValStr, rowEl) {
-        if (rowEl.classList.contains("solved")) return;
-
-        const val = inputEl.value.trim().replace(",", ".");
-        const correctVariants = correctValStr.split("|");
-        let isCorrect = correctVariants.includes(val);
-
-        if (isCorrect) {
-          inputEl.classList.add("correct");
-          inputEl.classList.remove("wrong");
-          rowEl.classList.add("solved");
-          correctTotal++;
-          inputEl.nextElementSibling.disabled = true;
-          inputEl.nextElementSibling.style.opacity = "0.5";
-        } else {
-          inputEl.classList.add("wrong");
-          wrongTotal++;
-          lessonData[currentIndex].errorCount =
-            (lessonData[currentIndex].errorCount || 0) + 1;
-        }
-        updateStats();
-      }
-
-      function checkChoice(btnEl, val, correctVal, rowEl) {
-        if (rowEl.classList.contains("solved")) return;
-
+        // Порівняння
         const cleanVal = val.replace(/\\\\/g, "\\");
-        const cleanCorrectVal = correctVal.replace(/\\\\/g, "\\");
+        const cleanAns = ans.replace(/\\\\/g, "\\");
 
-        if (cleanVal == cleanCorrectVal) {
-          btnEl.classList.add("selected-correct");
-          rowEl.classList.add("solved");
-          correctTotal++;
+        const btns = row.querySelectorAll(".option-btn");
+        btns.forEach((b) => (b.disabled = true));
 
-          const btns = rowEl.querySelectorAll(".choice-btn");
-          btns.forEach((b) => (b.disabled = true));
+        if (cleanVal === cleanAns) {
+          btn.classList.add("selected-correct");
+          row.classList.add("solved-correct");
+          totalCorrect++;
         } else {
-          btnEl.classList.add("selected-wrong");
-          wrongTotal++;
-          lessonData[currentIndex].errorCount =
-            (lessonData[currentIndex].errorCount || 0) + 1;
+          btn.classList.add("selected-wrong");
+          row.classList.add("solved-wrong");
+          totalWrong++;
         }
         updateStats();
       }
 
-      function handleEnter(e, inputEl) {
-        if (e.key === "Enter") inputEl.nextElementSibling.click();
-      }
-      function updateStats() {
-        statCorrect.innerText = correctTotal;
-        statWrong.innerText = wrongTotal;
+      // Перевірка інпуту
+      function checkInput(btn, correctStr) {
+        const row = btn.closest(".task-row");
+        const input = row.querySelector("input");
+        if (input.disabled) return;
+
+        const val = input.value.trim().replace(",", ".");
+        const variants = correctStr.split("|");
+
+        if (variants.includes(val)) {
+          input.classList.add("correct");
+          input.classList.remove("wrong");
+          row.classList.add("solved-correct");
+          input.disabled = true;
+          btn.disabled = true;
+          totalCorrect++;
+        } else {
+          input.classList.add("wrong");
+          row.classList.add("solved-wrong");
+          totalWrong++;
+          // Не блокуємо, даємо виправити? Або блокуємо. В першому коді блокували тількі правильне.
+          // Тут заблокуємо кнопку на секунду візуально, але дамо виправити.
+          // Або для статистики краще рахувати тільки першу спробу?
+          // Спростимо: неправильно -> червоний, але можна виправити. Статистику Wrong інкрементимо.
+        }
+        updateStats();
       }
 
-      document.addEventListener("DOMContentLoaded", init);
+      function updateStats() {
+        document.getElementById("val-correct").innerText = totalCorrect;
+        document.getElementById("val-wrong").innerText = totalWrong;
+      }
+
+      // =========================================================
+      // 3. ЛОГІКА ДОШКИ (CANVAS)
+      // =========================================================
+      const canvas = document.getElementById("board");
+      const ctx = canvas.getContext("2d");
+      const boardSection = document.getElementById("board-section");
+      let painting = false;
+      let tool = "pen";
+
+      function resizeCanvas() {
+        const temp = document.createElement("canvas");
+        const tempCtx = temp.getContext("2d");
+        temp.width = canvas.width;
+        temp.height = canvas.height;
+        if (canvas.width > 0 && canvas.height > 0) {
+          tempCtx.drawImage(canvas, 0, 0);
+        }
+        canvas.width = boardSection.offsetWidth;
+        canvas.height = boardSection.offsetHeight;
+        ctx.drawImage(temp, 0, 0);
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+      }
+
+      window.addEventListener("resize", resizeCanvas);
+      // init runs on DOMContentLoaded
+
+      function getMousePos(e) {
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return { x: clientX - rect.left, y: clientY - rect.top };
+      }
+
+      function startPosition(e) {
+        painting = true;
+        draw(e);
+      }
+      function finishedPosition() {
+        painting = false;
+        ctx.beginPath();
+      }
+      function draw(e) {
+        if (!painting) return;
+        if (e.type.startsWith("touch")) {
+          e.preventDefault();
+        } // prevent scrolling while drawing
+
+        const pos = getMousePos(e);
+        if (tool === "pen") {
+          ctx.lineWidth = 2;
+          ctx.strokeStyle = "#4a90e2";
+          ctx.globalCompositeOperation = "source-over";
+        } else {
+          ctx.lineWidth = 25;
+          ctx.strokeStyle = "#ffffff";
+          ctx.globalCompositeOperation = "destination-out";
+        }
+        ctx.lineTo(pos.x, pos.y);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(pos.x, pos.y);
+      }
+
+      canvas.addEventListener("mousedown", startPosition);
+      canvas.addEventListener("mouseup", finishedPosition);
+      canvas.addEventListener("mousemove", draw);
+      canvas.addEventListener("mouseout", finishedPosition);
+      canvas.addEventListener("touchstart", startPosition, { passive: false });
+      canvas.addEventListener("touchend", finishedPosition);
+      canvas.addEventListener("touchmove", draw, { passive: false });
+
+      function setTool(t) {
+        tool = t;
+        document
+          .getElementById("t-pen")
+          .classList.toggle("active", t === "pen");
+        document
+          .getElementById("t-eraser")
+          .classList.toggle("active", t === "eraser");
+      }
+
+      function clearCanvasSafe() {
+        if (confirm("Очистити дошку?")) {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+      }
+
+      function drawSystem() {
+        const prevStrokeStyle = ctx.strokeStyle;
+        const prevLineWidth = ctx.lineWidth;
+        const prevComposite = ctx.globalCompositeOperation;
+
+        ctx.globalCompositeOperation = "source-over";
+        ctx.strokeStyle = "#334155";
+        ctx.lineWidth = 2;
+        ctx.fillStyle = "#334155";
+        ctx.font = "16px Arial";
+
+        const w = canvas.width;
+        const h = canvas.height;
+        const cx = Math.floor(w / 2);
+        const cy = Math.floor(h / 2);
+        const step = 25;
+
+        ctx.beginPath();
+        // X axis
+        ctx.moveTo(0, cy);
+        ctx.lineTo(w, cy);
+        ctx.lineTo(w - 10, cy - 5);
+        ctx.moveTo(w, cy);
+        ctx.lineTo(w - 10, cy + 5);
+        // Y axis
+        ctx.moveTo(cx, h);
+        ctx.lineTo(cx, 0);
+        ctx.lineTo(cx - 5, 10);
+        ctx.moveTo(cx, 0);
+        ctx.lineTo(cx + 5, 10);
+        ctx.stroke();
+
+        // Grid ticks
+        ctx.beginPath();
+        ctx.lineWidth = 1;
+        for (let x = cx + step; x < w; x += step) {
+          ctx.moveTo(x, cy - 3);
+          ctx.lineTo(x, cy + 3);
+        }
+        for (let x = cx - step; x > 0; x -= step) {
+          ctx.moveTo(x, cy - 3);
+          ctx.lineTo(x, cy + 3);
+        }
+        for (let y = cy + step; y < h; y += step) {
+          ctx.moveTo(cx - 3, y);
+          ctx.lineTo(cx + 3, y);
+        }
+        for (let y = cy - step; y > 0; y -= step) {
+          ctx.moveTo(cx - 3, y);
+          ctx.lineTo(cx + 3, y);
+        }
+        ctx.stroke();
+
+        ctx.fillText("x", w - 20, cy + 20);
+        ctx.fillText("y", cx + 15, 20);
+        ctx.fillText("0", cx - 15, cy + 20);
+
+        // Restore
+        ctx.beginPath();
+        ctx.strokeStyle = prevStrokeStyle;
+        ctx.lineWidth = prevLineWidth;
+        ctx.globalCompositeOperation = prevComposite;
+        if (tool === "eraser") setTool("pen");
+      }
+
+      // =========================================================
+      // 4. ФІНІШ
+      // =========================================================
+      function finishLesson() {
+        const modal = document.getElementById("result-modal");
+        const body = document.getElementById("modal-content-body");
+        const attempts = totalCorrect + totalWrong;
+        let efficiency = 0;
+        if (attempts > 0)
+          efficiency = Math.round((totalCorrect / attempts) * 100);
+
+        let color = "#4a90e2";
+        let msg = "Результат";
+        if (efficiency >= 90) {
+          color = "#28a745";
+          msg = "Відмінно!";
+        } else if (efficiency >= 60) {
+          color = "#f59e0b";
+          msg = "Добре!";
+        } else {
+          color = "#dc3545";
+          msg = "Тренуйся!";
+        }
+
+        if (totalCorrect === 0 && totalWrong === 0) {
+          msg = "Порожньо...";
+          color = "#6c757d";
+        }
+
+        body.innerHTML = `
+           <div class="modal-result-title" style="color:${color}">${msg}</div>
+           <div class="modal-score-big" style="color:${color}">${efficiency}%</div>
+           <div style="color:#64748b; margin-bottom:20px;">
+              Правильно: ${totalCorrect} <br>
+              Помилок: ${totalWrong}
+           </div>
+           <button class="btn-finish" onclick="closeModal()" style="padding:10px 30px; font-size:1rem;">Закрити</button>
+        `;
+        modal.style.display = "flex";
+      }
+
+      function closeModal() {
+        document.getElementById("result-modal").style.display = "none";
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        init();
+        setTimeout(resizeCanvas, 100);
+      });
     </script>
   </body>
 </html>

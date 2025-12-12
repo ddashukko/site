@@ -128,6 +128,7 @@
         gap: 10px;
       }
 
+      /* --- ВІДНОВЛЕНІ СТИЛІ ДЛЯ КНОПОК ВАРІАНТІВ --- */
       .option-btn {
         background: white;
         border: 1px solid #cbd5e1;
@@ -140,13 +141,34 @@
         transition: 0.2s;
       }
 
+      .option-btn:hover:not(:disabled) {
+        border-color: var(--primary);
+        background: var(--primary-light);
+      }
+      .option-btn.selected-correct {
+        background: var(--success);
+        color: white;
+        border-color: var(--success);
+      }
+      .option-btn.selected-correct .katex {
+        color: white !important;
+      }
+      .option-btn.selected-wrong {
+        background: var(--error);
+        color: white;
+        border-color: var(--error);
+      }
+      .option-btn.selected-wrong .katex {
+        color: white !important;
+      }
+      /* --- КІНЕЦЬ ВІДНОВЛЕНИХ СТИЛІВ ДЛЯ КНОПОК ВАРІАНТІВ --- */
+
       /* --- Стилі для дошки (Scrap Pad) --- */
       .drawing-canvas {
         flex-grow: 1;
         background-color: white;
         border: 1px solid var(--border);
         touch-action: none;
-        /* --- ЗМІНА КУРСОРУ: УВІМКНЕНО ХРЕСТИК --- */
         cursor: crosshair;
       }
 
@@ -168,7 +190,95 @@
         font-weight: 600;
       }
 
-      /* Адаптивність залишається без змін */
+      /* --- Стилі для кнопок на панелі інструментів --- */
+      .toolbar-btn:hover {
+        background: var(--primary-light);
+        border-color: var(--primary);
+      }
+      .toolbar-btn.active {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+      }
+      .toolbar-btn.active:hover {
+        background: var(--primary);
+      }
+      .toolbar-btn.clear-btn {
+        background: var(--error);
+        color: white;
+        border-color: var(--error);
+      }
+      .toolbar-btn.clear-btn:hover {
+        background: #b91c1c;
+      }
+      /* --- Кінець стилів для кнопок на панелі інструментів --- */
+
+      /* --- ВІДНОВЛЕНІ СТИЛІ МОДАЛКИ ТА КНОПКИ "ЗАВЕРШИТИ" --- */
+      .finish-section {
+        margin-top: 40px;
+        text-align: center;
+      }
+      .btn-finish {
+        padding: 15px 40px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: white;
+        background: var(--primary);
+        border: none;
+        border-radius: 50px;
+        box-shadow: 0 4px 15px rgba(5, 150, 105, 0.4);
+        transition: transform 0.2s;
+        cursor: pointer;
+      }
+      .btn-finish:hover {
+        transform: scale(1.05);
+        background-color: #047857;
+      }
+
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(5px);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .modal-card {
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        max-width: 450px;
+        width: 90%;
+        text-align: center;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        position: relative;
+      }
+      .modal-score-big {
+        font-size: 4rem;
+        font-weight: 900;
+        color: var(--primary);
+        line-height: 1;
+        margin: 10px 0;
+      }
+      .modal-footer-btn {
+        margin-top: 30px;
+        padding: 12px 30px;
+        background: var(--text);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        cursor: pointer;
+      }
+      /* --- КІНЕЦЬ ВІДНОВЛЕНИХ СТИЛІВ МОДАЛКИ ТА КНОПКИ "ЗАВЕРШИТИ" --- */
+
+      /* --- АДАПТИВНІСТЬ ДЛЯ ПЛАНШЕТІВ ТА МОБІЛЬНИХ (ДО 900PX) --- */
       @media (max-width: 900px) {
         .content-wrapper {
           flex-direction: column;
@@ -180,13 +290,20 @@
         }
         .scrap-pad-container {
           width: 100%;
+          border-left: none;
+          border-top: 1px solid var(--border);
+          padding: 15px;
+          order: 1;
+
           position: static;
           height: 50vh;
           min-height: 350px;
-          order: 1;
         }
         .drawing-canvas {
           height: calc(100% - 70px);
+        }
+        .options-container {
+          grid-template-columns: 1fr;
         }
       }
     </style>
@@ -639,7 +756,7 @@
         ctx.lineCap = "round";
         ctx.lineJoin = "round";
 
-        // *** Логіка візуалізації стирання залишається ***
+        // Логіка візуалізації стирання: destination-out + прозорість
         if (mode === "eraser") {
           ctx.globalCompositeOperation = "destination-out";
           ctx.globalAlpha = 0.8;
@@ -676,6 +793,7 @@
       }
 
       window.clearCanvas = function () {
+        // Забезпечуємо повну непрозорість для очищення
         ctx.globalCompositeOperation = "source-over";
         ctx.globalAlpha = 1.0;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -699,7 +817,6 @@
           document.getElementById("eraser-btn").classList.add("active");
         }
 
-        // Встановлюємо правильні параметри для малювання/стирання
         if (mode === "eraser") {
           ctx.globalCompositeOperation = "destination-out";
           ctx.globalAlpha = 0.8;

@@ -63,6 +63,16 @@ window.lessonsData = [
     author: "Даша",
   },
   {
+    id: 201,
+    title: "Перехід через розряд",
+    grade: 2,
+    topic: "Математика",
+    link: "math_general/2/Перехід через розряд.html",
+    subject_code: "math_general",
+    category: "lesson",
+    author: "Даша",
+  },
+  {
     id: 300,
     title: "Геометрія: Тренажер Логічного Мислення",
     grade: 8,
