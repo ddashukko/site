@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Алгебра 8: Функція y = x² (Виправлено)</title>
+    <title>Підсумковий тест: Функції</title>
 
     <link
       rel="stylesheet"
@@ -20,15 +20,15 @@
 
     <style>
       :root {
-        --primary: #2563eb;
-        --primary-light: #eff6ff;
+        --primary: #4f46e5;
+        --primary-light: #eef2ff;
         --success: #16a34a;
         --error: #dc2626;
         --bg: #f8fafc;
         --card: #ffffff;
         --text: #1e293b;
         --border: #e2e8f0;
-        --accent: #8b5cf6;
+        --accent: #f59e0b;
         --grid-color: #e2e8f0;
       }
 
@@ -128,6 +128,17 @@
         font-weight: 700;
         font-size: 1.1rem;
         color: var(--primary);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .timer-badge {
+        background: var(--accent);
+        color: white;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 0.9rem;
+        font-weight: normal;
       }
       .stats-container {
         display: flex;
@@ -150,35 +161,13 @@
         box-sizing: border-box;
       }
 
-      .theory-block {
-        background: linear-gradient(to right, #fdfbf7, #fff);
-        border-left: 5px solid var(--accent);
-        border-radius: 8px;
-        padding: 20px;
-        margin-bottom: 30px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-      }
-      .theory-title {
-        color: var(--accent);
-        font-weight: bold;
-        font-size: 1.1rem;
-        margin-bottom: 10px;
-      }
-      .theory-content ul {
-        margin: 5px 0;
-        padding-left: 20px;
-      }
-      .theory-content li {
-        margin-bottom: 5px;
-        line-height: 1.5;
-      }
-
       .exercise-block {
         background: var(--card);
         border-radius: 12px;
         border: 1px solid var(--border);
         margin-bottom: 30px;
         overflow: hidden;
+        border-top: 4px solid var(--primary);
       }
 
       .exercise-header {
@@ -517,26 +506,17 @@
   <body>
     <div id="tasks-section">
       <header>
-        <div class="header-title">Алгебра 8: Функція $y = x^2$</div>
+        <div class="header-title">
+          Контрольний тест
+          <span class="timer-badge" id="timer">00:00</span>
+        </div>
         <div class="stats-container">
           <span class="stat-correct">✅ <span id="val-correct">0</span></span>
           <span class="stat-wrong">❌ <span id="val-wrong">0</span></span>
         </div>
       </header>
 
-      <div class="content-container" id="quiz-root">
-        <div class="theory-block">
-          <div class="theory-title">📚 Шпаргалка: $y = x^2$</div>
-          <div class="theory-content">
-            <ul>
-              <li>Це <strong>парабола</strong>.</li>
-              <li>Графік проходить через $(0; 0)$.</li>
-              <li>Гілки напрямлені вгору.</li>
-              <li>$y \ge 0$ для будь-якого $x$.</li>
-            </ul>
-          </div>
-        </div>
-      </div>
+      <div class="content-container" id="quiz-root"></div>
     </div>
 
     <div id="board-section">
@@ -584,12 +564,21 @@
     </div>
 
     <script>
-      /* --- 1. ЛОГІКА ДОШКИ (CANVAS) --- */
       const canvas = document.getElementById("board");
       const ctx = canvas.getContext("2d");
       const boardSection = document.getElementById("board-section");
       let painting = false;
       let tool = "pen";
+      let startTime = Date.now();
+
+      setInterval(() => {
+        const delta = Math.floor((Date.now() - startTime) / 1000);
+        const m = Math.floor(delta / 60)
+          .toString()
+          .padStart(2, "0");
+        const s = (delta % 60).toString().padStart(2, "0");
+        document.getElementById("timer").innerText = `${m}:${s}`;
+      }, 1000);
 
       function resizeCanvas() {
         const temp = document.createElement("canvas");
@@ -637,7 +626,7 @@
 
         if (tool === "pen") {
           ctx.lineWidth = 2;
-          ctx.strokeStyle = "#2563eb";
+          ctx.strokeStyle = "#4f46e5";
           ctx.globalCompositeOperation = "source-over";
         } else {
           ctx.lineWidth = 25;
@@ -671,11 +660,7 @@
       }
 
       function clearCanvasSafe() {
-        if (
-          confirm(
-            "Ви точно хочете очистити дошку? Це видалить всі ваші записи."
-          )
-        ) {
+        if (confirm("Ви точно хочете очистити дошку?")) {
           ctx.clearRect(0, 0, canvas.width, canvas.height);
         }
       }
@@ -698,13 +683,12 @@
         const step = 25;
 
         ctx.beginPath();
-        // X
         ctx.moveTo(0, cy);
         ctx.lineTo(w, cy);
         ctx.lineTo(w - 10, cy - 5);
         ctx.moveTo(w, cy);
         ctx.lineTo(w - 10, cy + 5);
-        // Y
+
         ctx.moveTo(cx, h);
         ctx.lineTo(cx, 0);
         ctx.lineTo(cx - 5, 10);
@@ -749,204 +733,176 @@
         }
       }
 
-      /* --- 2. ЛОГІКА ЗАВДАНЬ (ОНОВЛЕНА) --- */
-
       const exercises = [
         {
-          id: "13.1",
-          title: "13.1.",
-          desc: "Вкажіть, яка з функцій є параболою ($y=x^2$):",
+          id: "1",
+          title: "Завдання 1. Розпізнавання графіків",
+          desc: "Вкажіть, графік якої функції зображено (уявно) або описано.",
           tasks: [
             {
               id: "1)",
-              q: "$y = 5x$",
-              a: "Пряма",
-              opts: ["Пряма", "Парабола", "Гіпербола"],
+              q: "Графік - парабола, гілки вгору",
+              a: "$y = x^2$",
+              opts: ["$y = x^2$", "$y = -x^2$", "$y = \\frac{2}{x}$"],
             },
             {
               id: "2)",
-              q: "$y = x^2$",
-              a: "Парабола",
-              opts: ["Пряма", "Парабола", "Гіпербола"],
-            },
-            {
-              id: "3)",
-              q: "$y = \\frac{10}{x}$",
-              a: "Гіпербола",
-              opts: ["Пряма", "Парабола", "Гіпербола"],
+              q: "Графік - гіпербола у II та IV чвертях",
+              a: "$y = -\\frac{10}{x}$",
+              opts: [
+                "$y = \\frac{10}{x}$",
+                "$y = -\\frac{10}{x}$",
+                "$y = x^2$",
+              ],
             },
           ],
         },
         {
-          id: "13.2",
-          title: "13.2.",
-          desc: "Для функції $y = x^2$ знайдіть значення $y$, що відповідає значенню:",
+          id: "2",
+          title: "Завдання 2. Обчислення значень",
+          desc: "Знайдіть значення функції або аргументу.",
           tasks: [
-            { id: "1)", q: "$x = -3$", a: "9", type: "input" },
-            { id: "2)", q: "$x = 0$", a: "0", type: "input" },
-            { id: "3)", q: "$x = 9$", a: "81", type: "input" },
-          ],
-        },
-        {
-          id: "13.4",
-          title: "13.4.",
-          desc: "Використовуючи графік функції $y = x^2$, знайдіть:",
-          tasks: [
-            { id: "1)", q: "$y$, якщо $x = -2$", a: "4", type: "input" },
             {
-              id: "2)",
-              q: "$x$ (додатнє), якщо $y = 16$",
-              a: "4",
+              id: "1)",
+              q: "Функція $y = x^2$. Знайдіть $y$, якщо $x = -9$.",
+              a: "81",
               type: "input",
             },
             {
-              id: "3)",
-              q: "$x$ (від'ємне), якщо $y = 16$",
+              id: "2)",
+              q: "Функція $y = \\frac{20}{x}$. Знайдіть $y$, якщо $x = -5$.",
               a: "-4",
               type: "input",
             },
+            {
+              id: "3)",
+              q: "Функція $y = x^2$. Знайдіть $x$ (більше нуля), якщо $y = 49$.",
+              a: "7",
+              type: "input",
+            },
           ],
         },
         {
-          id: "13.6",
-          title: "13.6.",
-          desc: "Побудуйте графік функції $y = x^2$. Заповніть таблицю:",
-          manualPoints: 6,
+          id: "3",
+          title: "Завдання 3. Приналежність точок",
+          desc: "Перевірте, чи належить точка графіку функції.",
+          tasks: [
+            {
+              id: "1)",
+              q: "Чи належить $A(-3; 9)$ графіку $y = x^2$?",
+              a: "Так",
+              opts: ["Так", "Ні"],
+            },
+            {
+              id: "2)",
+              q: "Чи належить $B(4; 5)$ графіку $y = \\frac{20}{x}$?",
+              a: "Так",
+              opts: ["Так", "Ні"],
+            },
+            {
+              id: "3)",
+              q: "Чи належить $C(-2; -4)$ графіку $y = x^2$?",
+              a: "Ні",
+              opts: ["Так", "Ні"],
+            },
+          ],
+        },
+        {
+          id: "4",
+          title: "Завдання 4. Графічне розв'язання рівнянь",
+          desc: "Використовуйте дошку праворуч для побудови, щоб знайти корені.",
+          tasks: [
+            {
+              id: "1)",
+              q: "Рівняння $x^2 = 4$ (менший корінь)",
+              a: "-2",
+              type: "input",
+            },
+            {
+              id: "2)",
+              q: "Рівняння $x^2 = 4$ (більший корінь)",
+              a: "2",
+              type: "input",
+            },
+            {
+              id: "3)",
+              q: "Рівняння $\\frac{6}{x} = 6$. Корінь x =",
+              a: "1",
+              type: "input",
+            },
+          ],
+        },
+        {
+          id: "5",
+          title: "Завдання 5. Властивості функцій",
+          desc: "Оберіть правильну відповідь.",
+          tasks: [
+            {
+              id: "1)",
+              q: "Яка область значень функції $y = x^2$?",
+              a: "$y \\ge 0$",
+              opts: ["$y > 0$", "$y \\ge 0$", "Всі числа"],
+            },
+            {
+              id: "2)",
+              q: "В яких чвертях графік $y = \\frac{5}{x}$?",
+              a: "I і III",
+              opts: ["I і II", "I і III", "II і IV"],
+            },
+          ],
+        },
+        {
+          id: "6",
+          title: "Завдання 6. Заповнення таблиці (Мікс)",
+          desc: "Заповніть таблицю для функції $y = x^2$ на проміжку від -2 до 2.",
+          manualPoints: 5,
           visual: `
             <div style="width: 100%; overflow-x: auto; padding-bottom: 10px;">
-                <table class="math-table" id="table-13-6" style="min-width: 400px;">
+                <table class="math-table" id="table-test-6" style="min-width: 400px;">
                     <tr>
                         <th>x</th>
-                        <td>-3</td>
                         <td>-2</td>
                         <td>-1</td>
                         <td>0</td>
                         <td>1</td>
                         <td>2</td>
-                        <td>3</td>
                     </tr>
                     <tr>
                         <th>y</th>
-                        <td><input type="text" class="table-input" data-ans="9" oninput="this.classList.remove('wrong')"></td>
                         <td><input type="text" class="table-input" data-ans="4" oninput="this.classList.remove('wrong')"></td>
                         <td><input type="text" class="table-input" data-ans="1" oninput="this.classList.remove('wrong')"></td>
                         <td><input type="text" class="table-input" data-ans="0" oninput="this.classList.remove('wrong')"></td>
                         <td><input type="text" class="table-input" data-ans="1" oninput="this.classList.remove('wrong')"></td>
                         <td><input type="text" class="table-input" data-ans="4" oninput="this.classList.remove('wrong')"></td>
-                        <td><input type="text" class="table-input" data-ans="9" oninput="this.classList.remove('wrong')"></td>
                     </tr>
                 </table>
             </div>
             <div style="text-align: center; margin-top: 15px;">
-                <button class="btn-check" onclick="checkTable('table-13-6', this)">Перевірити таблицю</button>
+                <button class="btn-check" onclick="checkTable('table-test-6', this)">Перевірити таблицю</button>
             </div>
           `,
           tasks: [],
         },
         {
-          id: "13.8",
-          title: "13.8.",
-          desc: "Чи проходить графік функції $y = x^2$ через точку:",
-          tasks: [
-            { id: "1)", q: "A(-5; 25)", a: "Так", opts: ["Так", "Ні"] },
-            { id: "2)", q: "B(4; 15)", a: "Ні", opts: ["Так", "Ні"] },
-            { id: "3)", q: "C(0; 5)", a: "Ні", opts: ["Так", "Ні"] },
-          ],
-        },
-        {
-          id: "13.10",
-          title: "13.10.",
-          desc: "Знайдіть область значень функції $y = x^2$, якщо:",
+          id: "7",
+          title: "Завдання 7 (Високий рівень). Знаходження коефіцієнта",
+          desc: "Обернена пропорційність задана формулою $y = \\frac{k}{x}$.",
           tasks: [
             {
               id: "1)",
-              q: "$-3 \\le x \\le 0$",
-              a: "$0 \\le y \\le 9$",
+              q: "Знайдіть $k$, якщо графік проходить через точку $A(-2; 10)$",
+              a: "-20",
+              type: "input",
+            },
+            {
+              id: "2)",
+              q: "Запишіть цю формулу:",
+              a: "$y = -\\frac{20}{x}$",
               opts: [
-                "$0 \\le y \\le 9$",
-                "$-9 \\le y \\le 0$",
-                "$0 \\le y \\le 3$",
+                "$y = \\frac{20}{x}$",
+                "$y = -\\frac{20}{x}$",
+                "$y = -20x$",
               ],
-            },
-            {
-              id: "2)",
-              q: "$-1 \\le x \\le 2$",
-              a: "$0 \\le y \\le 4$",
-              opts: [
-                "$1 \\le y \\le 4$",
-                "$0 \\le y \\le 4$",
-                "$0 \\le y \\le 2$",
-              ],
-            },
-          ],
-        },
-        {
-          id: "13.11",
-          title: "13.11.",
-          desc: "Порівняйте значення функції $f(x) = x^2$, якщо:",
-          tasks: [
-            {
-              id: "1)",
-              q: "$x = -5$ і $x = 3$",
-              a: ">",
-              opts: [">", "<", "="],
-            },
-            {
-              id: "2)",
-              q: "$x = -0.5$ і $x = 0.5$",
-              a: "=",
-              opts: [">", "<", "="],
-            },
-          ],
-        },
-        {
-          id: "13.12",
-          title: "13.12.",
-          desc: "Розв'яжіть графічно рівняння $x^2 = 3x$ (знайдіть корені):",
-          tasks: [
-            {
-              id: "1)",
-              q: "x1 =",
-              a: "0",
-              type: "input",
-            },
-            {
-              id: "2)",
-              q: "x2 =",
-              a: "3",
-              type: "input",
-            },
-          ],
-        },
-        {
-          id: "13.14",
-          title: "13.14.",
-          desc: "Побудуйте графік функції (попередньо спростивши) $y = \\frac{x^3 - 3x^2}{x - 3}$:",
-          tasks: [
-            {
-              id: "1)",
-              q: "Спрощена формула:",
-              a: "$y = x^2$",
-              opts: ["$y = x$", "$y = x^2$", "$y = 3x^2$"],
-            },
-          ],
-        },
-        {
-          id: "13.16",
-          title: "13.16 (Додаткове).",
-          desc: "Розв'яжіть графічно рівняння $x^2 = x + 2$ (знайдіть точки перетину параболи і прямої):",
-          tasks: [
-            {
-              id: "1)",
-              q: "Менший корінь (x1):",
-              a: "-1",
-              type: "input",
-            },
-            {
-              id: "2)",
-              q: "Більший корінь (x2):",
-              a: "2",
-              type: "input",
             },
           ],
         },
@@ -1008,7 +964,6 @@
             } else {
               actionHTML = `<div class="options-container">`;
               task.opts.forEach((opt) => {
-                // Виправляємо проблему порівняння: перевіряємо на рівність тут, у циклі генерації
                 const isCorrect = opt === task.a;
                 actionHTML += `<button class="option-btn" onclick="checkOpt(this, ${isCorrect})">${opt}</button>`;
               });
@@ -1027,7 +982,7 @@
         const finishSection = document.createElement("div");
         finishSection.className = "finish-section";
         finishSection.innerHTML = `
-              <button class="btn-finish" onclick="finishLesson()">Завершити урок</button>
+              <button class="btn-finish" onclick="finishLesson()">Завершити тест</button>
             `;
         root.appendChild(finishSection);
 
@@ -1164,23 +1119,23 @@
 
         let html = ``;
         if (distinctAnswered === 0) {
-          html = `<div class="modal-result-title">Упс... 😶</div>
-                        <div style="font-size:1.1rem; margin:15px 0; color:#475569;">Ти не дав жодної відповіді. Спробуй розв'язати хоча б щось!</div>
+          html = `<div class="modal-result-title">Тест порожній 😶</div>
+                        <div style="font-size:1.1rem; margin:15px 0; color:#475569;">Ти не дав жодної відповіді.</div>
                         <button class="modal-footer-btn" onclick="closeModal()">Повернутись</button>`;
         } else {
           let msg = "";
-          let color = "#2563eb";
+          let color = "#4f46e5";
           if (efficiency === 100) {
-            msg = "Ідеально!";
+            msg = "Відмінно! (12 балів)";
             color = "#16a34a";
           } else if (efficiency >= 85) {
-            msg = "Чудово!";
-            color = "#2563eb";
+            msg = "Дуже добре! (10-11 балів)";
+            color = "#4f46e5";
           } else if (efficiency >= 60) {
-            msg = "Добре!";
+            msg = "Добре (7-9 балів)";
             color = "#f59e0b";
           } else {
-            msg = "Тренуйся!";
+            msg = "Потрібно повторити тему";
             color = "#dc2626";
           }
 
@@ -1188,16 +1143,16 @@
                     <div class="modal-result-title" style="color:${color}">${msg}</div>
                     
                     <div>
-                        <div style="font-size: 1rem; color: #64748b;">Твоя точність</div>
+                        <div style="font-size: 1rem; color: #64748b;">Твоя результативність</div>
                         <div class="modal-score-big" style="color:${color}">${efficiency}%</div>
                         <div class="modal-score-sub">
-                            (Правильних спроб: ${totalCorrect} з ${attempts})
+                            (Правильних: ${totalCorrect} з ${attempts})
                         </div>
                     </div>
 
                     <div class="modal-progress-container">
                          <div style="font-size: 1rem; color: #334155; display:flex; justify-content:space-between;">
-                            <span>Прогрес уроку:</span>
+                            <span>Виконано завдань:</span>
                             <strong>${distinctAnswered} / ${totalTasksCount}</strong>
                          </div>
                          <div class="modal-bar-bg">
