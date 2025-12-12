@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Тренажер: Тільки додавання</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Fredoka", sans-serif;
+        background-color: #fff1f2; /* Дуже світлий рожевий */
+        background-image: radial-gradient(#fda4af 2px, transparent 2px);
+        background-size: 25px 25px;
+        margin: 0;
+        padding: 40px 20px;
+        color: #881337;
+      }
+
+      .container {
+        max-width: 700px;
+        margin: 0 auto;
+      }
+
+      h1 {
+        text-align: center;
+        color: #be123c;
+        font-size: 2.5em;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 0px #fff;
+      }
+
+      p.subtitle {
+        text-align: center;
+        margin-bottom: 40px;
+        font-size: 1.3em;
+        color: #9f1239;
+      }
+
+      /* Стиль блоків */
+      .block-card {
+        background: white;
+        border-radius: 25px;
+        padding: 30px;
+        margin-bottom: 40px;
+        box-shadow: 0 10px 20px rgba(190, 18, 60, 0.1);
+        border: 4px solid transparent;
+      }
+
+      /* Кольорові теми для блоків (всі теплі/рожеві відтінки) */
+      .block-1 {
+        border-color: #fbcfe8; /* Світло-рожевий */
+      }
+      .block-2 {
+        border-color: #f472b6; /* Насичений рожевий */
+      }
+      .block-3 {
+        border-color: #fb7185; /* Рожево-червоний */
+      }
+
+      .block-header {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 25px;
+        font-size: 1.5em;
+        font-weight: bold;
+      }
+
+      .block-1 .block-header {
+        color: #db2777;
+      }
+      .block-2 .block-header {
+        color: #be185d;
+      }
+      .block-3 .block-header {
+        color: #9f1239;
+      }
+
+      .icon-box {
+        width: 50px;
+        height: 50px;
+        background: #fff0f5;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2em;
+        box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
+      }
+
+      /* Список прикладів */
+      .examples-list {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .example-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #fafafa;
+        padding: 10px 20px;
+        border-radius: 15px;
+        font-size: 1.8em;
+        border: 1px solid #f3f4f6;
+      }
+
+      input {
+        width: 80px;
+        height: 50px;
+        font-size: 1em;
+        text-align: center;
+        border: 3px solid #e5e7eb;
+        border-radius: 12px;
+        color: #881337;
+        font-family: inherit;
+        font-weight: bold;
+        outline: none;
+        transition: 0.3s;
+        -moz-appearance: textfield; /* Прибираємо стрілочки */
+      }
+
+      input::-webkit-outer-spin-button,
+      input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+
+      input:focus {
+        border-color: #f472b6;
+        background: #fdf2f8;
+      }
+
+      /* Стани перевірки */
+      input.correct {
+        border-color: #22c55e;
+        background-color: #dcfce7;
+        color: #15803d;
+      }
+
+      input.wrong {
+        border-color: #ef4444;
+        background-color: #fee2e2;
+        color: #b91c1c;
+      }
+
+      .btn-check {
+        display: block;
+        width: 100%;
+        margin-top: 25px;
+        padding: 15px;
+        font-size: 1.2em;
+        font-weight: bold;
+        color: white;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: transform 0.2s;
+        font-family: inherit;
+      }
+
+      .btn-block-1 {
+        background: #db2777;
+        box-shadow: 0 4px 0 #9d174d;
+      }
+      .btn-block-2 {
+        background: #be185d;
+        box-shadow: 0 4px 0 #831843;
+      }
+      .btn-block-3 {
+        background: #e11d48;
+        box-shadow: 0 4px 0 #9f1239;
+      }
+
+      .btn-check:active {
+        transform: translateY(4px);
+        box-shadow: none;
+      }
+      .btn-check:disabled {
+        opacity: 0.6;
+        cursor: default;
+        transform: none;
+        box-shadow: none;
+      }
+
+      .score-display {
+        text-align: center;
+        margin-top: 10px;
+        font-weight: bold;
+        height: 20px;
+        font-size: 1.1em;
+      }
+
+      /* Салют */
+      .confetti-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 100;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="confetti" class="confetti-canvas"></canvas>
+
+    <div class="container">
+      <h1>🌸 Фея Додавання 🌸</h1>
+      <p class="subtitle">3 блоки. Тільки плюсики (+). Тільки перемога!</p>
+
+      <div class="block-card block-1">
+        <div class="block-header">
+          <div class="icon-box">🧁</div>
+          <span>Розминка (20-40)</span>
+        </div>
+        <div class="examples-list">
+          <div class="example-row">
+            <span>18 + 5 =</span> <input type="number" data-ans="23" />
+          </div>
+          <div class="example-row">
+            <span>26 + 6 =</span> <input type="number" data-ans="32" />
+          </div>
+          <div class="example-row">
+            <span>39 + 4 =</span> <input type="number" data-ans="43" />
+          </div>
+          <div class="example-row">
+            <span>27 + 8 =</span> <input type="number" data-ans="35" />
+          </div>
+          <div class="example-row">
+            <span>15 + 9 =</span> <input type="number" data-ans="24" />
+          </div>
+        </div>
+        <div class="score-display" id="score-1"></div>
+        <button
+          class="btn-check btn-block-1"
+          onclick="checkBlock(this, 'block-1', 'score-1')"
+        >
+          Перевірити
+        </button>
+      </div>
+
+      <div class="block-card block-2">
+        <div class="block-header">
+          <div class="icon-box">🎀</div>
+          <span>Впевнений рахунок (40-70)</span>
+        </div>
+        <div class="examples-list">
+          <div class="example-row">
+            <span>45 + 7 =</span> <input type="number" data-ans="52" />
+          </div>
+          <div class="example-row">
+            <span>58 + 3 =</span> <input type="number" data-ans="61" />
+          </div>
+          <div class="example-row">
+            <span>36 + 8 =</span> <input type="number" data-ans="44" />
+          </div>
+          <div class="example-row">
+            <span>64 + 9 =</span> <input type="number" data-ans="73" />
+          </div>
+          <div class="example-row">
+            <span>49 + 5 =</span> <input type="number" data-ans="54" />
+          </div>
+        </div>
+        <div class="score-display" id="score-2"></div>
+        <button
+          class="btn-check btn-block-2"
+          onclick="checkBlock(this, 'block-2', 'score-2')"
+        >
+          Перевірити
+        </button>
+      </div>
+
+      <div class="block-card block-3">
+        <div class="block-header">
+          <div class="icon-box">👑</div>
+          <span>Майстер додавання (70-100)</span>
+        </div>
+        <div class="examples-list">
+          <div class="example-row">
+            <span>74 + 7 =</span> <input type="number" data-ans="81" />
+          </div>
+          <div class="example-row">
+            <span>88 + 4 =</span> <input type="number" data-ans="92" />
+          </div>
+          <div class="example-row">
+            <span>67 + 6 =</span> <input type="number" data-ans="73" />
+          </div>
+          <div class="example-row">
+            <span>79 + 8 =</span> <input type="number" data-ans="87" />
+          </div>
+          <div class="example-row">
+            <span>83 + 9 =</span> <input type="number" data-ans="92" />
+          </div>
+        </div>
+        <div class="score-display" id="score-3"></div>
+        <button
+          class="btn-check btn-block-3"
+          onclick="checkBlock(this, 'block-3', 'score-3')"
+        >
+          Перевірити
+        </button>
+      </div>
+    </div>
+
+    <script>
+      function checkBlock(btn, blockClass, scoreId) {
+        const block = document.querySelector("." + blockClass);
+        const inputs = block.querySelectorAll("input");
+        const scoreDiv = document.getElementById(scoreId);
+
+        let correctCount = 0;
+        let allFilled = true;
+
+        inputs.forEach((input) => {
+          const val = input.value.trim();
+          const correctVal = input.getAttribute("data-ans");
+
+          // Скидаємо класи перед перевіркою
+          input.classList.remove("correct", "wrong");
+
+          if (val === "") {
+            allFilled = false;
+            return;
+          }
+
+          if (val === correctVal) {
+            input.classList.add("correct");
+            correctCount++;
+          } else {
+            input.classList.add("wrong");
+          }
+        });
+
+        if (!allFilled) {
+          scoreDiv.textContent = "Будь ласка, заповни всі віконечка!";
+          scoreDiv.style.color = "#be123c";
+          return;
+        }
+
+        if (correctCount === 5) {
+          scoreDiv.textContent = "Неймовірно! 5/5 Правильно!";
+          scoreDiv.style.color = "#16a34a";
+          btn.textContent = "Молодець! 🌟";
+          btn.disabled = true;
+          triggerConfetti();
+        } else {
+          scoreDiv.textContent = `Є помилки (${correctCount} з 5 правильно). Спробуй ще раз!`;
+          scoreDiv.style.color = "#be123c";
+        }
+      }
+
+      function triggerConfetti() {
+        const canvas = document.getElementById("confetti");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const pieces = [];
+        for (let i = 0; i < 150; i++) {
+          pieces.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height - canvas.height,
+            color: `hsl(${Math.random() * 360}, 100%, 70%)`, // Пастельні кольори
+            size: Math.random() * 8 + 4,
+            speed: Math.random() * 5 + 3,
+          });
+        }
+
+        function draw() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          let active = false;
+          pieces.forEach((p) => {
+            p.y += p.speed;
+            if (p.y < canvas.height) active = true;
+            ctx.fillStyle = p.color;
+            ctx.fillRect(p.x, p.y, p.size, p.size);
+          });
+          if (active) requestAnimationFrame(draw);
+          else ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+        draw();
+      }
+    </script>
+  </body>
+</html>

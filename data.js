@@ -64,10 +64,10 @@ window.lessonsData = [
   },
   {
     id: 201,
-    title: "Перехід через розряд",
+    title: "Перехід через десяток Додавання",
     grade: 2,
     topic: "Математика",
-    link: "math_general/2/Перехід через розряд.html",
+    link: "math_general/2/Перехід через десяток Додавання.html",
     subject_code: "math_general",
     category: "lesson",
     author: "Даша",
