@@ -3,7 +3,8 @@
 window.lessonsData = [
   {
     id: 1,
-    title: "Прості рівняння (без переходу)",
+    title:
+      "Прості рівняння з малюнками та без           (без переходу через десяток)",
     grade: 2,
     topic: "Арифметика",
     link: "math_general/2/simple-equations.html",
@@ -13,7 +14,8 @@ window.lessonsData = [
   },
   {
     id: 2,
-    title: "Знаходження невідомого доданка(без переходу через десяток)",
+    title:
+      "Знаходження невідомого доданка             (без переходу через десяток)",
     grade: 2,
     topic: "Арифметика",
     link: "math_general/2/тест на рівняння.html",
@@ -37,27 +39,6 @@ window.lessonsData = [
     grade: 8,
     topic: "Алгебра",
     link: "algebra/8/Стандартний вигляд числа Тест1.html",
-    subject_code: "algebra",
-    category: "test",
-    author: "Даша",
-  },
-
-  {
-    id: 5,
-    title: "Степінь з від'ємним показником. Частина 1",
-    grade: 8,
-    topic: "Алгебра",
-    link: "algebra/8/power-part1.html",
-    subject_code: "algebra",
-    category: "test",
-    author: "Даша",
-  },
-  {
-    id: 7,
-    title: "Властивості степеня. Частина 2 (Дроби)",
-    grade: 8,
-    topic: "Алгебра",
-    link: "algebra/8/power-part2.html",
     subject_code: "algebra",
     category: "test",
     author: "Даша",

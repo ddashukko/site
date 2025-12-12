@@ -20,7 +20,7 @@
 
     <style>
       :root {
-        --primary: #8b5cf6; /* Змінений колір для тесту */
+        --primary: #8b5cf6;
         --primary-light: #f3e8ff;
         --success: #16a34a;
         --error: #dc2626;
@@ -50,6 +50,7 @@
         padding: 15px 20px;
         border-bottom: 3px solid var(--accent);
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        box-sizing: border-box;
       }
 
       .header-title {
@@ -104,8 +105,11 @@
         font-size: 1rem;
         cursor: pointer;
         text-align: center;
-        white-space: nowrap;
         transition: 0.2s;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 50px;
       }
 
       .option-btn:hover:not(:disabled) {
@@ -120,6 +124,7 @@
       .option-btn.selected-correct .katex {
         color: white !important;
       }
+
       .option-btn.selected-wrong {
         background: var(--error);
         color: white;
@@ -132,6 +137,7 @@
       .finish-section {
         margin-top: 40px;
         text-align: center;
+        margin-bottom: 40px;
       }
       .btn-finish {
         padding: 15px 40px;
@@ -216,7 +222,6 @@
     </div>
 
     <script>
-      // Масив тестових питань
       const testQuestions = [
         {
           id: 1,
@@ -334,61 +339,43 @@
       let totalAttempted = 0;
       let isFinished = false;
 
-      function checkAnswer(btn, questionId, correctAns) {
+      // Тепер функція приймає ЛИШЕ ID. Ми шукаємо правильну відповідь у масиві самі.
+      function checkAnswer(btn, questionId) {
         if (isFinished) return;
 
         const questionBlock = btn.closest(".quiz-block");
         if (questionBlock.classList.contains("answered")) return;
 
+        // Знаходимо питання в масиві по ID
+        const questionObj = testQuestions.find((q) => q.id === questionId);
+        if (!questionObj) return;
+
+        const correctAns = questionObj.a;
+
         questionBlock.classList.add("answered");
         totalAttempted++;
 
-        // Функція для очищення рядків від Katex-форматування ($, \, пробілів)
-        // та заміни числових дробів на десяткові для коректного порівняння.
-        const cleanString = (str) => {
-          let cleaned = str
-            .replace(/\\/g, "")
-            .replace(/\s/g, "")
-            .replace(/\$/g, "")
-            .replace(/\(\)/g, "");
+        // Отримуємо сире значення LaTeX з кнопки
+        const selectedValue = btn.getAttribute("data-val");
 
-          // Спеціальна обробка числових дробів для порівняння (наприклад, 1/9)
-          if (cleaned.includes("/")) {
-            try {
-              const parts = cleaned.split("/");
-              if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
-                return (parseFloat(parts[0]) / parseFloat(parts[1]))
-                  .toFixed(4)
-                  .replace(/\.0+$/, "");
-              }
-            } catch (e) {
-              // ігноруємо помилку, якщо це не числовий дріб
-            }
-          }
-          // Обробка змішаних чисел (1 1/9) для порівняння
-          if (cleaned.includes("11/9") || cleaned.includes("1frac{1}{9}")) {
-            return "1.1111";
-          }
-          if (cleaned.includes("1frac{2}{3}")) {
-            return "1.6667";
-          }
+        // Порівнюємо рядки (видаляємо пробіли з країв для надійності)
+        const valToCompare = selectedValue ? selectedValue.trim() : "";
+        const ansToCompare = correctAns.trim();
 
-          return cleaned;
-        };
+        const isCorrect = valToCompare === ansToCompare;
 
-        const selectedValue = cleanString(btn.innerText);
-        const answerValue = cleanString(correctAns);
-
-        // Додавання класів для візуалізації
+        // Візуалізація
         questionBlock.querySelectorAll(".option-btn").forEach((b) => {
           b.disabled = true;
-          const bValue = cleanString(b.innerText);
-          if (bValue === answerValue) {
+          const bVal = b.getAttribute("data-val")
+            ? b.getAttribute("data-val").trim()
+            : "";
+          if (bVal === ansToCompare) {
             b.classList.add("selected-correct");
           }
         });
 
-        if (selectedValue === answerValue) {
+        if (isCorrect) {
           totalCorrect++;
         } else {
           btn.classList.add("selected-wrong");
@@ -404,7 +391,7 @@
           finishBtn.disabled = false;
         } else {
           finishBtn.innerText = `Завершити тест (${totalAttempted}/${testQuestions.length})`;
-          finishBtn.disabled = false; // Залишаємо активною, щоб можна було завершити достроково
+          finishBtn.disabled = false;
         }
       }
 
@@ -415,24 +402,36 @@
 
       function renderQuiz() {
         const root = document.getElementById("quiz-root");
-        root.innerHTML = ""; // Очищення для рендерингу
+        root.innerHTML = "";
 
         testQuestions.forEach((q) => {
           const block = document.createElement("div");
           block.className = "quiz-block";
 
           let questionHtml = `
-						<div class="question-header">
-							<span class="question-number">${q.id}.</span>
-							<span class="question-text">${q.q}</span>
-						</div>
-						<div class="options-container">
-					`;
+            <div class="question-header">
+              <span class="question-number">${q.id}.</span>
+              <span class="question-text">${q.q}</span>
+            </div>
+            <div class="options-container">
+          `;
 
           q.opts.forEach((opt) => {
-            const safeOpt = opt.replace(/"/g, "&quot;");
-            const safeAns = q.a.replace(/"/g, "&quot;");
-            questionHtml += `<button class="option-btn" onclick="checkAnswer(this, ${q.id}, '${safeAns}')">${opt}</button>`;
+            // Екранування лише подвійних лапок для атрибуту data-val HTML
+            const safeOptAttr = opt.replace(/"/g, "&quot;");
+
+            // УВАГА: Ми більше не передаємо 'safeAns' у функцію!
+            // Ми передаємо тільки ID: checkAnswer(this, ${q.id})
+            // Це повністю вирішує проблему з бекслешами в JS.
+
+            questionHtml += `
+              <button 
+                class="option-btn" 
+                data-val="${safeOptAttr}" 
+                onclick="checkAnswer(this, ${q.id})"
+              >
+                ${opt}
+              </button>`;
           });
 
           questionHtml += `</div>`;
@@ -443,10 +442,10 @@
         const finishSection = document.createElement("div");
         finishSection.className = "finish-section";
         finishSection.innerHTML = `
-					<button class="btn-finish" id="finish-test-btn" onclick="finishTest()">
-						Завершити тест (0/${testQuestions.length})
-					</button>
-				`;
+          <button class="btn-finish" id="finish-test-btn" onclick="finishTest()">
+            Завершити тест (0/${testQuestions.length})
+          </button>
+        `;
         root.appendChild(finishSection);
       }
 
@@ -476,25 +475,20 @@
         }
 
         body.innerHTML = `
-					<div style="font-size: 1.5rem; font-weight: 700; color: ${color};">${msg}</div>
-					<div style="font-size: 1rem; color: #64748b; margin-top: 10px;">Твій результат:</div>
-					<div class="modal-score-big" style="color: ${color};">${score} / ${totalQuestions}</div>
-					<div style="font-size: 1.1rem; color: #64748b;">Точність: ${percentage}%</div>
-					<button class="modal-footer-btn" onclick="location.reload()">Спробувати ще раз</button>
-				`;
+          <div style="font-size: 1.5rem; font-weight: 700; color: ${color};">${msg}</div>
+          <div style="font-size: 1rem; color: #64748b; margin-top: 10px;">Твій результат:</div>
+          <div class="modal-score-big" style="color: ${color};">${score} / ${totalQuestions}</div>
+          <div style="font-size: 1.1rem; color: #64748b;">Точність: ${percentage}%</div>
+          <button class="modal-footer-btn" onclick="location.reload()">Спробувати ще раз</button>
+        `;
 
         modal.style.display = "flex";
-      }
-
-      function closeModal() {
-        document.getElementById("result-modal").style.display = "none";
       }
 
       document.addEventListener("DOMContentLoaded", () => {
         renderQuiz();
         updateFinishButton();
 
-        // Одноразовий рендеринг математики для всього body
         renderMathInElement(document.body, {
           delimiters: [
             { left: "$$", right: "$$", display: true },
