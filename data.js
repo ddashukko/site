@@ -74,16 +74,7 @@ window.lessonsData = [
     category: "lesson",
     author: "Даша",
   },
-  {
-    id: 300,
-    title: "Геометрія: Тренажер Логічного Мислення",
-    grade: 8,
-    topic: "Геометрія",
-    link: "geometry/8/Геометрія - пояснення логіки доведень.html",
-    subject_code: "geometry",
-    category: "lesson",
-    author: "Даша",
-  },
+
   {
     id: 501,
     title: "Rechenausdrücke",
@@ -177,6 +168,16 @@ window.lessonsData = [
     author: "Даша",
   },
   {
+    id: 8100,
+    title: "Геометрія: Тренажер Логічного Мислення",
+    grade: 8,
+    topic: "Геометрія",
+    link: "geometry/8/Геометрія - пояснення логіки доведень.html",
+    subject_code: "geometry",
+    category: "lesson",
+    author: "Даша",
+  },
+  {
     id: 8101,
     title: "Трапеція",
     grade: 8,
@@ -186,6 +187,7 @@ window.lessonsData = [
     category: "lesson",
     author: "Даша",
   },
+
   {
     id: 9005,
     title: "Рівняння прямої",
