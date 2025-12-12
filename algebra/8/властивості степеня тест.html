@@ -478,7 +478,6 @@
           id: 1,
           q: "Обчисліть значення виразу: $2^{-3}$",
           type: "choice",
-          // ВІДПОВІДЬ І ВАРІАНТИ ЗМІНЕНО НА ДРОБИ
           a: "$\\frac{1}{8}$",
           opts: ["$-6$", "$-8$", "$\\frac{1}{8}$", "$\\frac{1}{4}$", "$8$"],
         },
@@ -514,7 +513,7 @@
           q: "Виконайте ділення: $m^{-4} : m^{-6}$",
           type: "choice",
           a: "$m^2$",
-          opts: ["$m^{-10}$", "$m^{-2}$", "$m^{2}$", "$m^{24}$"],
+          opts: ["$m^{-10}$", "$m^{-2}$", "$m^2$", "$m^{24}$"],
         },
         {
           id: 7,
@@ -533,7 +532,8 @@
           id: 9,
           q: "Обчисліть: $(0.2)^{-2}$",
           type: "choice",
-          a: "25",
+          // ТУТ ВКАЗАНО ДВІ ПРАВИЛЬНІ ВІДПОВІДІ ЧЕРЕЗ РОЗДІЛЬНИК "|"
+          a: "25|0.04",
           opts: ["0.04", "25", "-0.04", "-25", "4"],
         },
         {
@@ -639,7 +639,10 @@
         const cleanVal = val.replace(/\\\\/g, "\\");
         const cleanAns = ans.replace(/\\\\/g, "\\");
 
-        if (cleanVal === cleanAns) {
+        // Підтримка кількох правильних відповідей (розділені |)
+        const possibleAnswers = cleanAns.split("|");
+
+        if (possibleAnswers.includes(cleanVal)) {
           btn.classList.add("selected-correct");
           row.classList.add("solved-correct");
           totalCorrect++;
