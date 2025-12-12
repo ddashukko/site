@@ -3,28 +3,273 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Тренажер: Тільки додавання</title>
+    <title>Великий Урок Додавання</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap"
       rel="stylesheet"
     />
     <style>
+      /* ЗАГАЛЬНІ СТИЛІ */
       body {
-        font-family: "Fredoka", sans-serif;
-        background-color: #fff1f2; /* Дуже світлий рожевий */
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+        font-family: "Fredoka", sans-serif; /* Єдиний шрифт для всього */
+        background-color: #fff1f2; /* Рожевий фон для всього сайту */
         background-image: radial-gradient(#fda4af 2px, transparent 2px);
         background-size: 25px 25px;
-        margin: 0;
-        padding: 40px 20px;
         color: #881337;
       }
 
-      .container {
+      canvas#confetti {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 9999;
+      }
+      .hidden {
+        display: none;
+      }
+
+      /* Розділювач */
+      .section-divider {
+        height: 50px;
+        background: linear-gradient(to bottom, #fff1f2, #fff0f5);
+        border-top: 5px dashed #f472b6;
+        border-bottom: 5px dashed #db2777;
+        opacity: 0.5;
+      }
+
+      /* =========================================
+           ЧАСТИНА 1: ТРЕНАЖЕР (ТЕПЕР У СТИЛІ ФЕЇ)
+           ========================================= */
+      #quest-section {
+        padding: 40px 20px;
+        min-height: 100vh;
+      }
+
+      #quest-section .container {
+        max-width: 800px;
+        margin: 0 auto;
+      }
+
+      #quest-section header {
+        text-align: center;
+        margin-bottom: 30px;
+        background: white;
+        padding: 20px;
+        border-radius: 25px; /* Більш округлі кути */
+        border: 4px solid #f472b6; /* Рожева рамка */
+        box-shadow: 0 10px 20px rgba(190, 18, 60, 0.1);
+      }
+
+      #quest-section h1 {
+        color: #db2777; /* Яскраво-рожевий */
+        margin: 0;
+        font-size: 2.5em;
+        text-shadow: 2px 2px 0px #fff;
+      }
+
+      .progress-container {
+        margin-top: 15px;
+        background: #fce7f3;
+        height: 20px;
+        border-radius: 10px;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .progress-bar {
+        height: 100%;
+        background: linear-gradient(90deg, #f472b6, #db2777);
+        width: 0%;
+        transition: width 0.5s ease;
+      }
+
+      /* Картки Тренажера (оновлені під стиль Феї) */
+      .task-card {
+        background: white;
+        border-radius: 25px;
+        padding: 25px;
+        margin-bottom: 30px;
+        border: 3px solid #fbcfe8; /* Світло-рожева рамка */
+        position: relative;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s;
+      }
+
+      .task-card.done {
+        opacity: 0.6;
+        border-color: #e5e7eb;
+        background: #f9fafb;
+        pointer-events: none;
+      }
+      .task-card.done::after {
+        content: "✅ Готово!";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(-10deg);
+        font-size: 3em;
+        color: #16a34a; /* Зелений для успіху залишаємо */
+        font-weight: bold;
+        background: rgba(255, 255, 255, 0.9);
+        border: 3px solid #16a34a;
+        padding: 10px;
+        border-radius: 15px;
+        z-index: 10;
+      }
+
+      .badge {
+        padding: 5px 15px;
+        border-radius: 20px;
+        color: white;
+        font-weight: bold;
+        font-size: 0.9em;
+        background: #db2777; /* Рожевий бейдж */
+      }
+
+      /* Вусики (адаптовані кольори) */
+      .diagram {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+        margin: 20px 0;
+        font-size: 1.8em;
+        font-weight: bold;
+        color: #be185d;
+      }
+
+      .num-box {
+        padding: 10px 15px;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 0 rgba(0, 0, 0, 0.05);
+        min-width: 40px;
+        text-align: center;
+        border: 2px solid #fce7f3;
+      }
+
+      .split-box {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+      }
+
+      .legs {
+        display: flex;
+        gap: 20px;
+        margin-top: 5px;
+        position: relative;
+        padding-top: 15px;
+      }
+
+      .leg-line-left {
+        position: absolute;
+        top: -5px;
+        left: 25%;
+        width: 3px;
+        height: 20px;
+        background: #f472b6;
+        transform: rotate(30deg);
+        border-radius: 5px;
+      }
+      .leg-line-right {
+        position: absolute;
+        top: -5px;
+        right: 25%;
+        width: 3px;
+        height: 20px;
+        background: #f472b6;
+        transform: rotate(-30deg);
+        border-radius: 5px;
+      }
+
+      /* Inputs for Quest */
+      #quest-section input {
+        width: 45px;
+        height: 45px;
+        text-align: center;
+        font-size: 0.9em;
+        border: 2px solid #e5e7eb;
+        border-radius: 12px;
+        font-family: inherit;
+        color: #be185d;
+        background: white;
+        font-weight: bold;
+      }
+      #quest-section input:focus {
+        outline: none;
+        border-color: #db2777;
+        background: #fdf2f8;
+      }
+
+      .steps-row {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 8px;
+        font-size: 1.3em;
+        background: #fff0f5; /* Лавандовий відтінок */
+        padding: 15px;
+        border-radius: 15px;
+        margin-top: 15px;
+        color: #9d174d;
+      }
+
+      .quest-btn {
+        display: block;
+        width: 100%;
+        margin-top: 20px;
+        padding: 12px;
+        font-size: 1.2em;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        color: white;
+        font-weight: bold;
+        background: #db2777;
+        box-shadow: 0 4px 0 #9d174d;
+        transition: 0.2s;
+        font-family: inherit;
+      }
+      .quest-btn:hover {
+        filter: brightness(1.1);
+      }
+      .quest-btn:active {
+        transform: translateY(4px);
+        box-shadow: none;
+      }
+
+      .feedback-msg {
+        text-align: center;
+        margin-top: 10px;
+        font-weight: bold;
+        min-height: 24px;
+        font-size: 1.1em;
+      }
+
+      /* =========================================
+           ЧАСТИНА 2: ФЕЯ (ЗАЛИШИЛАСЬ ЯК БУЛА)
+           ========================================= */
+      #fairy-section {
+        padding: 40px 20px;
+        min-height: 100vh;
+        /* Фон наслідується від body, тому тут не дублюємо, щоб був плавний перехід */
+      }
+
+      #fairy-section .container {
         max-width: 700px;
         margin: 0 auto;
       }
 
-      h1 {
+      #fairy-section h1 {
         text-align: center;
         color: #be123c;
         font-size: 2.5em;
@@ -32,14 +277,14 @@
         text-shadow: 2px 2px 0px #fff;
       }
 
-      p.subtitle {
+      #fairy-section .subtitle {
         text-align: center;
         margin-bottom: 40px;
         font-size: 1.3em;
         color: #9f1239;
       }
 
-      /* Стиль блоків */
+      /* Стиль блоків Феї */
       .block-card {
         background: white;
         border-radius: 25px;
@@ -49,15 +294,14 @@
         border: 4px solid transparent;
       }
 
-      /* Кольорові теми для блоків (всі теплі/рожеві відтінки) */
       .block-1 {
-        border-color: #fbcfe8; /* Світло-рожевий */
+        border-color: #fbcfe8;
       }
       .block-2 {
-        border-color: #f472b6; /* Насичений рожевий */
+        border-color: #f472b6;
       }
       .block-3 {
-        border-color: #fb7185; /* Рожево-червоний */
+        border-color: #fb7185;
       }
 
       .block-header {
@@ -88,14 +332,6 @@
         align-items: center;
         justify-content: center;
         font-size: 1.2em;
-        box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
-      }
-
-      /* Список прикладів */
-      .examples-list {
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
       }
 
       .example-row {
@@ -107,9 +343,11 @@
         border-radius: 15px;
         font-size: 1.8em;
         border: 1px solid #f3f4f6;
+        margin-bottom: 15px;
       }
 
-      input {
+      /* Inputs for Fairy */
+      #fairy-section input {
         width: 80px;
         height: 50px;
         font-size: 1em;
@@ -121,34 +359,24 @@
         font-weight: bold;
         outline: none;
         transition: 0.3s;
-        -moz-appearance: textfield; /* Прибираємо стрілочки */
       }
-
-      input::-webkit-outer-spin-button,
-      input::-webkit-inner-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-      }
-
-      input:focus {
+      #fairy-section input:focus {
         border-color: #f472b6;
         background: #fdf2f8;
       }
 
-      /* Стани перевірки */
-      input.correct {
+      #fairy-section input.correct {
         border-color: #22c55e;
         background-color: #dcfce7;
         color: #15803d;
       }
-
-      input.wrong {
+      #fairy-section input.wrong {
         border-color: #ef4444;
         background-color: #fee2e2;
         color: #b91c1c;
       }
 
-      .btn-check {
+      .fairy-btn {
         display: block;
         width: 100%;
         margin-top: 25px;
@@ -175,12 +403,11 @@
         background: #e11d48;
         box-shadow: 0 4px 0 #9f1239;
       }
-
-      .btn-check:active {
+      .fairy-btn:active {
         transform: translateY(4px);
         box-shadow: none;
       }
-      .btn-check:disabled {
+      .fairy-btn:disabled {
         opacity: 0.6;
         cursor: default;
         transform: none;
@@ -191,144 +418,290 @@
         text-align: center;
         margin-top: 10px;
         font-weight: bold;
-        height: 20px;
         font-size: 1.1em;
-      }
-
-      /* Салют */
-      .confetti-canvas {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        pointer-events: none;
-        z-index: 100;
+        height: 20px;
       }
     </style>
   </head>
   <body>
-    <canvas id="confetti" class="confetti-canvas"></canvas>
+    <canvas id="confetti" class="hidden"></canvas>
 
-    <div class="container">
-      <h1>🌸 Фея Додавання 🌸</h1>
-      <p class="subtitle">3 блоки. Тільки плюсики (+). Тільки перемога!</p>
+    <section id="quest-section">
+      <div class="container">
+        <header>
+          <h1>✨ Магічне Розкладання</h1>
+          <p style="margin: 5px 0; color: #9f1239">
+            Частина 1: Тренажер "Вусики" (5 завдань)
+          </p>
+          <div class="progress-text">
+            Виконано: <span id="quest-score">0</span> з 5
+          </div>
+          <div class="progress-container">
+            <div class="progress-bar" id="quest-progress-bar"></div>
+          </div>
+        </header>
 
-      <div class="block-card block-1">
-        <div class="block-header">
-          <div class="icon-box">🧁</div>
-          <span>Розминка (20-40)</span>
-        </div>
-        <div class="examples-list">
-          <div class="example-row">
-            <span>18 + 5 =</span> <input type="number" data-ans="23" />
-          </div>
-          <div class="example-row">
-            <span>26 + 6 =</span> <input type="number" data-ans="32" />
-          </div>
-          <div class="example-row">
-            <span>39 + 4 =</span> <input type="number" data-ans="43" />
-          </div>
-          <div class="example-row">
-            <span>27 + 8 =</span> <input type="number" data-ans="35" />
-          </div>
-          <div class="example-row">
-            <span>15 + 9 =</span> <input type="number" data-ans="24" />
-          </div>
-        </div>
-        <div class="score-display" id="score-1"></div>
-        <button
-          class="btn-check btn-block-1"
-          onclick="checkBlock(this, 'block-1', 'score-1')"
+        <div id="tasks-container"></div>
+
+        <div
+          id="quest-final-message"
+          style="text-align: center; display: none; padding: 40px"
         >
-          Перевірити
-        </button>
+          <h2 style="font-size: 2.5em; color: #db2777">ЧУДОВО! 🎉</h2>
+          <p style="font-size: 1.5em">
+            Тренажер пройдено! Гортай вниз до Блоків 👇
+          </p>
+          <button
+            onclick="document.getElementById('fairy-section').scrollIntoView({behavior: 'smooth'})"
+            style="
+              padding: 15px 30px;
+              font-size: 1.2em;
+              border-radius: 50px;
+              border: none;
+              background: #be185d;
+              color: white;
+              cursor: pointer;
+              box-shadow: 0 5px 0 #831843;
+            "
+          >
+            Вперед до практики 🚀
+          </button>
+        </div>
       </div>
+    </section>
 
-      <div class="block-card block-2">
-        <div class="block-header">
-          <div class="icon-box">🎀</div>
-          <span>Впевнений рахунок (40-70)</span>
-        </div>
-        <div class="examples-list">
-          <div class="example-row">
-            <span>45 + 7 =</span> <input type="number" data-ans="52" />
-          </div>
-          <div class="example-row">
-            <span>58 + 3 =</span> <input type="number" data-ans="61" />
-          </div>
-          <div class="example-row">
-            <span>36 + 8 =</span> <input type="number" data-ans="44" />
-          </div>
-          <div class="example-row">
-            <span>64 + 9 =</span> <input type="number" data-ans="73" />
-          </div>
-          <div class="example-row">
-            <span>49 + 5 =</span> <input type="number" data-ans="54" />
-          </div>
-        </div>
-        <div class="score-display" id="score-2"></div>
-        <button
-          class="btn-check btn-block-2"
-          onclick="checkBlock(this, 'block-2', 'score-2')"
-        >
-          Перевірити
-        </button>
-      </div>
+    <div class="section-divider"></div>
 
-      <div class="block-card block-3">
-        <div class="block-header">
-          <div class="icon-box">👑</div>
-          <span>Майстер додавання (70-100)</span>
+    <section id="fairy-section">
+      <div class="container">
+        <h1>🌸 Фея Додавання 🌸</h1>
+        <p class="subtitle">Частина 2: Закріплення результату</p>
+
+        <div class="block-card block-1">
+          <div class="block-header">
+            <div class="icon-box">🧁</div>
+            <span>Рівень 1 (20-40)</span>
+          </div>
+          <div class="examples-list">
+            <div class="example-row">
+              <span>18 + 5 =</span> <input type="number" data-ans="23" />
+            </div>
+            <div class="example-row">
+              <span>26 + 6 =</span> <input type="number" data-ans="32" />
+            </div>
+            <div class="example-row">
+              <span>39 + 4 =</span> <input type="number" data-ans="43" />
+            </div>
+            <div class="example-row">
+              <span>27 + 8 =</span> <input type="number" data-ans="35" />
+            </div>
+            <div class="example-row">
+              <span>15 + 9 =</span> <input type="number" data-ans="24" />
+            </div>
+          </div>
+          <div class="score-display" id="score-1"></div>
+          <button
+            class="fairy-btn btn-block-1"
+            onclick="checkFairyBlock(this, 'block-1', 'score-1')"
+          >
+            Перевірити
+          </button>
         </div>
-        <div class="examples-list">
-          <div class="example-row">
-            <span>74 + 7 =</span> <input type="number" data-ans="81" />
+
+        <div class="block-card block-2">
+          <div class="block-header">
+            <div class="icon-box">🎀</div>
+            <span>Рівень 2 (40-70)</span>
           </div>
-          <div class="example-row">
-            <span>88 + 4 =</span> <input type="number" data-ans="92" />
+          <div class="examples-list">
+            <div class="example-row">
+              <span>45 + 7 =</span> <input type="number" data-ans="52" />
+            </div>
+            <div class="example-row">
+              <span>58 + 3 =</span> <input type="number" data-ans="61" />
+            </div>
+            <div class="example-row">
+              <span>36 + 8 =</span> <input type="number" data-ans="44" />
+            </div>
+            <div class="example-row">
+              <span>64 + 9 =</span> <input type="number" data-ans="73" />
+            </div>
+            <div class="example-row">
+              <span>49 + 5 =</span> <input type="number" data-ans="54" />
+            </div>
           </div>
-          <div class="example-row">
-            <span>67 + 6 =</span> <input type="number" data-ans="73" />
-          </div>
-          <div class="example-row">
-            <span>79 + 8 =</span> <input type="number" data-ans="87" />
-          </div>
-          <div class="example-row">
-            <span>83 + 9 =</span> <input type="number" data-ans="92" />
-          </div>
+          <div class="score-display" id="score-2"></div>
+          <button
+            class="fairy-btn btn-block-2"
+            onclick="checkFairyBlock(this, 'block-2', 'score-2')"
+          >
+            Перевірити
+          </button>
         </div>
-        <div class="score-display" id="score-3"></div>
-        <button
-          class="btn-check btn-block-3"
-          onclick="checkBlock(this, 'block-3', 'score-3')"
-        >
-          Перевірити
-        </button>
+
+        <div class="block-card block-3">
+          <div class="block-header">
+            <div class="icon-box">👑</div>
+            <span>Рівень 3 (70-100)</span>
+          </div>
+          <div class="examples-list">
+            <div class="example-row">
+              <span>74 + 7 =</span> <input type="number" data-ans="81" />
+            </div>
+            <div class="example-row">
+              <span>88 + 4 =</span> <input type="number" data-ans="92" />
+            </div>
+            <div class="example-row">
+              <span>67 + 6 =</span> <input type="number" data-ans="73" />
+            </div>
+            <div class="example-row">
+              <span>79 + 8 =</span> <input type="number" data-ans="87" />
+            </div>
+            <div class="example-row">
+              <span>83 + 9 =</span> <input type="number" data-ans="92" />
+            </div>
+          </div>
+          <div class="score-display" id="score-3"></div>
+          <button
+            class="fairy-btn btn-block-3"
+            onclick="checkFairyBlock(this, 'block-3', 'score-3')"
+          >
+            Перевірити
+          </button>
+        </div>
       </div>
-    </div>
+    </section>
 
     <script>
-      function checkBlock(btn, blockClass, scoreId) {
+      /* =========================================
+       ЛОГІКА ТРЕНАЖЕРА (ЧАСТИНА 1) - 5 ПИТАНЬ
+       ========================================= */
+      const questTasks = [
+        { id: 1, n1: 38, n2: 5, s1: 2, s2: 3, inter: 40, res: 43 },
+        { id: 2, n1: 28, n2: 6, s1: 2, s2: 4, inter: 30, res: 34 },
+        { id: 3, n1: 64, n2: 8, s1: 6, s2: 2, inter: 70, res: 72 },
+        { id: 4, n1: 45, n2: 9, s1: 5, s2: 4, inter: 50, res: 54 },
+        { id: 5, n1: 57, n2: 6, s1: 3, s2: 3, inter: 60, res: 63 },
+      ];
+
+      const questContainer = document.getElementById("tasks-container");
+      let questCompleted = 0;
+
+      function renderQuestTask(t) {
+        return `
+        <div class="task-card" id="card-${t.id}">
+            <div class="task-header">
+                <div class="badge">Завдання ${t.id}</div>
+                <div style="font-weight: bold; font-size: 1.2em; color: #db2777;">${t.n1} + ${t.n2} = ?</div>
+            </div>
+            <p style="text-align: center; margin: 0 0 10px 0;">
+                Розклади число <b>${t.n2}</b>. <br>
+                <small style="color: #666">Скільки додати до ${t.n1}, щоб стало ${t.inter}?</small>
+            </p>
+            <div class="diagram">
+                <div class="num-box" style="border-color: #f472b6;">${t.n1}</div> <div>+</div>
+                <div class="split-box">
+                    <div class="num-box" style="border: 2px solid #db2777;">${t.n2}</div>
+                    <div class="legs">
+                        <div class="leg-line-left"></div> <div class="leg-line-right"></div>
+                        <input type="number" id="q-${t.id}-s1" placeholder="?">
+                        <input type="number" id="q-${t.id}-s2" placeholder="?">
+                    </div>
+                </div>
+            </div>
+            <div class="steps-row">
+                <span>1) ${t.n1} + </span>
+                <input type="number" id="q-${t.id}-st1" style="width: 40px;" placeholder="?">
+                <span> = </span>
+                <input type="number" id="q-${t.id}-int" style="width: 45px;" placeholder="${t.inter}?">
+            </div>
+            <div class="steps-row">
+                <span>2) <b>${t.inter}</b> + </span>
+                <input type="number" id="q-${t.id}-st2" style="width: 40px;" placeholder="?">
+                <span> = </span>
+                <input type="number" id="q-${t.id}-fin" style="width: 50px; border-color: #db2777;" placeholder="?">
+            </div>
+            <div class="feedback-msg" id="msg-${t.id}"></div>
+            <button class="quest-btn" onclick="checkQuestTask(${t.id})">Перевірити</button>
+        </div>`;
+      }
+
+      questTasks.forEach(
+        (t) => (questContainer.innerHTML += renderQuestTask(t))
+      );
+
+      function checkQuestTask(id) {
+        const t = questTasks.find((x) => x.id === id);
+        const s1 = parseInt(document.getElementById(`q-${id}-s1`).value);
+        const s2 = parseInt(document.getElementById(`q-${id}-s2`).value);
+        const st1 = parseInt(document.getElementById(`q-${id}-st1`).value);
+        const int = parseInt(document.getElementById(`q-${id}-int`).value);
+        const st2 = parseInt(document.getElementById(`q-${id}-st2`).value);
+        const fin = parseInt(document.getElementById(`q-${id}-fin`).value);
+
+        const msg = document.getElementById(`msg-${id}`);
+        let correct = true;
+        let err = "";
+
+        if (s1 !== t.s1) {
+          correct = false;
+          err = `Помилка в першому "вусику"`;
+        } else if (s2 !== t.s2) {
+          correct = false;
+          err = `Помилка в другому "вусику"`;
+        } else if (st1 !== t.s1) {
+          correct = false;
+          err = "Крок 1: що додаємо спочатку?";
+        } else if (int !== t.inter) {
+          correct = false;
+          err = `Має вийти кругле число ${t.inter}`;
+        } else if (st2 !== t.s2) {
+          correct = false;
+          err = "Крок 2: що додаємо потім?";
+        } else if (fin !== t.res) {
+          correct = false;
+          err = "Результат неправильний";
+        }
+
+        if (correct) {
+          msg.textContent = "Вірно! Молодець!";
+          msg.style.color = "#16a34a";
+          document.getElementById(`card-${id}`).classList.add("done");
+          questCompleted++;
+          document.getElementById("quest-score").innerText = questCompleted;
+          document.getElementById("quest-progress-bar").style.width =
+            (questCompleted / 5) * 100 + "%";
+
+          if (questCompleted === 5) {
+            triggerConfetti();
+            document.getElementById("quest-final-message").style.display =
+              "block";
+          }
+        } else {
+          msg.textContent = err;
+          msg.style.color = "#be123c";
+        }
+      }
+
+      /* =========================================
+       ЛОГІКА ФЕЇ (ЧАСТИНА 2)
+       ========================================= */
+      function checkFairyBlock(btn, blockClass, scoreId) {
         const block = document.querySelector("." + blockClass);
         const inputs = block.querySelectorAll("input");
         const scoreDiv = document.getElementById(scoreId);
-
         let correctCount = 0;
         let allFilled = true;
 
         inputs.forEach((input) => {
           const val = input.value.trim();
           const correctVal = input.getAttribute("data-ans");
-
-          // Скидаємо класи перед перевіркою
           input.classList.remove("correct", "wrong");
 
           if (val === "") {
             allFilled = false;
             return;
           }
-
           if (val === correctVal) {
             input.classList.add("correct");
             correctCount++;
@@ -338,40 +711,42 @@
         });
 
         if (!allFilled) {
-          scoreDiv.textContent = "Будь ласка, заповни всі віконечка!";
+          scoreDiv.textContent = "Заповни всі віконечка!";
           scoreDiv.style.color = "#be123c";
           return;
         }
 
         if (correctCount === 5) {
-          scoreDiv.textContent = "Неймовірно! 5/5 Правильно!";
+          scoreDiv.textContent = "5/5 Чудово!";
           scoreDiv.style.color = "#16a34a";
-          btn.textContent = "Молодець! 🌟";
+          btn.textContent = "Блок пройдено! 🌟";
           btn.disabled = true;
           triggerConfetti();
         } else {
-          scoreDiv.textContent = `Є помилки (${correctCount} з 5 правильно). Спробуй ще раз!`;
+          scoreDiv.textContent = `${correctCount} з 5 правильно. Виправ помилки!`;
           scoreDiv.style.color = "#be123c";
         }
       }
 
+      /* =========================================
+       КОНФЕТІ (СПІЛЬНЕ)
+       ========================================= */
       function triggerConfetti() {
         const canvas = document.getElementById("confetti");
+        canvas.classList.remove("hidden");
         const ctx = canvas.getContext("2d");
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
-
         const pieces = [];
-        for (let i = 0; i < 150; i++) {
+        for (let i = 0; i < 200; i++) {
           pieces.push({
             x: Math.random() * canvas.width,
             y: Math.random() * canvas.height - canvas.height,
-            color: `hsl(${Math.random() * 360}, 100%, 70%)`, // Пастельні кольори
+            color: `hsl(${Math.random() * 360}, 100%, 70%)`,
             size: Math.random() * 8 + 4,
             speed: Math.random() * 5 + 3,
           });
         }
-
         function draw() {
           ctx.clearRect(0, 0, canvas.width, canvas.height);
           let active = false;

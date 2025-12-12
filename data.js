@@ -63,6 +63,17 @@ window.lessonsData = [
     author: "Даша",
   },
   {
+    id: 8,
+    title: "Властивості степеня Тест",
+    grade: 8,
+    topic: "Алгебра",
+    link: "algebra/8/властивості степеня тест.html",
+    subject_code: "algebra",
+    category: "test",
+    author: "Даша",
+  },
+
+  {
     id: 201,
     title: "Перехід через десяток Додавання",
     grade: 2,

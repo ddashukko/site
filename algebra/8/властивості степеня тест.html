@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Підсумковий тест: Степені | Dasha Tutor</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
+    />
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"
+    ></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    ></script>
+
+    <style>
+      :root {
+        --primary: #4a90e2;
+        --primary-light: #eff6ff;
+        --success: #28a745;
+        --error: #dc3545;
+        --bg: #f8fafc;
+        --card: #ffffff;
+        --text: #2c3e50;
+        --border: #e2e8f0;
+        --grid-color: #e2e8f0;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        display: flex;
+        overflow: hidden;
+      }
+
+      /* --- ЛІВА ПАНЕЛЬ (ЗАВДАННЯ) --- */
+      #tasks-section {
+        flex: 1;
+        background: var(--bg);
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        border-right: 1px solid var(--border);
+        min-width: 320px;
+      }
+
+      /* --- ПРАВА ПАНЕЛЬ (ДОШКА) --- */
+      #board-section {
+        flex: 1;
+        position: relative;
+        background-color: #fff;
+        background-image: linear-gradient(
+            var(--grid-color) 1px,
+            transparent 1px
+          ),
+          linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+        background-size: 25px 25px;
+        cursor: crosshair;
+        overflow: hidden;
+      }
+
+      canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+        touch-action: none;
+      }
+
+      .tools {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        display: flex;
+        gap: 10px;
+        background: rgba(255, 255, 255, 0.95);
+        padding: 8px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        border: 1px solid var(--border);
+        flex-wrap: wrap;
+        z-index: 10;
+      }
+
+      .btn-tool {
+        border: 1px solid #cbd5e1;
+        background: white;
+        padding: 8px 12px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1.2rem;
+        transition: 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 40px;
+      }
+      .btn-tool:hover {
+        background: #f1f5f9;
+      }
+      .btn-tool.active {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+      }
+
+      /* --- HEADER --- */
+      header {
+        background: var(--card);
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+      }
+
+      .header-title {
+        font-weight: 800;
+        font-size: 1.1rem;
+        color: var(--primary);
+      }
+      .stats-container {
+        display: flex;
+        gap: 15px;
+        font-weight: 600;
+      }
+      .stat-correct {
+        color: var(--success);
+      }
+      .stat-wrong {
+        color: var(--error);
+      }
+
+      /* --- КОНТЕНТ ЗАВДАНЬ --- */
+      .content-container {
+        padding: 20px;
+        padding-bottom: 80px;
+        max-width: 800px;
+        margin: 0 auto;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      .test-intro {
+        background: #fff;
+        padding: 20px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        margin-bottom: 20px;
+        text-align: center;
+      }
+      .test-intro h2 {
+        margin-top: 0;
+        color: #2c3e50;
+      }
+      .test-intro p {
+        color: #64748b;
+        margin-bottom: 0;
+      }
+
+      .exercise-block {
+        background: var(--card);
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        margin-bottom: 20px;
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      }
+
+      .task-row {
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .task-row.solved-correct {
+        border-left: 5px solid var(--success);
+        background-color: #f0fdf4;
+      }
+      .task-row.solved-wrong {
+        border-left: 5px solid var(--error);
+        background-color: #fef2f2;
+      }
+
+      .task-content {
+        display: flex;
+        align-items: baseline;
+        gap: 10px;
+      }
+      .task-number {
+        font-weight: 700;
+        color: var(--primary);
+        font-size: 0.9rem;
+        background: var(--primary-light);
+        padding: 4px 8px;
+        border-radius: 4px;
+      }
+      .task-question {
+        font-size: 1.3rem;
+        font-weight: 600;
+      }
+
+      /* --- ВАРІАНТИ ВІДПОВІДЕЙ --- */
+      .options-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 10px;
+        margin-top: 5px;
+      }
+
+      .option-btn {
+        background: white;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 12px 10px;
+        font-size: 1.1rem;
+        cursor: pointer;
+        text-align: center;
+        transition: 0.2s;
+        font-weight: 500;
+        color: var(--text);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 50px;
+      }
+      .option-btn:hover:not(:disabled) {
+        border-color: var(--primary);
+        color: var(--primary);
+        background: #f8fafc;
+      }
+      .option-btn:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+      }
+
+      /* Стилі після вибору */
+      .option-btn.selected-correct {
+        background: var(--success);
+        color: white;
+        border-color: var(--success);
+      }
+      .option-btn.selected-correct .katex {
+        color: white !important;
+      }
+
+      .option-btn.selected-wrong {
+        background: var(--error);
+        color: white;
+        border-color: var(--error);
+      }
+      .option-btn.selected-wrong .katex {
+        color: white !important;
+      }
+
+      /* Інші кнопки (не обрані), але правильні/неправильні */
+      .option-btn.reveal-correct {
+        border-color: var(--success);
+        background: #dcfce7;
+        color: var(--success);
+      }
+
+      /* --- ПОЛЯ ВВОДУ (для тесту рідше, але залишимо стиль) --- */
+      .input-group {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+      .input-answer {
+        padding: 10px;
+        border: 2px solid #cbd5e1;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        text-align: center;
+        width: 100%;
+        max-width: 200px;
+      }
+      .btn-check {
+        padding: 10px 20px;
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 1rem;
+      }
+      .input-answer.correct {
+        border-color: var(--success);
+        background: #f0fdf4;
+        color: var(--success);
+      }
+      .input-answer.wrong {
+        border-color: var(--error);
+        background: #fef2f2;
+      }
+
+      .finish-section {
+        margin-top: 40px;
+        text-align: center;
+      }
+      .btn-finish {
+        padding: 15px 50px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: white;
+        background: var(--primary);
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
+        transition: transform 0.2s;
+      }
+      .btn-finish:hover {
+        transform: scale(1.05);
+      }
+
+      /* --- МОДАЛЬНЕ ВІКНО --- */
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(5px);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+        animation: fadeIn 0.3s ease;
+      }
+      .modal-card {
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        max-width: 450px;
+        width: 90%;
+        text-align: center;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        position: relative;
+      }
+      .modal-close-btn {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: none;
+        border: none;
+        font-size: 2rem;
+        color: #94a3b8;
+        cursor: pointer;
+        line-height: 1;
+      }
+      .modal-result-title {
+        font-size: 2rem;
+        font-weight: 800;
+        margin-bottom: 10px;
+      }
+      .modal-score-big {
+        font-size: 5rem;
+        font-weight: 900;
+        margin: 10px 0;
+        line-height: 1;
+      }
+      .modal-details {
+        font-size: 1.1rem;
+        color: #475569;
+        margin-bottom: 30px;
+        background: #f1f5f9;
+        padding: 15px;
+        border-radius: 10px;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      @media (max-width: 768px) {
+        body {
+          flex-direction: column;
+        }
+        #board-section {
+          height: 35vh;
+          border-left: none;
+          border-top: 2px solid var(--border);
+          order: 2;
+        }
+        #tasks-section {
+          height: 65vh;
+          order: 1;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="tasks-section">
+      <header>
+        <div class="header-title">Dasha Tutor: КОНТРОЛЬНИЙ ТЕСТ</div>
+        <div class="stats-container">
+          <span class="stat-correct">✅ <span id="val-correct">0</span></span>
+          <span class="stat-wrong">❌ <span id="val-wrong">0</span></span>
+        </div>
+      </header>
+
+      <div class="content-container" id="quiz-root">
+        <div class="test-intro">
+          <h2>Перевірка знань</h2>
+          <p>
+            Тема: "Степені з цілим показником".<br />Використовуйте дошку
+            праворуч для обчислень. Успіхів!
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div id="board-section">
+      <div class="tools">
+        <button
+          class="btn-tool active"
+          onclick="setTool('pen')"
+          id="t-pen"
+          title="Ручка"
+        >
+          🖊️
+        </button>
+        <button
+          class="btn-tool"
+          onclick="setTool('eraser')"
+          id="t-eraser"
+          title="Гумка"
+        >
+          🧹
+        </button>
+        <button
+          class="btn-tool"
+          onclick="drawSystem()"
+          title="Координатна площина"
+        >
+          📉
+        </button>
+        <button
+          class="btn-tool"
+          onclick="clearCanvasSafe()"
+          style="color: red; border-color: #fee2e2"
+          title="Очистити все"
+        >
+          ❌
+        </button>
+      </div>
+      <canvas id="board"></canvas>
+    </div>
+
+    <div id="result-modal" class="modal-overlay">
+      <div class="modal-card">
+        <button class="modal-close-btn" onclick="closeModal()">×</button>
+        <div id="modal-content-body"></div>
+      </div>
+    </div>
+
+    <script>
+      // =========================================================
+      // 1. ДАНІ ТЕСТУ
+      // =========================================================
+      const testData = [
+        {
+          id: 1,
+          q: "Обчисліть значення виразу: $2^{-3}$",
+          type: "choice",
+          a: "0.125",
+          opts: ["-6", "-8", "0.125", "0.25", "8"],
+        },
+        {
+          id: 2,
+          q: "Подайте у вигляді степеня: $x^5 \\cdot x^{-8}$",
+          type: "choice",
+          a: "$x^{-3}$",
+          opts: ["$x^{3}$", "$x^{-3}$", "$x^{-13}$", "$x^{40}$"],
+        },
+        {
+          id: 3,
+          q: "Знайдіть значення виразу: $5^0 + 3^{-1}$",
+          type: "choice",
+          a: "$1\\frac{1}{3}$",
+          opts: ["$1$", "$1\\frac{1}{3}$", "$\\frac{1}{3}$", "$0$"],
+        },
+        {
+          id: 4,
+          q: "Спростіть вираз: $(a^{-2})^4$",
+          type: "choice",
+          a: "$a^{-8}$",
+          opts: ["$a^{-6}$", "$a^{8}$", "$a^{2}$", "$a^{-8}$"],
+        },
+        {
+          id: 5,
+          q: "Обчисліть: $100 \\cdot 10^{-3}$",
+          type: "input",
+          a: ["0.1", "0,1", "1/10"],
+        },
+        {
+          id: 6,
+          q: "Виконайте ділення: $m^{-4} : m^{-6}$",
+          type: "choice",
+          a: "$m^2$",
+          opts: ["$m^{-10}$", "$m^{-2}$", "$m^{2}$", "$m^{24}$"],
+        },
+        {
+          id: 7,
+          q: "Спростіть вираз: $2x^{-3} \\cdot 4x^5$",
+          type: "choice",
+          a: "$8x^2$",
+          opts: ["$8x^{-2}$", "$8x^2$", "$6x^2$", "$6x^{-15}$"],
+        },
+        {
+          id: 8,
+          q: "Знайдіть $x$, якщо $3^x = \\frac{1}{27}$",
+          type: "input",
+          a: ["-3"],
+        },
+        {
+          id: 9,
+          q: "Обчисліть: $(0.2)^{-2}$",
+          type: "choice",
+          a: "25",
+          opts: ["0.04", "25", "-0.04", "-25", "4"],
+        },
+        {
+          id: 10,
+          q: "Спростіть: $\\frac{(a^3)^{-2} \\cdot a}{a^{-7}}$",
+          type: "choice",
+          a: "$a^2$",
+          opts: ["$a^{-1}$", "$a^2$", "$a^{-12}$", "$1$"],
+        },
+      ];
+
+      // =========================================================
+      // 2. ЛОГІКА ТЕСТУ
+      // =========================================================
+
+      let totalCorrect = 0;
+      let totalWrong = 0;
+      let totalQuestions = testData.length;
+
+      function init() {
+        const root = document.getElementById("quiz-root");
+
+        testData.forEach((item, index) => {
+          const block = document.createElement("div");
+          block.className = "exercise-block";
+
+          let answerHTML = "";
+
+          // ВАРІАНТИ ВІДПОВІДЕЙ
+          if (item.type === "choice") {
+            // Перемішування варіантів (опціонально, тут просте відображення)
+            // item.opts.sort(() => Math.random() - 0.5);
+
+            let btns = "";
+            const safeAns = item.a;
+
+            item.opts.forEach((opt) => {
+              // Екранування
+              const safeOptAttr = opt
+                .replace(/"/g, "&quot;")
+                .replace(/\\/g, "\\\\");
+              const safeAnsAttr = safeAns
+                .replace(/"/g, "&quot;")
+                .replace(/\\/g, "\\\\");
+
+              btns += `<button class="option-btn" onclick="checkChoice(this, '${safeOptAttr}', '${safeAnsAttr}')">${opt}</button>`;
+            });
+            answerHTML = `<div class="options-container">${btns}</div>`;
+          }
+          // ПОЛЕ ВВОДУ
+          else {
+            const ansStr = item.a.join("|");
+            answerHTML = `
+                <div class="input-group">
+                   <input type="text" class="input-answer" placeholder="Ваша відповідь..." onkeypress="if(event.key==='Enter') this.nextElementSibling.click()">
+                   <button class="btn-check" onclick="checkInput(this, '${ansStr}')">Відповісти</button>
+                </div>
+             `;
+          }
+
+          block.innerHTML = `
+            <div class="task-row">
+                <div class="task-content">
+                   <div class="task-number">Питання ${index + 1}</div>
+                   <div class="task-question">${item.q}</div>
+                </div>
+                ${answerHTML}
+            </div>
+          `;
+          root.appendChild(block);
+        });
+
+        // Кнопка завершення
+        const finishDiv = document.createElement("div");
+        finishDiv.className = "finish-section";
+        finishDiv.innerHTML = `<button class="btn-finish" onclick="finishTest()">Завершити тест</button>`;
+        root.appendChild(finishDiv);
+
+        renderMath();
+      }
+
+      function renderMath() {
+        if (typeof renderMathInElement === "function") {
+          renderMathInElement(document.body, {
+            delimiters: [
+              { left: "$$", right: "$$", display: true },
+              { left: "$", right: "$", display: false },
+            ],
+            throwOnError: false,
+          });
+        }
+      }
+
+      // --- ПЕРЕВІРКА ---
+
+      function checkChoice(btn, val, ans) {
+        const row = btn.closest(".task-row");
+        // Блокуємо повторні кліки
+        if (row.classList.contains("answered")) return;
+        row.classList.add("answered");
+
+        const allBtns = row.querySelectorAll(".option-btn");
+        allBtns.forEach((b) => (b.disabled = true)); // Disable all
+
+        // Очищення Latex слешів для порівняння
+        const cleanVal = val.replace(/\\\\/g, "\\");
+        const cleanAns = ans.replace(/\\\\/g, "\\");
+
+        if (cleanVal === cleanAns) {
+          btn.classList.add("selected-correct");
+          row.classList.add("solved-correct");
+          totalCorrect++;
+        } else {
+          btn.classList.add("selected-wrong");
+          row.classList.add("solved-wrong");
+          totalWrong++;
+
+          // Підсвітити правильну (опціонально для тесту)
+          /* allBtns.forEach(b => {
+             const bTxt = b.innerText.trim(); // Це складно з Latex, краще через логіку
+             // Тут спрощено: в тесті іноді не показують правильну одразу.
+             // Але для навчання залишимо підсвітку помилки.
+          });
+          */
+        }
+        updateStats();
+      }
+
+      function checkInput(btn, correctStr) {
+        const row = btn.closest(".task-row");
+        if (row.classList.contains("answered")) return;
+
+        const input = row.querySelector("input");
+        const val = input.value.trim().replace(",", "."); // Заміна коми на крапку
+
+        if (val === "") return; // Не зараховувати пустий ввід
+
+        row.classList.add("answered");
+        input.disabled = true;
+        btn.disabled = true;
+
+        const variants = correctStr.split("|");
+
+        if (variants.includes(val)) {
+          input.classList.add("correct");
+          row.classList.add("solved-correct");
+          totalCorrect++;
+        } else {
+          input.classList.add("wrong");
+          row.classList.add("solved-wrong");
+          totalWrong++;
+          // Показати правильну відповідь?
+          // btn.innerText = "Правильно: " + variants[0];
+        }
+        updateStats();
+      }
+
+      function updateStats() {
+        document.getElementById("val-correct").innerText = totalCorrect;
+        document.getElementById("val-wrong").innerText = totalWrong;
+      }
+
+      // =========================================================
+      // 3. CANVAS (ДОШКА) - той самий код
+      // =========================================================
+      const canvas = document.getElementById("board");
+      const ctx = canvas.getContext("2d");
+      const boardSection = document.getElementById("board-section");
+      let painting = false;
+      let tool = "pen";
+
+      function resizeCanvas() {
+        const temp = document.createElement("canvas");
+        const tempCtx = temp.getContext("2d");
+        temp.width = canvas.width;
+        temp.height = canvas.height;
+        if (canvas.width > 0 && canvas.height > 0) {
+          tempCtx.drawImage(canvas, 0, 0);
+        }
+        canvas.width = boardSection.offsetWidth;
+        canvas.height = boardSection.offsetHeight;
+        ctx.drawImage(temp, 0, 0);
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+      }
+
+      window.addEventListener("resize", resizeCanvas);
+
+      function getMousePos(e) {
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return { x: clientX - rect.left, y: clientY - rect.top };
+      }
+
+      function startPosition(e) {
+        painting = true;
+        draw(e);
+      }
+      function finishedPosition() {
+        painting = false;
+        ctx.beginPath();
+      }
+      function draw(e) {
+        if (!painting) return;
+        if (e.type.startsWith("touch")) {
+          e.preventDefault();
+        }
+        const pos = getMousePos(e);
+        if (tool === "pen") {
+          ctx.lineWidth = 2;
+          ctx.strokeStyle = "#4a90e2";
+          ctx.globalCompositeOperation = "source-over";
+        } else {
+          ctx.lineWidth = 25;
+          ctx.strokeStyle = "#ffffff";
+          ctx.globalCompositeOperation = "destination-out";
+        }
+        ctx.lineTo(pos.x, pos.y);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(pos.x, pos.y);
+      }
+
+      canvas.addEventListener("mousedown", startPosition);
+      canvas.addEventListener("mouseup", finishedPosition);
+      canvas.addEventListener("mousemove", draw);
+      canvas.addEventListener("mouseout", finishedPosition);
+      canvas.addEventListener("touchstart", startPosition, { passive: false });
+      canvas.addEventListener("touchend", finishedPosition);
+      canvas.addEventListener("touchmove", draw, { passive: false });
+
+      function setTool(t) {
+        tool = t;
+        document
+          .getElementById("t-pen")
+          .classList.toggle("active", t === "pen");
+        document
+          .getElementById("t-eraser")
+          .classList.toggle("active", t === "eraser");
+      }
+
+      function clearCanvasSafe() {
+        if (confirm("Очистити дошку?")) {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+      }
+
+      function drawSystem() {
+        const prevStrokeStyle = ctx.strokeStyle;
+        const prevLineWidth = ctx.lineWidth;
+        const prevComposite = ctx.globalCompositeOperation;
+
+        ctx.globalCompositeOperation = "source-over";
+        ctx.strokeStyle = "#334155";
+        ctx.lineWidth = 2;
+        ctx.fillStyle = "#334155";
+        ctx.font = "16px Arial";
+
+        const w = canvas.width;
+        const h = canvas.height;
+        const cx = Math.floor(w / 2);
+        const cy = Math.floor(h / 2);
+        const step = 25;
+
+        ctx.beginPath();
+        ctx.moveTo(0, cy);
+        ctx.lineTo(w, cy);
+        ctx.lineTo(w - 10, cy - 5);
+        ctx.moveTo(w, cy);
+        ctx.lineTo(w - 10, cy + 5);
+        ctx.moveTo(cx, h);
+        ctx.lineTo(cx, 0);
+        ctx.lineTo(cx - 5, 10);
+        ctx.moveTo(cx, 0);
+        ctx.lineTo(cx + 5, 10);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.lineWidth = 1;
+        for (let x = cx + step; x < w; x += step) {
+          ctx.moveTo(x, cy - 3);
+          ctx.lineTo(x, cy + 3);
+        }
+        for (let x = cx - step; x > 0; x -= step) {
+          ctx.moveTo(x, cy - 3);
+          ctx.lineTo(x, cy + 3);
+        }
+        for (let y = cy + step; y < h; y += step) {
+          ctx.moveTo(cx - 3, y);
+          ctx.lineTo(cx + 3, y);
+        }
+        for (let y = cy - step; y > 0; y -= step) {
+          ctx.moveTo(cx - 3, y);
+          ctx.lineTo(cx + 3, y);
+        }
+        ctx.stroke();
+
+        ctx.fillText("x", w - 20, cy + 20);
+        ctx.fillText("y", cx + 15, 20);
+        ctx.fillText("0", cx - 15, cy + 20);
+
+        ctx.beginPath();
+        ctx.strokeStyle = prevStrokeStyle;
+        ctx.lineWidth = prevLineWidth;
+        ctx.globalCompositeOperation = prevComposite;
+        if (tool === "eraser") setTool("pen");
+      }
+
+      // =========================================================
+      // 4. ФІНІШ
+      // =========================================================
+      function finishTest() {
+        const modal = document.getElementById("result-modal");
+        const body = document.getElementById("modal-content-body");
+
+        // Рахуємо відсоток від загальної кількості питань (а не тільки спроб)
+        let efficiency = 0;
+        if (totalQuestions > 0)
+          efficiency = Math.round((totalCorrect / totalQuestions) * 100);
+
+        let color = "#4a90e2";
+        let msg = "Результат";
+        let grade = "";
+
+        if (efficiency >= 90) {
+          color = "#28a745";
+          msg = "Чудово!";
+          grade = "Оцінка: 12";
+        } else if (efficiency >= 75) {
+          color = "#20c997";
+          msg = "Добре!";
+          grade = "Оцінка: 9-10";
+        } else if (efficiency >= 50) {
+          color = "#f59e0b";
+          msg = "Непогано";
+          grade = "Оцінка: 6-8";
+        } else {
+          color = "#dc3545";
+          msg = "Треба довчити";
+          grade = "Спробуй ще раз";
+        }
+
+        body.innerHTML = `
+            <div class="modal-result-title" style="color:${color}">${msg}</div>
+            <div class="modal-score-big" style="color:${color}">${efficiency}%</div>
+            <div class="modal-details">
+               <div>Правильних відповідей: <b>${totalCorrect}</b> з <b>${totalQuestions}</b></div>
+               <div style="margin-top:10px; font-weight:bold;">${grade}</div>
+            </div>
+            <button class="btn-finish" onclick="closeModal()" style="padding:10px 30px; font-size:1rem;">Закрити</button>
+            <button class="btn-finish" onclick="location.reload()" style="padding:10px 30px; font-size:1rem; background:#64748b; margin-left:10px;">Ще раз</button>
+        `;
+        modal.style.display = "flex";
+      }
+
+      function closeModal() {
+        document.getElementById("result-modal").style.display = "none";
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        init();
+        setTimeout(resizeCanvas, 100);
+      });
+    </script>
+  </body>
+</html>
