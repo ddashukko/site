@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Алгебра 8: Функція y = x² (Виправлено)</title>
+    <title>Алгебра 8: Арифметичний квадратний корінь</title>
 
     <link
       rel="stylesheet"
@@ -312,52 +312,13 @@
         background: #fef2f2;
       }
 
-      .math-table {
-        border-collapse: collapse;
-        width: 100%;
-        max-width: 600px;
-        margin: 0 auto;
-        font-size: 1.1rem;
-      }
-      .math-table td,
-      .math-table th {
-        border: 1px solid #cbd5e1;
-        padding: 8px;
-        text-align: center;
-      }
-      .math-table th {
-        background-color: #f1f5f9;
-        font-weight: bold;
-      }
-
-      .table-input {
-        width: 45px;
-        text-align: center;
-        padding: 6px;
-        border: 1px solid #cbd5e1;
-        border-radius: 6px;
-        font-size: 1rem;
-        outline: none;
-        transition: background-color 0.2s;
-      }
-      .table-input:focus {
-        border-color: var(--primary);
-      }
-      .table-input.correct {
-        background: #f0fdf4;
-        border-color: var(--success);
-        color: var(--success);
-        font-weight: bold;
-      }
-      .table-input.wrong {
-        background: #fef2f2;
-        border-color: var(--error);
-        color: var(--error);
-      }
-
       .finish-section {
         margin-top: 40px;
         text-align: center;
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        flex-wrap: wrap;
       }
       .btn-finish {
         padding: 15px 40px;
@@ -374,6 +335,25 @@
       .btn-finish:hover {
         transform: scale(1.05);
         background-color: #1d4ed8;
+      }
+
+      .btn-test {
+        padding: 15px 40px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: white;
+        background: #7c3aed;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
+        transition: transform 0.2s;
+        text-decoration: none;
+        display: inline-block;
+      }
+      .btn-test:hover {
+        transform: scale(1.05);
+        background-color: #6d28d9;
       }
 
       .modal-overlay {
@@ -504,20 +484,13 @@
           height: 60vh;
           order: 1;
         }
-        .math-table {
-          font-size: 0.9rem;
-        }
-        .table-input {
-          width: 35px;
-          padding: 4px;
-        }
       }
     </style>
   </head>
   <body>
     <div id="tasks-section">
       <header>
-        <div class="header-title">Алгебра 8: Функція $y = x^2$</div>
+        <div class="header-title">Алгебра 8: Квадратний корінь</div>
         <div class="stats-container">
           <span class="stat-correct">✅ <span id="val-correct">0</span></span>
           <span class="stat-wrong">❌ <span id="val-wrong">0</span></span>
@@ -526,13 +499,14 @@
 
       <div class="content-container" id="quiz-root">
         <div class="theory-block">
-          <div class="theory-title">📚 Шпаргалка: $y = x^2$</div>
+          <div class="theory-title">📚 Шпаргалка: Квадратний корінь</div>
           <div class="theory-content">
             <ul>
-              <li>Це <strong>парабола</strong>.</li>
-              <li>Графік проходить через $(0; 0)$.</li>
-              <li>Гілки напрямлені вгору.</li>
-              <li>$y \ge 0$ для будь-якого $x$.</li>
+              <li>$\sqrt{a} = b$, якщо $b^2 = a$ і $b \ge 0$.</li>
+              <li>Вираз $\sqrt{a}$ має зміст лише при $a \ge 0$.</li>
+              <li>$(\sqrt{a})^2 = a$.</li>
+              <li>$\sqrt{x^2} = |x|$.</li>
+              <li>Корінь з від'ємного числа не існує.</li>
             </ul>
           </div>
         </div>
@@ -749,203 +723,385 @@
         }
       }
 
-      /* --- 2. ЛОГІКА ЗАВДАНЬ (ОНОВЛЕНА) --- */
+      /* --- 2. ЛОГІКА ЗАВДАНЬ --- */
 
       const exercises = [
         {
-          id: "13.1",
-          title: "13.1.",
-          desc: "Вкажіть, яка з функцій є параболою ($y=x^2$):",
+          id: "14.1",
+          title: "14.1. (Усно)",
+          desc: "Чи існує квадратний корінь із числа:",
+          tasks: [
+            { id: "1)", q: "25", a: "Так", opts: ["Так", "Ні"] },
+            { id: "2)", q: "100", a: "Так", opts: ["Так", "Ні"] },
+            { id: "3)", q: "-9", a: "Ні", opts: ["Так", "Ні"] },
+            { id: "4)", q: "0", a: "Так", opts: ["Так", "Ні"] },
+          ],
+        },
+        {
+          id: "14.2",
+          title: "14.2.",
+          desc: "Знайдіть значення квадратного кореня із числа:",
+          tasks: [
+            { id: "1)", q: "9", a: "3", type: "input" },
+            { id: "2)", q: "36", a: "6", type: "input" },
+          ],
+        },
+        {
+          id: "14.4",
+          title: "14.4. (Усно)",
+          desc: "Чи має зміст вираз:",
+          tasks: [
+            { id: "1)", q: "$\\sqrt{16}$", a: "Так", opts: ["Так", "Ні"] },
+            { id: "2)", q: "$\\sqrt{0}$", a: "Так", opts: ["Так", "Ні"] },
+            { id: "3)", q: "$\\sqrt{-25}$", a: "Ні", opts: ["Так", "Ні"] },
+          ],
+        },
+        {
+          id: "14.6",
+          title: "14.6.",
+          desc: "Визначте, чи правильне твердження:",
           tasks: [
             {
               id: "1)",
-              q: "$y = 5x$",
-              a: "Пряма",
-              opts: ["Пряма", "Парабола", "Гіпербола"],
+              q: "3 є арифм. квадратним коренем з 9",
+              a: "Так",
+              opts: ["Так", "Ні"],
             },
             {
               id: "2)",
-              q: "$y = x^2$",
-              a: "Парабола",
-              opts: ["Пряма", "Парабола", "Гіпербола"],
+              q: "-3 не є арифм. квадратним коренем з 9",
+              a: "Так",
+              opts: ["Так", "Ні"],
             },
             {
               id: "3)",
-              q: "$y = \\frac{10}{x}$",
-              a: "Гіпербола",
-              opts: ["Пряма", "Парабола", "Гіпербола"],
+              q: "0,5 є арифм. квадратним коренем з 0,25",
+              a: "Так",
+              opts: ["Так", "Ні"],
+            },
+            {
+              id: "4)",
+              q: "0,4 не є арифм. квадратним коренем з 0,16",
+              a: "Ні",
+              opts: ["Так", "Ні"],
             },
           ],
         },
         {
-          id: "13.2",
-          title: "13.2.",
-          desc: "Для функції $y = x^2$ знайдіть значення $y$, що відповідає значенню:",
+          id: "14.8",
+          title: "14.8.",
+          desc: "Обчисліть значення:",
           tasks: [
-            { id: "1)", q: "$x = -3$", a: "9", type: "input" },
-            { id: "2)", q: "$x = 0$", a: "0", type: "input" },
-            { id: "3)", q: "$x = 9$", a: "81", type: "input" },
+            { id: "1)", q: "$\\sqrt{36}$", a: "6", type: "input" },
+            { id: "2)", q: "$\\sqrt{81}$", a: "9", type: "input" },
+            { id: "3)", q: "$\\sqrt{0,64}$", a: "0.8", type: "input" },
+            { id: "4)", q: "$\\sqrt{2500}$", a: "50", type: "input" },
+            { id: "5)", q: "$\\sqrt{0,04}$", a: "0.2", type: "input" },
+            {
+              id: "6)",
+              q: "$\\sqrt{\\frac{1}{64}}$",
+              a: "1/8",
+              opts: ["1/4", "1/8", "1/16", "1/32"],
+            },
+            {
+              id: "7)",
+              q: "$\\sqrt{1\\frac{11}{25}}$",
+              a: "1.2",
+              opts: ["1.1", "1.2", "1.4", "1.5"],
+            },
+            {
+              id: "8)",
+              q: "$\\sqrt{2\\frac{7}{9}}$",
+              a: "5/3",
+              opts: ["3/5", "4/3", "5/3", "7/3"],
+            },
           ],
         },
         {
-          id: "13.4",
-          title: "13.4.",
-          desc: "Використовуючи графік функції $y = x^2$, знайдіть:",
+          id: "14.10",
+          title: "14.10.",
+          desc: "Чи правильна рівність:",
           tasks: [
-            { id: "1)", q: "$y$, якщо $x = -2$", a: "4", type: "input" },
+            {
+              id: "1)",
+              q: "$\\sqrt{400} = 20$",
+              a: "Так",
+              opts: ["Так", "Ні"],
+            },
             {
               id: "2)",
-              q: "$x$ (додатнє), якщо $y = 16$",
-              a: "4",
-              type: "input",
+              q: "$\\sqrt{25} = -5$",
+              a: "Ні",
+              opts: ["Так", "Ні"],
             },
             {
               id: "3)",
-              q: "$x$ (від'ємне), якщо $y = 16$",
-              a: "-4",
-              type: "input",
+              q: "$\\sqrt{0,49} = 0,7$",
+              a: "Так",
+              opts: ["Так", "Ні"],
+            },
+            {
+              id: "4)",
+              q: "$\\sqrt{0,36} = 0,06$",
+              a: "Ні",
+              opts: ["Так", "Ні"],
             },
           ],
         },
         {
-          id: "13.6",
-          title: "13.6.",
-          desc: "Побудуйте графік функції $y = x^2$. Заповніть таблицю:",
-          manualPoints: 6,
-          visual: `
-            <div style="width: 100%; overflow-x: auto; padding-bottom: 10px;">
-                <table class="math-table" id="table-13-6" style="min-width: 400px;">
-                    <tr>
-                        <th>x</th>
-                        <td>-3</td>
-                        <td>-2</td>
-                        <td>-1</td>
-                        <td>0</td>
-                        <td>1</td>
-                        <td>2</td>
-                        <td>3</td>
-                    </tr>
-                    <tr>
-                        <th>y</th>
-                        <td><input type="text" class="table-input" data-ans="9" oninput="this.classList.remove('wrong')"></td>
-                        <td><input type="text" class="table-input" data-ans="4" oninput="this.classList.remove('wrong')"></td>
-                        <td><input type="text" class="table-input" data-ans="1" oninput="this.classList.remove('wrong')"></td>
-                        <td><input type="text" class="table-input" data-ans="0" oninput="this.classList.remove('wrong')"></td>
-                        <td><input type="text" class="table-input" data-ans="1" oninput="this.classList.remove('wrong')"></td>
-                        <td><input type="text" class="table-input" data-ans="4" oninput="this.classList.remove('wrong')"></td>
-                        <td><input type="text" class="table-input" data-ans="9" oninput="this.classList.remove('wrong')"></td>
-                    </tr>
-                </table>
-            </div>
-            <div style="text-align: center; margin-top: 15px;">
-                <button class="btn-check" onclick="checkTable('table-13-6', this)">Перевірити таблицю</button>
-            </div>
-          `,
-          tasks: [],
-        },
-        {
-          id: "13.8",
-          title: "13.8.",
-          desc: "Чи проходить графік функції $y = x^2$ через точку:",
-          tasks: [
-            { id: "1)", q: "A(-5; 25)", a: "Так", opts: ["Так", "Ні"] },
-            { id: "2)", q: "B(4; 15)", a: "Ні", opts: ["Так", "Ні"] },
-            { id: "3)", q: "C(0; 5)", a: "Ні", opts: ["Так", "Ні"] },
-          ],
-        },
-        {
-          id: "13.10",
-          title: "13.10.",
-          desc: "Знайдіть область значень функції $y = x^2$, якщо:",
+          id: "14.12",
+          title: "14.12.",
+          desc: "Знайдіть значення виразу:",
           tasks: [
             {
               id: "1)",
-              q: "$-3 \\le x \\le 0$",
-              a: "$0 \\le y \\le 9$",
-              opts: [
-                "$0 \\le y \\le 9$",
-                "$-9 \\le y \\le 0$",
-                "$0 \\le y \\le 3$",
-              ],
-            },
-            {
-              id: "2)",
-              q: "$-1 \\le x \\le 2$",
-              a: "$0 \\le y \\le 4$",
-              opts: [
-                "$1 \\le y \\le 4$",
-                "$0 \\le y \\le 4$",
-                "$0 \\le y \\le 2$",
-              ],
-            },
-          ],
-        },
-        {
-          id: "13.11",
-          title: "13.11.",
-          desc: "Порівняйте значення функції $f(x) = x^2$, якщо:",
-          tasks: [
-            {
-              id: "1)",
-              q: "$x = -5$ і $x = 3$",
-              a: ">",
-              opts: [">", "<", "="],
-            },
-            {
-              id: "2)",
-              q: "$x = -0.5$ і $x = 0.5$",
-              a: "=",
-              opts: [">", "<", "="],
-            },
-          ],
-        },
-        {
-          id: "13.12",
-          title: "13.12.",
-          desc: "Розв'яжіть графічно рівняння $x^2 = 3x$ (знайдіть корені):",
-          tasks: [
-            {
-              id: "1)",
-              q: "x1 =",
-              a: "0",
+              q: "$\\sqrt{36} + \\sqrt{49}$",
+              a: "13",
               type: "input",
             },
             {
               id: "2)",
-              q: "x2 =",
-              a: "3",
-              type: "input",
-            },
-          ],
-        },
-        {
-          id: "13.14",
-          title: "13.14.",
-          desc: "Побудуйте графік функції (попередньо спростивши) $y = \\frac{x^3 - 3x^2}{x - 3}$:",
-          tasks: [
-            {
-              id: "1)",
-              q: "Спрощена формула:",
-              a: "$y = x^2$",
-              opts: ["$y = x$", "$y = x^2$", "$y = 3x^2$"],
-            },
-          ],
-        },
-        {
-          id: "13.16",
-          title: "13.16 (Додаткове).",
-          desc: "Розв'яжіть графічно рівняння $x^2 = x + 2$ (знайдіть точки перетину параболи і прямої):",
-          tasks: [
-            {
-              id: "1)",
-              q: "Менший корінь (x1):",
-              a: "-1",
-              type: "input",
-            },
-            {
-              id: "2)",
-              q: "Більший корінь (x2):",
+              q: "$\\sqrt{16} \\cdot \\sqrt{0,25}$",
               a: "2",
+              type: "input",
+            },
+            {
+              id: "3)",
+              q: "$2\\sqrt{81} - \\sqrt{121}$",
+              a: "7",
+              type: "input",
+            },
+            {
+              id: "4)",
+              q: "$\\sqrt{100} : \\sqrt{0,04}$",
+              a: "50",
+              type: "input",
+            },
+            {
+              id: "5)",
+              q: "$-2\\sqrt{0,09} + 1,6$",
+              a: "1",
+              type: "input",
+            },
+            {
+              id: "6)",
+              q: "$\\sqrt{13^2 - 12^2}$",
+              a: "5",
+              type: "input",
+            },
+            {
+              id: "7)",
+              q: "$\\sqrt{6^2 + 8^2}$",
+              a: "10",
+              type: "input",
+            },
+            {
+              id: "8)",
+              q: "$\\sqrt{0,3^2 - 0,18^2}$",
+              a: "0.24",
+              type: "input",
+            },
+            {
+              id: "9)",
+              q: "$\\sqrt{2(0,1^2 + 0,07)}$",
+              a: "0.4",
+              type: "input",
+            },
+          ],
+        },
+        {
+          id: "14.14",
+          title: "14.14.",
+          desc: "Обчисліть значення виразу при заданих змінних:",
+          tasks: [
+            {
+              id: "1)",
+              q: "$\\sqrt{20 + a}$, якщо $a = 5$",
+              a: "5",
+              type: "input",
+            },
+            {
+              id: "2)",
+              q: "$\\sqrt{m + n}$, якщо $m = 0,05, n = 0,04$",
+              a: "0.3",
+              type: "input",
+            },
+            {
+              id: "3)",
+              q: "$x + 2\\sqrt{x}$, якщо $x = 25$",
+              a: "35",
+              type: "input",
+            },
+            {
+              id: "4)",
+              q: "$2\\sqrt{b} - b$, якщо $b = 1,44$",
+              a: "0.96",
+              type: "input",
+            },
+          ],
+        },
+        {
+          id: "14.16",
+          title: "14.16.",
+          desc: "Розв'яжіть рівняння:",
+          tasks: [
+            { id: "1)", q: "$\\sqrt{x} = 3$", a: "9", type: "input" },
+            { id: "2)", q: "$\\sqrt{x} = 0$", a: "0", type: "input" },
+            {
+              id: "3)",
+              q: "$\\sqrt{x} = -4$",
+              a: "Коренів немає",
+              opts: ["16", "-16", "4", "Коренів немає"],
+            },
+            { id: "4)", q: "$\\sqrt{x} - 5 = 0$", a: "25", type: "input" },
+            { id: "5)", q: "$3\\sqrt{x} = 12$", a: "16", type: "input" },
+            {
+              id: "6)",
+              q: "$\\frac{1}{2}\\sqrt{x} = 3$",
+              a: "36",
+              type: "input",
+            },
+          ],
+        },
+        {
+          id: "14.18",
+          title: "14.18.",
+          desc: "Чи має зміст вираз:",
+          tasks: [
+            {
+              id: "1)",
+              q: "$\\sqrt{10 \\cdot 12 - 11^2}$",
+              a: "Ні",
+              opts: ["Так", "Ні"],
+            },
+            {
+              id: "2)",
+              q: "$\\sqrt{50^2 - 40^2}$",
+              a: "Так",
+              opts: ["Так", "Ні"],
+            },
+            {
+              id: "3)",
+              q: "$\\sqrt{200^2 - 201^2}$",
+              a: "Ні",
+              opts: ["Так", "Ні"],
+            },
+          ],
+        },
+        {
+          id: "14.19",
+          title: "14.19.",
+          desc: "Для яких значень x має зміст вираз:",
+          tasks: [
+            {
+              id: "1)",
+              q: "$\\frac{3}{\\sqrt{x}}$",
+              a: "x > 0",
+              opts: ["x > 0", "x ≥ 0", "x < 0", "x ≠ 0"],
+            },
+            {
+              id: "2)",
+              q: "$\\sqrt{x^4}$",
+              a: "Будь-яке x",
+              opts: ["x ≥ 0", "x > 0", "Будь-яке x", "x ≤ 0"],
+            },
+            {
+              id: "3)",
+              q: "$\\sqrt{x^3}$",
+              a: "x ≥ 0",
+              opts: ["x ≥ 0", "x > 0", "Будь-яке x", "x ≤ 0"],
+            },
+            {
+              id: "4)",
+              q: "$\\frac{1}{\\sqrt{-x}}$",
+              a: "x < 0",
+              opts: ["x > 0", "x ≥ 0", "x < 0", "x ≤ 0"],
+            },
+          ],
+        },
+        {
+          id: "14.21",
+          title: "14.21.",
+          desc: "Розв'яжіть рівняння:",
+          tasks: [
+            {
+              id: "1)",
+              q: "$2\\sqrt{x} + 8 = 0$",
+              a: "Коренів немає",
+              opts: ["16", "4", "-4", "Коренів немає"],
+            },
+            {
+              id: "2)",
+              q: "$3\\sqrt{\\frac{x}{2}} - 6 = 0$",
+              a: "8",
+              type: "input",
+            },
+            {
+              id: "3)",
+              q: "$\\frac{20}{\\sqrt{x+1}} = 5$",
+              a: "15",
+              type: "input",
+            },
+            {
+              id: "4)",
+              q: "$5\\sqrt{3x-2} - 20 = 0$",
+              a: "6",
+              type: "input",
+            },
+          ],
+        },
+        {
+          id: "14.23",
+          title: "14.23.",
+          desc: "Для яких значень 'a' має зміст вираз:",
+          tasks: [
+            {
+              id: "1)",
+              q: "$\\sqrt{-a^4}$",
+              a: "Тільки a=0",
+              opts: ["a ≤ 0", "a ≥ 0", "Тільки a=0", "Жодного"],
+            },
+            {
+              id: "2)",
+              q: "$\\sqrt{-(a+2)^2}$",
+              a: "Тільки a=-2",
+              opts: ["a ≥ -2", "a ≤ -2", "Тільки a=-2", "Жодного"],
+            },
+            {
+              id: "3)",
+              q: "$\\sqrt{a^6 + 5}$",
+              a: "Будь-яке a",
+              opts: ["a ≥ 0", "a ≤ 0", "Будь-яке a", "Тільки a=0"],
+            },
+            {
+              id: "4)",
+              q: "$\\frac{\\sqrt{a}}{a-5}$",
+              a: "a ≥ 0 і a ≠ 5",
+              opts: ["a ≥ 0", "a > 0", "a ≠ 5", "a ≥ 0 і a ≠ 5"],
+            },
+          ],
+        },
+        {
+          id: "14.24",
+          title: "14.24.",
+          desc: "Розв'яжіть рівняння (складніші випадки):",
+          tasks: [
+            {
+              id: "1)",
+              q: "$\\sqrt{|x-5|} = 2$",
+              a: "9; 1",
+              opts: ["9", "1", "9; 1", "25"],
+            },
+            {
+              id: "2)",
+              q: "$\\sqrt{5} + \\sqrt{x} = 2$",
+              a: "Коренів немає",
+              opts: ["1", "4", "Коренів немає", "0.25"],
+            },
+            {
+              id: "3)",
+              q: "$\\sqrt{4 + \\sqrt{x}} = 3$",
+              a: "25",
               type: "input",
             },
           ],
@@ -1008,7 +1164,6 @@
             } else {
               actionHTML = `<div class="options-container">`;
               task.opts.forEach((opt) => {
-                // Виправляємо проблему порівняння: перевіряємо на рівність тут, у циклі генерації
                 const isCorrect = opt === task.a;
                 actionHTML += `<button class="option-btn" onclick="checkOpt(this, ${isCorrect})">${opt}</button>`;
               });
@@ -1028,6 +1183,7 @@
         finishSection.className = "finish-section";
         finishSection.innerHTML = `
               <button class="btn-finish" onclick="finishLesson()">Завершити урок</button>
+              <a href="Тест Квадратний корінь.html" target="_blank" class="btn-test">Пройти тестування</a>
             `;
         root.appendChild(finishSection);
 
@@ -1056,45 +1212,6 @@
 
         setTimeout(resizeCanvas, 100);
       });
-
-      function checkTable(tableId, btn) {
-        const table = document.getElementById(tableId);
-        const inputs = table.querySelectorAll("input.table-input");
-        let allCorrect = true;
-
-        inputs.forEach((input) => {
-          if (input.disabled) return;
-
-          const val = input.value.trim().replace(",", ".");
-          const correctAns = input.getAttribute("data-ans");
-
-          if (val === "") {
-            allCorrect = false;
-            return;
-          }
-
-          if (val === correctAns) {
-            input.classList.add("correct");
-            input.classList.remove("wrong");
-            input.disabled = true;
-            totalCorrect++;
-          } else {
-            input.classList.add("wrong");
-            totalWrong++;
-            allCorrect = false;
-          }
-        });
-
-        const activeInputs = table.querySelectorAll(
-          "input.table-input:not(:disabled)"
-        );
-        if (activeInputs.length === 0) {
-          btn.disabled = true;
-          btn.innerText = "Перевірено";
-        }
-
-        updateStats();
-      }
 
       function checkOpt(btn, isCorrect) {
         const row = btn.closest(".task-row");
