@@ -240,7 +240,7 @@ window.lessonsData = [
   },
   {
     id: 18011,
-    title: "ДЗ: Стандартний вигляд числа",
+    title: "ДЗ: §11. Стандартний вигляд числа",
     grade: 8,
     topic: "Алгебра",
     link: "algebra/8/Домашня Стандартний вигляд числа.html",
@@ -250,7 +250,7 @@ window.lessonsData = [
   },
   {
     id: 18012,
-    title: "ДЗ: Гіпербола",
+    title: "ДЗ: §12. Гіпербола",
     grade: 8,
     topic: "Алгебра",
     link: "algebra/8/Домашня Гіпербола.html",
@@ -260,7 +260,7 @@ window.lessonsData = [
   },
   {
     id: 18013,
-    title: "ДЗ: Парабола",
+    title: "ДЗ: §13. Парабола",
     grade: 8,
     topic: "Алгебра",
     link: "algebra/8/Домашня Парабола.html",
@@ -270,7 +270,7 @@ window.lessonsData = [
   },
   {
     id: 18014,
-    title: "ДЗ: Квадратний корінь",
+    title: "ДЗ: §14. Квадратний корінь",
     grade: 8,
     topic: "Алгебра",
     link: "algebra/8/Домашня Квадратний корінь.html",
