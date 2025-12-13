@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Контрольний тест: Стандартний вигляд числа</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
+    />
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"
+    ></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    ></script>
+
+    <style>
+      :root {
+        --primary: #4f46e5;
+        --primary-light: #eef2ff;
+        --success: #16a34a;
+        --error: #dc2626;
+        --warning: #f59e0b;
+        --bg: #f8fafc;
+        --card: #ffffff;
+        --text: #1e293b;
+        --border: #e2e8f0;
+        --grid-color: #e2e8f0;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        display: flex;
+        overflow: hidden;
+      }
+
+      /* --- LAYOUT --- */
+      #quiz-section {
+        flex: 1;
+        background: var(--bg);
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        border-right: 1px solid var(--border);
+      }
+
+      #board-section {
+        flex: 1;
+        position: relative;
+        background-color: #fff;
+        background-image: linear-gradient(
+            var(--grid-color) 1px,
+            transparent 1px
+          ),
+          linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+        background-size: 25px 25px;
+        cursor: crosshair;
+        overflow: hidden;
+      }
+
+      canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+        touch-action: none;
+      }
+
+      /* --- HEADER --- */
+      header {
+        background: var(--card);
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      }
+
+      .header-title {
+        font-weight: 800;
+        font-size: 1.1rem;
+        color: var(--primary);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .timer-container {
+        background: #1e293b;
+        color: white;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-family: monospace;
+        font-size: 1rem;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      /* --- QUIZ CONTENT --- */
+      .container {
+        padding: 20px;
+        padding-bottom: 80px;
+        max-width: 800px;
+        margin: 0 auto;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      .intro-card {
+        background: linear-gradient(135deg, #4f46e5 0%, #818cf8 100%);
+        color: white;
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 30px;
+      }
+      .intro-title {
+        margin: 0 0 5px 0;
+        font-size: 1.4rem;
+      }
+      .intro-text {
+        margin: 0;
+        font-size: 0.95rem;
+        opacity: 0.9;
+      }
+
+      .question-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+        transition: transform 0.2s, box-shadow 0.2s;
+      }
+      .question-card:focus-within {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px var(--primary-light);
+      }
+
+      .q-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+      }
+      .q-badge {
+        background: var(--primary-light);
+        color: var(--primary);
+        font-weight: 700;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 0.8rem;
+      }
+      .q-points {
+        color: #64748b;
+        font-size: 0.8rem;
+        font-weight: 500;
+      }
+
+      .q-text {
+        font-size: 1.05rem;
+        font-weight: 600;
+        margin-bottom: 15px;
+      }
+
+      /* Options */
+      .options-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .option-label {
+        display: flex;
+        align-items: center;
+        padding: 10px 12px;
+        border: 2px solid var(--border);
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-size: 0.95rem;
+      }
+      .option-label:hover {
+        background-color: var(--primary-light);
+        border-color: #c7d2fe;
+      }
+      .option-label.checked {
+        border-color: var(--primary);
+        background-color: var(--primary-light);
+      }
+
+      .option-input {
+        appearance: none;
+        width: 18px;
+        height: 18px;
+        border: 2px solid #94a3b8;
+        border-radius: 50%;
+        margin-right: 12px;
+        position: relative;
+        flex-shrink: 0;
+      }
+      .option-input:checked {
+        border-color: var(--primary);
+        background-color: var(--primary);
+      }
+
+      .text-input {
+        width: 100%;
+        padding: 10px 12px;
+        border: 2px solid var(--border);
+        border-radius: 8px;
+        font-size: 1rem;
+        outline: none;
+        box-sizing: border-box;
+      }
+      .text-input:focus {
+        border-color: var(--primary);
+      }
+
+      /* Feedback */
+      .feedback-msg {
+        margin-top: 15px;
+        padding: 10px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        display: none;
+      }
+      .question-card.correct {
+        border-color: var(--success);
+        background-color: #f0fdf4;
+      }
+      .question-card.correct .feedback-msg {
+        display: block;
+        color: var(--success);
+        background: #dcfce7;
+      }
+      .question-card.wrong {
+        border-color: var(--error);
+        background-color: #fef2f2;
+      }
+      .question-card.wrong .feedback-msg {
+        display: block;
+        color: var(--error);
+        background: #fee2e2;
+      }
+
+      .btn-submit {
+        width: 100%;
+        background: var(--primary);
+        color: white;
+        border: none;
+        padding: 15px;
+        font-size: 1.1rem;
+        font-weight: 800;
+        border-radius: 50px;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+        margin-top: 20px;
+      }
+      .btn-submit:hover {
+        background-color: #4338ca;
+      }
+
+      /* --- BOARD TOOLS --- */
+      .tools {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        display: flex;
+        gap: 8px;
+        background: rgba(255, 255, 255, 0.95);
+        padding: 6px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        border: 1px solid var(--border);
+        z-index: 10;
+      }
+      .btn-tool {
+        border: 1px solid #cbd5e1;
+        background: white;
+        padding: 6px 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1.2rem;
+        transition: 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .btn-tool.active {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+      }
+
+      /* --- MODAL --- */
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(4px);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+        animation: fadeIn 0.3s ease;
+      }
+      .modal-content {
+        background: white;
+        padding: 30px;
+        border-radius: 20px;
+        width: 90%;
+        max-width: 450px;
+        text-align: center;
+      }
+      .score-circle {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: var(--primary);
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 3rem;
+        font-weight: 900;
+        margin: 0 auto 20px auto;
+      }
+      .modal-title {
+        margin-bottom: 5px;
+        color: var(--text);
+        font-size: 1.8rem;
+      }
+      .modal-subtitle {
+        color: #64748b;
+        font-size: 1rem;
+        margin-bottom: 25px;
+      }
+      .modal-desc {
+        color: #334155;
+        margin-bottom: 25px;
+        font-weight: 500;
+      }
+      .btn-close {
+        background: #1e293b;
+        color: white;
+        border: none;
+        padding: 10px 25px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1rem;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      @media (max-width: 768px) {
+        body {
+          flex-direction: column;
+          overflow-y: auto;
+        }
+        #board-section {
+          height: 40vh;
+          order: 2;
+          border-top: 4px solid #cbd5e1;
+        }
+        #quiz-section {
+          height: 60vh;
+          order: 1;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="quiz-section">
+      <header>
+        <div class="header-title">📝 Тест</div>
+        <div class="timer-container">
+          <span id="timer">20:00</span>
+        </div>
+      </header>
+
+      <div class="container">
+        <div class="intro-card">
+          <h1 class="intro-title">Тема: Стандартний вигляд числа</h1>
+          <p class="intro-text">
+            15 питань. Оцінювання за <strong>12-бальною шкалою</strong>.<br />
+            Використовуйте дошку праворуч для розрахунків.
+          </p>
+        </div>
+
+        <form id="quiz-form" onsubmit="return false;">
+          <div id="questions-container"></div>
+          <button class="btn-submit" onclick="submitQuiz()">
+            Завершити тест
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <div id="board-section">
+      <div class="tools">
+        <button
+          class="btn-tool active"
+          onclick="setTool('pen')"
+          id="t-pen"
+          title="Ручка"
+        >
+          🖊️
+        </button>
+        <button
+          class="btn-tool"
+          onclick="setTool('eraser')"
+          id="t-eraser"
+          title="Гумка"
+        >
+          🧹
+        </button>
+        <button
+          class="btn-tool"
+          onclick="clearCanvasSafe()"
+          style="color: red; border-color: #fee2e2"
+          title="Очистити"
+        >
+          ❌
+        </button>
+      </div>
+      <canvas id="board"></canvas>
+    </div>
+
+    <div class="modal-overlay" id="result-modal">
+      <div class="modal-content">
+        <div class="modal-subtitle">Твоя оцінка</div>
+        <div class="score-circle" id="score-display">0</div>
+        <h2 class="modal-title" id="modal-msg">Результат</h2>
+        <p class="modal-desc" id="modal-details">...</p>
+        <button class="btn-close" onclick="closeModal()">
+          Переглянути помилки
+        </button>
+      </div>
+    </div>
+
+    <script>
+      /* --- 1. BOARD LOGIC --- */
+      const canvas = document.getElementById("board");
+      const ctx = canvas.getContext("2d");
+      const boardSection = document.getElementById("board-section");
+      let painting = false;
+      let tool = "pen";
+
+      function resizeCanvas() {
+        const temp = document.createElement("canvas");
+        const tempCtx = temp.getContext("2d");
+        temp.width = canvas.width;
+        temp.height = canvas.height;
+        if (canvas.width > 0 && canvas.height > 0)
+          tempCtx.drawImage(canvas, 0, 0);
+
+        canvas.width = boardSection.offsetWidth;
+        canvas.height = boardSection.offsetHeight;
+        ctx.drawImage(temp, 0, 0);
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+      }
+
+      window.addEventListener("resize", resizeCanvas);
+      window.addEventListener("load", resizeCanvas);
+
+      function getMousePos(e) {
+        const rect = canvas.getBoundingClientRect();
+        const cx = e.touches ? e.touches[0].clientX : e.clientX;
+        const cy = e.touches ? e.touches[0].clientY : e.clientY;
+        return { x: cx - rect.left, y: cy - rect.top };
+      }
+
+      function startPos(e) {
+        painting = true;
+        draw(e);
+      }
+      function endPos() {
+        painting = false;
+        ctx.beginPath();
+      }
+
+      function draw(e) {
+        if (!painting) return;
+        const pos = getMousePos(e);
+        if (tool === "pen") {
+          ctx.lineWidth = 2;
+          ctx.strokeStyle = "#4f46e5";
+          ctx.globalCompositeOperation = "source-over";
+        } else {
+          ctx.lineWidth = 20;
+          ctx.strokeStyle = "#ffffff";
+          ctx.globalCompositeOperation = "destination-out";
+        }
+        ctx.lineTo(pos.x, pos.y);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(pos.x, pos.y);
+      }
+
+      canvas.addEventListener("mousedown", startPos);
+      canvas.addEventListener("mouseup", endPos);
+      canvas.addEventListener("mousemove", draw);
+      canvas.addEventListener("touchstart", startPos);
+      canvas.addEventListener("touchend", endPos);
+      canvas.addEventListener("touchmove", draw);
+
+      function setTool(t) {
+        tool = t;
+        document
+          .getElementById("t-pen")
+          .classList.toggle("active", t === "pen");
+        document
+          .getElementById("t-eraser")
+          .classList.toggle("active", t === "eraser");
+      }
+      function clearCanvasSafe() {
+        if (confirm("Очистити дошку?"))
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+
+      /* --- 2. QUIZ DATA (15 QUESTIONS) --- */
+      const questions = [
+        {
+          id: 1,
+          text: "Виберіть число, яке записане у стандартному вигляді:",
+          type: "choice",
+          options: [
+            "$12 \\cdot 10^3$",
+            "$1.2 \\cdot 10^4$",
+            "$0.12 \\cdot 10^5$",
+            "$12000$",
+          ],
+          correct: "$1.2 \\cdot 10^4$",
+          feedback: "Тільки тут $1 \\le a < 10$.",
+        },
+        {
+          id: 2,
+          text: "Який порядок числа $0.00007$?",
+          type: "input",
+          correct: "-5",
+          feedback: "$0.00007 = 7 \\cdot 10^{-5}$.",
+        },
+        {
+          id: 3,
+          text: "Запишіть число $5\\,200\\,000$ у стандартному вигляді:",
+          type: "choice",
+          options: [
+            "$5.2 \\cdot 10^5$",
+            "$5.2 \\cdot 10^6$",
+            "$52 \\cdot 10^5$",
+            "$0.52 \\cdot 10^7$",
+          ],
+          correct: "$5.2 \\cdot 10^6$",
+          feedback: "Кома змістилася на 6 знаків вліво.",
+        },
+        {
+          id: 4,
+          text: "Представте число $0.000012$ у стандартному вигляді:",
+          type: "choice",
+          options: [
+            "$1.2 \\cdot 10^{-5}$",
+            "$1.2 \\cdot 10^{-4}$",
+            "$12 \\cdot 10^{-6}$",
+            "$1.2 \\cdot 10^{-6}$",
+          ],
+          correct: "$1.2 \\cdot 10^{-5}$",
+          feedback: "Кома змістилася на 5 знаків вправо.",
+        },
+        {
+          id: 5,
+          text: "Чи є правильним запис $10.5 \\cdot 10^3$ як стандартний?",
+          type: "choice",
+          options: ["Так", "Ні"],
+          correct: "Ні",
+          feedback: "$10.5 > 10$, а має бути менше 10.",
+        },
+        {
+          id: 6,
+          text: "Перетворіть вираз $120 \\cdot 10^5$ у стандартний вигляд:",
+          type: "choice",
+          options: [
+            "$1.2 \\cdot 10^7$",
+            "$1.2 \\cdot 10^6$",
+            "$1.2 \\cdot 10^5$",
+            "$12 \\cdot 10^6$",
+          ],
+          correct: "$1.2 \\cdot 10^7$",
+          feedback:
+            "$120 = 1.2 \\cdot 10^2$, отже $1.2 \\cdot 10^2 \\cdot 10^5 = 1.2 \\cdot 10^7$.",
+        },
+        {
+          id: 7,
+          text: "Обчисліть: $(4 \\cdot 10^{-2}) \\cdot (5 \\cdot 10^5)$",
+          type: "choice",
+          options: [
+            "$2 \\cdot 10^3$",
+            "$2 \\cdot 10^4$",
+            "$20 \\cdot 10^3$",
+            "$2 \\cdot 10^5$",
+          ],
+          correct: "$2 \\cdot 10^4$",
+          feedback:
+            "$4 \\cdot 5 = 20$; $10^{-2} \\cdot 10^5 = 10^3$; $20 \\cdot 10^3 = 2 \\cdot 10^4$.",
+        },
+        {
+          id: 8,
+          text: "Запишіть десятковим дробом число $3.3 \\cdot 10^5$:",
+          type: "input",
+          correct: "330000",
+          feedback: "3.3 * 100000 = 330000.",
+        },
+        {
+          id: 9,
+          text: "Знайдіть частку: $(6 \\cdot 10^{-5}) : (3 \\cdot 10^{-2})$",
+          type: "choice",
+          options: [
+            "$2 \\cdot 10^{-3}$",
+            "$2 \\cdot 10^{-7}$",
+            "$0.5 \\cdot 10^{-3}$",
+            "$2 \\cdot 10^3$",
+          ],
+          correct: "$2 \\cdot 10^{-3}$",
+          feedback: "$6:3=2$; $(-5) - (-2) = -3$.",
+        },
+        {
+          id: 10,
+          text: "Порівняйте числа: $2.5 \\cdot 10^{-3}$ та $0.25 \\cdot 10^{-2}$",
+          type: "choice",
+          options: ["Перше менше", "Перше більше", "Вони рівні"],
+          correct: "Вони рівні",
+          feedback:
+            "$0.25 \\cdot 10^{-2} = 2.5 \\cdot 10^{-1} \\cdot 10^{-2} = 2.5 \\cdot 10^{-3}$.",
+        },
+        {
+          id: 11,
+          text: "Площа прямокутника зі сторонами $2 \\cdot 10^3$ см та $5 \\cdot 10^2$ см дорівнює:",
+          type: "choice",
+          options: [
+            "$10^6$ см²",
+            "$1 \\cdot 10^5$ см²",
+            "$7 \\cdot 10^5$ см²",
+            "$1 \\cdot 10^6$ см²",
+          ],
+          correct: "$1 \\cdot 10^6$ см²",
+          feedback:
+            "$2 \\cdot 5 = 10$; $10^3 \\cdot 10^2 = 10^5$; $10 \\cdot 10^5 = 10^6$.",
+        },
+        {
+          id: 12,
+          text: "Порядок числа $x$ дорівнює 8. Який порядок числа $0.01x$?",
+          type: "input",
+          correct: "6",
+          feedback: "$0.01 = 10^{-2}$. Порядок: $8 + (-2) = 6$.",
+        },
+        {
+          id: 13,
+          text: "Запишіть десятковим дробом число $9.1 \\cdot 10^{-4}$:",
+          type: "input",
+          correct: "0.00091",
+          feedback: "Переносимо кому на 4 знаки вліво.",
+        },
+        {
+          id: 14,
+          text: "Округліть число $0.00592$ до тисячних і запишіть стандартно:",
+          type: "choice",
+          options: [
+            "$6 \\cdot 10^{-3}$",
+            "$5.9 \\cdot 10^{-3}$",
+            "$6 \\cdot 10^{-2}$",
+            "$0.006$",
+          ],
+          correct: "$6 \\cdot 10^{-3}$",
+          feedback: "$0.00592 \\approx 0.006 = 6 \\cdot 10^{-3}$.",
+        },
+        {
+          id: 15,
+          text: "Виконайте дію $2000^3$ і запишіть результат у стандартному вигляді:",
+          type: "choice",
+          options: [
+            "$8 \\cdot 10^9$",
+            "$2 \\cdot 10^9$",
+            "$8 \\cdot 10^6$",
+            "$6 \\cdot 10^9$",
+          ],
+          correct: "$8 \\cdot 10^9$",
+          feedback:
+            "$(2 \\cdot 10^3)^3 = 2^3 \\cdot (10^3)^3 = 8 \\cdot 10^9$.",
+        },
+      ];
+
+      /* --- 3. RENDER & LOGIC --- */
+      const container = document.getElementById("questions-container");
+
+      function renderQuestions() {
+        questions.forEach((q, index) => {
+          const card = document.createElement("div");
+          card.className = "question-card";
+          card.id = `q-card-${q.id}`;
+
+          const headerHTML = `
+            <div class="q-header">
+              <span class="q-badge">Питання ${index + 1}</span>
+            </div>
+          `;
+          const textHTML = `<div class="q-text">${q.text}</div>`;
+
+          let interactionHTML = "";
+          if (q.type === "choice") {
+            interactionHTML = `<div class="options-list">`;
+            q.options.forEach((opt) => {
+              const safeOpt = opt.replace(/"/g, "&quot;");
+              interactionHTML += `
+                <label class="option-label" onclick="selectRadio(this)">
+                  <input type="radio" name="q${q.id}" value="${safeOpt}" class="option-input">
+                  <span>${opt}</span>
+                </label>
+              `;
+            });
+            interactionHTML += `</div>`;
+          } else {
+            interactionHTML = `<input type="text" name="q${q.id}" class="text-input" placeholder="Введіть число..." autocomplete="off">`;
+          }
+
+          const feedbackHTML = `<div class="feedback-msg" id="feedback-${q.id}"></div>`;
+          card.innerHTML =
+            headerHTML + textHTML + interactionHTML + feedbackHTML;
+          container.appendChild(card);
+        });
+
+        if (window.renderMathInElement) {
+          renderMathInElement(document.body, {
+            delimiters: [{ left: "$", right: "$", display: false }],
+          });
+        }
+      }
+
+      function selectRadio(label) {
+        const parent = label.parentNode;
+        parent
+          .querySelectorAll(".option-label")
+          .forEach((l) => l.classList.remove("checked"));
+        label.classList.add("checked");
+        label.querySelector("input").checked = true;
+      }
+
+      /* --- TIMER --- */
+      let timeRemaining = 20 * 60;
+      const timerDisplay = document.getElementById("timer");
+      let timerInterval;
+
+      function startTimer() {
+        timerInterval = setInterval(() => {
+          timeRemaining--;
+          const m = Math.floor(timeRemaining / 60);
+          const s = timeRemaining % 60;
+          timerDisplay.innerText = `${m}:${s < 10 ? "0" + s : s}`;
+          if (timeRemaining <= 0) {
+            clearInterval(timerInterval);
+            submitQuiz(true);
+          }
+        }, 1000);
+      }
+
+      /* --- SUBMIT --- */
+      let isSubmitted = false;
+
+      function submitQuiz(auto = false) {
+        if (isSubmitted) return;
+        if (!auto && !confirm("Завершити тест і показати оцінку?")) return;
+
+        isSubmitted = true;
+        clearInterval(timerInterval);
+
+        let score = 0;
+        const total = questions.length;
+
+        questions.forEach((q) => {
+          const card = document.getElementById(`q-card-${q.id}`);
+          const feedback = document.getElementById(`feedback-${q.id}`);
+          let userVal = "";
+
+          if (q.type === "choice") {
+            const checked = document.querySelector(
+              `input[name="q${q.id}"]:checked`
+            );
+            if (checked) userVal = checked.value;
+          } else {
+            const input = document.querySelector(`input[name="q${q.id}"]`);
+            if (input)
+              userVal = input.value.trim().replace(",", ".").replace(/\s/g, "");
+          }
+
+          // Grading
+          let isCorrect = false;
+          if (q.type === "input") {
+            isCorrect = userVal.toLowerCase() === q.correct.toLowerCase();
+          } else {
+            isCorrect = userVal === q.correct;
+          }
+
+          if (isCorrect) {
+            score++;
+            card.classList.add("correct");
+            feedback.innerHTML = "✅ Правильно! " + q.feedback;
+          } else {
+            card.classList.add("wrong");
+            feedback.innerHTML = `❌ Помилка. Правильна відповідь: ${q.correct}. <br> ${q.feedback}`;
+          }
+
+          // Disable inputs
+          card.querySelectorAll("input").forEach((i) => (i.disabled = true));
+        });
+
+        showModal(score, total);
+        if (window.renderMathInElement) {
+          renderMathInElement(document.body, {
+            delimiters: [{ left: "$", right: "$", display: false }],
+          });
+        }
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      /* --- UPDATED: 12-POINT SCALE --- */
+      function showModal(score, total) {
+        const modal = document.getElementById("result-modal");
+        const display = document.getElementById("score-display");
+        const msg = document.getElementById("modal-msg");
+        const details = document.getElementById("modal-details");
+
+        // Calculate 1-12 mark
+        const mark = Math.round((score / total) * 12);
+        display.innerText = mark;
+
+        if (mark >= 10) {
+          display.style.background = "#16a34a"; // Green
+          msg.innerText = "Відмінно! 🎉";
+        } else if (mark >= 7) {
+          display.style.background = "#4f46e5"; // Indigo
+          msg.innerText = "Добре! 👍";
+        } else if (mark >= 4) {
+          display.style.background = "#f59e0b"; // Orange
+          msg.innerText = "Непогано, але треба краще 😐";
+        } else {
+          display.style.background = "#dc2626"; // Red
+          msg.innerText = "Оу... бандітка, Треба повторити тему 📚";
+        }
+
+        details.innerText = `Правильних відповідей: ${score} з ${total}`;
+        modal.style.display = "flex";
+      }
+
+      function closeModal() {
+        document.getElementById("result-modal").style.display = "none";
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        renderQuestions();
+        startTimer();
+      });
+    </script>
+  </body>
+</html>

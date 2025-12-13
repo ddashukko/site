@@ -28,7 +28,7 @@
         --card: #ffffff;
         --text: #1e293b;
         --border: #e2e8f0;
-        --accent: #f97316; /* Orange accent for this topic */
+        --accent: #f97316;
         --grid-color: #e2e8f0;
       }
 
@@ -228,7 +228,6 @@
         background-color: #fef2f2;
       }
 
-      /* Self Check Layout */
       .task-row.self-check-row {
         flex-direction: row;
         align-items: center;
@@ -290,7 +289,6 @@
         color: white !important;
       }
 
-      /* Self Check Reveal Button */
       .btn-reveal {
         padding: 8px 16px;
         background: var(--primary);
@@ -318,7 +316,7 @@
         display: inline-block;
       }
 
-      /* CTA Button (Test) */
+      /* --- СТИЛІ КНОПКИ В СЕРЕДИНІ УРОКУ --- */
       .cta-container {
         text-align: center;
         margin: 40px 0;
@@ -366,6 +364,45 @@
       }
       .btn-finish:hover {
         transform: scale(1.05);
+        background-color: #1d4ed8;
+      }
+
+      .btn-test {
+        padding: 15px 40px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: white;
+        background: #7c3aed; /* Violet */
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
+        transition: transform 0.2s;
+        text-decoration: none;
+        display: inline-block;
+      }
+      .btn-test:hover {
+        transform: scale(1.05);
+        background-color: #6d28d9;
+      }
+
+      .btn-homework {
+        padding: 15px 40px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: white;
+        background: #ea580c; /* Orange */
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(234, 88, 12, 0.3);
+        transition: transform 0.2s;
+        text-decoration: none;
+        display: inline-block;
+      }
+      .btn-homework:hover {
+        transform: scale(1.05);
+        background-color: #c2410c;
       }
 
       /* Modal */
@@ -871,7 +908,7 @@
             { id: "12)", q: "$1.01 \\cdot 10^{-4}$", a: "$0.000101$" },
           ],
         },
-        /* CTA BUTTON */
+        /* CTA BUTTON IN MIDDLE */
         {
           type: "call-to-action",
           url: "Стандартний вигляд числа Тест1.html",
@@ -1049,7 +1086,7 @@
 
         // Render Exercises
         exercises.forEach((ex) => {
-          // Special Case: Call to Action Button
+          // Special Case: Call to Action Button (THE BUTTON IN THE MIDDLE)
           if (ex.type === "call-to-action") {
             const container = document.createElement("div");
             container.className = "cta-container";
@@ -1131,11 +1168,13 @@
           root.appendChild(exBlock);
         });
 
-        // Add Footer Buttons
+        // Add Footer Buttons (3 buttons like in sample)
         const finishSection = document.createElement("div");
         finishSection.className = "finish-section";
         finishSection.innerHTML = `
               <button class="btn-finish" onclick="finishLesson()">Завершити урок</button>
+              <a href="Тест Стандартний вигляд числа.html" target="_blank" class="btn-test">Пройти тестування</a>
+              <a href="Домашня Стандартний вигляд числа.html" target="_blank" class="btn-homework">Домашня робота</a>
             `;
         root.appendChild(finishSection);
 
@@ -1181,7 +1220,6 @@
         renderMathInElement(ansSpan, {
           delimiters: [{ left: "$", right: "$", display: false }],
         });
-        // Note: self-check does not increment correct/wrong counters automatically
       }
 
       function updateStats() {
