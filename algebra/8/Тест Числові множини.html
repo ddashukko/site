@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Тестування: Дійсні числа (8 клас)</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
+    />
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"
+    ></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    ></script>
+
+    <style>
+      :root {
+        --primary: #4f46e5;
+        --primary-hover: #4338ca;
+        --bg: #f3f4f6;
+        --card-bg: #ffffff;
+        --text: #1f2937;
+        --border: #e5e7eb;
+        --success: #10b981;
+        --error: #ef4444;
+        --grid-color: #e2e8f0;
+      }
+
+      body {
+        font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        display: flex;
+        overflow: hidden; /* Щоб скролились тільки окремі секції */
+      }
+
+      /* --- ЛІВА ЧАСТИНА (ТЕСТ) --- */
+      #tasks-section {
+        flex: 1;
+        background: var(--bg);
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        padding: 20px;
+        box-sizing: border-box;
+      }
+
+      .content-container {
+        max-width: 800px;
+        margin: 0 auto;
+        width: 100%;
+      }
+
+      /* --- ПРАВА ЧАСТИНА (ДОШКА) --- */
+      #board-section {
+        flex: 1;
+        position: relative;
+        background-color: #fff;
+        border-left: 4px solid #cbd5e1;
+        background-image: linear-gradient(
+            var(--grid-color) 1px,
+            transparent 1px
+          ),
+          linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+        background-size: 25px 25px;
+        cursor: crosshair;
+        overflow: hidden;
+      }
+
+      canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+        touch-action: none;
+      }
+
+      /* ІНСТРУМЕНТИ ДОШКИ */
+      .tools {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        display: flex;
+        gap: 10px;
+        background: rgba(255, 255, 255, 0.95);
+        padding: 8px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        border: 1px solid var(--border);
+        flex-wrap: wrap;
+        z-index: 10;
+      }
+
+      .btn-tool {
+        border: 1px solid #cbd5e1;
+        background: white;
+        padding: 8px 12px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 1.2rem;
+        transition: 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 40px;
+      }
+      .btn-tool:hover {
+        background: #f1f5f9;
+      }
+      .btn-tool.active {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+      }
+
+      /* --- СТИЛІ ТЕСТУ --- */
+      header {
+        background: var(--card-bg);
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 50;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 1.3rem;
+        color: var(--primary);
+      }
+
+      .timer-box {
+        font-weight: bold;
+        font-size: 1.25rem;
+        background: #e0e7ff;
+        color: var(--primary);
+        padding: 8px 16px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        white-space: nowrap;
+      }
+
+      .timer-box.urgent {
+        background: #fee2e2;
+        color: var(--error);
+        animation: pulse 1s infinite;
+      }
+
+      @keyframes pulse {
+        0% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.7;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+
+      .question-card {
+        background: var(--card-bg);
+        padding: 25px;
+        border-radius: 15px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        margin-bottom: 20px;
+        border-left: 5px solid var(--primary);
+        transition: transform 0.2s;
+      }
+
+      .q-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 15px;
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 10px;
+      }
+
+      .q-number {
+        font-weight: bold;
+        color: #6b7280;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+      }
+
+      .q-points {
+        background: #f3f4f6;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        color: #4b5563;
+      }
+
+      .q-text {
+        font-size: 1.15rem;
+        margin-bottom: 20px;
+        font-weight: 500;
+      }
+
+      /* OPTIONS */
+      .options-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+
+      .option-label {
+        display: flex;
+        align-items: center;
+        background: #fff;
+        border: 2px solid var(--border);
+        padding: 12px 15px;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.2s;
+        position: relative;
+      }
+
+      .option-label:hover {
+        border-color: #a5b4fc;
+        background: #eef2ff;
+      }
+
+      .option-label input[type="radio"] {
+        margin-right: 15px;
+        transform: scale(1.2);
+        accent-color: var(--primary);
+      }
+
+      .input-answer {
+        width: 100%;
+        padding: 12px;
+        font-size: 1rem;
+        border: 2px solid var(--border);
+        border-radius: 8px;
+        box-sizing: border-box;
+      }
+      .input-answer:focus {
+        outline: none;
+        border-color: var(--primary);
+      }
+
+      .footer-controls {
+        text-align: center;
+        margin-top: 40px;
+        margin-bottom: 60px;
+      }
+
+      .btn-submit {
+        background: var(--primary);
+        color: white;
+        border: none;
+        padding: 15px 50px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        border-radius: 50px;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
+        transition: all 0.2s;
+      }
+      .btn-submit:hover {
+        background: var(--primary-hover);
+        transform: translateY(-2px);
+      }
+
+      /* RESULT MODAL */
+      .modal-backdrop {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(4px);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .modal-content {
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        width: 90%;
+        max-width: 500px;
+        text-align: center;
+        position: relative;
+        animation: slideIn 0.3s ease;
+      }
+
+      @keyframes slideIn {
+        from {
+          transform: translateY(20px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      .score-circle {
+        width: 120px;
+        height: 120px;
+        background: var(--primary);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin: 0 auto 20px;
+        box-shadow: 0 10px 25px rgba(79, 70, 229, 0.3);
+      }
+
+      .score-val {
+        font-size: 3rem;
+        font-weight: 900;
+        line-height: 1;
+      }
+      .score-label {
+        font-size: 0.8rem;
+        opacity: 0.9;
+      }
+
+      .result-details {
+        text-align: left;
+        background: #f9fafb;
+        padding: 15px;
+        border-radius: 10px;
+        margin-top: 20px;
+        font-size: 0.95rem;
+      }
+
+      /* STYLES FOR REVIEW MODE */
+      .correct-answer-highlight {
+        border-color: var(--success) !important;
+        background-color: #ecfdf5 !important;
+      }
+      .wrong-answer-highlight {
+        border-color: var(--error) !important;
+        background-color: #fef2f2 !important;
+      }
+      .explanation-text {
+        margin-top: 10px;
+        font-size: 0.9rem;
+        color: var(--primary);
+        font-style: italic;
+        display: none;
+      }
+      .show-explanation .explanation-text {
+        display: block;
+      }
+
+      @media (max-width: 768px) {
+        body {
+          flex-direction: column;
+        }
+        #board-section {
+          height: 35vh;
+          border-left: none;
+          border-top: 4px solid #cbd5e1;
+          order: 2; /* Дошка знизу на мобільних */
+        }
+        #tasks-section {
+          height: 65vh;
+          order: 1;
+        }
+        .header-title {
+          font-size: 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="tasks-section">
+      <div class="content-container">
+        <header>
+          <div>
+            <h1>Контрольний тест</h1>
+            <div style="font-size: 0.9rem; color: #6b7280">
+              Тема: Дійсні числа • 8 клас
+            </div>
+          </div>
+          <div class="timer-box" id="timer">
+            ⏳ <span id="time-display">15:00</span>
+          </div>
+        </header>
+
+        <form id="quiz-form">
+          <div id="questions-container"></div>
+          <div class="footer-controls">
+            <button type="button" class="btn-submit" onclick="submitTest()">
+              Завершити тест
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div id="board-section">
+      <div class="tools">
+        <button
+          class="btn-tool active"
+          onclick="setTool('pen')"
+          id="t-pen"
+          title="Ручка"
+        >
+          🖊️
+        </button>
+        <button
+          class="btn-tool"
+          onclick="setTool('eraser')"
+          id="t-eraser"
+          title="Гумка"
+        >
+          🧹
+        </button>
+        <button
+          class="btn-tool"
+          onclick="drawSystem()"
+          title="Додати координатну пряму"
+        >
+          📉
+        </button>
+        <button
+          class="btn-tool"
+          onclick="clearCanvasSafe()"
+          style="color: red; border-color: #fee2e2"
+          title="Очистити все"
+        >
+          ❌
+        </button>
+      </div>
+      <canvas id="board"></canvas>
+    </div>
+
+    <div class="modal-backdrop" id="result-modal">
+      <div class="modal-content">
+        <h2 style="margin-top: 0">Результат тестування</h2>
+        <div class="score-circle">
+          <span class="score-val" id="final-score">0</span>
+          <span class="score-label">балів з 12</span>
+        </div>
+        <p id="feedback-msg">Непогано, але є над чим працювати!</p>
+
+        <div class="result-details">
+          <div>
+            ✅ Правильних відповідей: <strong id="res-correct">0</strong>
+          </div>
+          <div>❌ Помилок: <strong id="res-wrong">0</strong></div>
+          <div>⏱ Витрачено часу: <strong id="res-time">00:00</strong></div>
+        </div>
+
+        <button
+          class="btn-submit"
+          style="margin-top: 20px; padding: 10px 30px; font-size: 1rem"
+          onclick="location.reload()"
+        >
+          Спробувати ще раз
+        </button>
+        <button
+          type="button"
+          class="btn-submit"
+          style="
+            margin-top: 10px;
+            padding: 10px 30px;
+            font-size: 1rem;
+            background: #4b5563;
+          "
+          onclick="closeModalViewAnswers()"
+        >
+          Переглянути помилки
+        </button>
+      </div>
+    </div>
+
+    <script>
+      /* --- ЧАСТИНА 1: ЛОГІКА ДОШКИ (CANVAS) --- */
+      const canvas = document.getElementById("board");
+      const ctx = canvas.getContext("2d");
+      const boardSection = document.getElementById("board-section");
+      let painting = false;
+      let tool = "pen";
+
+      function resizeCanvas() {
+        const temp = document.createElement("canvas");
+        const tempCtx = temp.getContext("2d");
+        temp.width = canvas.width;
+        temp.height = canvas.height;
+        if (canvas.width > 0 && canvas.height > 0) {
+          tempCtx.drawImage(canvas, 0, 0);
+        }
+
+        canvas.width = boardSection.offsetWidth;
+        canvas.height = boardSection.offsetHeight;
+
+        ctx.drawImage(temp, 0, 0);
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+      }
+
+      window.addEventListener("resize", resizeCanvas);
+      // Важливо викликати після завантаження
+      setTimeout(resizeCanvas, 100);
+
+      function getMousePos(e) {
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return { x: clientX - rect.left, y: clientY - rect.top };
+      }
+
+      function startPosition(e) {
+        painting = true;
+        draw(e);
+      }
+      function finishedPosition() {
+        painting = false;
+        ctx.beginPath();
+      }
+      function draw(e) {
+        if (!painting) return;
+        const pos = getMousePos(e);
+
+        if (tool === "pen") {
+          ctx.lineWidth = 2;
+          ctx.strokeStyle = "#4f46e5";
+          ctx.globalCompositeOperation = "source-over";
+        } else {
+          ctx.lineWidth = 25;
+          ctx.strokeStyle = "#ffffff";
+          ctx.globalCompositeOperation = "destination-out";
+        }
+
+        ctx.lineTo(pos.x, pos.y);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(pos.x, pos.y);
+      }
+
+      canvas.addEventListener("mousedown", startPosition);
+      canvas.addEventListener("mouseup", finishedPosition);
+      canvas.addEventListener("mousemove", draw);
+      canvas.addEventListener("mouseout", finishedPosition);
+      canvas.addEventListener("touchstart", startPosition);
+      canvas.addEventListener("touchend", finishedPosition);
+      canvas.addEventListener("touchmove", draw);
+
+      function setTool(t) {
+        tool = t;
+        document
+          .getElementById("t-pen")
+          .classList.toggle("active", t === "pen");
+        document
+          .getElementById("t-eraser")
+          .classList.toggle("active", t === "eraser");
+      }
+
+      function clearCanvasSafe() {
+        if (confirm("Очистити дошку?")) {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+      }
+
+      function drawSystem() {
+        const prevStrokeStyle = ctx.strokeStyle;
+        const prevLineWidth = ctx.lineWidth;
+        const prevComposite = ctx.globalCompositeOperation;
+
+        ctx.globalCompositeOperation = "source-over";
+        ctx.strokeStyle = "#334155";
+        ctx.lineWidth = 2;
+        ctx.fillStyle = "#334155";
+        ctx.font = "16px Arial";
+
+        const w = canvas.width;
+        const h = canvas.height;
+        const cx = Math.floor(w / 2);
+        const cy = Math.floor(h / 2);
+        const step = 25;
+
+        ctx.beginPath();
+        // X
+        ctx.moveTo(0, cy);
+        ctx.lineTo(w, cy);
+        ctx.lineTo(w - 10, cy - 5);
+        ctx.moveTo(w, cy);
+        ctx.lineTo(w - 10, cy + 5);
+        // Y
+        ctx.moveTo(cx, h);
+        ctx.lineTo(cx, 0);
+        ctx.lineTo(cx - 5, 10);
+        ctx.moveTo(cx, 0);
+        ctx.lineTo(cx + 5, 10);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.lineWidth = 1;
+        // Сітка
+        for (let x = cx + step; x < w; x += step) {
+          ctx.moveTo(x, cy - 3);
+          ctx.lineTo(x, cy + 3);
+        }
+        for (let x = cx - step; x > 0; x -= step) {
+          ctx.moveTo(x, cy - 3);
+          ctx.lineTo(x, cy + 3);
+        }
+        for (let y = cy + step; y < h; y += step) {
+          ctx.moveTo(cx - 3, y);
+          ctx.lineTo(cx + 3, y);
+        }
+        for (let y = cy - step; y > 0; y -= step) {
+          ctx.moveTo(cx - 3, y);
+          ctx.lineTo(cx + 3, y);
+        }
+        ctx.stroke();
+
+        ctx.fillText("x", w - 20, cy + 20);
+        ctx.fillText("y", cx + 15, 20);
+        ctx.fillText("0", cx - 15, cy + 20);
+        ctx.fillText("1", cx + step - 3, cy + 20);
+
+        ctx.beginPath();
+        ctx.strokeStyle = prevStrokeStyle;
+        ctx.lineWidth = prevLineWidth;
+        ctx.globalCompositeOperation = prevComposite;
+        if (tool === "eraser") setTool("pen");
+      }
+
+      /* --- ЧАСТИНА 2: ЛОГІКА ТЕСТУ --- */
+      const questions = [
+        {
+          id: 1,
+          text: "Яке з наведених чисел є ірраціональним?",
+          points: 1,
+          type: "radio",
+          options: [
+            { text: "$3,14$", correct: false },
+            { text: "$\\sqrt{25}$", correct: false },
+            { text: "$\\pi$", correct: true },
+            { text: "$-5,(3)$", correct: false },
+          ],
+          explanation:
+            "Число $\\pi$ — це нескінченний неперіодичний десятковий дріб.",
+        },
+        {
+          id: 2,
+          text: "До якої множини чисел належить число $-5$?",
+          points: 1,
+          type: "radio",
+          options: [
+            { text: "Лише до множини натуральних чисел ($N$)", correct: false },
+            {
+              text: "До цілих ($Z$), раціональних ($Q$) і дійсних ($R$)",
+              correct: true,
+            },
+            { text: "Лише до множини ірраціональних чисел", correct: false },
+            { text: "Тільки до множини натуральних і цілих", correct: false },
+          ],
+          explanation:
+            "$-5$ — ціле число, а отже, воно також є раціональним і дійсним.",
+        },
+        {
+          id: 3,
+          text: "Подайте дріб $\\frac{2}{3}$ у вигляді нескінченного десяткового дробу:",
+          points: 1,
+          type: "radio",
+          options: [
+            { text: "$0,6$", correct: false },
+            { text: "$0,(6)$", correct: true },
+            { text: "$0,66$", correct: false },
+            { text: "$0,67$", correct: false },
+          ],
+          explanation: "$2 : 3 = 0,666... = 0,(6)$.",
+        },
+        {
+          id: 4,
+          text: "Яке твердження є правильним?",
+          points: 1,
+          type: "radio",
+          options: [
+            { text: "$N \\subset Z \\subset Q \\subset R$", correct: true },
+            { text: "$Z \\subset N \\subset Q \\subset R$", correct: false },
+            { text: "$R \\subset Q \\subset Z \\subset N$", correct: false },
+            { text: "$Q$ і $R$ — це одне й те саме", correct: false },
+          ],
+          explanation:
+            "Натуральні входять у цілі, цілі у раціональні, раціональні у дійсні.",
+        },
+        {
+          id: 5,
+          text: "Порівняйте числа: $1,42$ та $\\sqrt{2}$.",
+          points: 1,
+          type: "radio",
+          options: [
+            { text: "$1,42 < \\sqrt{2}$", correct: false },
+            { text: "$1,42 > \\sqrt{2}$", correct: true },
+            { text: "$1,42 = \\sqrt{2}$", correct: false },
+            { text: "Неможливо порівняти", correct: false },
+          ],
+          explanation: "$\\sqrt{2} \\approx 1,414$. Тому $1,42 > 1,414$.",
+        },
+        {
+          id: 6,
+          text: "Знайдіть значення виразу $(\\sqrt{5})^2 - \\sqrt{16}$.",
+          points: 1,
+          type: "input",
+          correctAnswer: "1",
+          explanation: "$(\\sqrt{5})^2 = 5$, $\\sqrt{16} = 4$. $5 - 4 = 1$.",
+        },
+        {
+          id: 7,
+          text: "Між якими двома сусідніми цілими числами знаходиться число $\\sqrt{20}$?",
+          points: 2,
+          type: "radio",
+          options: [
+            { text: "3 і 4", correct: false },
+            { text: "4 і 5", correct: true },
+            { text: "5 і 6", correct: false },
+            { text: "19 і 21", correct: false },
+          ],
+          explanation:
+            "$4^2=16$, $5^2=25$. Число $20$ між $16$ і $25$, тому корінь між $4$ і $5$.",
+        },
+        {
+          id: 8,
+          text: "Розв'яжіть рівняння $x^2 = 13$.",
+          points: 2,
+          type: "radio",
+          options: [
+            { text: "$x = \\sqrt{13}$", correct: false },
+            { text: "$x = 6,5$", correct: false },
+            { text: "$x = \\sqrt{13}$ та $x = -\\sqrt{13}$", correct: true },
+            { text: "Коренів немає", correct: false },
+          ],
+          explanation:
+            "Квадратне рівняння $x^2=a$ (де $a>0$) має два корені: $\\pm\\sqrt{a}$.",
+        },
+        {
+          id: 9,
+          text: "Обчисліть: $0,(4) + \\frac{1}{2}$. Відповідь запишіть десятковим дробом (округліть до сотих).",
+          points: 2,
+          type: "input",
+          correctAnswer: "0.94",
+          explanation:
+            "$0,(4) = 4/9$. $4/9 + 1/2 = 8/18 + 9/18 = 17/18 \\approx 0,944...$.",
+        },
+      ];
+
+      /* ТАЙМЕР */
+      let timeLeft = 15 * 60;
+      let timerInterval;
+      const timeDisplay = document.getElementById("time-display");
+      const timerBox = document.getElementById("timer");
+
+      function startTimer() {
+        timerInterval = setInterval(() => {
+          timeLeft--;
+
+          let m = Math.floor(timeLeft / 60);
+          let s = timeLeft % 60;
+          timeDisplay.innerText = `${m}:${s < 10 ? "0" + s : s}`;
+
+          if (timeLeft <= 60) {
+            timerBox.classList.add("urgent");
+          }
+
+          if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            submitTest(true);
+          }
+        }, 1000);
+      }
+
+      /* РЕНДЕР ЗАПИТАНЬ */
+      function renderQuestions() {
+        const container = document.getElementById("questions-container");
+
+        questions.forEach((q, index) => {
+          const card = document.createElement("div");
+          card.className = "question-card";
+          card.id = `q-card-${q.id}`;
+
+          let html = `
+            <div class="q-header">
+              <span class="q-number">Питання ${index + 1}</span>
+              <span class="q-points">${q.points} бал(и)</span>
+            </div>
+            <div class="q-text">${q.text}</div>
+          `;
+
+          if (q.type === "radio") {
+            html += `<div class="options-grid">`;
+            q.options.forEach((opt, optIndex) => {
+              html += `
+                <label class="option-label" id="opt-label-${q.id}-${optIndex}">
+                  <input type="radio" name="q${q.id}" value="${optIndex}">
+                  <span>${opt.text}</span>
+                </label>
+              `;
+            });
+            html += `</div>`;
+          } else if (q.type === "input") {
+            html += `
+              <input type="text" class="input-answer" name="q${q.id}" placeholder="Введіть відповідь..." autocomplete="off">
+            `;
+          }
+
+          html += `<div class="explanation-text" id="expl-${q.id}">💡 Пояснення: ${q.explanation}</div>`;
+
+          card.innerHTML = html;
+          container.appendChild(card);
+        });
+
+        // Запуск рендеру LaTeX
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false },
+          ],
+        });
+      }
+
+      /* ПЕРЕВІРКА */
+      let isSubmitted = false;
+
+      function submitTest(auto = false) {
+        if (isSubmitted) return;
+        if (!auto && !confirm("Ви впевнені, що хочете завершити тест?")) return;
+
+        isSubmitted = true;
+        clearInterval(timerInterval);
+
+        let userScore = 0;
+        let maxPoints = 0;
+        let correctCount = 0;
+        let wrongCount = 0;
+
+        questions.forEach((q) => {
+          maxPoints += q.points;
+          let isCorrect = false;
+          const card = document.getElementById(`q-card-${q.id}`);
+
+          if (q.type === "radio") {
+            const selected = document.querySelector(
+              `input[name="q${q.id}"]:checked`
+            );
+            if (selected) {
+              const val = parseInt(selected.value);
+              if (q.options[val].correct) {
+                isCorrect = true;
+              } else {
+                const label = document.getElementById(
+                  `opt-label-${q.id}-${val}`
+                );
+                label.classList.add("wrong-answer-highlight");
+              }
+            }
+            q.options.forEach((opt, idx) => {
+              if (opt.correct) {
+                const correctLabel = document.getElementById(
+                  `opt-label-${q.id}-${idx}`
+                );
+                correctLabel.classList.add("correct-answer-highlight");
+                correctLabel.innerHTML +=
+                  " <span style='margin-left:auto; color:#10b981; font-weight:bold;'>✔</span>";
+              }
+            });
+          } else if (q.type === "input") {
+            const input = document.querySelector(`input[name="q${q.id}"]`);
+            let val = input.value.trim().replace(",", ".");
+            if (
+              val === q.correctAnswer ||
+              val === q.correctAnswer.replace(".", ",")
+            ) {
+              isCorrect = true;
+              input.classList.add("correct-answer-highlight");
+              input.style.backgroundColor = "#ecfdf5";
+            } else {
+              input.classList.add("wrong-answer-highlight");
+              input.style.backgroundColor = "#fef2f2";
+              const hint = document.createElement("div");
+              hint.style.color = "#ef4444";
+              hint.style.fontSize = "0.9rem";
+              hint.style.marginTop = "5px";
+              hint.innerText = `Правильна відповідь: ${q.correctAnswer}`;
+              input.parentNode.appendChild(hint);
+            }
+          }
+
+          if (isCorrect) {
+            userScore += q.points;
+            correctCount++;
+          } else {
+            wrongCount++;
+            card.style.borderLeftColor = "#ef4444";
+          }
+
+          card.classList.add("show-explanation");
+          const inputs = card.querySelectorAll("input");
+          inputs.forEach((i) => (i.disabled = true));
+        });
+
+        const finalGrade = Math.round((userScore / maxPoints) * 12);
+
+        document.getElementById("final-score").innerText = finalGrade;
+        document.getElementById("res-correct").innerText = correctCount;
+        document.getElementById("res-wrong").innerText = wrongCount;
+
+        const spentSeconds = 15 * 60 - timeLeft;
+        const mSpent = Math.floor(spentSeconds / 60);
+        const sSpent = spentSeconds % 60;
+        document.getElementById(
+          "res-time"
+        ).innerText = `${mSpent} хв ${sSpent} сек`;
+
+        const msgEl = document.getElementById("feedback-msg");
+        if (finalGrade >= 10) {
+          msgEl.innerText = "Чудова робота! Ти експерт! 🏆";
+          msgEl.style.color = "#10b981";
+        } else if (finalGrade >= 7) {
+          msgEl.innerText = "Хороший результат! 👍";
+          msgEl.style.color = "#4f46e5";
+        } else if (finalGrade >= 4) {
+          msgEl.innerText = "Задовільно, але варто повторити теорію. 📚";
+          msgEl.style.color = "#f59e0b";
+        } else {
+          msgEl.innerText = "Потрібно більше практики. Не здавайся! 💪";
+          msgEl.style.color = "#ef4444";
+        }
+
+        document.getElementById("result-modal").style.display = "flex";
+      }
+
+      function closeModalViewAnswers() {
+        document.getElementById("result-modal").style.display = "none";
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        renderQuestions();
+        startTimer();
+      });
+    </script>
+  </body>
+</html>

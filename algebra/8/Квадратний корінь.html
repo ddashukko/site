@@ -44,7 +44,6 @@
         overflow: hidden;
       }
 
-      /* --- ЛІВА ЧАСТИНА (ТЕОРІЯ + ЗАВДАННЯ) --- */
       #tasks-section {
         flex: 1;
         background: var(--bg);
@@ -53,7 +52,6 @@
         flex-direction: column;
       }
 
-      /* --- ПРАВА ЧАСТИНА (ДОШКА) --- */
       #board-section {
         flex: 1;
         position: relative;
@@ -76,7 +74,6 @@
         touch-action: none;
       }
 
-      /* ІНСТРУМЕНТИ ДОШКИ */
       .tools {
         position: absolute;
         top: 15px;
@@ -115,7 +112,6 @@
         border-color: var(--primary);
       }
 
-      /* ЗАГОЛОВОК */
       header {
         background: var(--card);
         padding: 15px 20px;
@@ -155,7 +151,6 @@
         box-sizing: border-box;
       }
 
-      /* ТЕОРІЯ */
       .theory-block {
         background: linear-gradient(to right, #fdfbf7, #fff);
         border-left: 5px solid var(--accent);
@@ -179,7 +174,6 @@
         line-height: 1.5;
       }
 
-      /* ВПРАВИ */
       .exercise-block {
         background: var(--card);
         border-radius: 12px;
@@ -319,7 +313,6 @@
         background: #fef2f2;
       }
 
-      /* КНОПКИ ВНИЗУ */
       .finish-section {
         margin-top: 40px;
         text-align: center;
@@ -364,7 +357,25 @@
         background-color: #6d28d9;
       }
 
-      /* МОДАЛКА */
+      .btn-homework {
+        padding: 15px 40px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: white;
+        background: #ea580c;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(234, 88, 12, 0.3);
+        transition: transform 0.2s;
+        text-decoration: none;
+        display: inline-block;
+      }
+      .btn-homework:hover {
+        transform: scale(1.05);
+        background-color: #c2410c;
+      }
+
       .modal-overlay {
         display: none;
         position: fixed;
@@ -567,7 +578,6 @@
     </div>
 
     <script>
-      /* --- 1. ЛОГІКА ДОШКИ (CANVAS) --- */
       const canvas = document.getElementById("board");
       const ctx = canvas.getContext("2d");
       const boardSection = document.getElementById("board-section");
@@ -727,8 +737,6 @@
           setTool("pen");
         }
       }
-
-      /* --- 2. ЛОГІКА ЗАВДАНЬ --- */
 
       const exercises = [
         {
@@ -1122,7 +1130,6 @@
             },
           ],
         },
-        // --- НОВІ ЗАВДАННЯ З ФОТО (14.26, 14.27, 14.28, 14.29, 14.30) ---
         {
           id: "14.26",
           title: "14.26. Спрощення виразів",
@@ -1238,7 +1245,6 @@
 
             let actionHTML = "";
             if (task.type === "input") {
-              // Перетворюємо масив відповідей у рядок для атрибута
               const answers = Array.isArray(task.a) ? task.a.join("|") : task.a;
               actionHTML = `
                             <div class="input-group">
@@ -1269,6 +1275,7 @@
         finishSection.innerHTML = `
               <button class="btn-finish" onclick="finishLesson()">Завершити урок</button>
               <a href="Тест Квадратний корінь.html" target="_blank" class="btn-test">Пройти тестування</a>
+              <a href="Домашня Квадратний корінь.html" target="_blank" class="btn-homework">Домашня робота</a>
             `;
         root.appendChild(finishSection);
 
@@ -1322,11 +1329,7 @@
         const input = row.querySelector("input");
         if (row.classList.contains("done")) return;
 
-        // Замінюємо кому на крапку, щоб приймати 0,5 як 0.5
         let val = input.value.trim().replace(",", ".");
-
-        // Для періодичних дробів (0.(3)) користувач може написати 0.(3) або 0,(3).
-        // Оскільки ми замінили кому на крапку, це вже оброблено.
 
         const correctArr = ansStr.split("|");
 

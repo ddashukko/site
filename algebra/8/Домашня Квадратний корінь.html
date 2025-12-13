@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Сторінка підручника - Квадратні корені</title>
+    <style>
+      body {
+        background-color: #e6e6e6;
+        margin: 0;
+        padding: 40px 0;
+        font-family: "Times New Roman", Times, serif;
+        display: flex;
+        justify-content: center;
+        min-height: 100vh;
+      }
+
+      .book-page {
+        background-color: #fff;
+        width: 210mm; /* Ширина А4 */
+        min-height: 297mm; /* Висота А4 */
+        padding: 25mm 20mm; /* Поля сторінки */
+        box-sizing: border-box;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.1);
+        position: relative;
+        color: #1a1a1a;
+        font-size: 18px;
+        line-height: 1.5;
+      }
+
+      .header-title {
+        position: absolute;
+        top: 10mm;
+        left: 20mm;
+        right: 20mm;
+        text-align: center;
+        font-size: 14px;
+        color: #666;
+        text-transform: uppercase;
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 5px;
+      }
+
+      .page-number {
+        position: absolute;
+        bottom: 10mm;
+        width: 100%;
+        text-align: center;
+        font-weight: bold;
+        color: #333;
+        left: 0;
+      }
+
+      .problem {
+        margin-bottom: 25px;
+        display: flex;
+        align-items: baseline;
+      }
+
+      .problem-number {
+        font-weight: bold;
+        color: #0099dd;
+        margin-right: 8px;
+        white-space: nowrap;
+      }
+
+      .problem-text {
+        width: 100%;
+      }
+
+      .sub-items-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 40px;
+        margin-top: 8px;
+        justify-content: flex-start;
+      }
+
+      .sub-item {
+        display: inline-block;
+      }
+
+      .fraction {
+        display: inline-block;
+        text-align: center;
+        vertical-align: middle;
+        margin: 0 2px;
+        font-size: 0.9em;
+      }
+
+      .fraction > span {
+        display: block;
+        padding: 0 2px;
+      }
+
+      .fraction span.numerator {
+        border-bottom: 1px solid #000;
+      }
+
+      .fraction span.denominator {
+        border-top: 0;
+      }
+
+      .mixed-fraction {
+        display: inline-flex;
+        align-items: center;
+      }
+
+      .mixed-fraction .integer {
+        margin-right: 2px;
+      }
+
+      .sqrt {
+        white-space: nowrap;
+      }
+
+      .sqrt span {
+        border-top: 1px solid #000;
+        padding-top: 1px;
+      }
+
+      .list-num {
+        margin-right: 3px;
+      }
+
+      /* Специфічні стилі для сітки рівнянь (3 колонки) */
+      .grid-3-col {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px 10px;
+        margin-top: 10px;
+      }
+
+      /* Специфічні стилі для сітки (2 колонки) */
+      .grid-2-col {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px 30px;
+        margin-top: 10px;
+      }
+
+      @media print {
+        body {
+          background: none;
+          padding: 0;
+        }
+        .book-page {
+          box-shadow: none;
+          margin: 0;
+          width: 100%;
+          height: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="book-page">
+      <div class="header-title">§ 14. Квадратні корені. Дійсні числа</div>
+
+      <div class="problem">
+        <span class="problem-number">14.3.</span>
+        <div class="problem-text">
+          Знайдіть значення квадратного кореня із числа:
+          <div class="sub-items-row">
+            <div class="sub-item"><span class="list-num">1)</span> 0;</div>
+            <div class="sub-item"><span class="list-num">2)</span> 1;</div>
+            <div class="sub-item"><span class="list-num">3)</span> 49.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <span class="problem-number">14.5.</span>
+        <div class="problem-text">
+          Чи має зміст вираз:
+          <div class="sub-items-row">
+            <div class="sub-item">
+              <span class="list-num">1)</span>
+              <span class="sqrt">&radic;<span>16</span></span
+              >;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">2)</span>
+              <span class="sqrt">&radic;<span>&minus;25</span></span
+              >?
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <span class="problem-number">14.7.</span>
+        <div class="problem-text">
+          Доведіть, що:
+          <div class="sub-items-row" style="gap: 60px">
+            <div class="sub-item">
+              <span class="list-num">1)</span>
+              <span class="sqrt">&radic;<span>196</span></span> = 14;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">2)</span>
+              <span class="sqrt"
+                >&radic;
+                <div class="fraction">
+                  <span class="numerator">1</span
+                  ><span class="denominator">25</span>
+                </div>
+              </span>
+              =
+              <div class="fraction">
+                <span class="numerator">1</span
+                ><span class="denominator">5</span>
+              </div>
+              .
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <span class="problem-number">14.9.</span>
+        <div class="problem-text">
+          Обчисліть:
+          <div class="grid-3-col" style="grid-template-columns: repeat(4, 1fr)">
+            <div class="sub-item">
+              <span class="list-num">1)</span>
+              <span class="sqrt">&radic;<span>64</span></span
+              >;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">2)</span>
+              <span class="sqrt">&radic;<span>81</span></span
+              >;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">3)</span>
+              <span class="sqrt">&radic;<span>0,25</span></span
+              >;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">4)</span>
+              <span class="sqrt">&radic;<span>6400</span></span
+              >;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">5)</span>
+              <span class="sqrt">&radic;<span>0,09</span></span
+              >;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">6)</span>
+              <span class="sqrt"
+                >&radic;
+                <div class="fraction">
+                  <span class="numerator">1</span
+                  ><span class="denominator">49</span>
+                </div> </span
+              >;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">7)</span>
+              <span class="sqrt"
+                >&radic;
+                <div class="mixed-fraction">
+                  <span class="integer">1</span>
+                  <div class="fraction">
+                    <span class="numerator">9</span
+                    ><span class="denominator">16</span>
+                  </div>
+                </div> </span
+              >;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">8)</span>
+              <span class="sqrt"
+                >&radic;
+                <div class="mixed-fraction">
+                  <span class="integer">2</span>
+                  <div class="fraction">
+                    <span class="numerator">14</span
+                    ><span class="denominator">25</span>
+                  </div>
+                </div> </span
+              >.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <span class="problem-number">14.13.</span>
+        <div class="problem-text">
+          Знайдіть значення виразу:
+          <div class="grid-3-col">
+            <div class="sub-item">
+              <span class="list-num">1)</span>
+              <span class="sqrt">&radic;<span>64</span></span> +
+              <span class="sqrt">&radic;<span>16</span></span
+              >;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">2)</span>
+              <span class="sqrt">&radic;<span>9</span></span> &middot;
+              <span class="sqrt">&radic;<span>100</span></span
+              >;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">3)</span> 3<span class="sqrt"
+                >&radic;<span>144</span></span
+              >
+              &minus; <span class="sqrt">&radic;<span>64</span></span
+              >;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">4)</span>
+              <span class="sqrt">&radic;<span>36</span></span> :
+              <span class="sqrt">&radic;<span>0,04</span></span
+              >;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">5)</span> &minus;4<span class="sqrt"
+                >&radic;<span>0,49</span></span
+              >
+              + 3,5;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">6)</span>
+              <span class="sqrt"
+                >&radic;<span>13<sup>2</sup> &minus; 5<sup>2</sup></span></span
+              >;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">7)</span>
+              <span class="sqrt"
+                >&radic;<span>6<sup>2</sup> + 8<sup>2</sup></span></span
+              >;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">8)</span>
+              <span class="sqrt"
+                >&radic;<span>0,4<sup>2</sup> &minus; 0,16</span></span
+              >;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">9)</span>
+              <span class="sqrt"
+                >&radic;<span>2(0,5<sup>2</sup> + 1,75)</span></span
+              >.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <span class="problem-number">14.15.</span>
+        <div class="problem-text">
+          Обчисліть значення виразу:
+          <div class="sub-items-row" style="display: block">
+            <div class="sub-item" style="display: block; margin-bottom: 10px">
+              <span class="list-num">1)</span>
+              <span class="sqrt">&radic;<span>25 &minus; b</span></span
+              >, якщо <i>b</i> = &minus;11; 24;
+            </div>
+            <div class="sub-item" style="display: block">
+              <span class="list-num">2)</span> 3<span class="sqrt"
+                >&radic;<span>m</span></span
+              >
+              &minus; <i>m</i>, якщо <i>m</i> = 1,44; 0,36.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <span class="problem-number">14.17.</span>
+        <div class="problem-text">
+          Розв’яжіть рівняння:
+          <div class="sub-items-row" style="gap: 50px">
+            <div class="sub-item">
+              <span class="list-num">1)</span>
+              <span class="sqrt">&radic;<span>x</span></span> = 2;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">2)</span>
+              <span class="sqrt">&radic;<span>x</span></span> = &minus;5;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">3)</span>
+              <span class="sqrt">&radic;<span>x</span></span> &minus; 7 = 0;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">4)</span> 4<span class="sqrt"
+                >&radic;<span>x</span></span
+              >
+              = 20.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <span class="problem-number">14.20.</span>
+        <div class="problem-text">
+          Для яких значень <i>y</i> має зміст вираз:
+          <div class="sub-items-row" style="gap: 40px">
+            <div class="sub-item">
+              <span class="list-num">1)</span>
+              <span class="sqrt">&radic;<span>3y</span></span
+              >;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">2)</span>
+              <div class="fraction">
+                <span class="numerator">1</span
+                ><span class="denominator"
+                  ><span class="sqrt"
+                    >&radic;<span>y<sup>5</sup></span></span
+                  ></span
+                >
+              </div>
+              ;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">3)</span>
+              <span class="sqrt"
+                >&radic;<span>y<sup>4</sup></span></span
+              >;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">4)</span>
+              <span class="sqrt">&radic;<span>&minus;2y</span></span
+              >?
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <span class="problem-number">14.22.</span>
+        <div class="problem-text">
+          Розв’яжіть рівняння:
+          <div class="grid-2-col">
+            <div class="sub-item">
+              <span class="list-num">1)</span>
+              <div class="fraction">
+                <span class="numerator">1</span
+                ><span class="denominator">3</span>
+              </div>
+              <span class="sqrt">&radic;<span>2x</span></span> &minus; 2 = 0;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">2)</span>
+              3<span class="sqrt"
+                >&radic;
+                <div class="fraction">
+                  <span class="numerator">x</span
+                  ><span class="denominator">2</span>
+                </div>
+              </span>
+              + 9 = 0;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">3)</span>
+              <div class="fraction">
+                <span class="numerator">12</span
+                ><span class="denominator"
+                  ><span class="sqrt">&radic;<span>3x</span></span></span
+                >
+              </div>
+              = 24;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">4)</span>
+              3<span class="sqrt">&radic;<span>3x + 4</span></span> &minus; 15 =
+              0.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <span class="problem-number">14.25.</span>
+        <div class="problem-text">
+          Розв’яжіть рівняння:
+          <span class="list-num">1)</span>
+          <span class="sqrt">&radic;<span>|3x &minus; 2|</span></span> = 4;
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="list-num">2)</span>
+          <span class="sqrt">&radic;<span>16</span></span> +
+          <span class="sqrt">&radic;<span>x</span></span> = 7.
+        </div>
+      </div>
+
+      <div class="page-number">125</div>
+    </div>
+  </body>
+</html>
