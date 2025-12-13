@@ -3,196 +3,429 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Домашнє завдання: Стандартний вигляд числа</title>
+    <title>Сторінка підручника - Стандартний вигляд числа</title>
     <style>
       body {
-        font-family: "Verdana", sans-serif;
-        background-color: #f4f4f4;
+        background-color: #e6e6e6;
+        margin: 0;
+        padding: 40px 0;
+        font-family: "Times New Roman", Times, serif;
         display: flex;
         justify-content: center;
-        margin: 0;
-        padding: 20px;
+        min-height: 100vh;
       }
-      .textbook-page {
-        background-color: white;
-        width: 100%;
-        max-width: 800px;
-        padding: 40px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        color: #333;
-        line-height: 1.6;
+
+      .book-page {
+        background-color: #fff;
+        width: 210mm; /* Ширина А4 */
+        min-height: 297mm; /* Висота А4 */
+        padding: 25mm 20mm; /* Поля сторінки */
+        box-sizing: border-box;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.1);
+        position: relative;
+        color: #1a1a1a;
+        font-size: 18px;
+        line-height: 1.5;
       }
-      .header {
-        color: #d63384;
-        font-weight: bold;
-        border-bottom: 2px solid #d63384;
-        padding-bottom: 10px;
-        margin-bottom: 30px;
-        font-size: 1.2em;
+
+      .header-title {
+        position: absolute;
+        top: 10mm;
+        left: 20mm;
+        right: 20mm;
+        text-align: center;
+        font-size: 14px;
+        color: #666;
         text-transform: uppercase;
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 5px;
       }
+
+      .page-number {
+        position: absolute;
+        bottom: 10mm;
+        width: 100%;
+        text-align: center;
+        font-weight: bold;
+        color: #333;
+        left: 0;
+      }
+
       .problem {
         margin-bottom: 25px;
+        display: flex;
+        align-items: baseline;
       }
-      .p-number {
+
+      .problem-number {
         font-weight: bold;
-        color: #2e7d32;
-        background-color: #e8f5e9;
-        padding: 2px 6px;
-        border-radius: 4px;
+        color: #0099dd;
         margin-right: 8px;
+        white-space: nowrap;
+      }
+
+      .problem-text {
+        width: 100%;
+      }
+
+      .sub-items-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 40px;
+        margin-top: 8px;
+        justify-content: flex-start;
+      }
+
+      .sub-item {
         display: inline-block;
       }
-      .sub-item {
-        margin-left: 20px;
-        margin-bottom: 12px;
-      }
-      .math {
-        font-family: "Times New Roman", serif;
-        font-style: italic;
-        font-size: 1.2em;
-      }
-      /* Стиль для множення */
-      .mult {
-        font-style: normal;
-        font-weight: bold;
-        font-size: 1.1em;
+
+      .fraction {
+        display: inline-block;
+        text-align: center;
         vertical-align: middle;
-        margin: 0 3px;
-      }
-      sup {
-        font-size: 0.7em;
-        vertical-align: super;
-      }
-      .highlight {
-        color: #d32f2f;
-        font-weight: bold;
-        background-color: #ffebee;
-        padding: 2px 6px;
-        border-radius: 4px;
+        margin: 0 2px;
         font-size: 0.9em;
-        margin-left: 5px;
+      }
+
+      .fraction > span {
+        display: block;
+        padding: 0 2px;
+      }
+
+      .fraction span.numerator {
+        border-bottom: 1px solid #000;
+      }
+
+      .fraction span.denominator {
+        border-top: 0;
+      }
+
+      .mixed-fraction {
+        display: inline-flex;
+        align-items: center;
+      }
+
+      .mixed-fraction .integer {
+        margin-right: 2px;
+      }
+
+      .sqrt {
+        white-space: nowrap;
+      }
+
+      .sqrt span {
+        border-top: 1px solid #000;
+        padding-top: 1px;
+      }
+
+      .list-num {
+        margin-right: 3px;
+      }
+
+      /* Специфічні стилі для сітки рівнянь */
+      .grid-3-col {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px 10px;
+        margin-top: 10px;
+      }
+
+      /* Специфічні стилі для сітки (2 колонки) */
+      .grid-2-col {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px 30px;
+        margin-top: 10px;
+      }
+
+      @media print {
+        body {
+          background: none;
+          padding: 0;
+        }
+        .book-page {
+          box-shadow: none;
+          margin: 0;
+          width: 100%;
+          height: 100%;
+        }
       }
     </style>
   </head>
   <body>
-    <div class="textbook-page">
-      <div class="header">Стандартний вигляд числа: дії та перетворення</div>
+    <div class="book-page">
+      <div class="header-title">§ 11. Стандартний вигляд числа</div>
 
       <div class="problem">
-        <span class="p-number">11.26.</span> Округліть число до сотень і
-        отриманий результат запишіть у стандартному вигляді:
-        <div class="sub-item">
-          1) <span class="math">152 391</span>; &nbsp;&nbsp;&nbsp;&nbsp; 2)
-          <span class="math">14 518</span>; &nbsp;&nbsp;&nbsp;&nbsp; 3)
-          <span class="math">3452,8</span>; &nbsp;&nbsp;&nbsp;&nbsp; 4)
-          <span class="math">219 912</span>.
+        <span class="problem-number">11.4.</span>
+        <div class="problem-text">
+          Яким є порядок числа, поданого у стандартному вигляді:
+          <div class="sub-items-row">
+            <div class="sub-item">
+              <span class="list-num">1)</span> 3,4 &middot;
+              10<sup>&minus;6</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">2)</span> 4,5 &middot; 10<sup>14</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">3)</span> 1,89 &middot; 10<sup>0</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">4)</span> 5,23 &middot;
+              10<sup>&minus;2</sup>?
+            </div>
+          </div>
         </div>
       </div>
 
       <div class="problem">
-        <span class="p-number">11.27.</span> Запишіть у вигляді десяткового
-        дробу або цілого числа:
-        <div class="sub-item">
-          1)
-          <span class="math"
-            >4,81 <span class="mult">&sdot;</span> 10<sup>4</sup></span
-          >; &nbsp;&nbsp;&nbsp;&nbsp; 2)
-          <span class="math"
-            >2,5 <span class="mult">&sdot;</span> 10<sup>-3</sup></span
-          >; &nbsp;&nbsp;&nbsp;&nbsp; 3)
-          <span class="math"
-            >1,09 <span class="mult">&sdot;</span> 10<sup>6</sup></span
-          >; &nbsp;&nbsp;&nbsp;&nbsp; 4)
-          <span class="math"
-            >6,3 <span class="mult">&sdot;</span> 10<sup>-5</sup></span
-          >.
+        <span class="problem-number">11.6.</span>
+        <div class="problem-text">
+          Подайте у стандартному вигляді число:
+          <div class="grid-3-col" style="grid-template-columns: repeat(4, 1fr)">
+            <div class="sub-item"><span class="list-num">1)</span> 70 000;</div>
+            <div class="sub-item">
+              <span class="list-num">2)</span> 630 000;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">3)</span> 8 040 000;
+            </div>
+            <div class="sub-item"><span class="list-num">4)</span> 843;</div>
+            <div class="sub-item"><span class="list-num">5)</span> 45,2;</div>
+            <div class="sub-item"><span class="list-num">6)</span> 507,3;</div>
+            <div class="sub-item">
+              <span class="list-num">7)</span> 34800,2;
+            </div>
+            <div class="sub-item"><span class="list-num">8)</span> 93,05;</div>
+            <div class="sub-item"><span class="list-num">9)</span> 0,56;</div>
+            <div class="sub-item">
+              <span class="list-num">10)</span> 0,00029;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">11)</span> 0,00008;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">12)</span> 0,70504.
+            </div>
+          </div>
         </div>
       </div>
 
       <div class="problem">
-        <span class="p-number">11.28.</span> Виконайте множення та подайте
-        результат у стандартному вигляді:
-        <div class="sub-item">
-          1)
-          <span class="math"
-            >(1,5 <span class="mult">&sdot;</span> 10<sup>4</sup>)
-            <span class="mult">&sdot;</span> (4
-            <span class="mult">&sdot;</span> 10<sup>-6</sup>)</span
-          >;
-        </div>
-        <div class="sub-item">
-          2)
-          <span class="math"
-            >(3,2 <span class="mult">&sdot;</span> 10<sup>-3</sup>)
-            <span class="mult">&sdot;</span> (2
-            <span class="mult">&sdot;</span> 10<sup>7</sup>)</span
-          >;
-        </div>
-      </div>
-
-      <div class="problem">
-        <span class="p-number">11.29.</span> Виконайте ділення та подайте
-        результат у стандартному вигляді:
-        <div class="sub-item">
-          1)
-          <span class="math"
-            >(8,4 <span class="mult">&sdot;</span> 10<sup>6</sup>) : (2,1
-            <span class="mult">&sdot;</span> 10<sup>2</sup>)</span
-          >;
-        </div>
-        <div class="sub-item">
-          2)
-          <span class="math"
-            >(3,6 <span class="mult">&sdot;</span> 10<sup>-4</sup>) : (1,2
-            <span class="mult">&sdot;</span> 10<sup>-2</sup>)</span
-          >;
+        <span class="problem-number">11.9.</span>
+        <div class="problem-text">
+          Запишіть у стандартному вигляді число:
+          <div class="grid-2-col">
+            <div class="sub-item">
+              <span class="list-num">1)</span> 45 &middot;
+              10<sup>&minus;6</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">2)</span> 345,8 &middot; 10<sup>5</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">3)</span> 0,4 &middot;
+              10<sup>&minus;3</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">4)</span> 0,0029 &middot; 10<sup>4</sup>.
+            </div>
+          </div>
         </div>
       </div>
 
       <div class="problem">
-        <span class="p-number">11.30.</span> Порівняйте числа:
-        <div class="sub-item">
-          1)
-          <span class="math"
-            >3,4 <span class="mult">&sdot;</span> 10<sup>5</sup></span
-          >
-          i
-          <span class="math"
-            >3,8 <span class="mult">&sdot;</span> 10<sup>5</sup></span
-          >;
-        </div>
-        <div class="sub-item">
-          2)
-          <span class="math"
-            >5,6 <span class="mult">&sdot;</span> 10<sup>-3</sup></span
-          >
-          i
-          <span class="math"
-            >5,6 <span class="mult">&sdot;</span> 10<sup>-4</sup></span
-          >;
+        <span class="problem-number">11.12.</span>
+        <div class="problem-text">
+          Запишіть у вигляді десяткового дробу або цілого числа:
+          <div class="sub-items-row">
+            <div class="sub-item">
+              <span class="list-num">1)</span> 4,125 &middot; 10<sup>4</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">2)</span> 5,2 &middot;
+              10<sup>&minus;3</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">3)</span> 2,89 &middot; 10<sup>6</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">4)</span> 3,4 &middot;
+              10<sup>&minus;4</sup>.
+            </div>
+          </div>
         </div>
       </div>
 
       <div class="problem">
-        <span class="p-number">11.31.</span>
-        <span class="highlight">Достатній рівень.</span> Виконайте дію та
-        подайте результат у стандартному вигляді:
-        <div class="sub-item">
-          1)
-          <span class="math"
-            >3,6 <span class="mult">&sdot;</span> 10<sup>4</sup> + 2,1
-            <span class="mult">&sdot;</span> 10<sup>4</sup></span
-          >;
-        </div>
-        <div class="sub-item">
-          2)
-          <span class="math"
-            >7,8 <span class="mult">&sdot;</span> 10<sup>-5</sup> - 1,5
-            <span class="mult">&sdot;</span> 10<sup>-5</sup></span
-          >;
+        <span class="problem-number">11.14.</span>
+        <div class="problem-text">
+          Виконайте множення та подайте результат у стандартному вигляді:
+          <div class="grid-2-col">
+            <div class="sub-item">
+              <span class="list-num">1)</span> (2,3 &middot;
+              10<sup>&minus;6</sup>) &middot; (3 &middot; 10<sup>4</sup>);
+            </div>
+            <div class="sub-item">
+              <span class="list-num">2)</span> (1,4 &middot; 10<sup>5</sup>)
+              &middot; (6 &middot; 10<sup>2</sup>).
+            </div>
+          </div>
         </div>
       </div>
+
+      <div class="problem">
+        <span class="problem-number">11.16.</span>
+        <div class="problem-text">
+          Виконайте ділення та подайте результат у стандартному вигляді:
+          <div class="grid-2-col">
+            <div class="sub-item">
+              <span class="list-num">1)</span> (8,4 &middot; 10<sup>6</sup>) :
+              (2,1 &middot; 10<sup>3</sup>);
+            </div>
+            <div class="sub-item">
+              <span class="list-num">2)</span> (1,8 &middot;
+              10<sup>&minus;4</sup>) : (9,0 &middot; 10<sup>&minus;8</sup>).
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <span class="problem-number">11.18.</span>
+        <div class="problem-text">
+          Порівняйте числа:
+          <div class="grid-2-col">
+            <div class="sub-item">
+              <span class="list-num">1)</span> 4,5 &middot; 10<sup
+                >&minus;4</sup
+              >
+              і 3,9 &middot; 10<sup>&minus;4</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">2)</span> 2,34 &middot; 10<sup>6</sup> і
+              2,4 &middot; 10<sup>6</sup>.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <span class="problem-number">11.20.</span>
+        <div class="problem-text">
+          Виконайте дію та подайте результат у стандартному вигляді:
+          <div class="grid-2-col">
+            <div class="sub-item">
+              <span class="list-num">1)</span> 3,6 &middot; 10<sup
+                >&minus;5</sup
+              >
+              + 4,2 &middot; 10<sup>&minus;5</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">2)</span> 5,7 &middot; 10<sup>4</sup>
+              &minus; 2,4 &middot; 10<sup>4</sup>.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <span class="problem-number">11.22.</span>
+        <div class="problem-text">
+          Порівняйте числа:
+          <div class="grid-2-col">
+            <div class="sub-item">
+              <span class="list-num">1)</span> 2,3 &middot; 10<sup>6</sup> і 2,3
+              &middot; 10<sup>5</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">2)</span> 1,5 &middot; 10<sup
+                >&minus;5</sup
+              >
+              і 9,4 &middot; 10<sup>&minus;6</sup>.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <span class="problem-number">11.24.</span>
+        <div class="problem-text">
+          Виконайте дії та подайте результат у стандартному вигляді:
+          <div class="grid-2-col">
+            <div class="sub-item">
+              <span class="list-num">1)</span> 3,2 &middot; 10<sup
+                >&minus;4</sup
+              >
+              + 1,4 &middot; 10<sup>&minus;3</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">2)</span> 5,4 &middot; 10<sup>4</sup>
+              &minus; 3,1 &middot; 10<sup>3</sup>.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <span class="problem-number">11.28.</span>
+        <div class="problem-text">
+          Подайте:
+          <div class="grid-2-col">
+            <div class="sub-item">
+              <span class="list-num">1)</span> 4,52 &middot; 10<sup>6</sup> см у
+              кілометрах;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">2)</span> 2,15 &middot; 10<sup
+                >&minus;3</sup
+              >
+              км у метрах;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">3)</span> 5,4 &middot; 10<sup
+                >&minus;4</sup
+              >
+              кг у центнерах;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">4)</span> 9,2 &middot; 10<sup>8</sup> т у
+              кілограмах.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <span class="problem-number">11.31.</span>
+        <div class="problem-text">
+          Порядок числа <i>b</i> дорівнює 18. Яким є порядок числа:
+          <div class="sub-items-row">
+            <div class="sub-item">
+              <span class="list-num">1)</span> 10000<i>b</i>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">2)</span> 0,001<i>b</i>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">3)</span> <i>b</i> &middot;
+              10<sup>&minus;4</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">4)</span>
+              <div class="fraction">
+                <span class="numerator"><i>b</i></span>
+                <span class="denominator">10<sup>6</sup></span>
+              </div>
+              ?
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="page-number">126</div>
     </div>
   </body>
 </html>

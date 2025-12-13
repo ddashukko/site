@@ -3,243 +3,320 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Домашнє завдання</title>
+    <title>Сторінка підручника - Обернена пропорційність</title>
     <style>
       body {
-        font-family: "Verdana", sans-serif;
-        background-color: #f4f4f4;
+        background-color: #e6e6e6;
+        margin: 0;
+        padding: 40px 0;
+        font-family: "Times New Roman", Times, serif;
         display: flex;
         justify-content: center;
-        margin: 0;
-        padding: 20px;
+        min-height: 100vh;
       }
-      .textbook-page {
-        background-color: white;
-        width: 100%;
-        max-width: 800px;
-        padding: 40px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        color: #333;
-        line-height: 1.6;
+
+      .book-page {
+        background-color: #fff;
+        width: 210mm; /* Ширина А4 */
+        min-height: 297mm; /* Висота А4 */
+        padding: 25mm 20mm; /* Поля сторінки */
+        box-sizing: border-box;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.1);
+        position: relative;
+        color: #1a1a1a;
+        font-size: 18px;
+        line-height: 1.5;
       }
-      .header {
-        color: #d63384; /* Рожевий колір заголовків */
-        font-weight: bold;
-        border-bottom: 2px solid #d63384;
-        padding-bottom: 10px;
-        margin-bottom: 30px;
-        font-size: 1.2em;
+
+      .header-title {
+        position: absolute;
+        top: 10mm;
+        left: 20mm;
+        right: 20mm;
+        text-align: center;
+        font-size: 14px;
+        color: #666;
         text-transform: uppercase;
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 5px;
       }
+
+      .page-number {
+        position: absolute;
+        bottom: 10mm;
+        width: 100%;
+        text-align: center;
+        font-weight: bold;
+        color: #333;
+        left: 0;
+      }
+
       .problem {
         margin-bottom: 25px;
+        display: flex;
+        align-items: baseline;
       }
-      .p-number {
+
+      .problem-number {
         font-weight: bold;
-        color: #2e7d32; /* Зелений колір номерів */
-        background-color: #e8f5e9;
-        padding: 2px 6px;
-        border-radius: 4px;
+        color: #0099dd;
         margin-right: 8px;
+        white-space: nowrap;
+      }
+
+      .problem-text {
+        width: 100%;
+      }
+
+      .sub-items-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 40px;
+        margin-top: 8px;
+        justify-content: flex-start;
+      }
+
+      .sub-item {
         display: inline-block;
       }
-      .sub-item {
-        margin-left: 20px;
-        margin-bottom: 8px;
-      }
-      .math {
-        font-family: "Times New Roman", serif;
-        font-style: italic;
-        font-size: 1.15em;
-      }
+
       .fraction {
         display: inline-block;
         text-align: center;
         vertical-align: middle;
+        margin: 0 2px;
         font-size: 0.9em;
       }
+
       .fraction > span {
         display: block;
         padding: 0 2px;
       }
-      .fraction span.bottom {
-        border-top: 1px solid black;
+
+      .fraction span.numerator {
+        border-bottom: 1px solid #000;
       }
-      table {
-        border-collapse: collapse;
-        margin: 15px 0;
+
+      .fraction span.denominator {
+        border-top: 0;
+      }
+
+      .list-num {
+        margin-right: 3px;
+      }
+
+      /* Сітки для вирівнювання варіантів */
+      .grid-4-col {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px 10px;
+        margin-top: 10px;
+      }
+
+      .grid-2-col {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px 30px;
+        margin-top: 10px;
+      }
+
+      /* Стилі для таблиці (завдання 12.7) */
+      .task-table {
         width: 100%;
-        max-width: 600px;
-      }
-      th,
-      td {
-        border: 1px solid #888;
-        padding: 8px;
+        border-collapse: collapse;
+        margin-top: 15px;
+        font-size: 16px;
         text-align: center;
       }
-      th {
-        background-color: #e1f5fe;
-        font-weight: bold;
+      .task-table td,
+      .task-table th {
+        border: 1px solid #000;
+        padding: 5px;
+        min-width: 40px;
       }
-      .highlight {
-        color: #d32f2f; /* Червоний колір для високого рівня */
+      .task-table .row-header {
+        background-color: #d1ecf1; /* Світло-блакитний, як у книзі */
         font-weight: bold;
-        background-color: #ffebee;
-        padding: 2px 6px;
-        border-radius: 4px;
-        font-size: 0.9em;
-        margin-left: 5px;
+        font-style: italic;
+      }
+
+      @media print {
+        body {
+          background: none;
+          padding: 0;
+        }
+        .book-page {
+          box-shadow: none;
+          margin: 0;
+          width: 100%;
+          height: 100%;
+        }
       }
     </style>
   </head>
   <body>
-    <div class="textbook-page">
-      <div class="header">Розв'яжіть задачі та виконайте вправи</div>
+    <div class="book-page">
+      <div class="header-title">§ 12. Обернена пропорційність</div>
 
       <div class="problem">
-        <span class="p-number">12.23.</span> (Усно). Які з функцій є оберненою
-        пропорційністю:
-        <div class="sub-item">
-          1) <span class="math">y = 5x</span>; &nbsp;&nbsp;&nbsp; 2)
-          <span class="math"
-            >y =
-            <div class="fraction">
-              <span>12</span><span class="bottom">x</span>
-            </div></span
-          >; &nbsp;&nbsp;&nbsp; 3)
-          <span class="math"
-            >y =
-            <div class="fraction">
-              <span>x</span><span class="bottom">7</span>
-            </div></span
-          >; &nbsp;&nbsp;&nbsp; 4)
-          <span class="math"
-            >y = -
-            <div class="fraction">
-              <span>3</span><span class="bottom">x</span>
-            </div></span
-          >?
-        </div>
-      </div>
-
-      <div class="problem">
-        <span class="p-number">12.24.</span> У яких координатних кутах лежить
-        графік функції:
-        <div class="sub-item">
-          1)
-          <span class="math"
-            >y =
-            <div class="fraction">
-              <span>24</span><span class="bottom">x</span>
-            </div></span
-          >; &nbsp;&nbsp;&nbsp;&nbsp; 2)
-          <span class="math"
-            >y = -
-            <div class="fraction">
-              <span>18</span><span class="bottom">x</span>
-            </div></span
-          >?
-        </div>
-      </div>
-
-      <div class="problem">
-        <span class="p-number">12.25.</span> Обернену пропорційність задано
-        формулою
-        <span class="math"
-          >y =
-          <div class="fraction">
-            <span>16</span><span class="bottom">x</span>
-          </div></span
-        >. Перенесіть таблицю в зошит і заповніть її:
-        <table>
-          <tr>
-            <th><span class="math">x</span></th>
-            <td>-8</td>
-            <td>-4</td>
-            <td>-2</td>
-            <td>1</td>
-            <td>4</td>
-            <td>8</td>
-          </tr>
-          <tr>
-            <th><span class="math">y</span></th>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-          </tr>
-        </table>
-      </div>
-
-      <div class="problem">
-        <span class="p-number">12.26.</span> Чи належить графіку функції
-        <span class="math"
-          >y = -
-          <div class="fraction">
-            <span>36</span><span class="bottom">x</span>
-          </div></span
-        >
-        точка:
-        <div class="sub-item">
-          1) <span class="math">A(-4; 9)</span>; &nbsp;&nbsp;&nbsp;&nbsp; 2)
-          <span class="math">B(6; 6)</span>; &nbsp;&nbsp;&nbsp;&nbsp; 3)
-          <span class="math">C(2; -18)</span>?
-        </div>
-      </div>
-
-      <div class="problem">
-        <span class="p-number">12.27.</span> Функцію задано формулою
-        <span class="math"
-          >y =
-          <div class="fraction">
-            <span>20</span><span class="bottom">x</span>
-          </div></span
-        >. Знайдіть:
-        <div class="sub-item">
-          1) значення функції, якщо значення аргументу дорівнює -5; 4; 10;
-        </div>
-        <div class="sub-item">
-          2) значення аргументу, при яких значення функції дорівнює -2; 5.
-        </div>
-      </div>
-
-      <div class="problem">
-        <span class="p-number">12.28.</span> Побудуйте графік функції:
-        <div class="sub-item">
-          1)
-          <span class="math"
-            >y =
-            <div class="fraction">
-              <span>8</span><span class="bottom">|x|</span>
-            </div></span
-          >;
-        </div>
-        <div class="sub-item">
-          2)
-          <span class="math"
-            >y = -
-            <div class="fraction">
-              <span>6</span><span class="bottom">|x|</span>
-            </div></span
-          >.
-        </div>
-      </div>
-
-      <div class="problem">
-        <span class="p-number">12.29.</span>
-        <span class="highlight">Високий рівень</span> Розв'яжіть графічно
-        рівняння:
-        <div class="sub-item" style="text-align: center; font-size: 1.2em">
-          <span class="math"
-            ><div class="fraction">
-              <span>6</span><span class="bottom">x</span>
+        <span class="problem-number">12.2.</span>
+        <div class="problem-text">
+          Випишіть функції, що задають обернену пропорційність:
+          <div class="grid-4-col">
+            <div class="sub-item">
+              <span class="list-num">1)</span>
+              <i>y</i> =
+              <div class="fraction">
+                <span class="numerator"><i>x</i></span>
+                <span class="denominator">5</span>
+              </div>
+              ;
             </div>
-            = 5 - x</span
-          >
+            <div class="sub-item">
+              <span class="list-num">2)</span>
+              <i>y</i> =
+              <div class="fraction">
+                <span class="numerator">5</span>
+                <span class="denominator"><i>x</i></span>
+              </div>
+              ;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">3)</span>
+              <i>y</i> = &minus;
+              <div class="fraction">
+                <span class="numerator">8</span>
+                <span class="denominator"><i>x</i></span>
+              </div>
+              ;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">4)</span>
+              <i>y</i> = &minus;
+              <div class="fraction">
+                <span class="numerator"><i>x</i></span>
+                <span class="denominator">8</span>
+              </div>
+              ;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">5)</span>
+              <i>y</i> = &minus;4;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">6)</span>
+              <i>y</i> = &minus;
+              <div class="fraction">
+                <span class="numerator">0,02</span>
+                <span class="denominator"><i>x</i></span>
+              </div>
+              ;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">7)</span>
+              <i>y</i> = &minus;
+              <div class="fraction">
+                <span class="numerator">0,02</span>
+                <span class="denominator"><i>x</i><sup>2</sup></span>
+              </div>
+              ;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">8)</span>
+              <i>y</i> = 0,02<i>x</i>.
+            </div>
+          </div>
         </div>
       </div>
+
+      <div class="problem">
+        <span class="problem-number">12.5.</span>
+        <div class="problem-text">
+          Обчисліть значення функції <i>y</i> =
+          <div class="fraction">
+            <span class="numerator">24</span>
+            <span class="denominator"><i>x</i></span>
+          </div>
+          , якщо значення аргументу дорівнює &minus;4; 6; &minus;8; 2.
+        </div>
+      </div>
+
+      <div class="problem">
+        <span class="problem-number">12.7.</span>
+        <div class="problem-text">
+          Обернену пропорційність задано формулою <i>y</i> =
+          <div class="fraction">
+            <span class="numerator">120</span>
+            <span class="denominator"><i>x</i></span>
+          </div>
+          . Перенесіть таблицю в зошит і заповніть її:
+          <table class="task-table">
+            <tr>
+              <td class="row-header">x</td>
+              <td>&minus;120</td>
+              <td>&minus;60</td>
+              <td></td>
+              <td>1</td>
+              <td></td>
+              <td></td>
+              <td>240</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="row-header">y</td>
+              <td></td>
+              <td></td>
+              <td>&minus;4</td>
+              <td></td>
+              <td>30</td>
+              <td>24</td>
+              <td></td>
+              <td>0,2</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="problem">
+        <span class="problem-number">12.9.</span>
+        <div class="problem-text">
+          Побудуйте графік функції <i>y</i> =
+          <div class="fraction">
+            <span class="numerator">16</span>
+            <span class="denominator"><i>x</i></span>
+          </div>
+          , склавши таблицю її значень для <i>x</i> = &minus;16; &minus;8;
+          &minus;4; &minus;2; &minus;1; 1; 2; 4; 8; 16.
+        </div>
+      </div>
+
+      <div class="problem">
+        <span class="problem-number">12.11.</span>
+        <div class="problem-text">
+          Чи належить графіку функції <i>y</i> = &minus;
+          <div class="fraction">
+            <span class="numerator">144</span>
+            <span class="denominator"><i>x</i></span>
+          </div>
+          точка:
+          <div class="grid-2-col">
+            <div class="sub-item">
+              <span class="list-num">1)</span> <i>A</i>(&minus;12; 12);
+            </div>
+            <div class="sub-item">
+              <span class="list-num">2)</span> <i>B</i>(24; 6);
+            </div>
+            <div class="sub-item">
+              <span class="list-num">3)</span> <i>C</i>(0; &minus;144);
+            </div>
+            <div class="sub-item">
+              <span class="list-num">4)</span> <i>D</i>(72; &minus;2)?
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="page-number">102</div>
     </div>
   </body>
 </html>
