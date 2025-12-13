@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Підсумковий тест: Степені | Dasha Tutor</title>
+    <title>Підсумковий тест: Степені</title>
 
     <link
       rel="stylesheet"
@@ -20,14 +20,17 @@
 
     <style>
       :root {
-        --primary: #4a90e2;
-        --primary-light: #eff6ff;
-        --success: #28a745;
-        --error: #dc3545;
+        /* Фіолетова тема */
+        --primary: #7c3aed; /* Violet-600 */
+        --primary-hover: #6d28d9; /* Violet-700 */
+        --primary-light: #f5f3ff; /* Violet-50 */
+        --success: #16a34a;
+        --error: #dc2626;
         --bg: #f8fafc;
         --card: #ffffff;
-        --text: #2c3e50;
+        --text: #1e293b;
         --border: #e2e8f0;
+        --accent: #d946ef; /* Fuchsia-500 */
         --grid-color: #e2e8f0;
       }
 
@@ -43,7 +46,7 @@
         overflow: hidden;
       }
 
-      /* --- ЛІВА ПАНЕЛЬ (ЗАВДАННЯ) --- */
+      /* ЛІВА ЧАСТИНА - ТЕСТ */
       #tasks-section {
         flex: 1;
         background: var(--bg);
@@ -51,10 +54,9 @@
         display: flex;
         flex-direction: column;
         border-right: 1px solid var(--border);
-        min-width: 320px;
       }
 
-      /* --- ПРАВА ПАНЕЛЬ (ДОШКА) --- */
+      /* ПРАВА ЧАСТИНА - ДОШКА */
       #board-section {
         flex: 1;
         position: relative;
@@ -76,36 +78,38 @@
         touch-action: none;
       }
 
+      /* ІНСТРУМЕНТИ ДОШКИ */
       .tools {
         position: absolute;
         top: 15px;
         left: 15px;
         display: flex;
-        gap: 10px;
+        gap: 8px;
         background: rgba(255, 255, 255, 0.95);
         padding: 8px;
         border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         border: 1px solid var(--border);
-        flex-wrap: wrap;
         z-index: 10;
       }
 
       .btn-tool {
         border: 1px solid #cbd5e1;
         background: white;
-        padding: 8px 12px;
-        border-radius: 5px;
+        width: 40px;
+        height: 40px;
+        border-radius: 6px;
         cursor: pointer;
         font-size: 1.2rem;
-        transition: 0.2s;
         display: flex;
         align-items: center;
         justify-content: center;
-        min-width: 40px;
+        transition: 0.2s;
+        color: #64748b;
       }
       .btn-tool:hover {
         background: #f1f5f9;
+        color: var(--primary);
       }
       .btn-tool.active {
         background: var(--primary);
@@ -113,184 +117,125 @@
         border-color: var(--primary);
       }
 
-      /* --- HEADER --- */
+      /* ШАПКА ТЕСТУ */
       header {
         background: var(--card);
-        padding: 15px 20px;
+        padding: 15px 25px;
         border-bottom: 1px solid var(--border);
         display: flex;
         justify-content: space-between;
         align-items: center;
         position: sticky;
         top: 0;
-        z-index: 100;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+        z-index: 50;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
       }
 
       .header-title {
         font-weight: 800;
-        font-size: 1.1rem;
+        font-size: 1.2rem;
         color: var(--primary);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
       }
-      .stats-container {
-        display: flex;
-        gap: 15px;
+      .progress-container {
         font-weight: 600;
-      }
-      .stat-correct {
-        color: var(--success);
-      }
-      .stat-wrong {
-        color: var(--error);
+        color: #64748b;
+        font-size: 0.95rem;
       }
 
-      /* --- КОНТЕНТ ЗАВДАНЬ --- */
+      /* КОНТЕЙНЕР ПИТАНЬ */
       .content-container {
-        padding: 20px;
-        padding-bottom: 80px;
+        padding: 30px;
         max-width: 800px;
         margin: 0 auto;
         width: 100%;
         box-sizing: border-box;
       }
 
-      .test-intro {
-        background: #fff;
-        padding: 20px;
-        border-radius: 12px;
-        border: 1px solid var(--border);
-        margin-bottom: 20px;
-        text-align: center;
-      }
-      .test-intro h2 {
-        margin-top: 0;
-        color: #2c3e50;
-      }
-      .test-intro p {
-        color: #64748b;
-        margin-bottom: 0;
-      }
-
-      .exercise-block {
+      .test-card {
         background: var(--card);
-        border-radius: 12px;
+        border-radius: 16px;
         border: 1px solid var(--border);
-        margin-bottom: 20px;
-        overflow: hidden;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        padding: 25px;
+        margin-bottom: 25px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
       }
 
-      .task-row {
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-      }
-
-      .task-row.solved-correct {
-        border-left: 5px solid var(--success);
-        background-color: #f0fdf4;
-      }
-      .task-row.solved-wrong {
-        border-left: 5px solid var(--error);
-        background-color: #fef2f2;
-      }
-
-      .task-content {
-        display: flex;
-        align-items: baseline;
-        gap: 10px;
-      }
-      .task-number {
+      .question-number {
+        font-size: 0.8rem;
         font-weight: 700;
-        color: var(--primary);
-        font-size: 0.9rem;
-        background: var(--primary-light);
-        padding: 4px 8px;
-        border-radius: 4px;
-      }
-      .task-question {
-        font-size: 1.3rem;
-        font-weight: 600;
+        color: var(--accent);
+        text-transform: uppercase;
+        margin-bottom: 10px;
+        display: block;
       }
 
-      /* --- ВАРІАНТИ ВІДПОВІДЕЙ --- */
-      .options-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      .question-text {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 20px;
+        line-height: 1.4;
+      }
+
+      /* ВАРІАНТИ ВІДПОВІДІ - В ОДИН РЯДОК */
+      .options-grid {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
         gap: 10px;
-        margin-top: 5px;
       }
 
       .option-btn {
+        flex: 1; /* Рівномірний розподіл ширини */
         background: white;
         border: 2px solid #e2e8f0;
-        border-radius: 8px;
-        padding: 12px 10px;
-        font-size: 1.1rem;
+        border-radius: 10px;
+        padding: 12px 5px;
+        font-size: 1rem;
         cursor: pointer;
-        text-align: center;
-        transition: 0.2s;
-        font-weight: 500;
-        color: var(--text);
+        transition: all 0.2s;
         display: flex;
-        align-items: center;
         justify-content: center;
-        min-height: 50px;
+        align-items: center;
+        text-align: center;
+        min-width: 0; /* Запобігає виходу за межі */
       }
+
       .option-btn:hover:not(:disabled) {
         border-color: var(--primary);
-        color: var(--primary);
-        background: #f8fafc;
+        background: var(--primary-light);
       }
       .option-btn:disabled {
-        opacity: 0.7;
-        cursor: not-allowed;
+        cursor: default;
       }
 
-      /* Стилі після вибору */
-      .option-btn.selected-correct {
-        background: var(--success);
-        color: white;
+      .option-btn.correct {
+        background: #dcfce7;
         border-color: var(--success);
+        color: var(--success);
       }
-      .option-btn.selected-correct .katex {
-        color: white !important;
-      }
-
-      .option-btn.selected-wrong {
-        background: var(--error);
-        color: white;
+      .option-btn.wrong {
+        background: #fee2e2;
         border-color: var(--error);
-      }
-      .option-btn.selected-wrong .katex {
-        color: white !important;
+        color: var(--error);
       }
 
-      /* --- ПОЛЯ ВВОДУ --- */
-      .input-group {
+      /* ПОЛЕ ВВОДУ */
+      .input-wrapper {
         display: flex;
         gap: 10px;
-        align-items: center;
       }
       .input-answer {
-        padding: 10px;
-        border: 2px solid #cbd5e1;
-        border-radius: 8px;
-        font-size: 1.1rem;
-        text-align: center;
-        width: 100%;
-        max-width: 200px;
-      }
-      .btn-check {
-        padding: 10px 20px;
-        background: var(--primary);
-        color: white;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        font-weight: 600;
+        flex: 1;
+        padding: 12px;
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
         font-size: 1rem;
+        outline: none;
+      }
+      .input-answer:focus {
+        border-color: var(--primary);
       }
       .input-answer.correct {
         border-color: var(--success);
@@ -300,29 +245,45 @@
       .input-answer.wrong {
         border-color: var(--error);
         background: #fef2f2;
+        color: var(--error);
       }
 
-      .finish-section {
-        margin-top: 40px;
+      .btn-check-input {
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 0 20px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+      .btn-check-input:hover {
+        background: var(--primary-hover);
+      }
+
+      /* КНОПКА ЗАВЕРШЕННЯ */
+      .finish-block {
         text-align: center;
+        margin: 40px 0 60px 0;
       }
       .btn-finish {
-        padding: 15px 50px;
-        font-size: 1.2rem;
-        font-weight: bold;
+        background: var(--text);
         color: white;
-        background: var(--primary);
         border: none;
+        padding: 15px 40px;
         border-radius: 50px;
+        font-size: 1.1rem;
+        font-weight: 700;
         cursor: pointer;
-        box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         transition: transform 0.2s;
       }
       .btn-finish:hover {
         transform: scale(1.05);
+        background: #0f172a;
       }
 
-      /* --- МОДАЛЬНЕ ВІКНО --- */
+      /* МОДАЛЬНЕ ВІКНО */
       .modal-overlay {
         display: none;
         position: fixed;
@@ -331,71 +292,82 @@
         width: 100%;
         height: 100%;
         background: rgba(0, 0, 0, 0.6);
-        backdrop-filter: blur(5px);
+        backdrop-filter: blur(4px);
         z-index: 1000;
         justify-content: center;
         align-items: center;
-        animation: fadeIn 0.3s ease;
       }
       .modal-card {
         background: white;
         padding: 40px;
-        border-radius: 20px;
-        max-width: 450px;
-        width: 90%;
+        border-radius: 24px;
         text-align: center;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-        position: relative;
+        max-width: 400px;
+        width: 90%;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        animation: slideUp 0.3s ease;
       }
-      .modal-close-btn {
-        position: absolute;
-        top: 15px;
-        right: 15px;
-        background: none;
-        border: none;
-        font-size: 2rem;
-        color: #94a3b8;
-        cursor: pointer;
-        line-height: 1;
+      .mark-circle {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: var(--primary);
+        color: white;
+        font-size: 3rem;
+        font-weight: 900;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0 auto 20px auto;
       }
-      .modal-result-title {
-        font-size: 2rem;
+      .modal-title {
+        font-size: 1.5rem;
         font-weight: 800;
         margin-bottom: 10px;
       }
-      .modal-score-big {
-        font-size: 5rem;
-        font-weight: 900;
-        margin: 10px 0;
-        line-height: 1;
+      .modal-text {
+        color: #64748b;
+        margin-bottom: 25px;
       }
-      .modal-details {
-        font-size: 1.1rem;
-        color: #475569;
-        margin-bottom: 30px;
+      .btn-modal {
+        width: 100%;
+        padding: 12px;
+        border-radius: 12px;
+        border: none;
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: 10px;
+        font-size: 1rem;
+      }
+      .btn-primary {
+        background: var(--primary);
+        color: white;
+      }
+      .btn-secondary {
         background: #f1f5f9;
-        padding: 15px;
-        border-radius: 10px;
+        color: var(--text);
       }
 
-      @keyframes fadeIn {
+      @keyframes slideUp {
         from {
+          transform: translateY(20px);
           opacity: 0;
         }
         to {
+          transform: translateY(0);
           opacity: 1;
         }
       }
 
+      /* АДАПТИВНІСТЬ */
       @media (max-width: 768px) {
         body {
           flex-direction: column;
         }
         #board-section {
           height: 35vh;
-          border-left: none;
-          border-top: 2px solid var(--border);
           order: 2;
+          border-top: 4px solid var(--border);
         }
         #tasks-section {
           height: 65vh;
@@ -407,21 +379,19 @@
   <body>
     <div id="tasks-section">
       <header>
-        <div class="header-title">Dasha Tutor: КОНТРОЛЬНИЙ ТЕСТ</div>
-        <div class="stats-container">
-          <span class="stat-correct">✅ <span id="val-correct">0</span></span>
-          <span class="stat-wrong">❌ <span id="val-wrong">0</span></span>
+        <div class="header-title">Тест: Степені 🟣</div>
+        <div class="progress-container">
+          Виконано:
+          <span id="progress-val" style="color: var(--primary)">0/15</span>
         </div>
       </header>
 
-      <div class="content-container" id="quiz-root">
-        <div class="test-intro">
-          <h2>Перевірка знань</h2>
-          <p>
-            Тема: "Степені з цілим показником".<br />Використовуйте дошку
-            праворуч для обчислень. Успіхів!
-          </p>
-        </div>
+      <div class="content-container" id="quiz-root"></div>
+
+      <div class="finish-block">
+        <button class="btn-finish" onclick="finishTest()">
+          Завершити тест
+        </button>
       </div>
     </div>
 
@@ -443,18 +413,13 @@
         >
           🧹
         </button>
-        <button
-          class="btn-tool"
-          onclick="drawSystem()"
-          title="Координатна площина"
-        >
+        <button class="btn-tool" onclick="drawSystem()" title="Сітка">
           📉
         </button>
         <button
           class="btn-tool"
-          onclick="clearCanvasSafe()"
-          style="color: red; border-color: #fee2e2"
-          title="Очистити все"
+          onclick="clearCanvas()"
+          style="color: var(--error)"
         >
           ❌
         </button>
@@ -464,230 +429,290 @@
 
     <div id="result-modal" class="modal-overlay">
       <div class="modal-card">
-        <button class="modal-close-btn" onclick="closeModal()">×</button>
-        <div id="modal-content-body"></div>
+        <div class="mark-circle" id="final-mark">12</div>
+        <div class="modal-title" id="modal-title">Результат</div>
+        <div class="modal-text" id="modal-desc">Опис результату</div>
+        <button class="btn-modal btn-primary" onclick="closeModal()">
+          Переглянути помилки
+        </button>
+        <button class="btn-modal btn-secondary" onclick="location.reload()">
+          Спробувати ще
+        </button>
       </div>
     </div>
 
     <script>
       // =========================================================
-      // 1. ДАНІ ТЕСТУ
+      // БАЗА ПИТАНЬ (15 шт, на основі уроку)
       // =========================================================
-      const testData = [
+      const questions = [
         {
           id: 1,
-          q: "Обчисліть значення виразу: $2^{-3}$",
+          q: "$x^5 \\cdot x^{-2}$",
           type: "choice",
-          a: "$\\frac{1}{8}$",
-          opts: ["$-6$", "$-8$", "$\\frac{1}{8}$", "$\\frac{1}{4}$", "$8$"],
+          options: ["$x^{-10}$", "$x^3$", "$x^7$", "$x^{-3}$"],
+          correct: "$x^3$", // (10.2) Множення
         },
         {
           id: 2,
-          q: "Подайте у вигляді степеня: $x^5 \\cdot x^{-8}$",
+          q: "$y^{-4} : y^3$",
           type: "choice",
-          a: "$x^{-3}$",
-          opts: ["$x^{3}$", "$x^{-3}$", "$x^{-13}$", "$x^{40}$"],
+          options: ["$y^{-1}$", "$y^{-7}$", "$y^{-12}$", "$y^7$"],
+          correct: "$y^{-7}$", // (10.4) Ділення (-4 - 3)
         },
         {
           id: 3,
-          q: "Знайдіть значення виразу: $5^0 + 3^{-1}$",
+          q: "$(m^{-3})^{-2}$",
           type: "choice",
-          a: "$1\\frac{1}{3}$",
-          opts: ["$1$", "$1\\frac{1}{3}$", "$\\frac{1}{3}$", "$0$"],
+          options: ["$m^6$", "$m^{-5}$", "$m^{-6}$", "$m^5$"],
+          correct: "$m^6$", // (10.6) Степінь степеня
         },
         {
           id: 4,
-          q: "Спростіть вираз: $(a^{-2})^4$",
+          q: "$a^0 \\cdot a^{-5}$",
           type: "choice",
-          a: "$a^{-8}$",
-          opts: ["$a^{-6}$", "$a^{8}$", "$a^{2}$", "$a^{-8}$"],
+          options: ["$0$", "$1$", "$a^{-5}$", "$a^5$"],
+          correct: "$a^{-5}$",
         },
         {
           id: 5,
-          q: "Обчисліть: $100 \\cdot 10^{-3}$",
+          q: "Обчисліть: $2^{-3}$",
           type: "input",
-          a: ["0.1", "0,1", "1/10"],
+          correct: ["0.125", "1/8"], // (10.10)
         },
         {
           id: 6,
-          q: "Виконайте ділення: $m^{-4} : m^{-6}$",
+          q: "$c^8 \\cdot c^{-8}$",
           type: "choice",
-          a: "$m^2$",
-          opts: ["$m^{-10}$", "$m^{-2}$", "$m^2$", "$m^{24}$"],
+          options: ["$c$", "$2c$", "$0$", "$1$"],
+          correct: "$1$",
         },
         {
           id: 7,
-          q: "Спростіть вираз: $2x^{-3} \\cdot 4x^5$",
+          q: "Спростіть: $3x^{-2} \\cdot 4x^5$",
           type: "choice",
-          a: "$8x^2$",
-          opts: ["$8x^{-2}$", "$8x^2$", "$6x^2$", "$6x^{-15}$"],
+          options: ["$12x^3$", "$7x^3$", "$12x^{-10}$", "$7x^{-10}$"],
+          correct: "$12x^3$", // (10.14) Коефіцієнти
         },
         {
           id: 8,
-          q: "Знайдіть $x$, якщо $3^x = \\frac{1}{27}$",
-          type: "input",
-          a: ["-3"],
+          q: "$(2a^{-1})^3$",
+          type: "choice",
+          options: ["$6a^{-3}$", "$8a^{-3}$", "$8a^2$", "$2a^{-3}$"],
+          correct: "$8a^{-3}$", // (10.16)
         },
         {
           id: 9,
-          q: "Обчисліть: $(0.2)^{-2}$",
-          type: "choice",
-          // ТУТ ВКАЗАНО ДВІ ПРАВИЛЬНІ ВІДПОВІДІ ЧЕРЕЗ РОЗДІЛЬНИК "|"
-          a: "25|0.04",
-          opts: ["0.04", "25", "-0.04", "-25", "4"],
+          q: "Обчисліть: $5^{-2} \\cdot 5^4$",
+          type: "input",
+          correct: ["25"],
         },
         {
           id: 10,
-          q: "Спростіть: $\\frac{(a^3)^{-2} \\cdot a}{a^{-7}}$",
+          q: "Спростіть: $\\frac{x^{-4}}{x^{-6}}$",
           type: "choice",
-          a: "$a^2$",
-          opts: ["$a^{-1}$", "$a^2$", "$a^{-12}$", "$1$"],
+          options: ["$x^2$", "$x^{-2}$", "$x^{-10}$", "$x^{24}$"],
+          correct: "$x^2$", // -4 - (-6) = 2
+        },
+        {
+          id: 11,
+          q: "Подайте $27x^{-3}$ як степінь:",
+          type: "choice",
+          options: [
+            "$(3x)^{-3}$",
+            "$(3x^{-1})^3$",
+            "$3x^{-3}$",
+            "$(27x)^{-3}$",
+          ],
+          correct: "$(3x^{-1})^3$", // (10.18)
+        },
+        {
+          id: 12,
+          q: "Обчисліть: $81 \\cdot 3^{-5}$",
+          type: "choice",
+          options: ["3", "1/3", "9", "27"],
+          correct: "1/3", // (10.21)
+        },
+        {
+          id: 13,
+          q: "Обчисліть: $(2^{-2})^{-2}$",
+          type: "input",
+          correct: ["16"],
+        },
+        {
+          id: 14,
+          q: "$(x^2)^{-3} \\cdot x^8$",
+          type: "choice",
+          options: ["$x^2$", "$x^{-14}$", "$x^{14}$", "$x^{-1}$"],
+          correct: "$x^2$", // x^-6 * x^8 = x^2
+        },
+        {
+          id: 15,
+          q: "Обчисліть: $\\left(\\frac{1}{2}\\right)^{-3}$",
+          type: "input",
+          correct: ["8"],
         },
       ];
 
       // =========================================================
-      // 2. ЛОГІКА ТЕСТУ
+      // ЛОГІКА ТЕСТУ
       // =========================================================
+      let correctCount = 0;
+      let answeredCount = 0;
 
-      let totalCorrect = 0;
-      let totalWrong = 0;
-      let totalQuestions = testData.length;
-
-      function init() {
+      function initQuiz() {
         const root = document.getElementById("quiz-root");
 
-        testData.forEach((item, index) => {
-          const block = document.createElement("div");
-          block.className = "exercise-block";
+        questions.forEach((item, index) => {
+          const card = document.createElement("div");
+          card.className = "test-card";
 
-          let answerHTML = "";
+          const num = document.createElement("span");
+          num.className = "question-number";
+          num.innerText = `Питання ${index + 1} з ${questions.length}`;
 
-          // ВАРІАНТИ ВІДПОВІДЕЙ
+          const txt = document.createElement("div");
+          txt.className = "question-text";
+          txt.innerText = item.q; // KaTeX обробить це пізніше
+
+          card.appendChild(num);
+          card.appendChild(txt);
+
           if (item.type === "choice") {
-            let btns = "";
-            const safeAns = item.a;
-
-            item.opts.forEach((opt) => {
-              // Екранування
-              const safeOptAttr = opt
-                .replace(/"/g, "&quot;")
-                .replace(/\\/g, "\\\\");
-              const safeAnsAttr = safeAns
-                .replace(/"/g, "&quot;")
-                .replace(/\\/g, "\\\\");
-
-              btns += `<button class="option-btn" onclick="checkChoice(this, '${safeOptAttr}', '${safeAnsAttr}')">${opt}</button>`;
+            const grid = document.createElement("div");
+            grid.className = "options-grid";
+            item.options.forEach((opt) => {
+              const btn = document.createElement("button");
+              btn.className = "option-btn";
+              btn.innerText = opt;
+              btn.onclick = () => checkChoice(btn, opt, item.correct, card);
+              grid.appendChild(btn);
             });
-            answerHTML = `<div class="options-container">${btns}</div>`;
-          }
-          // ПОЛЕ ВВОДУ
-          else {
-            const ansStr = item.a.join("|");
-            answerHTML = `
-                <div class="input-group">
-                   <input type="text" class="input-answer" placeholder="Ваша відповідь..." onkeypress="if(event.key==='Enter') this.nextElementSibling.click()">
-                   <button class="btn-check" onclick="checkInput(this, '${ansStr}')">Відповісти</button>
-                </div>
-             `;
-          }
+            card.appendChild(grid);
+          } else {
+            const wrap = document.createElement("div");
+            wrap.className = "input-wrapper";
+            const inp = document.createElement("input");
+            inp.className = "input-answer";
+            inp.placeholder = "Відповідь...";
+            const btn = document.createElement("button");
+            btn.className = "btn-check-input";
+            btn.innerText = "OK";
+            btn.onclick = () => checkInput(inp, btn, item.correct, card);
 
-          block.innerHTML = `
-            <div class="task-row">
-                <div class="task-content">
-                   <div class="task-number">Питання ${index + 1}</div>
-                   <div class="task-question">${item.q}</div>
-                </div>
-                ${answerHTML}
-            </div>
-          `;
-          root.appendChild(block);
+            inp.addEventListener("keypress", (e) => {
+              if (e.key === "Enter") btn.click();
+            });
+
+            wrap.appendChild(inp);
+            wrap.appendChild(btn);
+            card.appendChild(wrap);
+          }
+          root.appendChild(card);
         });
 
-        // Кнопка завершення
-        const finishDiv = document.createElement("div");
-        finishDiv.className = "finish-section";
-        finishDiv.innerHTML = `<button class="btn-finish" onclick="finishTest()">Завершити тест</button>`;
-        root.appendChild(finishDiv);
-
-        renderMath();
+        // Рендер формул
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false },
+          ],
+        });
       }
 
-      function renderMath() {
-        if (typeof renderMathInElement === "function") {
-          renderMathInElement(document.body, {
-            delimiters: [
-              { left: "$$", right: "$$", display: true },
-              { left: "$", right: "$", display: false },
-            ],
-            throwOnError: false,
-          });
-        }
-      }
+      function checkChoice(btn, val, correct, card) {
+        if (card.classList.contains("answered")) return;
+        card.classList.add("answered");
 
-      // --- ПЕРЕВІРКА ---
+        const btns = card.querySelectorAll(".option-btn");
+        btns.forEach((b) => (b.disabled = true));
 
-      function checkChoice(btn, val, ans) {
-        const row = btn.closest(".task-row");
-        // Блокуємо повторні кліки
-        if (row.classList.contains("answered")) return;
-        row.classList.add("answered");
-
-        const allBtns = row.querySelectorAll(".option-btn");
-        allBtns.forEach((b) => (b.disabled = true)); // Disable all
-
-        // Очищення Latex слешів для порівняння
-        const cleanVal = val.replace(/\\\\/g, "\\");
-        const cleanAns = ans.replace(/\\\\/g, "\\");
-
-        // Підтримка кількох правильних відповідей (розділені |)
-        const possibleAnswers = cleanAns.split("|");
-
-        if (possibleAnswers.includes(cleanVal)) {
-          btn.classList.add("selected-correct");
-          row.classList.add("solved-correct");
-          totalCorrect++;
+        if (val === correct) {
+          btn.classList.add("correct");
+          correctCount++;
         } else {
-          btn.classList.add("selected-wrong");
-          row.classList.add("solved-wrong");
-          totalWrong++;
+          btn.classList.add("wrong");
+          // Підсвітити правильну
+          btns.forEach((b) => {
+            if (b.innerText === correct) b.classList.add("correct");
+          });
         }
         updateStats();
       }
 
-      function checkInput(btn, correctStr) {
-        const row = btn.closest(".task-row");
-        if (row.classList.contains("answered")) return;
+      function checkInput(inp, btn, correctArr, card) {
+        if (card.classList.contains("answered")) return;
 
-        const input = row.querySelector("input");
-        const val = input.value.trim().replace(",", ".");
+        let val = inp.value.trim().replace(",", ".");
+        if (!val) return;
 
-        if (val === "") return;
-
-        row.classList.add("answered");
-        input.disabled = true;
+        card.classList.add("answered");
+        inp.disabled = true;
         btn.disabled = true;
 
-        const variants = correctStr.split("|");
-
-        if (variants.includes(val)) {
-          input.classList.add("correct");
-          row.classList.add("solved-correct");
-          totalCorrect++;
+        if (correctArr.includes(val)) {
+          inp.classList.add("correct");
+          correctCount++;
         } else {
-          input.classList.add("wrong");
-          row.classList.add("solved-wrong");
-          totalWrong++;
+          inp.classList.add("wrong");
+          // Показати правильну
+          const hint = document.createElement("div");
+          hint.style.marginTop = "10px";
+          hint.style.color = "var(--success)";
+          hint.style.fontWeight = "bold";
+          hint.innerText = "Правильно: " + correctArr[0];
+          card.appendChild(hint);
         }
         updateStats();
       }
 
       function updateStats() {
-        document.getElementById("val-correct").innerText = totalCorrect;
-        document.getElementById("val-wrong").innerText = totalWrong;
+        answeredCount++;
+        document.getElementById(
+          "progress-val"
+        ).innerText = `${answeredCount}/${questions.length}`;
+      }
+
+      function finishTest() {
+        const total = questions.length;
+        // Оцінка за 12-бальною шкалою
+        const mark = Math.round((correctCount / total) * 12);
+
+        const markEl = document.getElementById("final-mark");
+        const titleEl = document.getElementById("modal-title");
+        const descEl = document.getElementById("modal-desc");
+
+        markEl.innerText = mark;
+
+        let color = "";
+        if (mark >= 10) {
+          color = "#16a34a"; // Green
+          titleEl.innerText = "Відмінно!";
+          descEl.innerText = `Ти відповів правильно на ${correctCount} з ${total} питань.`;
+        } else if (mark >= 7) {
+          color = "#7c3aed"; // Violet
+          titleEl.innerText = "Добре!";
+          descEl.innerText = "Хороший результат, але є куди рости.";
+        } else if (mark >= 4) {
+          color = "#f59e0b"; // Orange
+          titleEl.innerText = "Задовільно";
+          descEl.innerText = "Варто повторити властивості степеня.";
+        } else {
+          color = "#dc2626"; // Red
+          titleEl.innerText = "Спробуй ще";
+          descEl.innerText = "Потрібно більше практики.";
+        }
+
+        markEl.style.background = color;
+        document.getElementById("result-modal").style.display = "flex";
+      }
+
+      function closeModal() {
+        document.getElementById("result-modal").style.display = "none";
       }
 
       // =========================================================
-      // 3. CANVAS (ДОШКА)
+      // ЛОГІКА ДОШКИ (CANVAS)
       // =========================================================
       const canvas = document.getElementById("board");
       const ctx = canvas.getContext("2d");
@@ -697,64 +722,60 @@
 
       function resizeCanvas() {
         const temp = document.createElement("canvas");
-        const tempCtx = temp.getContext("2d");
+        const tCtx = temp.getContext("2d");
         temp.width = canvas.width;
         temp.height = canvas.height;
-        if (canvas.width > 0 && canvas.height > 0) {
-          tempCtx.drawImage(canvas, 0, 0);
-        }
+        if (canvas.width > 0) tCtx.drawImage(canvas, 0, 0);
+
         canvas.width = boardSection.offsetWidth;
         canvas.height = boardSection.offsetHeight;
+
         ctx.drawImage(temp, 0, 0);
         ctx.lineCap = "round";
         ctx.lineJoin = "round";
       }
 
-      window.addEventListener("resize", resizeCanvas);
-
-      function getMousePos(e) {
-        const rect = canvas.getBoundingClientRect();
-        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-        return { x: clientX - rect.left, y: clientY - rect.top };
+      function getPos(e) {
+        const r = canvas.getBoundingClientRect();
+        const cx = e.touches ? e.touches[0].clientX : e.clientX;
+        const cy = e.touches ? e.touches[0].clientY : e.clientY;
+        return { x: cx - r.left, y: cy - r.top };
       }
 
-      function startPosition(e) {
+      function startDraw(e) {
         painting = true;
         draw(e);
       }
-      function finishedPosition() {
+      function endDraw() {
         painting = false;
         ctx.beginPath();
       }
       function draw(e) {
         if (!painting) return;
-        if (e.type.startsWith("touch")) {
-          e.preventDefault();
-        }
-        const pos = getMousePos(e);
+        const p = getPos(e);
+
         if (tool === "pen") {
           ctx.lineWidth = 2;
-          ctx.strokeStyle = "#4a90e2";
+          ctx.strokeStyle = "#7c3aed";
           ctx.globalCompositeOperation = "source-over";
         } else {
-          ctx.lineWidth = 25;
+          ctx.lineWidth = 20;
           ctx.strokeStyle = "#ffffff";
           ctx.globalCompositeOperation = "destination-out";
         }
-        ctx.lineTo(pos.x, pos.y);
+
+        ctx.lineTo(p.x, p.y);
         ctx.stroke();
         ctx.beginPath();
-        ctx.moveTo(pos.x, pos.y);
+        ctx.moveTo(p.x, p.y);
       }
 
-      canvas.addEventListener("mousedown", startPosition);
-      canvas.addEventListener("mouseup", finishedPosition);
+      canvas.addEventListener("mousedown", startDraw);
+      canvas.addEventListener("mouseup", endDraw);
       canvas.addEventListener("mousemove", draw);
-      canvas.addEventListener("mouseout", finishedPosition);
-      canvas.addEventListener("touchstart", startPosition, { passive: false });
-      canvas.addEventListener("touchend", finishedPosition);
-      canvas.addEventListener("touchmove", draw, { passive: false });
+      canvas.addEventListener("touchstart", startDraw);
+      canvas.addEventListener("touchend", endDraw);
+      canvas.addEventListener("touchmove", draw);
 
       function setTool(t) {
         tool = t;
@@ -765,128 +786,41 @@
           .getElementById("t-eraser")
           .classList.toggle("active", t === "eraser");
       }
-
-      function clearCanvasSafe() {
-        if (confirm("Очистити дошку?")) {
+      function clearCanvas() {
+        if (confirm("Очистити все?"))
           ctx.clearRect(0, 0, canvas.width, canvas.height);
-        }
       }
-
       function drawSystem() {
-        const prevStrokeStyle = ctx.strokeStyle;
-        const prevLineWidth = ctx.lineWidth;
-        const prevComposite = ctx.globalCompositeOperation;
+        const w = canvas.width,
+          h = canvas.height,
+          cx = w / 2,
+          cy = h / 2;
+        const prevS = ctx.strokeStyle,
+          prevW = ctx.lineWidth,
+          prevC = ctx.globalCompositeOperation;
 
         ctx.globalCompositeOperation = "source-over";
-        ctx.strokeStyle = "#334155";
-        ctx.lineWidth = 2;
-        ctx.fillStyle = "#334155";
-        ctx.font = "16px Arial";
-
-        const w = canvas.width;
-        const h = canvas.height;
-        const cx = Math.floor(w / 2);
-        const cy = Math.floor(h / 2);
-        const step = 25;
+        ctx.strokeStyle = "#94a3b8";
+        ctx.lineWidth = 1;
 
         ctx.beginPath();
         ctx.moveTo(0, cy);
         ctx.lineTo(w, cy);
-        ctx.lineTo(w - 10, cy - 5);
-        ctx.moveTo(w, cy);
-        ctx.lineTo(w - 10, cy + 5);
-        ctx.moveTo(cx, h);
-        ctx.lineTo(cx, 0);
-        ctx.lineTo(cx - 5, 10);
         ctx.moveTo(cx, 0);
-        ctx.lineTo(cx + 5, 10);
+        ctx.lineTo(cx, h);
         ctx.stroke();
 
-        ctx.beginPath();
-        ctx.lineWidth = 1;
-        for (let x = cx + step; x < w; x += step) {
-          ctx.moveTo(x, cy - 3);
-          ctx.lineTo(x, cy + 3);
-        }
-        for (let x = cx - step; x > 0; x -= step) {
-          ctx.moveTo(x, cy - 3);
-          ctx.lineTo(x, cy + 3);
-        }
-        for (let y = cy + step; y < h; y += step) {
-          ctx.moveTo(cx - 3, y);
-          ctx.lineTo(cx + 3, y);
-        }
-        for (let y = cy - step; y > 0; y -= step) {
-          ctx.moveTo(cx - 3, y);
-          ctx.lineTo(cx + 3, y);
-        }
-        ctx.stroke();
-
-        ctx.fillText("x", w - 20, cy + 20);
-        ctx.fillText("y", cx + 15, 20);
-        ctx.fillText("0", cx - 15, cy + 20);
-
-        ctx.beginPath();
-        ctx.strokeStyle = prevStrokeStyle;
-        ctx.lineWidth = prevLineWidth;
-        ctx.globalCompositeOperation = prevComposite;
-        if (tool === "eraser") setTool("pen");
+        // Відновлення
+        ctx.strokeStyle = prevS;
+        ctx.lineWidth = prevW;
+        ctx.globalCompositeOperation = prevC;
       }
 
-      // =========================================================
-      // 4. ФІНІШ
-      // =========================================================
-      function finishTest() {
-        const modal = document.getElementById("result-modal");
-        const body = document.getElementById("modal-content-body");
-
-        let efficiency = 0;
-        if (totalQuestions > 0)
-          efficiency = Math.round((totalCorrect / totalQuestions) * 100);
-
-        let color = "#4a90e2";
-        let msg = "Результат";
-        let grade = "";
-
-        if (efficiency >= 90) {
-          color = "#28a745";
-          msg = "Чудово!";
-          grade = "Оцінка: 12";
-        } else if (efficiency >= 75) {
-          color = "#20c997";
-          msg = "Добре!";
-          grade = "Оцінка: 9-10";
-        } else if (efficiency >= 50) {
-          color = "#f59e0b";
-          msg = "Непогано";
-          grade = "Оцінка: 6-8";
-        } else {
-          color = "#dc3545";
-          msg = "Треба довчити";
-          grade = "Спробуй ще раз";
-        }
-
-        body.innerHTML = `
-            <div class="modal-result-title" style="color:${color}">${msg}</div>
-            <div class="modal-score-big" style="color:${color}">${efficiency}%</div>
-            <div class="modal-details">
-               <div>Правильних відповідей: <b>${totalCorrect}</b> з <b>${totalQuestions}</b></div>
-               <div style="margin-top:10px; font-weight:bold;">${grade}</div>
-            </div>
-            <button class="btn-finish" onclick="closeModal()" style="padding:10px 30px; font-size:1rem;">Закрити</button>
-            <button class="btn-finish" onclick="location.reload()" style="padding:10px 30px; font-size:1rem; background:#64748b; margin-left:10px;">Ще раз</button>
-        `;
-        modal.style.display = "flex";
-      }
-
-      function closeModal() {
-        document.getElementById("result-modal").style.display = "none";
-      }
-
-      document.addEventListener("DOMContentLoaded", () => {
-        init();
-        setTimeout(resizeCanvas, 100);
-      });
+      window.addEventListener("resize", resizeCanvas);
+      window.onload = () => {
+        resizeCanvas();
+        initQuiz();
+      };
     </script>
   </body>
 </html>

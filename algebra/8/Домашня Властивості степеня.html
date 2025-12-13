@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Сторінка підручника - Степінь із цілим показником</title>
+    <style>
+      body {
+        background-color: #e6e6e6;
+        margin: 0;
+        padding: 40px 0;
+        font-family: "Times New Roman", Times, serif;
+        display: flex;
+        justify-content: center;
+        min-height: 100vh;
+      }
+
+      .book-page {
+        background-color: #fff;
+        width: 210mm; /* Ширина А4 */
+        min-height: 297mm; /* Висота А4 */
+        padding: 25mm 20mm; /* Поля сторінки */
+        box-sizing: border-box;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.1);
+        position: relative;
+        color: #1a1a1a;
+        font-size: 18px;
+        line-height: 1.5;
+      }
+
+      .header-title {
+        position: absolute;
+        top: 10mm;
+        left: 20mm;
+        right: 20mm;
+        text-align: center;
+        font-size: 14px;
+        color: #666;
+        text-transform: uppercase;
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 5px;
+      }
+
+      .page-number {
+        position: absolute;
+        bottom: 10mm;
+        width: 100%;
+        text-align: center;
+        font-weight: bold;
+        color: #333;
+        left: 0;
+      }
+
+      .problem {
+        margin-bottom: 25px;
+        display: flex;
+        align-items: baseline;
+      }
+
+      .problem-number {
+        font-weight: bold;
+        color: #0099dd;
+        margin-right: 8px;
+        white-space: nowrap;
+      }
+
+      .problem-text {
+        width: 100%;
+      }
+
+      .sub-items-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 40px;
+        margin-top: 8px;
+        justify-content: flex-start;
+      }
+
+      .sub-item {
+        display: inline-block;
+      }
+
+      .fraction {
+        display: inline-block;
+        text-align: center;
+        vertical-align: middle;
+        margin: 0 2px;
+        font-size: 0.9em;
+      }
+
+      .fraction > span {
+        display: block;
+        padding: 0 2px;
+      }
+
+      .fraction span.numerator {
+        border-bottom: 1px solid #000;
+      }
+
+      .fraction span.denominator {
+        border-top: 0;
+      }
+
+      .mixed-fraction {
+        display: inline-flex;
+        align-items: center;
+      }
+
+      .mixed-fraction .integer {
+        margin-right: 2px;
+      }
+
+      .sqrt {
+        white-space: nowrap;
+      }
+
+      .sqrt span {
+        border-top: 1px solid #000;
+        padding-top: 1px;
+      }
+
+      .list-num {
+        margin-right: 3px;
+      }
+
+      /* Сітка для коротких прикладів (4 колонки) */
+      .grid-4-col {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px 10px;
+        margin-top: 10px;
+      }
+
+      /* Сітка для рівнянь (3 колонки) */
+      .grid-3-col {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px 10px;
+        margin-top: 10px;
+      }
+
+      /* Сітка (2 колонки) */
+      .grid-2-col {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px 30px;
+        margin-top: 10px;
+      }
+
+      @media print {
+        body {
+          background: none;
+          padding: 0;
+        }
+        .book-page {
+          box-shadow: none;
+          margin: 0;
+          width: 100%;
+          height: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="book-page">
+      <div class="header-title">§ 10. Степінь із цілим показником</div>
+
+      <div class="problem">
+        <span class="problem-number">10.3.</span>
+        <div class="problem-text">
+          Подайте у вигляді степеня добуток:
+          <div class="sub-items-row">
+            <div class="sub-item">
+              <span class="list-num">1)</span>
+              a<sup>9</sup>a<sup>&minus;4</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">2)</span>
+              a<sup>&minus;5</sup>a<sup>2</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">3)</span>
+              a<sup>&minus;3</sup>a<sup>&minus;6</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">4)</span>
+              a<sup>&minus;9</sup>a<sup>9</sup>.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <span class="problem-number">10.5.</span>
+        <div class="problem-text">
+          Подайте у вигляді степеня частку:
+          <div class="sub-items-row">
+            <div class="sub-item">
+              <span class="list-num">1)</span> x<sup>6</sup> :
+              x<sup>&minus;1</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">2)</span> x<sup>3</sup> : x<sup>7</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">3)</span> x<sup>&minus;4</sup> :
+              x<sup>&minus;5</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">4)</span> x<sup>&minus;2</sup> :
+              x<sup>&minus;2</sup>.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <span class="problem-number">10.7.</span>
+        <div class="problem-text">
+          Піднесіть степінь до степеня:
+          <div class="sub-items-row" style="gap: 50px">
+            <div class="sub-item">
+              <span class="list-num">1)</span>
+              (m<sup>&minus;3</sup>)<sup>&minus;5</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">2)</span>
+              (m<sup>12</sup>)<sup>&minus;1</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">3)</span>
+              (m<sup>&minus;6</sup>)<sup>0</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">4)</span>
+              (m<sup>4</sup>)<sup>&minus;6</sup>.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <span class="problem-number">10.11.</span>
+        <div class="problem-text">
+          Знайдіть значення виразу:
+          <div class="grid-3-col">
+            <div class="sub-item">
+              <span class="list-num">1)</span> 5<sup>8</sup> &middot;
+              5<sup>&minus;6</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">2)</span> 3<sup>&minus;4</sup> &middot; 3;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">3)</span>
+              <div class="fraction">
+                <span class="numerator">1</span
+                ><span class="denominator">3</span>
+              </div>
+              <sup>&minus;5</sup> &middot;
+              <div class="fraction">
+                <span class="numerator">1</span
+                ><span class="denominator">3</span>
+              </div>
+              <sup>4</sup>;
+            </div>
+
+            <div class="sub-item">
+              <span class="list-num">4)</span>
+              <div class="fraction">
+                <span class="numerator">1</span
+                ><span class="denominator">2</span>
+              </div>
+              <sup>&minus;8</sup> &middot;
+              <div class="fraction">
+                <span class="numerator">1</span
+                ><span class="denominator">2</span>
+              </div>
+              <sup>6</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">5)</span> 10<sup>5</sup> : 10<sup>8</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">6)</span> 6<sup>&minus;14</sup> :
+              6<sup>&minus;15</sup>;
+            </div>
+
+            <div class="sub-item">
+              <span class="list-num">7)</span> 4 : 4<sup>&minus;1</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">8)</span>
+              <div class="fraction">
+                <span class="numerator">3</span
+                ><span class="denominator">5</span>
+              </div>
+              <sup>&minus;6</sup> :
+              <div class="fraction">
+                <span class="numerator">3</span
+                ><span class="denominator">5</span>
+              </div>
+              <sup>&minus;6</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">9)</span>
+              (2<sup>&minus;1</sup>)<sup>5</sup>;
+            </div>
+
+            <div class="sub-item">
+              <span class="list-num">10)</span>
+              <div class="fraction">
+                <span class="numerator"
+                  >(2<sup>&minus;4</sup>)<sup>&minus;3</sup></span
+                >
+                <span class="denominator">(2<sup>3</sup>)<sup>5</sup></span>
+              </div>
+              ;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">11)</span>
+              (0,5<sup>2</sup>)<sup>&minus;1</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">12)</span>
+              <div class="fraction">
+                <span class="numerator"
+                  >(3<sup>&minus;2</sup>)<sup>3</sup></span
+                >
+                <span class="denominator">3<sup>&minus;8</sup></span>
+              </div>
+              .
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <span class="problem-number">10.13.</span>
+        <div class="problem-text">
+          Подайте у вигляді степеня з основою <i>c</i> вираз:
+          <div class="grid-2-col">
+            <div class="sub-item">
+              <span class="list-num">1)</span> c<sup>4</sup> : c<sup>8</sup>
+              &middot; c<sup>3</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">2)</span> (c<sup>&minus;3</sup>)<sup
+                >5</sup
+              >
+              &middot; c<sup>12</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">3)</span> (c<sup>4</sup>)<sup
+                >&minus;2</sup
+              >
+              : c<sup>5</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">4)</span> c<sup>0</sup> &middot; c<sup
+                >&minus;5</sup
+              >
+              : c<sup>2</sup> : c.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <span class="problem-number">10.15.</span>
+        <div class="problem-text">
+          Спростіть вираз:
+          <div class="grid-2-col">
+            <div class="sub-item">
+              <span class="list-num">1)</span> 12x<sup>4</sup>y<sup
+                >&minus;3</sup
+              >
+              &middot; 3x<sup>&minus;6</sup>y<sup>5</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">2)</span> 0,05a<sup>&minus;6</sup>b<sup
+                >2</sup
+              >
+              &middot; 100a<sup>6</sup>b<sup>&minus;5</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">3)</span> &minus;
+              <div class="fraction">
+                <span class="numerator">1</span
+                ><span class="denominator">5</span>
+              </div>
+              m<sup>&minus;2</sup>n<sup>8</sup> &middot;
+              25m<sup>5</sup>n<sup>&minus;12</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">4)</span>
+              <div class="mixed-fraction">
+                <span class="integer">&minus;1</span>
+                <div class="fraction">
+                  <span class="numerator">1</span
+                  ><span class="denominator">2</span>
+                </div>
+              </div>
+              x<sup>&minus;4</sup>y<sup>&minus;2</sup> &middot;
+              <div class="mixed-fraction">
+                <span class="integer">&minus;2</span>
+                <div class="fraction">
+                  <span class="numerator">2</span
+                  ><span class="denominator">3</span>
+                </div>
+              </div>
+              x<sup>&minus;3</sup>y<sup>&minus;5</sup>.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <span class="problem-number">10.22.</span>
+        <div class="problem-text">
+          Обчисліть:
+          <div class="grid-3-col">
+            <div class="sub-item">
+              <span class="list-num">1)</span> 243 &middot;
+              3<sup>&minus;4</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">2)</span> 32 &middot;
+              (2<sup>&minus;2</sup>)<sup>2</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">3)</span> 5<sup>&minus;7</sup> &middot;
+              125<sup>3</sup> : 25;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">4)</span> 25<sup>&minus;2</sup> &middot;
+              <div class="fraction">
+                <span class="numerator">1</span>
+                <span class="denominator">5</span>
+              </div>
+              <sup>&minus;6</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">5)</span>
+              <div class="fraction">
+                <span class="numerator"
+                  >100<sup>&minus;3</sup> &middot; 10<sup>&minus;6</sup></span
+                >
+                <span class="denominator">1000<sup>&minus;4</sup></span>
+              </div>
+              ;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">6)</span>
+              <div class="fraction">
+                <span class="numerator"
+                  >3<sup>&minus;4</sup> &middot; 9<sup>5</sup></span
+                >
+                <span class="denominator">27<sup>3</sup></span>
+              </div>
+              .
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <span class="problem-number">10.26.</span>
+        <div class="problem-text">
+          Спростіть вираз:
+          <div class="grid-2-col">
+            <div class="sub-item">
+              <span class="list-num">1)</span> 6,4a<sup>5</sup>b<sup
+                >&minus;3</sup
+              >
+              : (0,8ab<sup>&minus;1</sup>);
+            </div>
+            <div class="sub-item">
+              <span class="list-num">2)</span>
+              <div class="fraction">
+                <span class="numerator">5y<sup>&minus;4</sup></span>
+                <span class="denominator">z<sup>2</sup></span>
+              </div>
+              &middot; ( &minus;
+              <div class="fraction">
+                <span class="numerator">z<sup>6</sup></span>
+                <span class="denominator">15y<sup>&minus;2</sup></span>
+              </div>
+              ).
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <span class="problem-number">10.28.</span>
+        <div class="problem-text">
+          Подайте у вигляді виразу, що не містить степеня з від’ємним
+          показником:
+          <div class="grid-2-col">
+            <div class="sub-item">
+              <span class="list-num">1)</span>
+              (
+              <div class="fraction">
+                <span class="numerator">x<sup>&minus;5</sup>y<sup>3</sup></span>
+                <span class="denominator">z<sup>&minus;4</sup>k</span>
+              </div>
+              )<sup>&minus;2</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">2)</span>
+              (
+              <div class="fraction">
+                <span class="numerator">m<sup>&minus;2</sup></span>
+                <span class="denominator">n<sup>4</sup></span>
+              </div>
+              )<sup>&minus;1</sup>
+              &middot; (
+              <div class="fraction">
+                <span class="numerator">m<sup>&minus;5</sup></span>
+                <span class="denominator">n<sup>&minus;2</sup></span>
+              </div>
+              )<sup>3</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">3)</span>
+              (
+              <div class="fraction">
+                <span class="numerator">4x<sup>&minus;3</sup></span>
+                <span class="denominator">3y<sup>&minus;2</sup></span>
+              </div>
+              )<sup>&minus;2</sup>
+              &middot; 16x<sup>&minus;6</sup>y<sup>3</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">4)</span>
+              (
+              <div class="fraction">
+                <span class="numerator">a<sup>&minus;3</sup>b<sup>2</sup></span>
+                <span class="denominator">9</span>
+              </div>
+              )<sup>&minus;2</sup>
+              &middot; (
+              <div class="fraction">
+                <span class="numerator">27</span>
+                <span class="denominator"
+                  >a<sup>&minus;2</sup>b<sup>5</sup></span
+                >
+              </div>
+              )<sup>&minus;2</sup>.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <span class="problem-number">10.30.</span>
+        <div class="problem-text">
+          Спростіть вираз (<i>m</i> — ціле число):
+          <div class="grid-3-col">
+            <div class="sub-item">
+              <span class="list-num">1)</span>
+              <div class="fraction">
+                <span class="numerator">36<sup>m</sup></span>
+                <span class="denominator">6<sup>2m&minus;3</sup></span>
+              </div>
+              ;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">2)</span>
+              <div class="fraction">
+                <span class="numerator">12<sup>m</sup></span>
+                <span class="denominator"
+                  >2<sup>2m+1</sup> &middot; 3<sup>m&minus;2</sup></span
+                >
+              </div>
+              ;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">3)</span>
+              <div class="fraction">
+                <span class="numerator"
+                  >a<sup>7m</sup>b<sup>4m&minus;1</sup></span
+                >
+                <span class="denominator">a<sup>2m</sup>b<sup>2+4m</sup></span>
+              </div>
+              .
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <span class="problem-number">10.32.</span>
+        <div class="problem-text">
+          Скоротіть дріб:
+          <div class="sub-items-row">
+            <div class="sub-item">
+              <span class="list-num">1)</span>
+              <div class="fraction">
+                <span class="numerator">20</span>
+                <span class="denominator"
+                  >5<sup>n+1</sup> &minus; 5<sup>n</sup></span
+                >
+              </div>
+              (<i>n</i> — ціле число);
+            </div>
+            <div class="sub-item">
+              <span class="list-num">2)</span>
+              <div class="fraction">
+                <span class="numerator">c<sup>7</sup> + c<sup>4</sup></span>
+                <span class="denominator">c<sup>&minus;3</sup> + c</span>
+              </div>
+              ;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">3)</span>
+              <div class="fraction">
+                <span class="numerator"
+                  >y<sup>&minus;3</sup> + 4 &minus; y<sup>2</sup></span
+                >
+                <span class="denominator"
+                  >4y<sup>2</sup> &minus; y<sup>4</sup> + y<sup
+                    >&minus;1</sup
+                  ></span
+                >
+              </div>
+              .
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="page-number">85</div>
+    </div>
+  </body>
+</html>

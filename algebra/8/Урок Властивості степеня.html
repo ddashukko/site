@@ -306,6 +306,7 @@
         background: #fef2f2;
       }
 
+      /* --- СТИЛІ ДЛЯ КНОПОК ВНИЗУ --- */
       .finish-section {
         margin-top: 40px;
         text-align: center;
@@ -348,6 +349,26 @@
       .btn-test:hover {
         transform: scale(1.05);
         background-color: #6d28d9;
+      }
+
+      /* Стиль для третьої кнопки (Домашня робота) */
+      .btn-homework {
+        padding: 15px 40px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: white;
+        background: #ea580c;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(234, 88, 12, 0.3);
+        transition: transform 0.2s;
+        text-decoration: none;
+        display: inline-block;
+      }
+      .btn-homework:hover {
+        transform: scale(1.05);
+        background-color: #c2410c;
       }
 
       .modal-overlay {
@@ -558,8 +579,9 @@
     </div>
 
     <script>
-      // !!! ПОСИЛАННЯ НА ТЕСТ (з першого коду) !!!
+      // !!! ПОСИЛАННЯ НА ІНШІ СТОРІНКИ !!!
       const TEST_LINK = "властивості степеня тест.html";
+      const HOMEWORK_LINK = "властивості степеня дм.html";
 
       const canvas = document.getElementById("board");
       const ctx = canvas.getContext("2d");
@@ -1193,11 +1215,15 @@
           root.appendChild(exBlock);
         });
 
+        // =========================================================
+        // ГЕНЕРАЦІЯ 3-Х КНОПОК
+        // =========================================================
         const finishSection = document.createElement("div");
         finishSection.className = "finish-section";
         finishSection.innerHTML = `
               <button class="btn-finish" onclick="finishLesson()">Завершити урок</button>
-              <a href="${TEST_LINK}" class="btn-test">👉 Пройти перевірочний тест</a>
+              <a href="Тест Властивості степеня.html" class="btn-test">👉 Пройти перевірочний тест</a>
+              <a href="Домашня Властивості степеня.html" class="btn-homework">🏠 Домашня робота</a>
             `;
         root.appendChild(finishSection);
 
