@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Степені з цілим показником | Інтерактив</title>
+    <title>Алгебра 8: Степені з цілим показником</title>
 
     <link
       rel="stylesheet"
@@ -20,14 +20,15 @@
 
     <style>
       :root {
-        --primary: #4a90e2;
+        --primary: #2563eb;
         --primary-light: #eff6ff;
-        --success: #28a745;
-        --error: #dc3545;
+        --success: #16a34a;
+        --error: #dc2626;
         --bg: #f8fafc;
         --card: #ffffff;
-        --text: #2c3e50;
+        --text: #1e293b;
         --border: #e2e8f0;
+        --accent: #8b5cf6;
         --grid-color: #e2e8f0;
       }
 
@@ -43,22 +44,19 @@
         overflow: hidden;
       }
 
-      /* --- ЛІВА ПАНЕЛЬ (ЗАВДАННЯ) --- */
       #tasks-section {
         flex: 1;
         background: var(--bg);
         overflow-y: auto;
         display: flex;
         flex-direction: column;
-        border-right: 1px solid var(--border);
-        min-width: 320px;
       }
 
-      /* --- ПРАВА ПАНЕЛЬ (ДОШКА) --- */
       #board-section {
         flex: 1;
         position: relative;
         background-color: #fff;
+        border-left: 4px solid #cbd5e1;
         background-image: linear-gradient(
             var(--grid-color) 1px,
             transparent 1px
@@ -97,6 +95,7 @@
         padding: 8px 12px;
         border-radius: 5px;
         cursor: pointer;
+        font-weight: bold;
         font-size: 1.2rem;
         transition: 0.2s;
         display: flex;
@@ -113,7 +112,6 @@
         border-color: var(--primary);
       }
 
-      /* --- HEADER --- */
       header {
         background: var(--card);
         padding: 15px 20px;
@@ -128,7 +126,7 @@
       }
 
       .header-title {
-        font-weight: 800;
+        font-weight: 700;
         font-size: 1.1rem;
         color: var(--primary);
       }
@@ -144,7 +142,6 @@
         color: var(--error);
       }
 
-      /* --- КОНТЕНТ ЗАВДАНЬ --- */
       .content-container {
         padding: 20px;
         padding-bottom: 80px;
@@ -154,13 +151,35 @@
         box-sizing: border-box;
       }
 
+      .theory-block {
+        background: linear-gradient(to right, #fdfbf7, #fff);
+        border-left: 5px solid var(--accent);
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 30px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      }
+      .theory-title {
+        color: var(--accent);
+        font-weight: bold;
+        font-size: 1.1rem;
+        margin-bottom: 10px;
+      }
+      .theory-content ul {
+        margin: 5px 0;
+        padding-left: 20px;
+      }
+      .theory-content li {
+        margin-bottom: 8px;
+        line-height: 1.5;
+      }
+
       .exercise-block {
         background: var(--card);
         border-radius: 12px;
         border: 1px solid var(--border);
         margin-bottom: 30px;
         overflow: hidden;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
       }
 
       .exercise-header {
@@ -172,7 +191,7 @@
         margin: 0;
         font-size: 1.1rem;
         font-weight: 700;
-        color: #1e293b;
+        color: var(--primary);
       }
       .exercise-desc {
         margin: 5px 0 0 0;
@@ -186,7 +205,7 @@
         border-bottom: 1px solid var(--border);
         display: flex;
         flex-direction: column;
-        gap: 10px;
+        gap: 12px;
       }
       .task-row:last-child {
         border-bottom: none;
@@ -204,45 +223,40 @@
         gap: 10px;
       }
       .task-number {
-        font-weight: 700;
-        color: var(--primary);
-        min-width: 20px;
+        font-weight: 600;
+        color: #94a3b8;
+        min-width: 25px;
       }
       .task-question {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
         font-weight: 500;
       }
 
-      /* --- ВАРІАНТИ ВІДПОВІДЕЙ --- */
       .options-container {
         display: flex;
-        flex-direction: row;
         flex-wrap: wrap;
         gap: 10px;
-        margin-top: 5px;
-        align-items: center;
+        padding-bottom: 5px;
       }
-
       .option-btn {
+        flex: 1;
         background: white;
-        border: 2px solid #e2e8f0;
+        border: 1px solid #cbd5e1;
         border-radius: 8px;
-        padding: 8px 16px;
+        padding: 10px 15px;
         font-size: 1rem;
         cursor: pointer;
-        min-width: 60px;
-        text-align: center;
+        min-width: 70px;
         transition: 0.2s;
-        font-weight: 600;
-        color: var(--text);
-        display: inline-flex;
+        display: flex;
         align-items: center;
         justify-content: center;
+        text-align: center;
       }
       .option-btn:hover:not(:disabled) {
         border-color: var(--primary);
         color: var(--primary);
-        background: #f8fafc;
+        background: var(--primary-light);
       }
       .option-btn.selected-correct {
         background: var(--success);
@@ -252,7 +266,6 @@
       .option-btn.selected-correct .katex {
         color: white !important;
       }
-
       .option-btn.selected-wrong {
         background: var(--error);
         color: white;
@@ -262,23 +275,20 @@
         color: white !important;
       }
 
-      /* --- ПОЛЯ ВВОДУ --- */
       .input-group {
         display: flex;
         gap: 10px;
         align-items: center;
-        margin-top: 5px;
       }
       .input-answer {
-        padding: 8px 12px;
-        border: 2px solid #cbd5e1;
+        padding: 10px;
+        border: 1px solid #cbd5e1;
         border-radius: 8px;
-        width: 120px;
-        font-size: 1.1rem;
-        text-align: center;
+        width: 140px;
+        font-size: 1rem;
       }
       .btn-check {
-        padding: 8px 20px;
+        padding: 10px 20px;
         background: var(--primary);
         color: white;
         border: none;
@@ -299,6 +309,10 @@
       .finish-section {
         margin-top: 40px;
         text-align: center;
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        flex-wrap: wrap;
       }
       .btn-finish {
         padding: 15px 40px;
@@ -309,22 +323,33 @@
         border: none;
         border-radius: 50px;
         cursor: pointer;
-        box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
+        box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+        transition: transform 0.2s;
+      }
+      .btn-finish:hover {
+        transform: scale(1.05);
+        background-color: #1d4ed8;
+      }
+
+      .btn-test {
+        padding: 15px 40px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: white;
+        background: #7c3aed;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
         transition: transform 0.2s;
         text-decoration: none;
         display: inline-block;
       }
-      .btn-finish:hover {
+      .btn-test:hover {
         transform: scale(1.05);
+        background-color: #6d28d9;
       }
 
-      /* Стиль для кнопки переходу на тест */
-      .btn-test-link {
-        background: #8e44ad; /* Фіолетовий колір для відмінності */
-        box-shadow: 0 4px 15px rgba(142, 68, 173, 0.3);
-      }
-
-      /* --- МОДАЛЬНЕ ВІКНО --- */
       .modal-overlay {
         display: none;
         position: fixed;
@@ -337,8 +362,9 @@
         z-index: 1000;
         justify-content: center;
         align-items: center;
-        animation: fadeIn 0.3s ease;
+        animation: fadeInOverlay 0.3s ease;
       }
+
       .modal-card {
         background: white;
         padding: 40px;
@@ -348,7 +374,9 @@
         text-align: center;
         box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
         position: relative;
+        animation: scaleInModal 0.3s ease;
       }
+
       .modal-close-btn {
         position: absolute;
         top: 15px;
@@ -359,23 +387,79 @@
         color: #94a3b8;
         cursor: pointer;
       }
+      .modal-close-btn:hover {
+        color: var(--error);
+      }
+
       .modal-result-title {
         font-size: 2rem;
         font-weight: 800;
+        color: var(--primary);
         margin-bottom: 20px;
       }
       .modal-score-big {
         font-size: 4rem;
         font-weight: 900;
-        margin: 10px 0;
+        color: var(--primary);
         line-height: 1;
+        margin: 10px 0;
+      }
+      .modal-score-sub {
+        font-size: 1rem;
+        color: #64748b;
+        margin-bottom: 20px;
       }
 
-      @keyframes fadeIn {
+      .modal-progress-container {
+        background: #f1f5f9;
+        border-radius: 10px;
+        padding: 15px;
+        margin-top: 20px;
+      }
+      .modal-bar-bg {
+        width: 100%;
+        height: 12px;
+        background: #e2e8f0;
+        border-radius: 6px;
+        overflow: hidden;
+        margin-top: 10px;
+      }
+      .modal-bar-fill {
+        height: 100%;
+        background: var(--primary);
+        transition: width 1s ease;
+      }
+
+      .modal-footer-btn {
+        margin-top: 30px;
+        padding: 12px 30px;
+        background: var(--text);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+      .modal-footer-btn:hover {
+        background: black;
+      }
+
+      @keyframes fadeInOverlay {
         from {
           opacity: 0;
         }
         to {
+          opacity: 1;
+        }
+      }
+      @keyframes scaleInModal {
+        from {
+          transform: scale(0.8);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
           opacity: 1;
         }
       }
@@ -385,13 +469,13 @@
           flex-direction: column;
         }
         #board-section {
-          height: 35vh;
+          height: 40vh;
           border-left: none;
-          border-top: 2px solid var(--border);
+          border-top: 4px solid #cbd5e1;
           order: 2;
         }
         #tasks-section {
-          height: 65vh;
+          height: 60vh;
           order: 1;
         }
       }
@@ -400,14 +484,33 @@
   <body>
     <div id="tasks-section">
       <header>
-        <div class="header-title">Dasha Tutor: Степені</div>
+        <div class="header-title">Алгебра 8: Степені</div>
         <div class="stats-container">
           <span class="stat-correct">✅ <span id="val-correct">0</span></span>
           <span class="stat-wrong">❌ <span id="val-wrong">0</span></span>
         </div>
       </header>
 
-      <div class="content-container" id="quiz-root"></div>
+      <div class="content-container" id="quiz-root">
+        <div class="theory-block">
+          <div class="theory-title">📚 Шпаргалка: Властивості степеня</div>
+          <div class="theory-content">
+            <ul>
+              <li>
+                $a^m \cdot a^n = a^{m+n}$ (при множенні показники додаються).
+              </li>
+              <li>$a^m : a^n = a^{m-n}$ (при діленні віднімаються).</li>
+              <li>
+                $(a^m)^n = a^{m \cdot n}$ (при піднесенні до степеня
+                перемножуються).
+              </li>
+              <li>$(ab)^n = a^n b^n$ (степінь добутку).</li>
+              <li>$a^{-n} = \frac{1}{a^n}$ (від'ємний показник).</li>
+              <li>$a^0 = 1$ (якщо $a \neq 0$).</li>
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div id="board-section">
@@ -431,7 +534,7 @@
         <button
           class="btn-tool"
           onclick="drawSystem()"
-          title="Координатна площина"
+          title="Додати координатну пряму"
         >
           📉
         </button>
@@ -455,556 +558,9 @@
     </div>
 
     <script>
-      // !!! НАЛАШТУВАННЯ ПОСИЛАННЯ НА ТЕСТ !!!
-      // Вставте сюди назву вашого html файлу з тестом
+      // !!! ПОСИЛАННЯ НА ТЕСТ (з першого коду) !!!
       const TEST_LINK = "властивості степеня тест.html";
 
-      // =========================================================
-      // 1. ДАНІ УРОКУ (КОНТЕНТ)
-      // =========================================================
-      const lessonData = [
-        {
-          id: "10.1",
-          title: "10.1. (Усно.) Які з рівностей є тотожностями:",
-          description: "Перевірте правильність наведених нижче рівностей.",
-          tasks: [
-            {
-              label: "1)",
-              q: "$x^4 \\cdot x^{-6} = x^{-24}$",
-              a: "Ні",
-              opts: ["Так", "Ні"],
-            },
-            {
-              label: "2)",
-              q: "$b^5 \\cdot b^{-8} = b^{-3}$",
-              a: "Так",
-              opts: ["Так", "Ні"],
-            },
-            {
-              label: "3)",
-              q: "$y^3 \\cdot y^{-3} = y$",
-              a: "Ні",
-              opts: ["Так", "Ні"],
-            },
-            {
-              label: "4)",
-              q: "$k^9 : k^{-3} = k^{12}$",
-              a: "Так",
-              opts: ["Так", "Ні"],
-            },
-            {
-              label: "5)",
-              q: "$p^2 : p^6 = p^4$",
-              a: "Ні",
-              opts: ["Так", "Ні"],
-            },
-            {
-              label: "6)",
-              q: "$(c^4)^{-2} = c^{-8}$",
-              a: "Так",
-              opts: ["Так", "Ні"],
-            },
-          ],
-        },
-        {
-          id: "10.2",
-          title: "10.2. Подайте у вигляді степеня добуток:",
-          description: "Властивість: $a^m \\cdot a^n = a^{m+n}$.",
-          tasks: [
-            {
-              label: "1)",
-              q: "$x^6 \\cdot x^{-3}$",
-              a: "$x^3$",
-              opts: ["$x^3$", "$x^9$", "$x^{-3}$", "$x^2$"],
-            },
-            {
-              label: "2)",
-              q: "$y^{-5} \\cdot y^8$",
-              a: "$y^3$",
-              opts: ["$y^{-13}$", "$y^3$", "$y^{40}$", "$y^{-3}$"],
-            },
-            {
-              label: "3)",
-              q: "$b^{12} \\cdot b^{-12}$",
-              a: "1",
-              opts: ["$b$", "0", "1", "$b^{24}$"],
-            },
-            {
-              label: "4)",
-              q: "$c^{-6} \\cdot c^{-2}$",
-              a: "$c^{-8}$",
-              opts: ["$c^{-4}$", "$c^{12}$", "$c^{-8}$", "$c^8$"],
-            },
-          ],
-        },
-        {
-          id: "10.4",
-          title: "10.4. Подайте у вигляді степеня частку:",
-          description: "Властивість: $a^m : a^n = a^{m-n}$.",
-          tasks: [
-            {
-              label: "1)",
-              q: "$a^4 : a^{-3}$",
-              a: "$a^7$",
-              opts: ["$a^1$", "$a^7$", "$a^{-7}$", "$a^{12}$"],
-            },
-            {
-              label: "2)",
-              q: "$b^7 : b^9$",
-              a: "$b^{-2}$",
-              opts: ["$b^2$", "$b^{16}$", "$b^{-2}$", "$b^{-16}$"],
-            },
-            {
-              label: "3)",
-              q: "$z^{-5} : z^{-5}$",
-              a: "1",
-              opts: ["$z$", "0", "$z^{-10}$", "1"],
-            },
-            {
-              label: "4)",
-              q: "$n^{-2} : n^{-10}$",
-              a: "$n^8$",
-              opts: ["$n^{-12}$", "$n^8$", "$n^{-8}$", "$n^{12}$"],
-            },
-          ],
-        },
-        {
-          id: "10.6",
-          title: "10.6. Піднесіть степінь до степеня:",
-          description: "Властивість: $(a^m)^n = a^{m \\cdot n}$.",
-          tasks: [
-            {
-              label: "1)",
-              q: "$(y^{-3})^{-4}$",
-              a: "$y^{12}$",
-              opts: ["$y^{-7}$", "$y^{12}$", "$y^{-12}$", "$y^7$"],
-            },
-            {
-              label: "2)",
-              q: "$(m^{-2})^{12}$",
-              a: "$m^{-24}$",
-              opts: ["$m^{-10}$", "$m^{10}$", "$m^{-24}$", "$m^{24}$"],
-            },
-            {
-              label: "3)",
-              q: "$(x^0)^{-8}$",
-              a: "1",
-              opts: ["$x^{-8}$", "0", "1", "$x^8$"],
-            },
-            {
-              label: "4)",
-              q: "$(k^5)^{-3}$",
-              a: "$k^{-15}$",
-              opts: ["$k^2$", "$k^{15}$", "$k^{-15}$", "$k^{-8}$"],
-            },
-          ],
-        },
-        {
-          id: "10.10",
-          title: "10.10. Обчисліть:",
-          description: "Знайдіть числове значення виразу.",
-          tasks: [
-            { label: "1)", q: "$3^8 \\cdot 3^{-7}$", a: ["3"] },
-            {
-              label: "2)",
-              q: "$4^{-5} \\cdot 4$",
-              a: "1/256",
-              opts: ["1/64", "1/256", "1/16", "-16"],
-            },
-            {
-              label: "3)",
-              q: "$\\left(\\frac{1}{3}\\right)^{-6} \\cdot \\left(\\frac{1}{3}\\right)^4$",
-              a: ["9"],
-            },
-            {
-              label: "4)",
-              q: "$\\left(\\frac{1}{5}\\right)^{-9} \\cdot \\left(\\frac{1}{5}\\right)^7$",
-              a: ["25"],
-            },
-            { label: "5)", q: "$2^{10} : 2^{11}$", a: ["0.5", "0,5", "1/2"] },
-            { label: "6)", q: "$5^{-12} : 5^{-13}$", a: ["5"] },
-            { label: "7)", q: "$6 : 6^{-1}$", a: ["36"] },
-            {
-              label: "8)",
-              q: "$(3^{-2})^3$",
-              a: "1/729",
-              opts: ["1/243", "-729", "1/729", "1/9"],
-            },
-            {
-              label: "9)",
-              q: "$\\left(\\left(\\frac{1}{4}\\right)^{-1}\\right)^{-3}$",
-              a: "1/64",
-              opts: ["64", "1/64", "12", "1/12"],
-            },
-          ],
-        },
-        {
-          id: "10.12",
-          title: "10.12. Спростіть вираз з основою $x$:",
-          description: "",
-          tasks: [
-            {
-              label: "1)",
-              q: "$x^9 : x^4 \\cdot x^{-15}$",
-              a: "$x^{-10}$",
-              opts: ["$x^{-2}$", "$x^{-10}$", "$x^{20}$", "$x^{10}$"],
-            },
-            {
-              label: "2)",
-              q: "$(x^4)^{-2} \\cdot x^{10}$",
-              a: "$x^2$",
-              opts: ["$x^2$", "$x^{-2}$", "$x^{18}$", "$x^{-18}$"],
-            },
-            {
-              label: "3)",
-              q: "$(x^{-6})^2 : x^5$",
-              a: "$x^{-17}$",
-              opts: ["$x^{-7}$", "$x^{-17}$", "$x^{17}$", "$x^{-1}$"],
-            },
-            {
-              label: "4)",
-              q: "$x^0 \\cdot (x^{-2})^5 \\cdot x^8$",
-              a: "$x^{-2}$",
-              opts: ["$x^2$", "$x^{-2}$", "$x^{-10}$", "1"],
-            },
-            {
-              label: "5)",
-              q: "$x^{-4} \\cdot x^0 : x^3 : x$",
-              a: "$x^{-8}$",
-              opts: ["$x^{-1}$", "$x^{-7}$", "$x^{-8}$", "$x^0$"],
-            },
-            {
-              label: "6)",
-              q: "$(x^2)^{-4} \\cdot (x^{-1})^{-5}$",
-              a: "$x^{-3}$",
-              opts: ["$x^{-3}$", "$x^{-13}$", "$x^3$", "$x^{13}$"],
-            },
-          ],
-        },
-        {
-          id: "10.14",
-          title: "10.14. Спростіть вираз (коефіцієнти):",
-          description: "Окремо перемножте числа та окремо степені.",
-          tasks: [
-            {
-              label: "1)",
-              q: "$3x^{-5}y^4 \\cdot 6x^8y^{-2}$",
-              a: "$18x^3y^2$",
-              opts: [
-                "$18x^3y^2$",
-                "$9x^3y^2$",
-                "$18x^{-13}y^2$",
-                "$18x^3y^{-2}$", // Виправлено: додано закриваючий долар
-              ],
-            },
-            {
-              label: "2)",
-              q: "$5a^{-8}b^3 \\cdot 0.2a^{10}b^{-7}$",
-              a: "$a^2b^{-4}$",
-              opts: ["$a^2b^{-4}$", "$5a^2b^{-4}$", "$a^{-18}b^4$", "$a^2b^4$"],
-            },
-            {
-              label: "3)",
-              q: "$\\frac{1}{4}p^{-6}q^8 \\cdot (-12p^7q^{-5})$",
-              a: "$-3pq^3$",
-              opts: ["$-3pq^3$", "$3pq^3$", "$-3p^{-13}q^3$", "$-48pq^3$"],
-            },
-            {
-              label: "4)",
-              q: "$\\left(-\\frac{3}{5}x^{-4}y^{-2}\\right) \\cdot \\left(-2\\frac{1}{2}x^{-3}y^{-5}\\right)$",
-              a: "$1.5x^{-7}y^{-7}$",
-              opts: [
-                "$-1.5x^{-7}y^{-7}$",
-                "$1.5x^{-7}y^{-7}$", // Виправлено: додано долари
-                "$1.5x^{12}y^{10}$",
-                "$x^{-7}y^{-7}$", // Виправлено: додано закриваючий долар
-              ],
-            },
-          ],
-        },
-        {
-          id: "10.16",
-          title: "10.16. Подайте у вигляді добутку степенів:",
-          description: "$(ab)^n = a^n b^n$.",
-          tasks: [
-            {
-              label: "1)",
-              q: "$(mn)^{-3}$",
-              a: "$m^{-3}n^{-3}$",
-              opts: ["$m^{-3}n^{-3}$", "$mn^{-3}$", "$m^{-3}n$", "$m^3n^3$"],
-            },
-            {
-              label: "2)",
-              q: "$(xy^{-3})^{-2}$",
-              a: "$x^{-2}y^6$",
-              opts: ["$x^{-2}y^{-6}$", "$x^{-2}y^6$", "$x^2y^6$", "$xy^6$"],
-            },
-            {
-              label: "3)",
-              q: "$(a^{-5}b^2)^{-1}$",
-              a: "$a^5b^{-2}$",
-              opts: ["$a^{-5}b^{-2}$", "$a^5b^2$", "$a^5b^{-2}$", "$a^{-6}b$"],
-            },
-            {
-              label: "4)",
-              q: "$(k^0z^{-4})^{-3}$",
-              a: "$z^{12}$",
-              opts: ["$k^{-3}z^{12}$", "$z^{12}$", "$z^{-12}$", "$k^0z^{12}$"],
-            },
-          ],
-        },
-        {
-          id: "10.18",
-          title: "10.18. Подайте у вигляді степеня вираз:",
-          description: "",
-          tasks: [
-            {
-              label: "1)",
-              q: "$125x^{-3}$",
-              a: "$(5x^{-1})^3$",
-              opts: [
-                "$(5x)^{-3}$",
-                "$(5x^{-1})^3$",
-                "$(125x)^{-3}$",
-                "$5x^{-3}$",
-              ],
-            },
-            {
-              label: "2)",
-              q: "$0.001y^{-6}$",
-              a: "$(0.1y^{-2})^3$",
-              opts: [
-                "$(0.1y^{-2})^3$",
-                "$(0.1y^{-6})^3$",
-                "$(0.01y^2)^3$",
-                "$(0.1y)^{-6}$",
-              ],
-            },
-            {
-              label: "3)",
-              q: "$0.0081a^{-4}b^{16}$",
-              a: "$(0.3a^{-1}b^4)^4$",
-              opts: [
-                "$(0.3a^{-1}b^4)^4$",
-                "$(0.03ab^{-4})^4$",
-                "$(0.9a^{-1}b^4)^4$",
-                "$(0.3ab)^4$",
-              ],
-            },
-            {
-              label: "4)",
-              q: "$2\\frac{7}{9}p^{14}q^{-18}$",
-              a: "$(\\frac{5}{3} p^7q^{-9})^2$",
-              opts: [
-                "$(\\frac{5}{3} p^7q^{-9})^2$",
-                "$(\\frac{25}{9} p^7q^{-9})^2$",
-                "$(\\frac{5}{3} p^{12}q^{-16})^2$",
-                "$(1.6 p^7q^{-9})^2$",
-              ],
-            },
-          ],
-        },
-        {
-          id: "10.21",
-          title: "10.21. Знайдіть значення виразу:",
-          description: "",
-          tasks: [
-            {
-              label: "1)",
-              q: "$81 \\cdot 3^{-5}$",
-              a: "1/3",
-              opts: ["3", "1/3", "9", "-3"],
-            },
-            {
-              label: "2)",
-              q: "$27 \\cdot (3^{-2})^3$",
-              a: "1/27",
-              opts: ["1/27", "27", "1/9", "1"],
-            },
-            {
-              label: "3)",
-              q: "$2^{-9} \\cdot 4^6 : 16$",
-              a: ["0.5", "0,5", "1/2"],
-            },
-            {
-              label: "4)",
-              q: "$36^{-1} \\cdot \\left(\\frac{1}{6}\\right)^{-4}$",
-              a: ["36"],
-            },
-            {
-              label: "5)",
-              q: "$\\frac{25^{-4} \\cdot 5^{-6}}{(-5)^{-16}}$",
-              a: ["25"],
-            },
-            {
-              label: "6)",
-              q: "$\\frac{10^{-5} \\cdot 2^{-8}}{32^{-3}}$",
-              a: "4/3125",
-              opts: ["4/3125", "125", "2/625", "0.005"],
-            },
-          ],
-        },
-      ];
-
-      // =========================================================
-      // 2. ГЕНЕРАЦІЯ ЗАВДАНЬ ТА ЛОГІКА
-      // =========================================================
-
-      let totalCorrect = 0;
-      let totalWrong = 0;
-      let totalTasksCount = 0;
-
-      function init() {
-        const root = document.getElementById("quiz-root");
-
-        lessonData.forEach((block) => {
-          totalTasksCount += block.tasks.length;
-
-          const exBlock = document.createElement("div");
-          exBlock.className = "exercise-block";
-
-          let content = `
-            <div class="exercise-header">
-                <h3 class="exercise-title">${block.title}</h3>
-                <p class="exercise-desc">${block.description}</p>
-            </div>
-          `;
-
-          block.tasks.forEach((task) => {
-            let answerHTML = "";
-
-            // Якщо є opts - це кнопки
-            if (task.opts && task.opts.length > 0) {
-              let btns = "";
-              const safeAns = Array.isArray(task.a) ? task.a[0] : task.a;
-              task.opts.forEach((opt) => {
-                // Екранування для HTML атрибутів
-                const safeOpt = opt.replace(/"/g, "&quot;");
-                const safeAnsAttr = safeAns.replace(/"/g, "&quot;");
-                btns += `<button class="option-btn" onclick="checkChoice(this, '${safeOpt.replace(
-                  /\\/g,
-                  "\\\\"
-                )}', '${safeAnsAttr.replace(/\\/g, "\\\\")}')">${opt}</button>`;
-              });
-              answerHTML = `<div class="options-container">${btns}</div>`;
-            } else {
-              // Якщо немає opts - це інпут
-              const ansStr = Array.isArray(task.a) ? task.a.join("|") : task.a;
-              answerHTML = `
-                <div class="input-group">
-                   <input type="text" class="input-answer" placeholder="..." onkeypress="if(event.key==='Enter') this.nextElementSibling.click()">
-                   <button class="btn-check" onclick="checkInput(this, '${ansStr}')">OK</button>
-                </div>
-              `;
-            }
-
-            content += `
-              <div class="task-row">
-                 <div class="task-content">
-                    <div class="task-number">${task.label}</div>
-                    <div class="task-question">${task.q}</div>
-                 </div>
-                 ${answerHTML}
-              </div>
-            `;
-          });
-
-          exBlock.innerHTML = content;
-          root.appendChild(exBlock);
-
-          // === ВСТАВКА КНОПКИ ПОСИЛАННЯ НА ТЕСТ ПІСЛЯ 10.16 ===
-          if (block.id === "10.16") {
-            const linkDiv = document.createElement("div");
-            linkDiv.className = "finish-section";
-            // Трішки менший відступ знизу, ніж у фінальної кнопки
-            linkDiv.style.marginTop = "10px";
-            linkDiv.style.marginBottom = "30px";
-            linkDiv.innerHTML = `<a href="${TEST_LINK}" class="btn-finish btn-test-link">👉 Пройти перевірочний тест</a>`;
-            root.appendChild(linkDiv);
-          }
-        });
-
-        // Кнопка завершення уроку
-        const finishDiv = document.createElement("div");
-        finishDiv.className = "finish-section";
-        finishDiv.innerHTML = `<button class="btn-finish" onclick="finishLesson()">Завершити урок</button>`;
-        root.appendChild(finishDiv);
-
-        renderMath();
-      }
-
-      function renderMath() {
-        if (typeof renderMathInElement === "function") {
-          renderMathInElement(document.body, {
-            delimiters: [
-              { left: "$$", right: "$$", display: true },
-              { left: "$", right: "$", display: false },
-            ],
-            throwOnError: false,
-          });
-        }
-      }
-
-      // Перевірка кнопок
-      function checkChoice(btn, val, ans) {
-        const row = btn.closest(".task-row");
-        if (
-          row.classList.contains("solved-correct") ||
-          row.classList.contains("solved-wrong")
-        )
-          return;
-
-        // Порівняння
-        const cleanVal = val.replace(/\\\\/g, "\\");
-        const cleanAns = ans.replace(/\\\\/g, "\\");
-
-        const btns = row.querySelectorAll(".option-btn");
-        btns.forEach((b) => (b.disabled = true));
-
-        if (cleanVal === cleanAns) {
-          btn.classList.add("selected-correct");
-          row.classList.add("solved-correct");
-          totalCorrect++;
-        } else {
-          btn.classList.add("selected-wrong");
-          row.classList.add("solved-wrong");
-          totalWrong++;
-        }
-        updateStats();
-      }
-
-      // Перевірка інпуту
-      function checkInput(btn, correctStr) {
-        const row = btn.closest(".task-row");
-        const input = row.querySelector("input");
-        if (input.disabled) return;
-
-        const val = input.value.trim().replace(",", ".");
-        const variants = correctStr.split("|");
-
-        if (variants.includes(val)) {
-          input.classList.add("correct");
-          input.classList.remove("wrong");
-          row.classList.add("solved-correct");
-          input.disabled = true;
-          btn.disabled = true;
-          totalCorrect++;
-        } else {
-          input.classList.add("wrong");
-          row.classList.add("solved-wrong");
-          totalWrong++;
-        }
-        updateStats();
-      }
-
-      function updateStats() {
-        document.getElementById("val-correct").innerText = totalCorrect;
-        document.getElementById("val-wrong").innerText = totalWrong;
-      }
-
-      // =========================================================
-      // 3. ЛОГІКА ДОШКИ (CANVAS)
-      // =========================================================
       const canvas = document.getElementById("board");
       const ctx = canvas.getContext("2d");
       const boardSection = document.getElementById("board-section");
@@ -1019,14 +575,17 @@
         if (canvas.width > 0 && canvas.height > 0) {
           tempCtx.drawImage(canvas, 0, 0);
         }
+
         canvas.width = boardSection.offsetWidth;
         canvas.height = boardSection.offsetHeight;
+
         ctx.drawImage(temp, 0, 0);
         ctx.lineCap = "round";
         ctx.lineJoin = "round";
       }
 
       window.addEventListener("resize", resizeCanvas);
+      window.addEventListener("load", resizeCanvas);
 
       function getMousePos(e) {
         const rect = canvas.getBoundingClientRect();
@@ -1039,26 +598,30 @@
         painting = true;
         draw(e);
       }
+
       function finishedPosition() {
         painting = false;
         ctx.beginPath();
       }
+
       function draw(e) {
         if (!painting) return;
         if (e.type.startsWith("touch")) {
-          e.preventDefault();
+          // e.preventDefault(); // Забрали, щоб не блокувати скрол на мобільних, якщо торкатися за межами канвасу
         }
 
         const pos = getMousePos(e);
+
         if (tool === "pen") {
           ctx.lineWidth = 2;
-          ctx.strokeStyle = "#4a90e2";
+          ctx.strokeStyle = "#2563eb";
           ctx.globalCompositeOperation = "source-over";
         } else {
           ctx.lineWidth = 25;
           ctx.strokeStyle = "#ffffff";
           ctx.globalCompositeOperation = "destination-out";
         }
+
         ctx.lineTo(pos.x, pos.y);
         ctx.stroke();
         ctx.beginPath();
@@ -1069,9 +632,10 @@
       canvas.addEventListener("mouseup", finishedPosition);
       canvas.addEventListener("mousemove", draw);
       canvas.addEventListener("mouseout", finishedPosition);
-      canvas.addEventListener("touchstart", startPosition, { passive: false });
+
+      canvas.addEventListener("touchstart", startPosition);
       canvas.addEventListener("touchend", finishedPosition);
-      canvas.addEventListener("touchmove", draw, { passive: false });
+      canvas.addEventListener("touchmove", draw);
 
       function setTool(t) {
         tool = t;
@@ -1107,23 +671,24 @@
         const step = 25;
 
         ctx.beginPath();
-        // X axis
+        // X
         ctx.moveTo(0, cy);
         ctx.lineTo(w, cy);
         ctx.lineTo(w - 10, cy - 5);
         ctx.moveTo(w, cy);
         ctx.lineTo(w - 10, cy + 5);
-        // Y axis
+        // Y
         ctx.moveTo(cx, h);
         ctx.lineTo(cx, 0);
         ctx.lineTo(cx - 5, 10);
         ctx.moveTo(cx, 0);
         ctx.lineTo(cx + 5, 10);
+
         ctx.stroke();
 
-        // Grid ticks
         ctx.beginPath();
         ctx.lineWidth = 1;
+
         for (let x = cx + step; x < w; x += step) {
           ctx.moveTo(x, cy - 3);
           ctx.lineTo(x, cy + 3);
@@ -1146,63 +711,645 @@
         ctx.fillText("y", cx + 15, 20);
         ctx.fillText("0", cx - 15, cy + 20);
 
-        // Restore
         ctx.beginPath();
         ctx.strokeStyle = prevStrokeStyle;
         ctx.lineWidth = prevLineWidth;
         ctx.globalCompositeOperation = prevComposite;
-        if (tool === "eraser") setTool("pen");
+
+        if (tool === "eraser") {
+          setTool("pen");
+        }
       }
 
       // =========================================================
-      // 4. ФІНІШ
+      // КОНТЕНТ (ВЗЯТО З ПЕРШОГО КОДУ ТА АДАПТОВАНО)
       // =========================================================
+      const exercises = [
+        {
+          id: "10.1",
+          title: "10.1. (Усно.) Які з рівностей є тотожностями:",
+          desc: "Перевірте правильність наведених нижче рівностей.",
+          tasks: [
+            {
+              id: "1)",
+              q: "$x^4 \\cdot x^{-6} = x^{-24}$",
+              a: "Ні",
+              opts: ["Так", "Ні"],
+            },
+            {
+              id: "2)",
+              q: "$b^5 \\cdot b^{-8} = b^{-3}$",
+              a: "Так",
+              opts: ["Так", "Ні"],
+            },
+            {
+              id: "3)",
+              q: "$y^3 \\cdot y^{-3} = y$",
+              a: "Ні",
+              opts: ["Так", "Ні"],
+            },
+            {
+              id: "4)",
+              q: "$k^9 : k^{-3} = k^{12}$",
+              a: "Так",
+              opts: ["Так", "Ні"],
+            },
+            {
+              id: "5)",
+              q: "$p^2 : p^6 = p^4$",
+              a: "Ні",
+              opts: ["Так", "Ні"],
+            },
+            {
+              id: "6)",
+              q: "$(c^4)^{-2} = c^{-8}$",
+              a: "Так",
+              opts: ["Так", "Ні"],
+            },
+          ],
+        },
+        {
+          id: "10.2",
+          title: "10.2. Подайте у вигляді степеня добуток:",
+          desc: "Властивість: $a^m \\cdot a^n = a^{m+n}$.",
+          tasks: [
+            {
+              id: "1)",
+              q: "$x^6 \\cdot x^{-3}$",
+              a: "$x^3$",
+              opts: ["$x^3$", "$x^9$", "$x^{-3}$", "$x^2$"],
+            },
+            {
+              id: "2)",
+              q: "$y^{-5} \\cdot y^8$",
+              a: "$y^3$",
+              opts: ["$y^{-13}$", "$y^3$", "$y^{40}$", "$y^{-3}$"],
+            },
+            {
+              id: "3)",
+              q: "$b^{12} \\cdot b^{-12}$",
+              a: "1",
+              opts: ["$b$", "0", "1", "$b^{24}$"],
+            },
+            {
+              id: "4)",
+              q: "$c^{-6} \\cdot c^{-2}$",
+              a: "$c^{-8}$",
+              opts: ["$c^{-4}$", "$c^{12}$", "$c^{-8}$", "$c^8$"],
+            },
+          ],
+        },
+        {
+          id: "10.4",
+          title: "10.4. Подайте у вигляді степеня частку:",
+          desc: "Властивість: $a^m : a^n = a^{m-n}$.",
+          tasks: [
+            {
+              id: "1)",
+              q: "$a^4 : a^{-3}$",
+              a: "$a^7$",
+              opts: ["$a^1$", "$a^7$", "$a^{-7}$", "$a^{12}$"],
+            },
+            {
+              id: "2)",
+              q: "$b^7 : b^9$",
+              a: "$b^{-2}$",
+              opts: ["$b^2$", "$b^{16}$", "$b^{-2}$", "$b^{-16}$"],
+            },
+            {
+              id: "3)",
+              q: "$z^{-5} : z^{-5}$",
+              a: "1",
+              opts: ["$z$", "0", "$z^{-10}$", "1"],
+            },
+            {
+              id: "4)",
+              q: "$n^{-2} : n^{-10}$",
+              a: "$n^8$",
+              opts: ["$n^{-12}$", "$n^8$", "$n^{-8}$", "$n^{12}$"],
+            },
+          ],
+        },
+        {
+          id: "10.6",
+          title: "10.6. Піднесіть степінь до степеня:",
+          desc: "Властивість: $(a^m)^n = a^{m \\cdot n}$.",
+          tasks: [
+            {
+              id: "1)",
+              q: "$(y^{-3})^{-4}$",
+              a: "$y^{12}$",
+              opts: ["$y^{-7}$", "$y^{12}$", "$y^{-12}$", "$y^7$"],
+            },
+            {
+              id: "2)",
+              q: "$(m^{-2})^{12}$",
+              a: "$m^{-24}$",
+              opts: ["$m^{-10}$", "$m^{10}$", "$m^{-24}$", "$m^{24}$"],
+            },
+            {
+              id: "3)",
+              q: "$(x^0)^{-8}$",
+              a: "1",
+              opts: ["$x^{-8}$", "0", "1", "$x^8$"],
+            },
+            {
+              id: "4)",
+              q: "$(k^5)^{-3}$",
+              a: "$k^{-15}$",
+              opts: ["$k^2$", "$k^{15}$", "$k^{-15}$", "$k^{-8}$"],
+            },
+          ],
+        },
+        {
+          id: "10.10",
+          title: "10.10. Обчисліть:",
+          desc: "Знайдіть числове значення виразу.",
+          tasks: [
+            { id: "1)", q: "$3^8 \\cdot 3^{-7}$", a: "3", type: "input" },
+            {
+              id: "2)",
+              q: "$4^{-5} \\cdot 4$",
+              a: "1/256",
+              opts: ["1/64", "1/256", "1/16", "-16"],
+            },
+            {
+              id: "3)",
+              q: "$\\left(\\frac{1}{3}\\right)^{-6} \\cdot \\left(\\frac{1}{3}\\right)^4$",
+              a: "9",
+              type: "input",
+            },
+            {
+              id: "4)",
+              q: "$\\left(\\frac{1}{5}\\right)^{-9} \\cdot \\left(\\frac{1}{5}\\right)^7$",
+              a: "25",
+              type: "input",
+            },
+            {
+              id: "5)",
+              q: "$2^{10} : 2^{11}$",
+              a: "0.5|0,5|1/2",
+              type: "input",
+            },
+            {
+              id: "6)",
+              q: "$5^{-12} : 5^{-13}$",
+              a: "5",
+              type: "input",
+            },
+            {
+              id: "7)",
+              q: "$6 : 6^{-1}$",
+              a: "36",
+              type: "input",
+            },
+            {
+              id: "8)",
+              q: "$(3^{-2})^3$",
+              a: "1/729",
+              opts: ["1/243", "-729", "1/729", "1/9"],
+            },
+            {
+              id: "9)",
+              q: "$\\left(\\left(\\frac{1}{4}\\right)^{-1}\\right)^{-3}$",
+              a: "1/64",
+              opts: ["64", "1/64", "12", "1/12"],
+            },
+          ],
+        },
+        {
+          id: "10.12",
+          title: "10.12. Спростіть вираз з основою $x$:",
+          desc: "",
+          tasks: [
+            {
+              id: "1)",
+              q: "$x^9 : x^4 \\cdot x^{-15}$",
+              a: "$x^{-10}$",
+              opts: ["$x^{-2}$", "$x^{-10}$", "$x^{20}$", "$x^{10}$"],
+            },
+            {
+              id: "2)",
+              q: "$(x^4)^{-2} \\cdot x^{10}$",
+              a: "$x^2$",
+              opts: ["$x^2$", "$x^{-2}$", "$x^{18}$", "$x^{-18}$"],
+            },
+            {
+              id: "3)",
+              q: "$(x^{-6})^2 : x^5$",
+              a: "$x^{-17}$",
+              opts: ["$x^{-7}$", "$x^{-17}$", "$x^{17}$", "$x^{-1}$"],
+            },
+            {
+              id: "4)",
+              q: "$x^0 \\cdot (x^{-2})^5 \\cdot x^8$",
+              a: "$x^{-2}$",
+              opts: ["$x^2$", "$x^{-2}$", "$x^{-10}$", "1"],
+            },
+            {
+              id: "5)",
+              q: "$x^{-4} \\cdot x^0 : x^3 : x$",
+              a: "$x^{-8}$",
+              opts: ["$x^{-1}$", "$x^{-7}$", "$x^{-8}$", "$x^0$"],
+            },
+            {
+              id: "6)",
+              q: "$(x^2)^{-4} \\cdot (x^{-1})^{-5}$",
+              a: "$x^{-3}$",
+              opts: ["$x^{-3}$", "$x^{-13}$", "$x^3$", "$x^{13}$"],
+            },
+          ],
+        },
+        {
+          id: "10.14",
+          title: "10.14. Спростіть вираз (коефіцієнти):",
+          desc: "Окремо перемножте числа та окремо степені.",
+          tasks: [
+            {
+              id: "1)",
+              q: "$3x^{-5}y^4 \\cdot 6x^8y^{-2}$",
+              a: "$18x^3y^2$",
+              opts: [
+                "$18x^3y^2$",
+                "$9x^3y^2$",
+                "$18x^{-13}y^2$",
+                "$18x^3y^{-2}$",
+              ],
+            },
+            {
+              id: "2)",
+              q: "$5a^{-8}b^3 \\cdot 0.2a^{10}b^{-7}$",
+              a: "$a^2b^{-4}$",
+              opts: ["$a^2b^{-4}$", "$5a^2b^{-4}$", "$a^{-18}b^4$", "$a^2b^4$"],
+            },
+            {
+              id: "3)",
+              q: "$\\frac{1}{4}p^{-6}q^8 \\cdot (-12p^7q^{-5})$",
+              a: "$-3pq^3$",
+              opts: ["$-3pq^3$", "$3pq^3$", "$-3p^{-13}q^3$", "$-48pq^3$"],
+            },
+            {
+              id: "4)",
+              q: "$\\left(-\\frac{3}{5}x^{-4}y^{-2}\\right) \\cdot \\left(-2\\frac{1}{2}x^{-3}y^{-5}\\right)$",
+              a: "$1.5x^{-7}y^{-7}$",
+              opts: [
+                "$-1.5x^{-7}y^{-7}$",
+                "$1.5x^{-7}y^{-7}$",
+                "$1.5x^{12}y^{10}$",
+                "$x^{-7}y^{-7}$",
+              ],
+            },
+          ],
+        },
+        {
+          id: "10.16",
+          title: "10.16. Подайте у вигляді добутку степенів:",
+          desc: "$(ab)^n = a^n b^n$.",
+          tasks: [
+            {
+              id: "1)",
+              q: "$(mn)^{-3}$",
+              a: "$m^{-3}n^{-3}$",
+              opts: ["$m^{-3}n^{-3}$", "$mn^{-3}$", "$m^{-3}n$", "$m^3n^3$"],
+            },
+            {
+              id: "2)",
+              q: "$(xy^{-3})^{-2}$",
+              a: "$x^{-2}y^6$",
+              opts: ["$x^{-2}y^{-6}$", "$x^{-2}y^6$", "$x^2y^6$", "$xy^6$"],
+            },
+            {
+              id: "3)",
+              q: "$(a^{-5}b^2)^{-1}$",
+              a: "$a^5b^{-2}$",
+              opts: ["$a^{-5}b^{-2}$", "$a^5b^2$", "$a^5b^{-2}$", "$a^{-6}b$"],
+            },
+            {
+              id: "4)",
+              q: "$(k^0z^{-4})^{-3}$",
+              a: "$z^{12}$",
+              opts: ["$k^{-3}z^{12}$", "$z^{12}$", "$z^{-12}$", "$k^0z^{12}$"],
+            },
+          ],
+        },
+        {
+          id: "10.18",
+          title: "10.18. Подайте у вигляді степеня вираз:",
+          desc: "",
+          tasks: [
+            {
+              id: "1)",
+              q: "$125x^{-3}$",
+              a: "$(5x^{-1})^3$",
+              opts: [
+                "$(5x)^{-3}$",
+                "$(5x^{-1})^3$",
+                "$(125x)^{-3}$",
+                "$5x^{-3}$",
+              ],
+            },
+            {
+              id: "2)",
+              q: "$0.001y^{-6}$",
+              a: "$(0.1y^{-2})^3$",
+              opts: [
+                "$(0.1y^{-2})^3$",
+                "$(0.1y^{-6})^3$",
+                "$(0.01y^2)^3$",
+                "$(0.1y)^{-6}$",
+              ],
+            },
+            {
+              id: "3)",
+              q: "$0.0081a^{-4}b^{16}$",
+              a: "$(0.3a^{-1}b^4)^4$",
+              opts: [
+                "$(0.3a^{-1}b^4)^4$",
+                "$(0.03ab^{-4})^4$",
+                "$(0.9a^{-1}b^4)^4$",
+                "$(0.3ab)^4$",
+              ],
+            },
+            {
+              id: "4)",
+              q: "$2\\frac{7}{9}p^{14}q^{-18}$",
+              a: "$(\\frac{5}{3} p^7q^{-9})^2$",
+              opts: [
+                "$(\\frac{5}{3} p^7q^{-9})^2$",
+                "$(\\frac{25}{9} p^7q^{-9})^2$",
+                "$(\\frac{5}{3} p^{12}q^{-16})^2$",
+                "$(1.6 p^7q^{-9})^2$",
+              ],
+            },
+          ],
+        },
+        {
+          id: "10.21",
+          title: "10.21. Знайдіть значення виразу:",
+          desc: "",
+          tasks: [
+            {
+              id: "1)",
+              q: "$81 \\cdot 3^{-5}$",
+              a: "1/3",
+              opts: ["3", "1/3", "9", "-3"],
+            },
+            {
+              id: "2)",
+              q: "$27 \\cdot (3^{-2})^3$",
+              a: "1/27",
+              opts: ["1/27", "27", "1/9", "1"],
+            },
+            {
+              id: "3)",
+              q: "$2^{-9} \\cdot 4^6 : 16$",
+              a: "0.5|0,5|1/2",
+              type: "input",
+            },
+            {
+              id: "4)",
+              q: "$36^{-1} \\cdot \\left(\\frac{1}{6}\\right)^{-4}$",
+              a: "36",
+              type: "input",
+            },
+            {
+              id: "5)",
+              q: "$\\frac{25^{-4} \\cdot 5^{-6}}{(-5)^{-16}}$",
+              a: "25",
+              type: "input",
+            },
+            {
+              id: "6)",
+              q: "$\\frac{10^{-5} \\cdot 2^{-8}}{32^{-3}}$",
+              a: "4/3125",
+              opts: ["4/3125", "125", "2/625", "0.005"],
+            },
+          ],
+        },
+      ];
+
+      let totalCorrect = 0;
+      let totalWrong = 0;
+      let totalTasksCount = 0;
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const root = document.getElementById("quiz-root");
+
+        exercises.forEach((ex) => {
+          totalTasksCount += ex.tasks.length;
+        });
+
+        exercises.forEach((ex) => {
+          const exBlock = document.createElement("div");
+          exBlock.className = "exercise-block";
+
+          exBlock.innerHTML = `
+                        <div class="exercise-header">
+                            <h3 class="exercise-title">${ex.title}</h3>
+                            <p class="exercise-desc">${ex.desc}</p>
+                        </div>
+                    `;
+
+          const taskList = document.createElement("div");
+          taskList.className = "task-list";
+
+          ex.tasks.forEach((task) => {
+            const row = document.createElement("div");
+            row.className = "task-row";
+
+            let contentHTML = `
+                            <div class="task-content">
+                                <div class="task-number">${task.id}</div>
+                                <div class="task-question">${task.q}</div>
+                            </div>
+                        `;
+
+            let actionHTML = "";
+            if (task.type === "input") {
+              const answers = Array.isArray(task.a) ? task.a.join("|") : task.a;
+              actionHTML = `
+                                <div class="input-group">
+                                    <input type="text" class="input-answer" placeholder="..." onkeypress="if(event.key==='Enter') this.nextElementSibling.click()">
+                                    <button class="btn-check" onclick="checkInput(this, '${answers}')">OK</button>
+                                </div>
+                            `;
+            } else {
+              actionHTML = `<div class="options-container">`;
+              task.opts.forEach((opt) => {
+                const isCorrect = opt === task.a;
+                // Екранування для HTML атрибутів
+                const safeOpt = opt.replace(/"/g, "&quot;");
+                actionHTML += `<button class="option-btn" onclick="checkOpt(this, ${isCorrect})">${opt}</button>`;
+              });
+              actionHTML += `</div>`;
+            }
+
+            row.innerHTML =
+              contentHTML + `<div style="margin-top:10px;">${actionHTML}</div>`;
+            taskList.appendChild(row);
+          });
+
+          exBlock.appendChild(taskList);
+          root.appendChild(exBlock);
+        });
+
+        const finishSection = document.createElement("div");
+        finishSection.className = "finish-section";
+        finishSection.innerHTML = `
+              <button class="btn-finish" onclick="finishLesson()">Завершити урок</button>
+              <a href="${TEST_LINK}" class="btn-test">👉 Пройти перевірочний тест</a>
+            `;
+        root.appendChild(finishSection);
+
+        // Render Math
+        if (window.renderMathInElement) {
+          renderMathInElement(document.body, {
+            delimiters: [
+              { left: "$$", right: "$$", display: true },
+              { left: "\\[", right: "\\]", display: true },
+              { left: "$", right: "$", display: false },
+              { left: "\\(", right: "\\)", display: false },
+            ],
+            throwOnError: false,
+          });
+        } else {
+          window.onload = () =>
+            renderMathInElement(document.body, {
+              delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "\\[", right: "\\]", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+              ],
+              throwOnError: false,
+            });
+        }
+
+        setTimeout(resizeCanvas, 100);
+      });
+
+      function checkOpt(btn, isCorrect) {
+        const row = btn.closest(".task-row");
+        if (row.classList.contains("done")) return;
+        row.classList.add("done");
+
+        row.querySelectorAll(".option-btn").forEach((b) => (b.disabled = true));
+
+        if (isCorrect) {
+          btn.classList.add("selected-correct");
+          row.classList.add("solved-correct");
+          totalCorrect++;
+        } else {
+          btn.classList.add("selected-wrong");
+          row.classList.add("solved-wrong");
+          totalWrong++;
+        }
+        updateStats();
+      }
+
+      function checkInput(btn, ansStr) {
+        const row = btn.closest(".task-row");
+        const input = row.querySelector("input");
+        if (row.classList.contains("done")) return;
+
+        let val = input.value.trim().replace(",", ".");
+        const correctArr = ansStr.split("|");
+
+        row.classList.add("done");
+        input.disabled = true;
+        btn.disabled = true;
+
+        if (correctArr.includes(val)) {
+          input.classList.add("correct");
+          row.classList.add("solved-correct");
+          totalCorrect++;
+        } else {
+          input.classList.add("wrong");
+          row.classList.add("solved-wrong");
+          totalWrong++;
+        }
+        updateStats();
+      }
+
+      function updateStats() {
+        document.getElementById("val-correct").innerText = totalCorrect;
+        document.getElementById("val-wrong").innerText = totalWrong;
+      }
+
       function finishLesson() {
         const modal = document.getElementById("result-modal");
         const body = document.getElementById("modal-content-body");
+
+        const correctInputs = document.querySelectorAll(
+          ".input-answer.correct, .option-btn.selected-correct"
+        ).length;
+        const wrongInputs = document.querySelectorAll(
+          ".input-answer.wrong, .option-btn.selected-wrong"
+        ).length;
+        const distinctAnswered = correctInputs + wrongInputs;
+
         const attempts = totalCorrect + totalWrong;
         let efficiency = 0;
-        if (attempts > 0)
+        if (attempts > 0) {
           efficiency = Math.round((totalCorrect / attempts) * 100);
+        }
 
-        let color = "#4a90e2";
-        let msg = "Результат";
-        if (efficiency >= 90) {
-          color = "#28a745";
-          msg = "Відмінно!";
-        } else if (efficiency >= 60) {
-          color = "#f59e0b";
-          msg = "Добре!";
+        let html = ``;
+        if (distinctAnswered === 0) {
+          html = `<div class="modal-result-title">Упс... 😶</div>
+                        <div style="font-size:1.1rem; margin:15px 0; color:#475569;">Ти не дав жодної відповіді. Спробуй розв'язати хоча б щось!</div>
+                        <button class="modal-footer-btn" onclick="closeModal()">Повернутись</button>`;
         } else {
-          color = "#dc3545";
-          msg = "Тренуйся!";
+          let msg = "";
+          let color = "#2563eb";
+          if (efficiency === 100) {
+            msg = "Ідеально!";
+            color = "#16a34a";
+          } else if (efficiency >= 85) {
+            msg = "Чудово!";
+            color = "#2563eb";
+          } else if (efficiency >= 60) {
+            msg = "Добре!";
+            color = "#f59e0b";
+          } else {
+            msg = "Тренуйся!";
+            color = "#dc2626";
+          }
+
+          html = `
+                    <div class="modal-result-title" style="color:${color}">${msg}</div>
+                    
+                    <div>
+                        <div style="font-size: 1rem; color: #64748b;">Твоя точність</div>
+                        <div class="modal-score-big" style="color:${color}">${efficiency}%</div>
+                        <div class="modal-score-sub">
+                            (Правильних спроб: ${totalCorrect} з ${attempts})
+                        </div>
+                    </div>
+
+                    <div class="modal-progress-container">
+                          <div style="font-size: 1rem; color: #334155; display:flex; justify-content:space-between;">
+                            <span>Прогрес уроку:</span>
+                            <strong>${distinctAnswered} / ${totalTasksCount}</strong>
+                          </div>
+                          <div class="modal-bar-bg">
+                            <div class="modal-bar-fill" style="width: ${
+                              (distinctAnswered / totalTasksCount) * 100
+                            }%; background: ${color};"></div>
+                          </div>
+                    </div>
+
+                    <button class="modal-footer-btn" onclick="closeModal()">Закрити</button>
+                `;
         }
 
-        if (totalCorrect === 0 && totalWrong === 0) {
-          msg = "Порожньо...";
-          color = "#6c757d";
-        }
-
-        body.innerHTML = `
-            <div class="modal-result-title" style="color:${color}">${msg}</div>
-            <div class="modal-score-big" style="color:${color}">${efficiency}%</div>
-            <div style="color:#64748b; margin-bottom:20px;">
-              Правильно: ${totalCorrect} <br>
-              Помилок: ${totalWrong}
-            </div>
-            <button class="btn-finish" onclick="closeModal()" style="padding:10px 30px; font-size:1rem;">Закрити</button>
-        `;
+        body.innerHTML = html;
         modal.style.display = "flex";
       }
 
       function closeModal() {
         document.getElementById("result-modal").style.display = "none";
       }
-
-      document.addEventListener("DOMContentLoaded", () => {
-        init();
-        setTimeout(resizeCanvas, 100);
-      });
     </script>
   </body>
 </html>
