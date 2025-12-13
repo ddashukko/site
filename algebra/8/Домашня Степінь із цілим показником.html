@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Сторінка підручника - Степінь з від'ємним показником</title>
+    <style>
+      body {
+        background-color: #e6e6e6;
+        margin: 0;
+        padding: 40px 0;
+        font-family: "Times New Roman", Times, serif;
+        display: flex;
+        justify-content: center;
+        min-height: 100vh;
+      }
+
+      .book-page {
+        background-color: #fff;
+        width: 210mm; /* Ширина А4 */
+        min-height: 297mm; /* Висота А4 */
+        padding: 25mm 20mm; /* Поля сторінки */
+        box-sizing: border-box;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.1);
+        position: relative;
+        color: #1a1a1a;
+        font-size: 18px;
+        line-height: 1.5;
+      }
+
+      .header-title {
+        position: absolute;
+        top: 10mm;
+        left: 20mm;
+        right: 20mm;
+        text-align: center;
+        font-size: 14px;
+        color: #666;
+        text-transform: uppercase;
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 5px;
+      }
+
+      .page-number {
+        position: absolute;
+        bottom: 10mm;
+        width: 100%;
+        text-align: center;
+        font-weight: bold;
+        color: #333;
+        left: 0;
+      }
+
+      .problem {
+        margin-bottom: 25px;
+        display: flex;
+        align-items: baseline;
+      }
+
+      .problem-number {
+        font-weight: bold;
+        color: #0099dd;
+        margin-right: 8px;
+        white-space: nowrap;
+      }
+
+      .problem-text {
+        width: 100%;
+      }
+
+      .sub-items-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 40px;
+        margin-top: 8px;
+        justify-content: flex-start;
+      }
+
+      .sub-item {
+        display: inline-block;
+      }
+
+      .fraction {
+        display: inline-block;
+        text-align: center;
+        vertical-align: middle;
+        margin: 0 2px;
+        font-size: 0.9em;
+      }
+
+      .fraction > span {
+        display: block;
+        padding: 0 2px;
+      }
+
+      .fraction span.numerator {
+        border-bottom: 1px solid #000;
+      }
+
+      .fraction span.denominator {
+        border-top: 0;
+      }
+
+      .mixed-fraction {
+        display: inline-flex;
+        align-items: center;
+      }
+
+      .mixed-fraction .integer {
+        margin-right: 2px;
+      }
+
+      .sqrt {
+        white-space: nowrap;
+      }
+
+      .sqrt span {
+        border-top: 1px solid #000;
+        padding-top: 1px;
+      }
+
+      .list-num {
+        margin-right: 3px;
+      }
+
+      /* Специфічні стилі для сітки рівнянь (3 колонки) */
+      .grid-3-col {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px 10px;
+        margin-top: 10px;
+      }
+
+      /* Специфічні стилі для сітки (2 колонки) */
+      .grid-2-col {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px 30px;
+        margin-top: 10px;
+      }
+
+      @media print {
+        body {
+          background: none;
+          padding: 0;
+        }
+        .book-page {
+          box-shadow: none;
+          margin: 0;
+          width: 100%;
+          height: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="book-page">
+      <div class="header-title">§ 9. Степінь із цілим від’ємним показником</div>
+
+      <div class="problem">
+        <span class="problem-number">9.3.</span>
+        <div class="problem-text">
+          Запишіть у вигляді дробу степінь із цілим від’ємним показником:
+          <div class="grid-3-col">
+            <div class="sub-item">
+              <span class="list-num">1)</span> a<sup>-4</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">2)</span> 6<sup>-1</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">3)</span> 3<sup>-5</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">4)</span> x<sup>-8</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">5)</span> (5n)<sup>-3</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">6)</span> (x - y)<sup>-4</sup>.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <span class="problem-number">9.5.</span>
+        <div class="problem-text">
+          Заміни степенем із цілим від’ємним показником дріб:
+          <div class="grid-3-col">
+            <div class="sub-item">
+              <span class="list-num">1)</span>
+              <div class="fraction">
+                <span class="numerator">1</span
+                ><span class="denominator">m<sup>4</sup></span>
+              </div>
+              ;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">2)</span>
+              <div class="fraction">
+                <span class="numerator">1</span
+                ><span class="denominator">13<sup>5</sup></span>
+              </div>
+              ;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">3)</span>
+              <div class="fraction">
+                <span class="numerator">1</span
+                ><span class="denominator">p<sup>9</sup></span>
+              </div>
+              ;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">4)</span>
+              <div class="fraction">
+                <span class="numerator">1</span
+                ><span class="denominator">a</span>
+              </div>
+              ;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">5)</span>
+              <div class="fraction">
+                <span class="numerator">1</span
+                ><span class="denominator">(xy)<sup>3</sup></span>
+              </div>
+              ;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">6)</span>
+              <div class="fraction">
+                <span class="numerator">1</span
+                ><span class="denominator">(m + n)<sup>5</sup></span>
+              </div>
+              .
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <span class="problem-number">9.7.</span>
+        <div class="problem-text">
+          Обчисліть:
+          <div class="grid-3-col" style="grid-template-columns: repeat(4, 1fr)">
+            <div class="sub-item">
+              <span class="list-num">1)</span> 3<sup>-3</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">2)</span> (-1)<sup>-8</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">3)</span> 12<sup>-1</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">4)</span> (-7)<sup>-1</sup>;
+            </div>
+
+            <div class="sub-item">
+              <span class="list-num">5)</span>
+              <div class="fraction">
+                <span class="numerator">1</span
+                ><span class="denominator">5</span>
+              </div>
+              <sup>-2</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">6)</span>
+              <span>(</span>-
+              <div class="fraction">
+                <span class="numerator">3</span
+                ><span class="denominator">4</span>
+              </div>
+              <span>)</span><sup>-3</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">7)</span>
+              <span>(</span>1
+              <div class="fraction">
+                <span class="numerator">1</span
+                ><span class="denominator">3</span>
+              </div>
+              <span>)</span><sup>-2</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">8)</span>
+              <span>(</span>-2
+              <div class="fraction">
+                <span class="numerator">1</span
+                ><span class="denominator">5</span>
+              </div>
+              <span>)</span><sup>-1</sup>;
+            </div>
+
+            <div class="sub-item">
+              <span class="list-num">9)</span> 0,5<sup>-1</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">10)</span> (-0,2)<sup>-2</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">11)</span> 1,2<sup>-2</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">12)</span> (-0,4)<sup>-4</sup>.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <span class="problem-number">9.9.</span>
+        <div class="problem-text">
+          Подайте у вигляді степеня з основою 10 числа: 1000; 100; 10; 1; 0,1;
+          0,001.
+        </div>
+      </div>
+
+      <div class="problem">
+        <span class="problem-number">9.11.</span>
+        <div class="problem-text">
+          Обчисліть:
+          <div class="sub-items-row" style="gap: 30px">
+            <div class="sub-item">
+              <span class="list-num">1)</span> -5<sup>-2</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">2)</span> (-0,2)<sup>-2</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">3)</span> -<span>(</span>-
+              <div class="fraction">
+                <span class="numerator">1</span
+                ><span class="denominator">4</span>
+              </div>
+              <span>)</span><sup>-2</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">4)</span> -<span>(</span>-
+              <div class="fraction">
+                <span class="numerator">2</span
+                ><span class="denominator">5</span>
+              </div>
+              <span>)</span><sup>-3</sup>.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <span class="problem-number">9.13.</span>
+        <div class="problem-text">
+          Подайте вираз у вигляді дробу, що не містить степеня з від’ємним
+          показником:
+          <div class="sub-items-row">
+            <div class="sub-item">
+              <span class="list-num">1)</span> 5x<sup>-4</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">2)</span> 9m<sup>-1</sup>n;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">3)</span> ab<sup>-3</sup>c<sup>5</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">4)</span> x<sup>-3</sup>y<sup>-4</sup>.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <span class="problem-number">9.15.</span>
+        <div class="problem-text">
+          Знайдіть значення виразу:
+          <div class="grid-3-col">
+            <div class="sub-item">
+              <span class="list-num">1)</span> -81 &middot; 3<sup>-5</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">2)</span> 16 &middot; (-2)<sup>-3</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">3)</span> -5 &middot; 0,2<sup>-2</sup> +
+              2<sup>0</sup>;
+            </div>
+
+            <div class="sub-item">
+              <span class="list-num">4)</span> -2
+              <div class="fraction">
+                <span class="numerator">1</span
+                ><span class="denominator">4</span>
+              </div>
+              &middot; <span>(</span>-
+              <div class="fraction">
+                <span class="numerator">1</span
+                ><span class="denominator">2</span>
+              </div>
+              <span>)</span><sup>-2</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">5)</span> 4<sup>-2</sup> - 8<sup>-1</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">6)</span> 2,5<sup>-1</sup> +
+              <span>(</span>1
+              <div class="fraction">
+                <span class="numerator">2</span
+                ><span class="denominator">3</span>
+              </div>
+              <span>)</span><sup>-2</sup>;
+            </div>
+
+            <div class="sub-item">
+              <span class="list-num">7)</span> <span>(</span>
+              <div class="fraction">
+                <span class="numerator">1</span
+                ><span class="denominator">4</span>
+              </div>
+              <span>)</span><sup>-3</sup> &middot; 10<sup>-2</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">8)</span> <span>(</span>
+              <div class="fraction">
+                <span class="numerator">5</span
+                ><span class="denominator">6</span>
+              </div>
+              <span>)</span><sup>-2</sup> &middot; <span>(</span>
+              <div class="fraction">
+                <span class="numerator">3</span
+                ><span class="denominator">5</span>
+              </div>
+              <span>)</span><sup>-3</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">9)</span> 2,5<sup>-2</sup> -
+              0,4<sup>-3</sup>.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <span class="problem-number">9.22.</span>
+        <div class="problem-text">
+          Подайте у вигляді добутку, використовуючи степінь з від’ємним
+          показником, дріб:
+          <div class="sub-items-row">
+            <div class="sub-item">
+              <span class="list-num">1)</span>
+              <div class="fraction">
+                <span class="numerator">4a<sup>3</sup></span
+                ><span class="denominator">y</span>
+              </div>
+              ;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">2)</span>
+              <div class="fraction">
+                <span class="numerator">9x<sup>4</sup></span
+                ><span class="denominator">m<sup>5</sup>n<sup>2</sup></span>
+              </div>
+              ;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">3)</span>
+              <div class="fraction">
+                <span class="numerator">k</span
+                ><span class="denominator"
+                  >x<sup>3</sup>(y - 2)<sup>4</sup></span
+                >
+              </div>
+              ;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">4)</span>
+              <div class="fraction">
+                <span class="numerator">(m + 3)<sup>4</sup></span
+                ><span class="denominator">(m - 1)<sup>3</sup></span>
+              </div>
+              .
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <span class="problem-number">9.24.</span>
+        <div class="problem-text">
+          Подайте вираз у вигляді дробу:
+          <div class="sub-items-row" style="gap: 50px">
+            <div class="sub-item">
+              <span class="list-num">1)</span> ab<sup>-2</sup> +
+              a<sup>-1</sup>b<sup>3</sup>;
+            </div>
+            <div class="sub-item">
+              <span class="list-num">2)</span> (a<sup>-2</sup> - b<sup>-2</sup>)
+              : (a<sup>-1</sup> - b<sup>-1</sup>).
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="problem">
+        <span class="problem-number">9.26.</span>
+        <div class="problem-text">
+          Знайдіть значення виразу (1 + (1 - 4<sup>-1</sup>)<sup>-1</sup>)<sup
+            >-1</sup
+          >
+          + (1 - (1 + 4<sup>-1</sup>)<sup>-1</sup>)<sup>-1</sup>.
+        </div>
+      </div>
+
+      <div class="page-number">84</div>
+    </div>
+  </body>
+</html>
