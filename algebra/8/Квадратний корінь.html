@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Алгебра 8: Арифметичний квадратний корінь</title>
+    <title>Алгебра 8: Арифметичний квадратний корінь (Повний урок)</title>
 
     <link
       rel="stylesheet"
@@ -44,6 +44,7 @@
         overflow: hidden;
       }
 
+      /* --- ЛІВА ЧАСТИНА (ТЕОРІЯ + ЗАВДАННЯ) --- */
       #tasks-section {
         flex: 1;
         background: var(--bg);
@@ -52,6 +53,7 @@
         flex-direction: column;
       }
 
+      /* --- ПРАВА ЧАСТИНА (ДОШКА) --- */
       #board-section {
         flex: 1;
         position: relative;
@@ -74,6 +76,7 @@
         touch-action: none;
       }
 
+      /* ІНСТРУМЕНТИ ДОШКИ */
       .tools {
         position: absolute;
         top: 15px;
@@ -86,6 +89,7 @@
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         border: 1px solid var(--border);
         flex-wrap: wrap;
+        z-index: 10;
       }
 
       .btn-tool {
@@ -111,6 +115,7 @@
         border-color: var(--primary);
       }
 
+      /* ЗАГОЛОВОК */
       header {
         background: var(--card);
         padding: 15px 20px;
@@ -150,6 +155,7 @@
         box-sizing: border-box;
       }
 
+      /* ТЕОРІЯ */
       .theory-block {
         background: linear-gradient(to right, #fdfbf7, #fff);
         border-left: 5px solid var(--accent);
@@ -173,6 +179,7 @@
         line-height: 1.5;
       }
 
+      /* ВПРАВИ */
       .exercise-block {
         background: var(--card);
         border-radius: 12px;
@@ -312,6 +319,7 @@
         background: #fef2f2;
       }
 
+      /* КНОПКИ ВНИЗУ */
       .finish-section {
         margin-top: 40px;
         text-align: center;
@@ -356,6 +364,7 @@
         background-color: #6d28d9;
       }
 
+      /* МОДАЛКА */
       .modal-overlay {
         display: none;
         position: fixed;
@@ -506,7 +515,7 @@
               <li>Вираз $\sqrt{a}$ має зміст лише при $a \ge 0$.</li>
               <li>$(\sqrt{a})^2 = a$.</li>
               <li>$\sqrt{x^2} = |x|$.</li>
-              <li>Корінь з від'ємного числа не існує.</li>
+              <li>Рівняння $x^2 + y^2 = 0$ має розв'язок $x=0, y=0$.</li>
             </ul>
           </div>
         </div>
@@ -645,11 +654,7 @@
       }
 
       function clearCanvasSafe() {
-        if (
-          confirm(
-            "Ви точно хочете очистити дошку? Це видалить всі ваші записи."
-          )
-        ) {
+        if (confirm("Очистити дошку?")) {
           ctx.clearRect(0, 0, canvas.width, canvas.height);
         }
       }
@@ -846,6 +851,17 @@
               a: "Ні",
               opts: ["Так", "Ні"],
             },
+          ],
+        },
+        {
+          id: "14.11",
+          title: "14.11.",
+          desc: "Знайдіть значення (можна користуватися таблицею квадратів):",
+          tasks: [
+            { id: "1)", q: "$\\sqrt{1024}$", a: "32", type: "input" },
+            { id: "2)", q: "$\\sqrt{3600}$", a: "60", type: "input" },
+            { id: "3)", q: "$\\sqrt{2304}$", a: "48", type: "input" },
+            { id: "4)", q: "$\\sqrt{20,25}$", a: "4.5", type: "input" },
           ],
         },
         {
@@ -1094,7 +1110,7 @@
             },
             {
               id: "2)",
-              q: "$\\sqrt{5} + \\sqrt{x} = 2$",
+              q: "$\\sqrt{3} + \\sqrt{x} = 2$",
               a: "Коренів немає",
               opts: ["1", "4", "Коренів немає", "0.25"],
             },
@@ -1104,6 +1120,74 @@
               a: "25",
               type: "input",
             },
+          ],
+        },
+        // --- НОВІ ЗАВДАННЯ З ФОТО (14.26, 14.27, 14.28, 14.29, 14.30) ---
+        {
+          id: "14.26",
+          title: "14.26. Спрощення виразів",
+          desc: "Спростіть вираз (оберіть правильну відповідь):",
+          tasks: [
+            {
+              id: "1)",
+              q: "$\\frac{a^2 - 4}{2a} \\cdot \\frac{4}{a+2}$",
+              a: "$\\frac{2(a-2)}{a}$",
+              opts: [
+                "$\\frac{2(a-2)}{a}$",
+                "$\\frac{a+2}{a}$",
+                "1",
+                "$\\frac{2}{a}$",
+              ],
+            },
+          ],
+        },
+        {
+          id: "14.27",
+          title: "14.27. Рівняння з двома змінними",
+          desc: "Знайдіть пару чисел (x;y), що задовольняє рівняння. Введіть у форматі: x;y",
+          tasks: [
+            {
+              id: "1)",
+              q: "$x^2 - 8x + 16 + y^2 = 0$",
+              a: "4;0",
+              type: "input",
+            },
+            {
+              id: "2)",
+              q: "$|x+3| + y^2 + 4y + 4 = 0$",
+              a: "-3;-2",
+              type: "input",
+            },
+          ],
+        },
+        {
+          id: "14.28",
+          title: "14.28. Перетворення: Десятковий у звичайний",
+          desc: "Подайте у вигляді звичайного дробу (наприклад: 3/4) або мішаного числа (наприклад: 1 1/2):",
+          tasks: [
+            { id: "1)", q: "0,9", a: "9/10", type: "input" },
+            { id: "2)", q: "0,75", a: "3/4", type: "input" },
+            { id: "3)", q: "2,5", a: ["2 1/2", "5/2"], type: "input" },
+          ],
+        },
+        {
+          id: "14.29",
+          title: "14.29. Перетворення: Звичайний у десятковий",
+          desc: "Подайте десятковим дробом (наприклад: 0.5):",
+          tasks: [
+            { id: "1)", q: "$\\frac{1}{5}$", a: "0.2", type: "input" },
+            { id: "2)", q: "$\\frac{3}{4}$", a: "0.75", type: "input" },
+            { id: "3)", q: "$1\\frac{1}{2}$", a: "1.5", type: "input" },
+          ],
+        },
+        {
+          id: "14.30",
+          title: "14.30. Періодичні дроби",
+          desc: "Запишіть у вигляді нескінченного періодичного дробу (формат: 0.(3)):",
+          tasks: [
+            { id: "1)", q: "$\\frac{1}{3}$", a: "0.(3)", type: "input" },
+            { id: "2)", q: "$\\frac{5}{9}$", a: "0.(5)", type: "input" },
+            { id: "3)", q: "$\\frac{1}{6}$", a: "0.1(6)", type: "input" },
           ],
         },
       ];
@@ -1154,6 +1238,7 @@
 
             let actionHTML = "";
             if (task.type === "input") {
+              // Перетворюємо масив відповідей у рядок для атрибута
               const answers = Array.isArray(task.a) ? task.a.join("|") : task.a;
               actionHTML = `
                             <div class="input-group">
@@ -1237,7 +1322,12 @@
         const input = row.querySelector("input");
         if (row.classList.contains("done")) return;
 
+        // Замінюємо кому на крапку, щоб приймати 0,5 як 0.5
         let val = input.value.trim().replace(",", ".");
+
+        // Для періодичних дробів (0.(3)) користувач може написати 0.(3) або 0,(3).
+        // Оскільки ми замінили кому на крапку, це вже оброблено.
+
         const correctArr = ansStr.split("|");
 
         row.classList.add("done");
