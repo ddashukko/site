@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Урок: Функції (Мобільна версія)</title>
+    
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        body, html {
+            margin: 0; padding: 0;
+            font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f7f9fc;
+            color: #333;
+            overflow-x: hidden; 
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+            min-height: 100vh;
+        }
+
+        .lesson-panel {
+            padding: 20px;
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        h1 { 
+            color: #2c3e50; 
+            margin-bottom: 10px; 
+            font-size: 24px; 
+            line-height: 1.2;
+            text-align: center;
+        }
+        
+        .intro-text { 
+            color: #7f8c8d; 
+            margin-bottom: 25px; 
+            font-style: italic; 
+            text-align: center; 
+            font-size: 14px;
+        }
+
+        h2 { 
+            color: #2980b9; 
+            border-left: 5px solid #2980b9; 
+            padding-left: 10px; 
+            margin-top: 30px; 
+            background: #f4faff;
+            padding-top: 8px; padding-bottom: 8px;
+            border-radius: 0 5px 5px 0;
+            font-size: 20px;
+        }
+
+        h3 { 
+            color: #34495e; 
+            margin-top: 20px; 
+            font-size: 18px; 
+            border-bottom: 1px solid #eee; 
+            padding-bottom: 5px; 
+        }
+
+        p, li { 
+            line-height: 1.5; 
+            color: #444; 
+            font-size: 16px; 
+        }
+        
+        ul, ol { padding-left: 20px; margin-bottom: 15px; }
+
+        .rule-box {
+            background-color: #fff8e1;
+            border-left: 4px solid #ffc107;
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 4px;
+            font-size: 15px;
+        }
+
+        .task-box {
+            background-color: #fff;
+            border: 2px solid #eef2f7;
+            border-radius: 12px;
+            padding: 15px;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .task-title {
+            font-weight: bold; color: #e67e22; margin-bottom: 8px;
+            display: block; text-transform: uppercase; font-size: 0.8em; letter-spacing: 1px;
+        }
+        
+        .task-part {
+            display: flex; 
+            flex-wrap: wrap;
+            align-items: center; 
+            gap: 8px; 
+            margin-top: 8px;
+            padding-top: 5px; 
+        }
+
+        input[type="text"], input[type="number"] {
+            padding: 8px; 
+            border: 1px solid #bdc3c7; border-radius: 6px;
+            width: 70px; 
+            font-size: 16px;
+            text-align: center;
+            background: #fafafa;
+        }
+        input:focus { border-color: #3498db; outline: none; background: #fff; }
+
+        button.check-btn {
+            background-color: #3498db; color: white; border: none;
+            padding: 10px 15px; border-radius: 6px; cursor: pointer;
+            font-size: 14px; font-weight: 600;
+            transition: background-color 0.2s;
+            white-space: nowrap;
+            touch-action: manipulation;
+        }
+        button.check-btn:active { background-color: #1f6391; }
+
+        .feedback { 
+            font-weight: bold; 
+            display: none; 
+            margin-top: 5px;
+            width: 100%;
+        }
+        .correct { color: #27ae60; }
+        .wrong { color: #c0392b; }
+
+        details { margin-top: 15px; border-top: 1px dashed #ddd; padding-top: 10px; }
+        summary { cursor: pointer; color: #95a5a6; font-size: 14px; padding: 5px 0; }
+        .hint-content { background: #fdfefe; padding: 10px; border-radius: 5px; border: 1px solid #eee; margin-top: 5px; font-size: 14px; color: #555; }
+
+        .condition-canvas {
+            display: block; margin: 15px auto;
+            border: 1px solid #ddd; border-radius: 8px;
+            background: white;
+            max-width: 100%; 
+            height: auto; 
+        }
+        .canvas-caption { text-align: center; font-size: 0.85em; color: #666; margin-top: 5px; margin-bottom: 20px;}
+
+        .radio-options {
+            display: flex; flex-direction: column; gap: 8px; margin-top: 10px;
+        }
+        .radio-options label {
+            display: flex; align-items: center; cursor: pointer; padding: 5px 0;
+        }
+        .radio-options input[type="radio"] {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="lesson-panel">
+        <h1>Функції: Мобільна Версія</h1>
+        <p class="intro-text">Теорія та практика у твоїй кишені.</p>
+
+        <h2>1. Що таке функція?</h2>
+        <p><strong>Визначення:</strong> Функція — це правило, за яким кожному значенню $x$ (аргумент) відповідає <strong>рівно одне</strong> значення $y$ (функція).</p>
+        <p>Це не просто математика, це опис реального світу:</p>
+        <ul>
+            <li>У фізиці: час $\to$ швидкість.</li>
+            <li>В економіці: ціна товару $\to$ кількість продажів (попит).</li>
+        </ul>
+
+        <h2>2. Лінійна функція (Пряма)</h2>
+        <p>Формула: $y = kx + b$.</p>
+        <div class="rule-box">
+            <strong>Алгоритм:</strong> Таблиця $\to$ Точки $\to$ Лінія.
+        </div>
+
+        <div class="task-box">
+            <span class="task-title">Завдання 2.1: Точки</span>
+            <p>Дано: $y = \frac{1}{2}x - 0.75$.</p>
+            <div class="task-part">
+                <p>1) $x = 2 \Rightarrow y =$</p> <input type="text" id="ans2a">
+                <button class="check-btn" onclick="checkAnswer('ans2a', ['0.25', '1/4'])">ОК</button>
+                <span id="fb2a" class="feedback"></span>
+            </div>
+            <details><summary>Підказка 1)</summary><div class="hint-content">$0.5 \cdot 2 - 0.75 = 1 - 0.75 = 0.25$.</div></details>
+            
+            <div class="task-part">
+                <p>2) $x = -2 \Rightarrow y =$</p> <input type="text" id="ans2b">
+                <button class="check-btn" onclick="checkAnswer('ans2b', ['-1.75', '-7/4'])">ОК</button>
+                <span id="fb2b" class="feedback"></span>
+            </div>
+            <details><summary>Підказка 2)</summary><div class="hint-content">$0.5 \cdot (-2) - 0.75 = -1 - 0.75 = -1.75$.</div></details>
+        </div>
+
+        <div class="task-box">
+            <span class="task-title">Завдання 2.2: Коефіцієнт</span>
+            <p>$y = -3x + 7$, чому дорівнює $k$?</p>
+            <div class="task-part">
+                $k =$ <input type="number" id="ans2c" placeholder="?">
+                <button class="check-btn" onclick="checkAnswer('ans2c', ['-3'])">Перевірити</button>
+                <span id="fb2c" class="feedback"></span>
+            </div>
+            <details><summary>Підказка</summary><div class="hint-content">$k$ — це число, яке стоїть перед $x$.</div></details>
+        </div>
+
+        <h2>3. Парабола та її рух</h2>
+        <p>Графік функції $y = x^2$.</p>
+        
+        <canvas id="canvas-parabola-demo" class="condition-canvas" width="350" height="250"></canvas>
+        <p class="canvas-caption">Приклад: $y=x^2$ (пунктир) та $y=(x-3)^2+2$ (синя)</p>
+
+        <div class="rule-box">
+            <strong>Рух графіка $y = (x+m)^2 + n$:</strong>
+            <ul>
+                <li>$+n$ в кінці $\to$ ВГОРУ.</li>
+                <li>$-n$ в кінці $\to$ ВНИЗ.</li>
+                <li>$(x-m)$ у дужках $\to$ ВПРАВО.</li>
+                <li>$(x+m)$ у дужках $\to$ ВЛІВО.</li>
+            </ul>
+        </div>
+
+        <div class="task-box">
+            <span class="task-title">Завдання 3.1: Вершина</span>
+            <p>Формула $y = (x - x_0)^2 + y_0$.</p>
+
+            <p><strong>А)</strong> $y = x^2 + 8$. Вершина:</p>
+            <div class="task-part">
+                ( <input type="number" id="t3_x1" placeholder="x"> ; <input type="number" id="t3_y1" placeholder="y"> )
+                <button class="check-btn" onclick="checkCoords('t3_x1','t3_y1', 0, 8, 'fb3_1')">ОК</button>
+                <span id="fb3_1" class="feedback"></span>
+            </div>
+            <details><summary>Підказка</summary><div class="hint-content">Вгору на 8.</div></details>
+
+            <p><strong>Б)</strong> $y = (x - 4)^2 - 3$. Вершина:</p>
+            <div class="task-part">
+                ( <input type="number" id="t3_x2" placeholder="x"> ; <input type="number" id="t3_y2" placeholder="y"> )
+                <button class="check-btn" onclick="checkCoords('t3_x2','t3_y2', 4, -3, 'fb3_2')">ОК</button>
+                <span id="fb3_2" class="feedback"></span>
+            </div>
+            <details><summary>Підказка</summary><div class="hint-content">Вправо на 4, вниз на 3.</div></details>
+            
+            <p><strong>В)</strong> $y = (x + 8)^2$. Вершина:</p>
+            <div class="task-part">
+                ( <input type="number" id="t3_x3" placeholder="x"> ; <input type="number" id="t3_y3" placeholder="y"> )
+                <button class="check-btn" onclick="checkCoords('t3_x3','t3_y3', -8, 0, 'fb3_3')">ОК</button>
+                <span id="fb3_3" class="feedback"></span>
+            </div>
+            <details><summary>Підказка</summary><div class="hint-content">Вліво на 8.</div></details>
+        </div>
+
+        <h2>4. Гіпербола</h2>
+        <div class="task-box">
+            <span class="task-title">Завдання 4.1</span>
+            <p>Куди зсунеться графік $y = \frac{5}{x - 8}$?</p>
+            <div class="radio-options">
+                <label><input type="radio" name="hyp" id="h1"> Вгору на 8</label>
+                <label><input type="radio" name="hyp" id="h3"> Вправо на 8</label>
+                <label><input type="radio" name="hyp" id="h4"> Вліво на 8</label>
+            </div>
+            <div style="margin-top: 10px;">
+                <button class="check-btn" onclick="checkRadio('hyp', 'h3', 'fbHyp')">Перевірити</button>
+                <span id="fbHyp" class="feedback"></span>
+            </div>
+            <details><summary>Підказка</summary><div class="hint-content">Зсув у знаменнику працює як і в дужках параболи - знак міняється.</div></details>
+        </div>
+
+        <h2>5. Розтяг і Стиснення</h2>
+        <div class="task-box">
+            <span class="task-title">Завдання 5.1: Напрям</span>
+            <p>Куди напрямлені вітки $y = -5x^2$?</p>
+             <div class="radio-options">
+                <label><input type="radio" name="dir" id="dir1"> Вгору</label>
+                <label><input type="radio" name="dir" id="dir2"> Вниз</label>
+            </div>
+            <div style="margin-top: 10px;">
+                <button class="check-btn" onclick="checkRadio('dir', 'dir2', 'fbDir')">Перевірити</button>
+                <span id="fbDir" class="feedback"></span>
+            </div>
+            <details><summary>Підказка</summary><div class="hint-content">Мінус перевертає графік.</div></details>
+        </div>
+
+        <div class="task-box">
+            <span class="task-title">Завдання 5.2: Ширина</span>
+            <p>Яка парабола ширша: $y = x^2$ чи $y = 0.2x^2$?</p>
+            <div class="radio-options">
+                <label><input type="radio" name="scale" id="sc1"> Перша ($x^2$)</label>
+                <label><input type="radio" name="scale" id="sc2"> Друга ($0.2x^2$)</label>
+            </div>
+            <div style="margin-top: 10px;">
+                <button class="check-btn" onclick="checkRadio('scale', 'sc2', 'fbScale')">Перевірити</button>
+                <span id="fbScale" class="feedback"></span>
+            </div>
+            <details><summary>Підказка</summary><div class="hint-content">Коефіцієнт менше 1 робить графік ширшим.</div></details>
+        </div>
+
+        <h2>6. Творче завдання</h2>
+        <p>Зразок $y=f(x)$:</p>
+        <canvas id="canvas-task-9" class="condition-canvas" width="320" height="200"></canvas>
+        <div class="task-box">
+            <p>Якби ми додали +2, графік піднявся б вище.</p>
+            <details><summary>Підказка</summary><div class="hint-content">Чорний - як є. Червоний - підніми всі точки на 2 вгору.</div></details>
+        </div>
+
+        <h2>7. Аналіз графіків</h2>
+        
+        <div class="rule-box">
+            <strong>Як відновити формулу $y = a(x \pm m)^2$?</strong>
+            <ol>
+                <li><strong>Крок 1 (Зсув $m$):</strong> Дивимось на вершину. 
+                    <ul>
+                        <li>Вершина вправо $\to$ у дужках мінус: $(x - m)$.</li>
+                        <li>Вершина вліво $\to$ у дужках плюс: $(x + m)$.</li>
+                    </ul>
+                </li>
+                <li><strong>Крок 2 (Коефіцієнт $a$):</strong> Беремо будь-яку зручну точку на графіку (не вершину) і підставляємо $x$ та $y$ у формулу. Знаходимо $a$.</li>
+            </ol>
+        </div>
+
+        <p>Спробуй знайти числа для цих графіків:</p>
+        <canvas id="canvas-task-20" class="condition-canvas" width="350" height="200"></canvas>
+        <p class="canvas-caption">А - зліва (вершина -4), Б - справа (вершина 1)</p>
+
+        <div class="task-box">
+            <span class="task-title">Графік А (Ліворуч)</span>
+            <p>Вершина: $x = -4$ (зсув вліво). Точка $(0; 8)$.</p>
+            <div class="task-part">
+                $y =$ <input type="text" id="in_a1" style="width:40px" placeholder="a"> $(x +$ <input type="number" id="in_m1" style="width:40px" placeholder="m"> $)^2$
+                <button class="check-btn" onclick="checkFormulaVals('in_a1', 0.5, 'in_m1', 4, 'fb_f1')">ОК</button>
+            </div>
+            <span id="fb_f1" class="feedback"></span>
+            <details><summary>Підказка</summary><div class="hint-content">Вершина вліво на 4, тому пишемо 4. Підстав (0;8): $8 = a(0+4)^2 \Rightarrow 8 = 16a \Rightarrow a=0.5$.</div></details>
+        </div>
+
+        <div class="task-box">
+            <span class="task-title">Графік Б (Праворуч)</span>
+            <p>Вершина: $x = 1$ (зсув вправо). Точка $(0; -2)$.</p>
+            <div class="task-part">
+                $y =$ <input type="text" id="in_a2" style="width:40px" placeholder="a"> $(x -$ <input type="number" id="in_m2" style="width:40px" placeholder="m"> $)^2$
+                <button class="check-btn" onclick="checkFormulaVals('in_a2', -2, 'in_m2', 1, 'fb_f2')">ОК</button>
+            </div>
+            <span id="fb_f2" class="feedback"></span>
+            <details>
+                <summary>Підказка</summary>
+                <div class="hint-content">
+                    Зсув вправо на 1. Підстав точку (0; -2):<br>
+                    $-2 = a(0 - 1)^2 \Rightarrow -2 = a \cdot 1 \Rightarrow a = -2$.
+                </div>
+            </details>
+        </div>
+
+        <h2>8. Бонус</h2>
+        <div class="task-box">
+            <span class="task-title">Бонус 1</span>
+            <p>Куди "поїхала" вершина $y = (x + 5)^2 - 9$?</p>
+            <div class="task-part">
+                ( <input type="number" id="bon1_x" placeholder="x"> ; <input type="number" id="bon1_y" placeholder="y"> )
+                <button class="check-btn" onclick="checkCoords('bon1_x','bon1_y', -5, -9, 'fb_bon1')">ОК</button>
+                <span id="fb_bon1" class="feedback"></span>
+            </div>
+            <details><summary>Підказка</summary><div class="hint-content">Вліво на 5, вниз на 9.</div></details>
+        </div>
+
+        <div class="task-box">
+            <span class="task-title">Бонус 2</span>
+            <p>Опис $y = -x^2 + 3$:</p>
+            <div class="radio-options">
+                <label><input type="radio" name="mix" id="mix1"> Вгору і вправо на 3.</label>
+                <label><input type="radio" name="mix" id="mix2"> Перевернута і вгору на 3.</label>
+            </div>
+            <div style="margin-top: 10px;">
+                <button class="check-btn" onclick="checkRadio('mix', 'mix2', 'fb_mix')">Перевірити</button>
+                <span id="fb_mix" class="feedback"></span>
+            </div>
+            <details><summary>Підказка</summary><div class="hint-content">Мінус - перевертає, +3 - піднімає.</div></details>
+        </div>
+
+        <div class="task-box">
+            <span class="task-title">Бонус 3</span>
+            <p>Де пряма $y = 4x - 12$ перетинає вісь $Y$ ($x=0$)?</p>
+            <div class="task-part">
+                $y =$ <input type="number" id="bon3_ans" placeholder="?">
+                <button class="check-btn" onclick="checkAnswer('bon3_ans', ['-12'])">ОК</button>
+                <span id="fb_bon3" class="feedback"></span>
+            </div>
+             <details><summary>Підказка</summary><div class="hint-content">Якщо $x=0$, то $y = -12$.</div></details>
+        </div>
+        
+        <div style="height: 50px;"></div>
+    </div>
+</div>
+
+<script>
+    // --- JS ЛОГІКА ---
+    function showFb(elId, isCorr, good="Правильно!", bad="Спробуй ще.") {
+        const el = document.getElementById(elId); 
+        if(!el) return;
+        el.style.display="inline-block";
+        el.className = isCorr ? "feedback correct" : "feedback wrong";
+        el.innerText = isCorr ? good : bad;
+    }
+    function checkAnswer(id, vals) {
+        let el = document.getElementById(id);
+        if(!el) return;
+        let v = el.value.trim().replace(',','.');
+        let isCorrect = vals.some(val => val.toLowerCase().replace(',','.') === v.toLowerCase());
+        showFb("fb"+id.replace('ans',''), isCorrect);
+    }
+    function checkCoords(ix, iy, tx, ty, fb) {
+        let elX = document.getElementById(ix);
+        let elY = document.getElementById(iy);
+        if(!elX || !elY) return;
+        let x = parseFloat(elX.value);
+        let y = parseFloat(elY.value);
+        showFb(fb, (x===tx && y===ty), "Супер!", "Помилка в координатах.");
+    }
+    function checkRadio(n, corr, fb) {
+        let sel = null; 
+        document.getElementsByName(n).forEach(r=>{if(r.checked) sel=r.id});
+        showFb(fb, sel===corr, "Вірно!", "Неправильний вибір.");
+    }
+    function checkFormulaVals(ia, ta, im, tm, fb) {
+        let aVal = document.getElementById(ia).value.trim().replace(',','.');
+        let a;
+        if (aVal.includes('/')) {
+            const parts = aVal.split('/'); a = parseFloat(parts[0]) / parseFloat(parts[1]);
+        } else { a = parseFloat(aVal); }
+        let m = parseFloat(document.getElementById(im).value);
+        showFb(fb, (Math.abs(a - ta) < 0.0001 && m === tm), "Формула вірна!", "Помилка.");
+    }
+
+    // --- CANVAS ---
+    window.addEventListener('load', () => { renderConditionGraphs(); });
+
+    function renderConditionGraphs() {
+        const cDemo = document.getElementById('canvas-parabola-demo');
+        if(cDemo) {
+            const ctxDemo = cDemo.getContext('2d');
+            const sDemo = 25; const oxDemo = 175; const oyDemo = 175;
+            drawStat(ctxDemo, 350, 250, sDemo, oxDemo, oyDemo);
+            drawParabola(ctxDemo, sDemo, oxDemo, oyDemo, 0, 0, 1, '#333', true);
+            drawParabola(ctxDemo, sDemo, oxDemo, oyDemo, 3, 2, 1, '#2563eb', false);
+        }
+
+        const c9=document.getElementById('canvas-task-9'); 
+        if(c9) {
+            const ctx9=c9.getContext('2d');
+            drawStat(ctx9,320,200,20,160,150);
+            ctx9.beginPath(); ctx9.strokeStyle="#2563eb"; ctx9.lineWidth=3; ctx9.moveTo(160,150);
+            for(let x=0;x>=-6;x-=0.1) ctx9.lineTo(160+x*20, 150-Math.sqrt(-x)*20); ctx9.stroke();
+        }
+
+        const c20=document.getElementById('canvas-task-20'); 
+        if(c20) {
+            const ctx20=c20.getContext('2d');
+            const s=20; 
+            drawStat(ctx20,350,200,s,90,150); 
+            drawParabola(ctx20, s, 90, 150, -4, 0, 0.5, "#4f46e5");
+            ctx20.beginPath(); ctx20.moveTo(175,0); ctx20.lineTo(175,200); ctx20.strokeStyle="#ccc"; ctx20.stroke();
+            drawStat(ctx20,350,200,s,260,150, 175); 
+            drawParabola(ctx20, s, 260, 150, 1, 0, -2, "#4f46e5");
+        }
+    }
+    
+    function drawParabola(ctx, scale, ox, oy, h, k, a, color, dashed=false) {
+        ctx.beginPath();
+        ctx.strokeStyle = color; ctx.lineWidth = 2;
+        if(dashed) ctx.setLineDash([5, 5]); else ctx.setLineDash([]);
+        let first = true;
+        for(let x_graph = -8; x_graph <= 8; x_graph += 0.1) {
+            let y_graph = a * Math.pow(x_graph - h, 2) + k;
+            let x_canvas = ox + x_graph * scale;
+            let y_canvas = oy - y_graph * scale; 
+            if (y_canvas < -50 || y_canvas > ctx.canvas.height + 50) continue;
+            if(first) { ctx.moveTo(x_canvas, y_canvas); first=false; }
+            else { ctx.lineTo(x_canvas, y_canvas); }
+        }
+        ctx.stroke();
+        ctx.setLineDash([]); 
+    }
+
+    function drawStat(ctx,w,h,s,ox,oy,sx=0) {
+        ctx.strokeStyle="#eee"; ctx.lineWidth=1;
+        for(let x=sx;x<=w;x+=s){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke();}
+        for(let y=0;y<=h;y+=s){ctx.beginPath();ctx.moveTo(sx,y);ctx.lineTo(w,y);ctx.stroke();}
+        ctx.strokeStyle="#555"; ctx.lineWidth=2;
+        ctx.beginPath();ctx.moveTo(sx,oy);ctx.lineTo(w,oy);ctx.stroke();
+        ctx.beginPath();ctx.moveTo(ox,0);ctx.lineTo(ox,h);ctx.stroke();
+        ctx.fillStyle="#666"; ctx.font="10px Arial"; ctx.textAlign="center"; ctx.textBaseline="middle";
+        for(let i=-Math.floor((ox-sx)/s)+1; i*s+ox<w; i++){ if(i!==0 && i%2===0) ctx.fillText(i, ox+i*s, oy+10); }
+        for(let i=-Math.floor(oy/s)+1; i*s+oy<h; i++){ if(i!==0 && i%2===0) ctx.fillText(-i, ox-10, oy+i*s); }
+        ctx.fillText("0", ox-10, oy+10);
+    }
+</script>
+</body>
+</html>

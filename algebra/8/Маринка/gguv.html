@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Урок Математики: Повний Курс</title>
+
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        :root {
+            --primary: #2980b9; /* Синій */
+            --secondary: #2c3e50;
+            --accent: #16a085;
+            --bg: #f4f6f7;
+            --card-bg: #ffffff;
+            --shadow: 0 4px 6px rgba(0,0,0,0.05);
+            --radius: 8px;
+            --error: #c0392b;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--secondary);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container { max-width: 1000px; margin: 0 auto; }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border-bottom: 4px solid var(--secondary);
+        }
+
+        h1 { margin: 0; font-size: 1.8em; color: var(--secondary); }
+        h2 {
+            color: var(--secondary);
+            margin-top: 40px;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            border-bottom: 2px solid #bdc3c7;
+            padding-bottom: 10px;
+        }
+
+        /* === КАРТКИ === */
+        .card {
+            background: var(--card-bg);
+            padding: 25px;
+            margin-bottom: 25px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid #ecf0f1;
+        }
+
+        .section-desc {
+            background: #eaf2f8;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 25px;
+            border-left: 4px solid var(--primary);
+            font-size: 1em;
+        }
+
+        .task-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+        }
+
+        .task-item {
+            background: #fff;
+            padding: 15px;
+            border: 1px solid #bdc3c7;
+            border-radius: 6px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            justify-content: space-between;
+            text-align: center;
+            position: relative;
+        }
+
+        /* Приклади підвищеної складності */
+        .hard-task {
+            background-color: #fdfbf7;
+            border-color: #f39c12;
+        }
+        .hard-label {
+            font-size: 0.75em;
+            color: #d35400;
+            font-weight: bold;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        /* Медичні / Контекстні задачі */
+        .context-task {
+            background-color: #f0fdf4;
+            border-color: #27ae60;
+        }
+        .context-label {
+            font-size: 0.75em;
+            color: #27ae60;
+            font-weight: bold;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        /* CSS Дроби */
+        .fraction { display: inline-block; vertical-align: middle; text-align: center; margin: 0 4px; }
+        .top { border-bottom: 1px solid var(--secondary); display: block; padding: 0 2px; line-height: 1.2; }
+        .bottom { display: block; padding: 0 2px; line-height: 1.2; }
+        .whole { font-size: 1.2em; vertical-align: middle; margin-right: 5px; font-weight: bold; }
+
+        /* Inputs */
+        input[type="number"] {
+            padding: 5px;
+            border: 1px solid #bdc3c7;
+            width: 45px;
+            text-align: center;
+            font-size: 1em;
+            border-radius: 4px;
+        }
+        input[type="number"]:focus { outline: none; border-color: var(--primary); }
+        .whole-input { width: 30px; margin-right: 2px; }
+
+        button {
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            padding: 6px 15px;
+            cursor: pointer;
+            font-size: 0.85em;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+        button:hover { background-color: var(--primary); }
+
+        /* Feedback & Canvas */
+        .feedback { font-weight: bold; margin-left: 10px; font-size: 1.2em; display: inline-block; }
+        .feedback.success { color: #27ae60; }
+        .feedback.error { color: #c0392b; }
+        .feedback.warn { color: #e67e22; font-size: 0.8em; }
+
+        .toggle-canvas {
+            background: transparent; border: 1px dashed #95a5a6; color: #7f8c8d;
+            width: 100%; border-radius: 6px; margin-top: 15px; padding: 10px;
+        }
+        .toggle-canvas:hover { border-color: var(--secondary); color: var(--secondary); background: transparent; }
+
+        .canvas-wrapper { display: none; margin-top: 10px; }
+        .canvas-box {
+            border: 1px solid #bdc3c7; background: #fff; height: 300px;
+            position: relative; border-radius: 6px; overflow: hidden;
+        }
+        canvas { width: 100%; height: 100%; display: block; cursor: crosshair; }
+        .clear-btn { position: absolute; top: 5px; right: 5px; background: #e74c3c; font-size: 0.7em; padding: 4px 10px; }
+
+        /* Complex layout */
+        .equation-row { display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 10px; width: 100%; }
+        .complex-block { display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle; }
+        .main-line { width: 100%; height: 1px; background-color: black; margin: 3px 0; min-width: 20px; }
+
+        /* Test Section */
+        .test-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px; margin-bottom: 30px;
+        }
+        .question-card {
+            background: white; border-radius: 6px; border: 1px solid #dfe6e9;
+            padding: 20px 15px; position: relative; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+        }
+        .q-num { position: absolute; top: 5px; left: 10px; font-weight: bold; color: #dfe6e9; font-size: 1.2em; }
+
+        .finish-btn {
+            width: 100%; max-width: 300px; margin: 30px auto; display: block; padding: 12px;
+            font-size: 1.1em; background: var(--primary); border-radius: 6px;
+        }
+        .result-box { text-align: center; font-size: 1.4em; padding: 20px; margin-top: 20px; border-radius: 6px; display: none; font-weight: bold; background: white; border: 1px solid #ddd; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Математика: Практичне заняття</h1>
+        <p>Комплексне тренування: від простих дробів до рівнянь</p>
+    </header>
+
+    <section>
+        <h2>1. Множення дробів</h2>
+        <div class="card">
+            <div class="section-desc">
+                <strong>Правило:</strong> Чисельник множимо на чисельник, знаменник на знаменник. <br>
+                <em>Порада:</em> Завжди скорочуй дроби <strong>перед</strong> множенням.
+            </div>
+
+            <div class="task-grid">
+                <div class="task-item hard-task">
+                    <span class="hard-label">Приклад 1 (Мішані)</span>
+                    <div>\( 1\frac{1}{7} \times \frac{7}{8} \)</div>
+                    <div>= <span class="fraction"><span class="top"><input type="number" id="m-hard1-t"></span><span class="bottom"><input type="number" id="m-hard1-b"></span></span></div>
+                    <div><button onclick="checkFraction('m-hard1', 1, 1)">OK</button><span id="m-hard1-msg" class="feedback"></span></div>
+                </div>
+                <div class="task-item hard-task">
+                    <span class="hard-label">Приклад 2 (Квадрат)</span>
+                    <div>\( (\frac{3}{5})^2 \)</div>
+                    <div>= <span class="fraction"><span class="top"><input type="number" id="m-hard2-t"></span><span class="bottom"><input type="number" id="m-hard2-b"></span></span></div>
+                    <div><button onclick="checkFraction('m-hard2', 9, 25)">OK</button><span id="m-hard2-msg" class="feedback"></span></div>
+                </div>
+
+                <div class="task-item">
+                    <div>1. <span class="fraction"><span class="top">2</span><span class="bottom">3</span></span> × <span class="fraction"><span class="top">6</span><span class="bottom">7</span></span></div>
+                    <div>= <span class="fraction"><span class="top"><input type="number" id="m1-t"></span><span class="bottom"><input type="number" id="m1-b"></span></span></div>
+                    <div><button onclick="checkFraction('m1', 4, 7)">OK</button><span id="m1-msg" class="feedback"></span></div>
+                </div>
+                <div class="task-item">
+                    <div>2. <span class="fraction"><span class="top">5</span><span class="bottom">8</span></span> × <span class="fraction"><span class="top">4</span><span class="bottom">15</span></span></div>
+                    <div>= <span class="fraction"><span class="top"><input type="number" id="m2-t"></span><span class="bottom"><input type="number" id="m2-b"></span></span></div>
+                    <div><button onclick="checkFraction('m2', 1, 6)">OK</button><span id="m2-msg" class="feedback"></span></div>
+                </div>
+
+                <div class="task-item context-task">
+                    <span class="context-label">Таблетки</span>
+                    <div>Доза <span class="fraction"><span class="top">1</span><span class="bottom">4</span></span> таб. 3 рази на день. Всього?</div>
+                    <div>= <span class="fraction"><span class="top"><input type="number" id="m4-t"></span><span class="bottom"><input type="number" id="m4-b"></span></span></div>
+                    <div><button onclick="checkFraction('m4', 3, 4)">OK</button><span id="m4-msg" class="feedback"></span></div>
+                </div>
+                <div class="task-item context-task">
+                    <span class="context-label">Сироп</span>
+                    <div>Пляшка 200 мл. Випито <span class="fraction"><span class="top">2</span><span class="bottom">5</span></span>. Скільки мл?</div>
+                    <div>= <input type="number" id="m5-val"> мл</div>
+                    <div><button onclick="checkNumber('m5', 80)">OK</button><span id="m5-msg" class="feedback"></span></div>
+                </div>
+            </div>
+            <button class="toggle-canvas" onclick="toggleCanvas('cv1')">✍️ Чернетка</button>
+            <div id="cv1" class="canvas-wrapper"><div class="canvas-box"><canvas id="canvas1"></canvas><button class="clear-btn" onclick="clearCanvas('canvas1')">Очистити</button></div></div>
+        </div>
+    </section>
+
+    <section>
+        <h2>2. Ділення дробів</h2>
+        <div class="card">
+            <div class="section-desc">
+                <strong>Правило:</strong> Ділення замінюємо множенням, перевернувши другий дріб.
+            </div>
+            <div class="task-grid">
+                <div class="task-item hard-task">
+                    <span class="hard-label">Приклад 1</span>
+                    <div>\( 5\frac{1}{2} \div \frac{11}{4} \)</div>
+                    <div>= <input type="number" id="d-hard1-val"></div>
+                    <div><button onclick="checkNumber('d-hard1', 2)">OK</button><span id="d-hard1-msg" class="feedback"></span></div>
+                </div>
+
+                <div class="task-item">
+                    <div>1. <span class="fraction"><span class="top">3</span><span class="bottom">7</span></span> ÷ <span class="fraction"><span class="top">3</span><span class="bottom">7</span></span></div>
+                    <div>= <input type="number" id="d1-val"></div>
+                    <div><button onclick="checkNumber('d1', 1)">OK</button><span id="d1-msg" class="feedback"></span></div>
+                </div>
+                <div class="task-item">
+                    <div>2. <span class="fraction"><span class="top">4</span><span class="bottom">9</span></span> ÷ <span class="fraction"><span class="top">2</span><span class="bottom">3</span></span></div>
+                    <div>= <span class="fraction"><span class="top"><input type="number" id="d2-t"></span><span class="bottom"><input type="number" id="d2-b"></span></span></div>
+                    <div><button onclick="checkFraction('d2', 2, 3)">OK</button><span id="d2-msg" class="feedback"></span></div>
+                </div>
+
+                <div class="task-item context-task">
+                    <span class="context-label">Розлив</span>
+                    <div>Є <span class="fraction"><span class="top">3</span><span class="bottom">4</span></span> л. Флакони по <span class="fraction"><span class="top">1</span><span class="bottom">8</span></span> л. Скільки шт?</div>
+                    <div>= <input type="number" id="d4-val"> шт</div>
+                    <div><button onclick="checkNumber('d4', 6)">OK</button><span id="d4-msg" class="feedback"></span></div>
+                </div>
+            </div>
+            <button class="toggle-canvas" onclick="toggleCanvas('cv2')">✍️ Чернетка</button>
+            <div id="cv2" class="canvas-wrapper"><div class="canvas-box"><canvas id="canvas2"></canvas><button class="clear-btn" onclick="clearCanvas('canvas2')">Очистити</button></div></div>
+        </div>
+    </section>
+
+    <section>
+        <h2>3. Додавання та Віднімання</h2>
+        <div class="card">
+            <div class="section-desc">
+                <strong>Правило:</strong> Зведи до спільного знаменника.
+            </div>
+            <div class="task-grid">
+                <div class="task-item hard-task">
+                    <span class="hard-label">Приклад 1 (Складний НСЗ)</span>
+                    <div>\( \frac{3}{14} + \frac{1}{3} \)</div>
+                    <div>(НСЗ 14 і 3 = 42)</div>
+                    <div>= <span class="fraction"><span class="top"><input type="number" id="a-hard1-t"></span><span class="bottom"><input type="number" id="a-hard1-b"></span></span></div>
+                    <div><button onclick="checkFraction('a-hard1', 23, 42)">OK</button><span id="a-hard1-msg" class="feedback"></span></div>
+                </div>
+                <div class="task-item hard-task">
+                    <span class="hard-label">Приклад 2 (3 дії)</span>
+                    <div>\( \frac{2}{5} + \frac{1}{2} - \frac{3}{10} \)</div>
+                    <div>= <span class="fraction"><span class="top"><input type="number" id="a-hard4-t"></span><span class="bottom"><input type="number" id="a-hard4-b"></span></span></div>
+                    <div><button onclick="checkFraction('a-hard4', 3, 5)">OK</button><span id="a-hard4-msg" class="feedback"></span></div>
+                </div>
+
+                <div class="task-item">
+                    <div><span class="fraction"><span class="top">1</span><span class="bottom">6</span></span> + <span class="fraction"><span class="top">1</span><span class="bottom">3</span></span></div>
+                    <div>= <span class="fraction"><span class="top"><input type="number" id="a1-t"></span><span class="bottom"><input type="number" id="a1-b"></span></span></div>
+                    <div><button onclick="checkFraction('a1', 1, 2)">OK</button><span id="a1-msg" class="feedback"></span></div>
+                </div>
+                <div class="task-item">
+                    <div><span class="fraction"><span class="top">3</span><span class="bottom">4</span></span> - <span class="fraction"><span class="top">1</span><span class="bottom">2</span></span></div>
+                    <div>= <span class="fraction"><span class="top"><input type="number" id="a2-t"></span><span class="bottom"><input type="number" id="a2-b"></span></span></div>
+                    <div><button onclick="checkFraction('a2', 1, 4)">OK</button><span id="a2-msg" class="feedback"></span></div>
+                </div>
+
+                <div class="task-item context-task">
+                    <span class="context-label">Суміш</span>
+                    <div>Змішали <span class="fraction"><span class="top">1</span><span class="bottom">2</span></span> л і <span class="fraction"><span class="top">1</span><span class="bottom">4</span></span> л. Об'єм?</div>
+                    <div>= <span class="fraction"><span class="top"><input type="number" id="a5-t"></span><span class="bottom"><input type="number" id="a5-b"></span></span> л</div>
+                    <div><button onclick="checkFraction('a5', 3, 4)">OK</button><span id="a5-msg" class="feedback"></span></div>
+                </div>
+            </div>
+            <button class="toggle-canvas" onclick="toggleCanvas('cv3')">✍️ Чернетка</button>
+            <div id="cv3" class="canvas-wrapper"><div class="canvas-box"><canvas id="canvas3"></canvas><button class="clear-btn" onclick="clearCanvas('canvas3')">Очистити</button></div></div>
+        </div>
+    </section>
+
+    <section>
+        <h2>4. Багатоповерхові дроби</h2>
+        <div class="card">
+            <div class="task-grid">
+                <div class="task-item hard-task">
+                    <span class="hard-label">Складний</span>
+                    <div class="complex-block">
+                        <div>\( \frac{1}{3} + \frac{1}{6} \)</div>
+                        <div class="main-line"></div>
+                        <span class="whole">2</span>
+                    </div>
+                    <div>= <span class="fraction"><span class="top"><input type="number" id="c-hard1-t"></span><span class="bottom"><input type="number" id="c-hard1-b"></span></span></div>
+                    <div><button onclick="checkFraction('c-hard1', 1, 4)">OK</button><span id="c-hard1-msg" class="feedback"></span></div>
+                </div>
+
+                <div class="task-item">
+                    <div class="equation-row">
+                        <div class="complex-block">
+                            <span class="whole">3</span>
+                            <div class="main-line"></div>
+                            <span class="fraction"><span class="top">1</span><span class="bottom">2</span></span>
+                        </div>
+                    </div>
+                    <div>(Це 3 ÷ 1/2)</div>
+                    <div>= <input type="number" id="c1-val"></div>
+                    <div><button onclick="checkNumber('c1', 6)">OK</button><span id="c1-msg" class="feedback"></span></div>
+                </div>
+                <div class="task-item">
+                    <div class="equation-row">
+                        <div class="complex-block">
+                            <span class="fraction"><span class="top">2</span><span class="bottom">5</span></span>
+                            <div class="main-line"></div>
+                            <span class="fraction"><span class="top">4</span><span class="bottom">15</span></span>
+                        </div>
+                    </div>
+                    <div>= <span class="fraction"><span class="top"><input type="number" id="c4-t"></span><span class="bottom"><input type="number" id="c4-b"></span></span></div>
+                    <div><button onclick="checkFraction('c4', 3, 2)">OK</button><span id="c4-msg" class="feedback"></span></div>
+                </div>
+            </div>
+            <button class="toggle-canvas" onclick="toggleCanvas('cv4')">✍️ Чернетка</button>
+            <div id="cv4" class="canvas-wrapper"><div class="canvas-box"><canvas id="canvas4"></canvas><button class="clear-btn" onclick="clearCanvas('canvas4')">Очистити</button></div></div>
+        </div>
+    </section>
+
+    <section>
+        <h2>5. Пропорції та Рівняння</h2>
+        <div class="card">
+            <div class="section-desc">
+                <strong>Правило Хреста (Метелика):</strong><br>
+                \[ \frac{a}{b} = \frac{c}{d} \quad \Rightarrow \quad a \cdot d = b \cdot c \]
+                Множимо навхрест, щоб знайти невідоме.
+            </div>
+
+            <div class="task-grid">
+                <div class="task-item hard-task">
+                    <span class="hard-label">X внизу</span>
+                    <div>\( \frac{7}{x} = \frac{3.5}{2} \)</div>
+                    <div>x = <input type="number" id="p-hard1-val"></div>
+                    <div><button onclick="checkNumber('p-hard1', 4)">OK</button><span id="p-hard1-msg" class="feedback"></span></div>
+                </div>
+
+                <div class="task-item">
+                    <div>\( \frac{x}{6} = \frac{2}{3} \)</div>
+                    <div>x = <input type="number" id="p1-val"></div>
+                    <div><button onclick="checkNumber('p1', 4)">OK</button><span id="p1-msg" class="feedback"></span></div>
+                </div>
+
+                <div class="task-item context-task">
+                    <span class="context-label">Дозування</span>
+                    <div>10 мг на 1 кг. Вага 65 кг. Доза?</div>
+                    <div>x = <input type="number" id="p3-val"> мг</div>
+                    <div><button onclick="checkNumber('p3', 650)">OK</button><span id="p3-msg" class="feedback"></span></div>
+                </div>
+                <div class="task-item context-task">
+                    <span class="context-label">Розчин</span>
+                    <div>100 мл — 2 г. Скільки в 500 мл?</div>
+                    <div>x = <input type="number" id="p4-val"> г</div>
+                    <div><button onclick="checkNumber('p4', 10)">OK</button><span id="p4-msg" class="feedback"></span></div>
+                </div>
+            </div>
+            <button class="toggle-canvas" onclick="toggleCanvas('cv5')">✍️ Чернетка</button>
+            <div id="cv5" class="canvas-wrapper"><div class="canvas-box"><canvas id="canvas5"></canvas><button class="clear-btn" onclick="clearCanvas('canvas5')">Очистити</button></div></div>
+        </div>
+    </section>
+
+    <section>
+        <h2>6. Від'ємний степінь</h2>
+        <div class="card">
+            <div class="section-desc">
+                <strong>Правило:</strong> Число в степені -1 перевертається.<br>
+                \[ a^{-1} = \frac{1}{a}, \quad (\frac{a}{b})^{-1} = \frac{b}{a} \]
+            </div>
+            <div class="task-grid">
+                <div class="task-item">
+                    <div>\( 10^{-1} \) = <span class="fraction"><span class="top"><input type="number" id="n1-t"></span><span class="bottom"><input type="number" id="n1-b"></span></span></div>
+                    <div><button onclick="checkFraction('n1', 1, 10)">OK</button><span id="n1-msg" class="feedback"></span></div>
+                </div>
+                <div class="task-item">
+                    <div>\( 2^{-2} = \frac{1}{2^2} \) = <span class="fraction"><span class="top"><input type="number" id="n2-t"></span><span class="bottom"><input type="number" id="n2-b"></span></span></div>
+                    <div><button onclick="checkFraction('n2', 1, 4)">OK</button><span id="n2-msg" class="feedback"></span></div>
+                </div>
+                <div class="task-item hard-task">
+                    <span class="hard-label">Переверни дріб</span>
+                    <div>\( (\frac{2}{3})^{-1} \)</div>
+                    <div>= <span class="fraction"><span class="top"><input type="number" id="n-hard1-t"></span><span class="bottom"><input type="number" id="n-hard1-b"></span></span></div>
+                    <div><button onclick="checkFraction('n-hard1', 3, 2)">OK</button><span id="n-hard1-msg" class="feedback"></span></div>
+                </div>
+            </div>
+            <button class="toggle-canvas" onclick="toggleCanvas('cv6')">✍️ Чернетка</button>
+            <div id="cv6" class="canvas-wrapper"><div class="canvas-box"><canvas id="canvas6"></canvas><button class="clear-btn" onclick="clearCanvas('canvas6')">Очистити</button></div></div>
+        </div>
+    </section>
+
+    <section>
+        <h2>🏆 Підсумковий тест</h2>
+        <div class="test-grid">
+            <div class="question-card" style="border-color: #f39c12;">
+                <span class="q-num">1</span>
+                <span class="hard-label">Мікс дій</span>
+                <div>
+                    \( (\frac{3}{14} + \frac{1}{2}) \div \frac{5}{7} \)
+                </div>
+                <div style="margin-top:10px">
+                    = <input type="number" id="mix-test1-val">
+                </div>
+            </div>
+
+            <div class="question-card" style="border-color: #f39c12;">
+                <span class="q-num">2</span>
+                <span class="hard-label">Мікс дій</span>
+                <div>
+                    \( \frac{5}{6} - \frac{1}{3} \times \frac{1}{2} \)
+                </div>
+                <div style="margin-top:10px">
+                    = <span class="fraction"><span class="top"><input type="number" id="mix-test2-t"></span><span class="bottom"><input type="number" id="mix-test2-b"></span></span>
+                </div>
+            </div>
+
+            <div class="question-card">
+                <span class="q-num">3</span>
+                <div>\( \frac{3}{8} + \frac{1}{8} \) = <span class="fraction"><span class="top"><input type="number" id="q1-t"></span><span class="bottom"><input type="number" id="q1-b"></span></span></div>
+            </div>
+            <div class="question-card">
+                <span class="q-num">4</span>
+                <div>\( \frac{1}{2} \times \frac{4}{5} \) = <span class="fraction"><span class="top"><input type="number" id="q2-t"></span><span class="bottom"><input type="number" id="q2-b"></span></span></div>
+            </div>
+            <div class="question-card">
+                <span class="q-num">5</span>
+                <div>2 таб по 0.5 г. Разом (г)? <br> <input type="number" id="q3-val"> </div>
+            </div>
+            <div class="question-card">
+                <span class="q-num">6</span>
+                <div>\( \frac{5}{6} \div \frac{5}{6} \) = <input type="number" id="q4-val"></div>
+            </div>
+            <div class="question-card">
+                <span class="q-num">7</span>
+                <div>100 мг / 5 мл.<br>x мг / 10 мл? <br> x = <input type="number" id="q5-val"></div>
+            </div>
+            <div class="question-card">
+                <span class="q-num">8</span>
+                <div>\( \cfrac{4}{\frac{1}{2}} \) = <input type="number" id="q6-val"></div>
+            </div>
+            <div class="question-card">
+                <span class="q-num">9</span>
+                <div>\( 1 - \frac{2}{9} \) = <span class="fraction"><span class="top"><input type="number" id="q7-t"></span><span class="bottom"><input type="number" id="q7-b"></span></span></div>
+            </div>
+            <div class="question-card">
+                <span class="q-num">10</span>
+                <div>\( (\frac{2}{3})^{-1} \) = <span class="fraction"><span class="top"><input type="number" id="q8-t"></span><span class="bottom"><input type="number" id="q8-b"></span></span></div>
+            </div>
+            <div class="question-card">
+                <span class="q-num">11</span>
+                <div>\( \frac{x}{100} = \frac{1}{5} \), x = <input type="number" id="q9-val"></div>
+            </div>
+            <div class="question-card">
+                <span class="q-num">12</span>
+                <div>\( \frac{3}{4} \div 2 \) = <span class="fraction"><span class="top"><input type="number" id="q10-t"></span><span class="bottom"><input type="number" id="q10-b"></span></span></div>
+            </div>
+            <div class="question-card">
+                <span class="q-num">13</span>
+                <div>\( 3^{-2} = \frac{1}{x} \), x = <input type="number" id="q11-val"></div>
+            </div>
+            <div class="question-card">
+                <span class="q-num">14</span>
+                <div>\( \frac{1}{2} + \frac{1}{4} \) = <span class="fraction"><span class="top"><input type="number" id="q12-t"></span><span class="bottom"><input type="number" id="q12-b"></span></span></div>
+            </div>
+        </div>
+
+        <button class="finish-btn" onclick="gradeTest()">ЗАВЕРШИТИ УРОК</button>
+        <div id="final-result" class="result-box"></div>
+
+        <button class="toggle-canvas" onclick="toggleCanvas('cv-final')">✍️ Чернетка</button>
+        <div id="cv-final" class="canvas-wrapper"><div class="canvas-box"><canvas id="canvas-final"></canvas><button class="clear-btn" onclick="clearCanvas('canvas-final')">Очистити</button></div></div>
+    </section>
+
+</div>
+
+<script>
+    // --- BASIC LOGIC ---
+    function showFeedback(element, isCorrect, isWarning = false) {
+        element.style.display = 'inline-block';
+        if (isCorrect) {
+            if(isWarning) { element.className = 'feedback warn'; element.innerHTML = "Скороти!"; }
+            else { element.className = 'feedback success'; element.innerHTML = "✅"; }
+        } else {
+            element.className = 'feedback error'; element.innerHTML = "❌";
+        }
+    }
+
+    function checkNumber(id, correctVal) {
+        let el = document.getElementById(id + '-val'); if(!el) return;
+        let val = parseFloat(el.value);
+        let msg = document.getElementById(id + '-msg');
+        if (Math.abs(val - correctVal) < 0.01) showFeedback(msg, true);
+        else showFeedback(msg, false);
+    }
+
+    function checkFraction(id, cTop, cBot) {
+        let uTop = parseInt(document.getElementById(id + '-t').value);
+        let uBot = parseInt(document.getElementById(id + '-b').value);
+        let msg = document.getElementById(id + '-msg');
+        if (isNaN(uTop) || isNaN(uBot)) return;
+
+        if (uTop === cTop && uBot === cBot) showFeedback(msg, true);
+        else if (Math.abs(uTop / uBot - cTop / cBot) < 0.0001) showFeedback(msg, true, true);
+        else showFeedback(msg, false);
+    }
+
+    // --- TEST LOGIC ---
+    function gradeTest() {
+        let score = 0;
+        // Відповіді до тесту (Мікс + старі задачі)
+        const answers = [
+            {v: 1, type: 'v', id: 'mix-test1'}, // (3/14+7/14) / 5/7 = 1
+            {t: 2, b: 3, type: 'f', id: 'mix-test2'}, // 5/6 - 1/6 = 4/6 = 2/3
+            {t: 1, b: 2, type: 'f', id: 'q1'}, // 3/8+1/8=4/8=1/2
+            {t: 2, b: 5, type: 'f', id: 'q2'}, // 4/10 = 2/5
+            {v: 1, type: 'v', id: 'q3'},
+            {v: 1, type: 'v', id: 'q4'},
+            {v: 200, type: 'v', id: 'q5'},
+            {v: 8, type: 'v', id: 'q6'},
+            {t: 7, b: 9, type: 'f', id: 'q7'},
+            {t: 3, b: 2, type: 'f', id: 'q8'},
+            {v: 20, type: 'v', id: 'q9'},
+            {t: 3, b: 8, type: 'f', id: 'q10'},
+            {v: 9, type: 'v', id: 'q11'},
+            {t: 3, b: 4, type: 'f', id: 'q12'}
+        ];
+
+        const total = answers.length;
+
+        answers.forEach(item => {
+            let isCorrect = false;
+            if (item.type === 'f') {
+                let ut = parseInt(document.getElementById(item.id + '-t').value);
+                let ub = parseInt(document.getElementById(item.id + '-b').value);
+                if (Math.abs(ut/ub - item.t/item.b) < 0.0001) isCorrect = true;
+            } else {
+                let uv = parseFloat(document.getElementById(item.id + '-val').value);
+                if (uv === item.v) isCorrect = true;
+            }
+
+            // Style card
+            let elId = item.id + (item.type === 'f' ? '-t' : '-val');
+            let card = document.getElementById(elId).closest('.question-card');
+            if(isCorrect) { score++; card.style.background = "#e8f8f5"; card.style.borderColor = "#27ae60"; }
+            else { card.style.background = "#fff5f5"; card.style.borderColor = "#c0392b"; }
+        });
+
+        const rBox = document.getElementById('final-result');
+        rBox.style.display = 'block';
+        rBox.innerHTML = `Результат: ${score} з ${total}`;
+        if(score === total) { rBox.style.color = "#27ae60"; rBox.innerHTML += " <br>Відмінно!"; }
+        else { rBox.style.color = "#2c3e50"; }
+
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+
+    // --- CANVAS ---
+    function toggleCanvas(id) {
+        let el = document.getElementById(id);
+        if (el.style.display === 'block') { el.style.display = 'none'; }
+        else {
+            el.style.display = 'block';
+            let cv = el.querySelector('canvas');
+            if(!cv.getAttribute('init')) { initCanvas(cv); cv.setAttribute('init','true'); }
+        }
+    }
+    function initCanvas(canvas) {
+        const parent = canvas.parentElement;
+        canvas.width = parent.offsetWidth; canvas.height = parent.offsetHeight;
+        const ctx = canvas.getContext('2d');
+        let p = false;
+        ctx.lineWidth = 3; ctx.lineCap = 'round'; ctx.strokeStyle = '#2c3e50';
+
+        function draw(e) {
+            if(!p) return; e.preventDefault();
+            const r = canvas.getBoundingClientRect();
+            let x = (e.clientX||e.touches[0].clientX) - r.left;
+            let y = (e.clientY||e.touches[0].clientY) - r.top;
+            ctx.lineTo(x, y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x, y);
+        }
+        canvas.addEventListener('mousedown', (e)=>{ p=true; draw(e); });
+        canvas.addEventListener('mouseup', ()=>{ p=false; ctx.beginPath(); });
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('touchstart', (e)=>{ p=true; draw(e); },{passive:false});
+        canvas.addEventListener('touchend', ()=>{ p=false; ctx.beginPath(); });
+        canvas.addEventListener('touchmove', draw, {passive:false});
+    }
+    function clearCanvas(id) {
+        let cv = document.getElementById(id);
+        cv.getContext('2d').clearRect(0,0,cv.width,cv.height);
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>МЕГА-УРОК: Відсотки та Геометрія (Виправлений)</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-light: #e0e7ff;
+            --accent: #d97706;
+            --success: #16a34a;
+            --error: #dc2626;
+            --bg: #f8fafc;
+            --text: #1e293b;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- ЛІВА ПАНЕЛЬ (КОНТЕНТ) --- */
+        .content-panel {
+            flex: 2;
+            padding: 40px;
+            overflow-y: auto;
+            border-right: 3px solid #cbd5e1;
+            background: #ffffff;
+            scroll-behavior: smooth;
+        }
+
+        h1 { color: var(--primary); text-align: center; margin-bottom: 40px; border-bottom: 2px solid var(--primary-light); padding-bottom: 15px; font-size: 2.2em; }
+        
+        .section-title {
+            background: var(--primary); color: white;
+            padding: 15px 20px; border-radius: 8px; margin-top: 60px; margin-bottom: 30px;
+            font-size: 1.5em; font-weight: bold; display: flex; align-items: center; gap: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        /* ТЕОРІЯ */
+        .theory-box {
+            background: #f0f9ff; border-left: 6px solid #0ea5e9;
+            padding: 20px; margin-bottom: 30px; border-radius: 0 10px 10px 0;
+            font-size: 1.05em; line-height: 1.6;
+        }
+        .formula {
+            display: block; text-align: center; background: white; border: 2px dashed var(--primary);
+            color: var(--primary); padding: 10px; margin: 15px 0; font-family: monospace; font-size: 1.3em; font-weight: bold;
+            border-radius: 8px;
+        }
+
+        /* ЗАВДАННЯ */
+        .task-card {
+            border: 1px solid #e2e8f0; border-radius: 12px; padding: 25px; margin-bottom: 30px;
+            background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.03); transition: transform 0.2s;
+        }
+        .task-card:hover { border-color: var(--primary); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        
+        .task-title { font-size: 1.2em; font-weight: bold; margin-bottom: 15px; color: #334155; }
+        .badge { background: #f1f5f9; color: #64748b; padding: 4px 10px; border-radius: 15px; font-size: 0.75em; text-transform: uppercase; margin-left: 10px; }
+        .badge-hard { background: #fee2e2; color: #991b1b; }
+
+        /* Таблиці */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        td { padding: 12px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+        tr:last-child td { border-bottom: none; }
+        td:first-child { width: 60%; font-weight: 500; }
+
+        /* Введення */
+        input[type="text"] {
+            padding: 8px 12px; border: 2px solid #cbd5e1; border-radius: 6px; width: 100px;
+            text-align: center; font-size: 1em; outline: none; transition: 0.2s;
+        }
+        input[type="text"]:focus { border-color: var(--primary); }
+        .correct { background: #dcfce7 !important; border-color: var(--success) !important; color: var(--success); }
+        .wrong { background: #fee2e2 !important; border-color: var(--error) !important; color: var(--error); }
+
+        /* Кнопки */
+        .btn {
+            background: var(--primary); color: white; border: none; padding: 8px 16px;
+            border-radius: 6px; cursor: pointer; font-weight: 600; margin-left: 5px;
+        }
+        .btn:hover { background: #4338ca; }
+        
+        /* Підказки */
+        .btn-hint {
+            background: transparent; border: 1px solid var(--accent); color: var(--accent);
+            padding: 5px 12px; border-radius: 20px; cursor: pointer; font-size: 0.85em; margin-top: 15px;
+        }
+        .btn-hint:hover { background: #fffbeb; }
+        
+        .hint-content {
+            display: none; margin-top: 15px; padding: 15px; background: #fffbeb; 
+            border-left: 4px solid var(--accent); color: #92400e; border-radius: 0 8px 8px 0;
+            line-height: 1.5;
+        }
+
+        /* Лабораторія */
+        .lab-panel {
+            background: #1e293b; color: white; padding: 30px; border-radius: 15px; text-align: center; margin: 30px 0;
+        }
+        #visual-circle {
+            width: 80px; height: 80px; border: 4px solid #38bdf8; border-radius: 50%;
+            margin: 20px auto; display: flex; align-items: center; justify-content: center; 
+            color: #38bdf8; font-weight: bold; font-size: 1.2em;
+        }
+
+        /* ТЕСТ (СТИЛІ) */
+        .quiz-container {
+            display: none; background: #f0fdf4; padding: 25px; border-radius: 12px; border: 2px solid #86efac; margin-top: 20px;
+        }
+        .quiz-item { margin-bottom: 20px; border-bottom: 1px solid #bbf7d0; padding-bottom: 15px; }
+        .quiz-question { font-weight: bold; margin-bottom: 10px; font-size: 1.1em; }
+        .quiz-opt {
+            display: block; padding: 10px 15px; background: white; border: 1px solid #cbd5e1; margin: 5px 0; cursor: pointer; border-radius: 8px; transition: 0.2s;
+        }
+        .quiz-opt:hover { background: #f1f5f9; border-color: var(--primary); }
+        .quiz-opt.selected { background: #dbeafe; border-color: var(--primary); font-weight: bold; color: var(--primary); }
+        
+        /* Результати тесту */
+        .quiz-opt.correct-answer { background: #dcfce7; border-color: var(--success); color: var(--success); }
+        .quiz-opt.wrong-answer { background: #fee2e2; border-color: var(--error); color: var(--error); }
+        #quiz-score { text-align: center; font-size: 1.5em; font-weight: bold; margin-top: 20px; }
+
+        /* ПРАВА ПАНЕЛЬ (ДОШКА) */
+        .board-panel {
+            flex: 1; position: relative; background: #fff;
+            background-image: radial-gradient(#94a3b8 1px, transparent 1px); background-size: 20px 20px;
+            display: flex; flex-direction: column; border-left: 2px solid #cbd5e1;
+        }
+        .toolbar { padding: 10px; background: #f8fafc; display: flex; justify-content: center; gap: 10px; border-bottom: 1px solid #e2e8f0; }
+        .tool-btn { padding: 8px 15px; background: white; border: 1px solid #cbd5e1; cursor: pointer; border-radius: 6px; font-weight: 600; }
+        .tool-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+    </style>
+</head>
+<body>
+
+    <div class="content-panel">
+        <h1>🚀 МЕГА-УРОК: Відсотки та Геометрія</h1>
+        <p>Повний курс. Усі задачі. Тепер тест працює!</p>
+
+        <div class="section-title">📊 Розділ 1: Відсотки</div>
+
+        <div class="theory-box">
+            <h3>Шпаргалка:</h3>
+            <p>1. <strong>Знайти % від числа:</strong> Число × 0.відсоток</p>
+            <p>2. <strong>Знайти число за %:</strong> Число ÷ 0.відсоток</p>
+            <p>3. <strong>Відношення:</strong> (Частина ÷ Ціле) × 100%</p>
+        </div>
+
+        <div class="task-card">
+            <div class="task-title">1. Пропорція (Цукерки) <span class="badge">База</span></div>
+            <p>За 4 кг цукерок заплатили 240 грн. Скільки коштують 7 кг?</p>
+            <input type="text" id="t1"> грн <button class="btn" onclick="check('t1', 420)">ОК</button>
+            <button class="btn-hint" onclick="toggle('h1')">💡 Підказка</button>
+            <div id="h1" class="hint-content">240 грн поділи на 4 кг (ціна за 1 кг). Потім помнож на 7.</div>
+        </div>
+
+        <div class="task-card">
+            <div class="task-title">2. Знайди відсоток (№762) <span class="badge">Дроби</span></div>
+            <table>
+                <tr><td>1) 29,5% від 80</td><td><input type="text" id="t2a"> <button class="btn" onclick="check('t2a', 23.6)">OK</button></td></tr>
+                <tr><td>2) 45% від 3 1/9 (28/9)</td><td><input type="text" id="t2b"> <button class="btn" onclick="check('t2b', 1.4)">OK</button></td></tr>
+            </table>
+            <button class="btn-hint" onclick="toggle('h2')">💡 Підказка</button>
+            <div id="h2" class="hint-content">1) 80 × 0.295<br>2) (28/9) × (45/100) -> скорочуй 9 і 45, 20 і 28.</div>
+        </div>
+
+        <div class="task-card">
+            <div class="task-title">3. Кредит (№763) <span class="badge">Життя</span></div>
+            <p>Телевізор коштує 8400 грн. Перший внесок 30%. Скільки це грошей?</p>
+            <input type="text" id="t3"> грн <button class="btn" onclick="check('t3', 2520)">ОК</button>
+            <button class="btn-hint" onclick="toggle('h3')">💡 Підказка</button>
+            <div id="h3" class="hint-content">8400 × 0.30</div>
+        </div>
+
+        <div class="task-card">
+            <div class="task-title">4. Баскетбол (№736) <span class="badge">Відношення</span></div>
+            <p>32 влучення, 4 промахи. Який відсоток влучень від <strong>усіх</strong> кидків? (округли до десятих: напр. 88.9)</p>
+            <input type="text" id="t4"> % <button class="btn" onclick="check('t4', 88.9)">ОК</button>
+            <button class="btn-hint" onclick="toggle('h4')">💡 Підказка</button>
+            <div id="h4" class="hint-content">Всього кидків: 32+4=36.<br>Частка: 32 ÷ 36.<br>Відсоток: (32 ÷ 36) × 100.</div>
+        </div>
+
+        <div class="task-card">
+            <div class="task-title">5. Маршрут (№737) <span class="badge">Збільшення</span></div>
+            <p>Маршрут 15 км. Став довшим на 16%. Яка нова довжина?</p>
+            <input type="text" id="t5"> км <button class="btn" onclick="check('t5', 17.4)">ОК</button>
+            <button class="btn-hint" onclick="toggle('h5')">💡 Підказка</button>
+            <div id="h5" class="hint-content">15 × 1.16</div>
+        </div>
+
+        <div class="task-card">
+            <div class="task-title">6. Розпродаж <span class="badge">Знижка</span></div>
+            <p>Куртка 2500 грн. Знижка 20%. Нова ціна?</p>
+            <input type="text" id="t6"> грн <button class="btn" onclick="check('t6', 2000)">ОК</button>
+        </div>
+
+        <div class="task-card" style="border-left: 5px solid #ef4444;">
+            <div class="task-title">7. Стрибки ціни <span class="badge badge-hard">Увага!</span></div>
+            <p>Ціна 1000 грн. Спочатку +10%, потім -10%. Яка фінальна ціна?</p>
+            <input type="text" id="t7"> грн <button class="btn" onclick="check('t7', 990)">ОК</button>
+            <button class="btn-hint" onclick="toggle('h7')">💡 Чому не 1000?</button>
+            <div id="h7" class="hint-content">
+                1) 1000 + 10% = 1100.<br>
+                2) Тепер віднімаємо 10% ВІД 1100 (це 110 грн).<br>
+                3) 1100 - 110 = 990.
+            </div>
+        </div>
+
+        <div class="task-card" style="border-left: 5px solid #ef4444;">
+            <div class="task-title">8. Задача про Гриби (№782) <span class="badge badge-hard">Хардкор</span></div>
+            <p>Свіжі гриби: 90% води. Сушені: 70% води. Скільки сушених вийде з 12 кг свіжих?</p>
+            <input type="text" id="t8"> кг <button class="btn" onclick="check('t8', 4)">ОК</button>
+            <button class="btn-hint" onclick="toggle('h8')">💡 Пояснення</button>
+            <div id="h8" class="hint-content">
+                1) Суха маса у свіжих: 10% від 12 кг = 1.2 кг.<br>
+                2) У сушених грибах ця маса (1.2 кг) складає 30% (бо 70% вода).<br>
+                3) Шукаємо ціле за 30%: 1.2 ÷ 0.3 = 4.
+            </div>
+        </div>
+
+        <div class="task-card" style="border-left: 5px solid #ef4444;">
+            <div class="task-title">9. Абрикоси та Курага <span class="badge badge-hard">Аналог</span></div>
+            <p>Скільки треба свіжих абрикосів (80% води), щоб отримати 1 кг кураги (20% води)?</p>
+            <input type="text" id="t9"> кг <button class="btn" onclick="check('t9', 4)">ОК</button>
+            <button class="btn-hint" onclick="toggle('h9')">💡 Підказка</button>
+            <div id="h9" class="hint-content">
+                У 1 кг кураги сухої речовини 80% (0.8 кг).<br>
+                Ці 0.8 кг у свіжих складають 20% (100-80).<br>
+                0.8 ÷ 0.2 = 4.
+            </div>
+        </div>
+
+        <div class="section-title">⭕ Розділ 2: Геометрія Кола</div>
+
+        <div class="theory-box">
+            <h3>§23. Основні поняття</h3>
+            <p><strong>Коло</strong> — лінія. <strong>Круг</strong> — площина всередині.</p>
+            <p><strong>Радіус (r)</strong> — від центру до краю.</p>
+            <p><strong>Діаметр (d)</strong> — від краю до краю через центр.</p>
+            <div class="formula">d = 2 × r</div>
+        </div>
+
+        <div class="lab-panel">
+            <h3>🎛️ Лабораторія</h3>
+            <input type="range" id="slider" min="1" max="50" value="10" style="width: 80%;">
+            <div id="visual-circle">r</div>
+            <div style="margin-top: 20px; font-size: 1.2em;">
+                r = <span id="val-r" style="color:#38bdf8">10</span>, &nbsp;
+                d = <span id="val-d" style="color:#38bdf8">20</span>
+            </div>
+        </div>
+
+        <div class="task-card">
+            <div class="task-title">10. Радіус і Діаметр (№794, 795) <span class="badge">Бліц</span></div>
+            <table>
+                <tr><td>r = 7 см, d = ?</td><td><input type="text" id="t10a"> <button class="btn" onclick="check('t10a', 14)">OK</button></td></tr>
+                <tr><td>r = 3.7 см, d = ?</td><td><input type="text" id="t10b"> <button class="btn" onclick="check('t10b', 7.4)">OK</button></td></tr>
+                <tr><td>r = 7.1 дм, d = ?</td><td><input type="text" id="t10c"> <button class="btn" onclick="check('t10c', 14.2)">OK</button></td></tr>
+                <tr><td>r = 4 1/8 дм (4.125), d = ?</td><td><input type="text" id="t10d"> <button class="btn" onclick="check('t10d', 8.25)">OK</button></td></tr>
+                <tr><td colspan="2"><hr></td></tr>
+                <tr><td>d = 12 см, r = ?</td><td><input type="text" id="t10e"> <button class="btn" onclick="check('t10e', 6)">OK</button></td></tr>
+                <tr><td>d = 4.6 см, r = ?</td><td><input type="text" id="t10f"> <button class="btn" onclick="check('t10f', 2.3)">OK</button></td></tr>
+                <tr><td>d = 5.7 дм, r = ?</td><td><input type="text" id="t10g"> <button class="btn" onclick="check('t10g', 2.85)">OK</button></td></tr>
+                <tr><td>d = 4 1/2 дм (4.5), r = ?</td><td><input type="text" id="t10h"> <button class="btn" onclick="check('t10h', 2.25)">OK</button></td></tr>
+            </table>
+        </div>
+
+        <div class="section-title">📏 Розділ 3: Довжина кола (C)</div>
+
+        <div class="theory-box">
+            <h3>Формула довжини</h3>
+            <p>Число <strong>π ≈ 3.14</strong> (або 22/7).</p>
+            <div class="formula">C = π × d &nbsp;&nbsp; або &nbsp;&nbsp; C = 2 × π × r</div>
+        </div>
+
+        <div class="task-card">
+            <div class="task-title">11. Обчисли довжину (№801)</div>
+            <p><em>Для другого прикладу використай π = 22/7!</em></p>
+            <table>
+                <tr><td>d = 4 см (π=3.14)</td><td><input type="text" id="t11a"> <button class="btn" onclick="check('t11a', 12.56)">OK</button></td></tr>
+                <tr><td>d = 2 5/22 дм (дріб 49/22)</td><td><input type="text" id="t11b"> <button class="btn" onclick="check('t11b', 7)">OK</button></td></tr>
+                <tr><td>d = 3.8 см</td><td><input type="text" id="t11c"> <button class="btn" onclick="check('t11c', 11.932)">OK</button></td></tr>
+                <tr><td colspan="2"><hr></td></tr>
+                <tr><td>r = 6 см (d=12)</td><td><input type="text" id="t11d"> <button class="btn" onclick="check('t11d', 37.68)">OK</button></td></tr>
+                <tr><td>r = 1.5 дм (d=3)</td><td><input type="text" id="t11e"> <button class="btn" onclick="check('t11e', 9.42)">OK</button></td></tr>
+                <tr><td>r = 4.2 см (d=8.4)</td><td><input type="text" id="t11f"> <button class="btn" onclick="check('t11f', 26.376)">OK</button></td></tr>
+            </table>
+            <button class="btn-hint" onclick="toggle('h11')">💡 Підказка</button>
+            <div id="h11" class="hint-content">
+                2) (22/7) × (49/22) — 22 скорочується, 49/7 = 7.<br>
+            </div>
+        </div>
+
+        <div class="task-card">
+            <div class="task-title">12. Спортсменка (№802)</div>
+            <p>8 кіл діаметром 10 м. Дистанція?</p>
+            <input type="text" id="t12"> м <button class="btn" onclick="check('t12', 251.2)">OK</button>
+            <button class="btn-hint" onclick="toggle('h12')">💡 Підказка</button>
+            <div id="h12" class="hint-content">(3.14 × 10) × 8</div>
+        </div>
+
+        <div class="task-card">
+            <div class="task-title">13. Велосипедист (№803)</div>
+            <p>4 кола <strong>радіуса</strong> 20 м. Дистанція? (Округлити до цілих)</p>
+            <input type="text" id="t13"> м <button class="btn" onclick="check('t13', 502)">OK</button>
+            <button class="btn-hint" onclick="toggle('h13')">💡 Підказка</button>
+            <div id="h13" class="hint-content">d = 40. C = 3.14 × 40 = 125.6. × 4 = 502.4 -> 502.</div>
+        </div>
+
+        <div class="section-title">🟢 Розділ 4: Площа Круга (S)</div>
+
+        <div class="theory-box">
+            <h3>Формула площі</h3>
+            <div class="formula">S = π × r²</div>
+        </div>
+
+        <div class="task-card">
+            <div class="task-title">14. Обчисли площу (№823, 824)</div>
+            <table>
+                <tr><td>r = 10 м</td><td><input type="text" id="t14a"> <button class="btn" onclick="check('t14a', 314)">OK</button></td></tr>
+                <tr><td>r = 1.2 дм</td><td><input type="text" id="t14b"> <button class="btn" onclick="check('t14b', 4.5216)">OK</button></td></tr>
+                <tr><td>d = 2 дм (r=1)</td><td><input type="text" id="t14c"> <button class="btn" onclick="check('t14c', 3.14)">OK</button></td></tr>
+                <tr><td>d = 3.6 см (r=1.8)</td><td><input type="text" id="t14d"> <button class="btn" onclick="check('t14d', 10.1736)">OK</button></td></tr>
+            </table>
+        </div>
+
+        <div class="task-card">
+            <div class="task-title">15. Площа Кільця ("Бублик")</div>
+            <p>Радіус великий R = 5 см, радіус малий r = 3 см. Знайди площу кільця.</p>
+            <input type="text" id="t15"> см² <button class="btn" onclick="check('t15', 50.24)">OK</button>
+            <button class="btn-hint" onclick="toggle('h15')">💡 Підказка</button>
+            <div id="h15" class="hint-content">
+                S кільця = S велика - S мала.<br>
+                (3.14 × 25) - (3.14 × 9).
+            </div>
+        </div>
+
+        <div class="section-title">🍕 Розділ 5: Сектори</div>
+
+        <div class="theory-box">
+            <h3>Сектор</h3>
+            <p>Це частина круга. Повний круг = <strong>360°</strong>.</p>
+        </div>
+
+        <div class="task-card">
+            <div class="task-title">16. Кути (№828)</div>
+            <p>4 сектори. Три відомі: 70°, 80°, 100°. Знайди 4-й.</p>
+            <input type="text" id="t16"> ° <button class="btn" onclick="check('t16', 110)">OK</button>
+        </div>
+
+        <div class="task-card">
+            <div class="task-title">17. Частини круга (№829)</div>
+            <p>Знайди градусну міру:</p>
+            <table>
+                <tr><td>1/3 круга</td><td><input type="text" id="t17a"> <button class="btn" onclick="check('t17a', 120)">OK</button></td></tr>
+                <tr><td>2/5 круга</td><td><input type="text" id="t17b"> <button class="btn" onclick="check('t17b', 144)">OK</button></td></tr>
+                <tr><td>7/12 круга</td><td><input type="text" id="t17c"> <button class="btn" onclick="check('t17c', 210)">OK</button></td></tr>
+                <tr><td>5% круга</td><td><input type="text" id="t17d"> <button class="btn" onclick="check('t17d', 18)">OK</button></td></tr>
+                <tr><td>10% круга</td><td><input type="text" id="t17e"> <button class="btn" onclick="check('t17e', 36)">OK</button></td></tr>
+                <tr><td>50% круга</td><td><input type="text" id="t17f"> <button class="btn" onclick="check('t17f', 180)">OK</button></td></tr>
+            </table>
+            <button class="btn-hint" onclick="toggle('h17')">💡 Підказка</button>
+            <div id="h17" class="hint-content">
+                1) 360 ÷ 3.<br>
+                2) (360 ÷ 5) × 2.<br>
+                4) 360 × 0.05.
+            </div>
+        </div>
+
+        <div class="task-card">
+            <div class="task-title">18. Аліса (Площа сектора)</div>
+            <p>Радіус 6 см. Сектор 90°. Площа?</p>
+            <input type="text" id="t18"> см² <button class="btn" onclick="check('t18', 28.26)">OK</button>
+            <button class="btn-hint" onclick="toggle('h18')">💡 Підказка</button>
+            <div id="h18" class="hint-content">90° це 1/4 кола. S = (3.14 × 6²) ÷ 4.</div>
+        </div>
+
+        <div class="section-title">🏆 Фінал: Тест</div>
+        <p>Натисни кнопку, щоб відкрити тест. (6 питань)</p>
+        
+        <button class="btn" id="start-btn" style="width:100%; padding:20px; font-size:1.2em;" onclick="startQuiz()">ПОЧАТИ ТЕСТ</button>
+
+        <div id="quiz-container" class="quiz-container">
+            <div id="quiz-body"></div>
+            <button class="btn" style="width:100%; margin-top:20px;" onclick="finishQuiz()">Завершити і отримати оцінку</button>
+            <div id="quiz-result"></div>
+        </div>
+
+        <div style="height: 100px;"></div>
+    </div>
+
+    <div class="board-panel">
+        <div class="toolbar">
+            <button class="tool-btn active" id="btn-draw" onclick="setMode('draw')">✏️</button>
+            <button class="tool-btn" id="btn-erase" onclick="setMode('erase')">🧽</button>
+            <button class="tool-btn" onclick="clearBoard()">🗑️</button>
+        </div>
+        <canvas id="board"></canvas>
+    </div>
+
+    <script>
+        function check(id, correct) {
+            const el = document.getElementById(id);
+            let val = parseFloat(el.value.replace(',', '.'));
+            if(Math.abs(val - correct) < 0.1) {
+                el.classList.add('correct'); el.classList.remove('wrong');
+            } else {
+                el.classList.add('wrong'); el.classList.remove('correct');
+            }
+        }
+        
+        function toggle(id) {
+            const el = document.getElementById(id);
+            el.style.display = el.style.display === 'block' ? 'none' : 'block';
+        }
+
+        // Лабораторія
+        document.getElementById('slider').addEventListener('input', (e) => {
+            const r = parseInt(e.target.value);
+            document.getElementById('val-r').innerText = r;
+            document.getElementById('val-d').innerText = r * 2;
+            const viz = document.getElementById('visual-circle');
+            viz.style.width = (r * 3) + 'px';
+            viz.style.height = (r * 3) + 'px';
+        });
+
+        // Дошка
+        const canvas = document.getElementById('board');
+        const ctx = canvas.getContext('2d');
+        let painting = false, mode = 'draw';
+
+        function resize() {
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight - 60;
+            ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.lineWidth = 3;
+        }
+        window.addEventListener('resize', resize);
+        setTimeout(resize, 100);
+
+        function start(e) { painting = true; draw(e); }
+        function end() { painting = false; ctx.beginPath(); }
+        function draw(e) {
+            if(!painting) return;
+            const rect = canvas.getBoundingClientRect();
+            const x = (e.clientX || e.touches[0].clientX) - rect.left;
+            const y = (e.clientY || e.touches[0].clientY) - rect.top;
+            
+            if(mode === 'erase') {
+                ctx.globalCompositeOperation = 'destination-out'; ctx.lineWidth = 25;
+            } else {
+                ctx.globalCompositeOperation = 'source-over'; ctx.lineWidth = 3; ctx.strokeStyle = '#1e293b';
+            }
+            ctx.lineTo(x, y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x, y);
+        }
+
+        canvas.addEventListener('mousedown', start);
+        canvas.addEventListener('mouseup', end);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('touchstart', (e)=>{e.preventDefault(); start(e)});
+        canvas.addEventListener('touchend', end);
+        canvas.addEventListener('touchmove', (e)=>{e.preventDefault(); draw(e)});
+
+        function setMode(m) {
+            mode = m;
+            document.getElementById('btn-draw').classList.toggle('active', m==='draw');
+            document.getElementById('btn-erase').classList.toggle('active', m==='erase');
+        }
+        function clearBoard() { ctx.clearRect(0,0,canvas.width,canvas.height); }
+
+        // --- ЛОГІКА ТЕСТУ ---
+        const questions = [
+            { q: "1. Чому дорівнює число π?", a: ["3.14", "2.14", "4.12"], c: 0 },
+            { q: "2. Формула довжини кола (C):", a: ["πr²", "2πr", "πr"], c: 1 },
+            { q: "3. Формула площі круга (S):", a: ["πd", "2πr", "πr²"], c: 2 },
+            { q: "4. Якщо радіус = 5 см, то діаметр:", a: ["2.5 см", "10 см", "25 см"], c: 1 },
+            { q: "5. Повний кут круга складає:", a: ["180°", "360°", "90°"], c: 1 },
+            { q: "6. Щоб знайти число за його %, треба:", a: ["Поділити на 0.p", "Помножити на 0.p", "Додати 100"], c: 0 }
+        ];
+        
+        const userAnswers = new Array(6).fill(null);
+
+        function startQuiz() {
+            document.getElementById('start-btn').style.display = 'none';
+            const container = document.getElementById('quiz-container');
+            container.style.display = 'block';
+            
+            const body = document.getElementById('quiz-body');
+            body.innerHTML = '';
+            
+            questions.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.style.marginBottom = '20px';
+                div.style.borderBottom = '1px solid #eee';
+                div.style.paddingBottom = '10px';
+                div.innerHTML = `<strong>${index+1}. ${item.q}</strong>`;
+                
+                item.a.forEach((optText, optIndex) => {
+                    const opt = document.createElement('div');
+                    opt.innerText = optText;
+                    opt.style.padding = '10px';
+                    opt.style.margin = '5px 0';
+                    opt.style.border = '1px solid #ddd';
+                    opt.style.borderRadius = '5px';
+                    opt.style.cursor = 'pointer';
+                    
+                    opt.onclick = function() {
+                        userAnswers[index] = optIndex;
+                        // Скидання кольорів
+                        Array.from(div.children).forEach(child => {
+                            if(child.tagName === 'DIV') child.style.background = 'white';
+                        });
+                        opt.style.background = '#dbeafe'; // Виділення
+                    };
+                    
+                    div.appendChild(opt);
+                });
+                body.appendChild(div);
+            });
+        }
+
+        function finishQuiz() {
+            let score = 0;
+            userAnswers.forEach((ans, i) => {
+                if (ans === questions[i].c) score++;
+            });
+            const res = document.getElementById('quiz-result');
+            res.innerHTML = `<h3>Твій результат: ${score} з 6</h3>`;
+            res.style.color = score >= 4 ? 'green' : 'red';
+        }
+    </script>
+</body>
+</html>
