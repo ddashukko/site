@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Інтерактивний урок: Степені (Поглиблений)</title>
+    
+    <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      },
+      startup: {
+        ready: () => {
+          MathJax.startup.defaultReady();
+        }
+      }
+    };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-light: #e0e7ff;
+            --secondary: #0ea5e9;
+            --accent: #f59e0b; /* Колір шпаргалки */
+            --success: #10b981;
+            --error: #ef4444;
+            --bg-left: #f8fafc;
+            --bg-right: #ffffff;
+            --text: #1f2937;
+            --border: #e2e8f0;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: var(--text); overflow: hidden; height: 100vh; }
+
+        #app { display: flex; height: 100vh; width: 100vw; }
+
+        /* --- ЛІВА ПАНЕЛЬ (КОНТЕНТ) --- */
+        #content-panel {
+            flex: 1;
+            background: var(--bg-left);
+            overflow-y: auto;
+            padding: 20px 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            border-right: 2px solid var(--border);
+        }
+
+        /* --- ПРАВА ПАНЕЛЬ (ДОШКА) --- */
+        #whiteboard-panel {
+            flex: 1;
+            background: var(--bg-right);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        canvas {
+            flex: 1;
+            cursor: crosshair;
+            touch-action: none;
+            /* ВІЧНА КЛІТИНКА ЧЕРЕЗ CSS */
+            background-color: #ffffff;
+            background-image: 
+                linear-gradient(#e5e7eb 1px, transparent 1px),
+                linear-gradient(90deg, #e5e7eb 1px, transparent 1px);
+            background-size: 20px 20px;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Адаптивність */
+        @media (max-width: 850px) {
+            #app { flex-direction: column; }
+            #content-panel { width: 100%; height: 100%; padding: 15px; padding-bottom: 90px; }
+            #whiteboard-panel { 
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+                z-index: 100; transform: translateY(100%); transition: transform 0.3s ease;
+            }
+            #whiteboard-panel.active { transform: translateY(0); }
+            #mobile-toggle { display: flex !important; }
+        }
+
+        /* Текст */
+        h1 { font-size: 1.8rem; color: var(--primary); margin-bottom: 5px; }
+        h2 { 
+            font-size: 1.4rem; color: #334155; margin-bottom: 15px; margin-top: 30px;
+            border-left: 5px solid var(--secondary); padding-left: 10px; 
+        }
+        h3 { font-size: 1.1rem; color: #475569; margin: 15px 0 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+        p { line-height: 1.6; margin-bottom: 10px; color: #374151; }
+        ul, ol { margin-left: 20px; margin-bottom: 15px; line-height: 1.6; }
+        li { margin-bottom: 5px; }
+
+        /* Посилання */
+        .external-link {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 15px;
+            background: white;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+        .external-link:hover { background: var(--primary-light); }
+
+        /* ШПАРГАЛКА */
+        .cheatsheet {
+            background: #fff;
+            border: 2px solid var(--accent);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(245, 158, 11, 0.15);
+            margin-bottom: 10px;
+        }
+        .cheatsheet summary {
+            background: #fffbeb; 
+            padding: 15px;
+            font-weight: bold;
+            color: #92400e;
+            cursor: pointer;
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .cheatsheet summary:hover { background: #fcd34d; }
+        .cheatsheet summary::after { content: '👁️ Відкрити'; font-size: 0.9em; opacity: 0.8; }
+        .cheatsheet[open] summary::after { content: '❌ Закрити'; }
+        
+        .cheatsheet-content { 
+            padding: 20px; 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); 
+            gap: 20px; 
+            font-size: 0.9rem;
+            background: white;
+            border-top: 1px solid var(--accent);
+        }
+        .cs-col strong { display: block; margin-bottom: 8px; color: var(--text); border-bottom: 2px solid #eee; padding-bottom: 5px; }
+        .cs-item { display: flex; justify-content: space-between; margin-bottom: 4px; padding: 2px 0; border-bottom: 1px dotted #eee; }
+
+        /* Блоки теорії */
+        .theory-block {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
+            margin-bottom: 15px;
+        }
+        .important-note {
+            background: #eff6ff;
+            border-left: 4px solid var(--primary);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.95rem;
+        }
+        .warning-note {
+            background: #fef2f2;
+            border-left: 4px solid var(--error);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+            color: #991b1b;
+        }
+
+        /* Завдання */
+        .task-group {
+            background: #f1f5f9;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e2e8f0;
+        }
+        .task-group-title {
+            font-weight: bold; color: #64748b; margin-bottom: 15px; display: flex; align-items: center; gap: 8px;
+        }
+        .task-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+        }
+        .task-card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+        }
+        .input-row { display: flex; align-items: center; gap: 10px; margin: 15px 0; }
+        input[type="text"] {
+            padding: 8px; border: 2px solid var(--border); border-radius: 6px;
+            width: 80px; text-align: center; font-size: 1.1rem; outline: none;
+        }
+        input[type="text"]:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
+        
+        button {
+            padding: 8px 16px; background: var(--primary); color: white; border: none; border-radius: 6px;
+            cursor: pointer; font-weight: 600; transition: background 0.2s;
+        }
+        button:hover { background: #4338ca; }
+        .btn-tool { background: transparent; color: #64748b; font-size: 0.85rem; padding: 4px 8px; border: 1px solid #cbd5e1; }
+        .btn-tool:hover { background: #f8fafc; color: var(--primary); border-color: var(--primary); }
+        
+        /* Feedback styles */
+        .correct-input { border-color: var(--success) !important; background: #ecfdf5; color: var(--success); font-weight: bold; }
+        .wrong-input { border-color: var(--error) !important; background: #fef2f2; }
+
+        /* Панель інструментів */
+        #toolbar {
+            padding: 10px 15px; background: #f8fafc; border-bottom: 1px solid var(--border);
+            display: flex; gap: 8px; align-items: center; flex-wrap: wrap; z-index: 10;
+        }
+        .tool-icon {
+            width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; border: 1px solid #cbd5e1; background: white; transition: 0.2s; font-size: 1.3rem;
+        }
+        .tool-icon:hover { background: #e2e8f0; }
+        .tool-icon.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+        #mobile-toggle {
+            display: none; position: fixed; bottom: 20px; right: 20px;
+            width: 60px; height: 60px; border-radius: 50%; background: var(--primary);
+            color: white; justify-content: center; align-items: center; font-size: 28px;
+            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4); z-index: 200; cursor: pointer;
+        }
+        
+        #final-score { display: none; margin-top: 30px; padding: 30px; background: #ecfdf5; border: 2px solid var(--success); border-radius: 12px; text-align: center; }
+        .quiz-option { padding: 12px; border: 1px solid #ddd; margin-bottom: 8px; cursor: pointer; border-radius: 6px; transition: 0.2s; }
+        .quiz-option:hover { background: #f1f5f9; }
+        .quiz-option.selected { background: var(--primary); color: white; border-color: var(--primary); }
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <div id="content-panel">
+        <header>
+            <h1>⚡ Степені: Повний курс</h1>
+            <p>Тема: Властивості, дії, від'ємний степінь. (7-8 клас)</p>
+            <a href="https://mathema.me/testy/alhebra/klas-7/vlastivosti-stepenya-z-naturalnim-pokaznikom/" target="_blank" class="external-link">👉 Пройти тести на Mathema.me</a>
+        </header>
+
+        <details class="cheatsheet">
+            <summary>📐 ШПАРГАЛКА (Натисни тут)</summary>
+            <div class="cheatsheet-content">
+                <div class="cs-col">
+                    <strong>Степені 2</strong>
+                    <div class="cs-item"><span>2¹</span><span>2</span></div>
+                    <div class="cs-item"><span>2²</span><span>4</span></div>
+                    <div class="cs-item"><span>2³</span><span>8</span></div>
+                    <div class="cs-item"><span>2⁴</span><span>16</span></div>
+                    <div class="cs-item"><span>2⁵</span><span>32</span></div>
+                    <div class="cs-item"><span>2⁶</span><span>64</span></div>
+                    <div class="cs-item"><span>2⁷</span><span>128</span></div>
+                    <div class="cs-item"><span>2⁸</span><span>256</span></div>
+                    <div class="cs-item"><span>2¹⁰</span><span>1024</span></div>
+                </div>
+                <div class="cs-col">
+                    <strong>Квадрати</strong>
+                    <div class="cs-item"><span>11²</span><span>121</span></div>
+                    <div class="cs-item"><span>12²</span><span>144</span></div>
+                    <div class="cs-item"><span>13²</span><span>169</span></div>
+                    <div class="cs-item"><span>14²</span><span>196</span></div>
+                    <div class="cs-item"><span>15²</span><span>225</span></div>
+                    <div class="cs-item"><span>20²</span><span>400</span></div>
+                </div>
+                <div class="cs-col">
+                    <strong>Формули</strong>
+                    <div class="cs-item"><span>$a^n \cdot a^m$</span><span>$a^{n+m}$</span></div>
+                    <div class="cs-item"><span>$a^n : a^m$</span><span>$a^{n-m}$</span></div>
+                    <div class="cs-item"><span>$(a^n)^m$</span><span>$a^{n \cdot m}$</span></div>
+                    <div class="cs-item"><span>$a^0$</span><span>1</span></div>
+                    <div class="cs-item"><span>$a^{-n}$</span><span>$\frac{1}{a^n}$</span></div>
+                </div>
+            </div>
+        </details>
+
+        <section>
+            <h2>0. Розминка: Базові навички</h2>
+            <div class="theory-block">
+                <p>Перед роботою зі степенями перевір себе на діях з дробами та пропорціями. Це важливо!</p>
+            </div>
+            
+            <div class="task-group">
+                <div class="task-group-title">🍕 Дії з дробами (Складно!)</div>
+                <div id="tasks-warmup-fractions" class="task-container"></div>
+            </div>
+
+            <div class="task-group">
+                <div class="task-group-title">⚖️ Пропорції (Знайди X)</div>
+                <div id="tasks-warmup-proportions" class="task-container"></div>
+            </div>
+        </section>
+
+        <section>
+            <h2>1. Анатомія степеня</h2>
+            <div class="theory-block">
+                <p><strong>$a^n$</strong> читається як "$a$ в степені $n$".</p>
+                <ul>
+                    <li><strong>$a$ (основа)</strong> — число, яке ми множимо саме на себе.</li>
+                    <li><strong>$n$ (показник)</strong> — маленьке число зверху, показує КІЛЬКІСТЬ множників.</li>
+                </ul>
+                <div class="important-note">
+                    📌 <strong>Приклад:</strong> $5^3$ — це не $5 \cdot 3 = 15$.<br>
+                    Це $5 \cdot 5 \cdot 5 = 125$.
+                </div>
+            </div>
+
+            <div class="theory-block">
+                <h3>⚠️ Типова помилка! (Знак мінус)</h3>
+                <p>Це найважливіший момент уроку. Дивись уважно:</p>
+                <ul>
+                    <li><strong>$(-3)^2$</strong> — мінус у дужках. Він теж підноситься до квадрату.<br>
+                        $(-3) \cdot (-3) = 9$. Результат додатний.</li>
+                    <li><strong>$-3^2$</strong> — мінус стоїть окремо. Степінь стосується тільки трійки.<br>
+                        $-(3 \cdot 3) = -9$. Результат від'ємний.</li>
+                </ul>
+                <div class="warning-note">
+                    Парний степінь "з'їдає" мінус тільки якщо він у дужках!
+                </div>
+            </div>
+            
+            <div class="task-group">
+                <div class="task-group-title">🔹 Завдання: Обчислення</div>
+                <div id="tasks-group-2" class="task-container"></div>
+            </div>
+        </section>
+
+        <section>
+            <h2>2. Властивості (Правила гри)</h2>
+            <div class="theory-block">
+                <p>Уяви, що степені — це "лічильники" однакових множників.</p>
+                <ul>
+                    <li>
+                        <strong>Множення ($a^n \cdot a^m = a^{n+m}$):</strong><br>
+                        Було 2 трійки ($3^2$), примножили ще 4 трійки ($3^4$). Разом стало 6 трійок ($3^6$).<br>
+                        <em>Правило: При множенні однакових основ показники додаються.</em>
+                    </li>
+                    <li>
+                        <strong>Ділення ($a^n : a^m = a^{n-m}$):</strong><br>
+                        Множники скорочуються, тому ми віднімаємо їх кількість.<br>
+                        <em>Правило: При діленні показники віднімаються.</em>
+                    </li>
+                    <li>
+                        <strong>Степінь до степеня ($(a^n)^m = a^{n \cdot m}$):</strong><br>
+                        Це як пакети в коробках. Показники перемножуються.
+                    </li>
+                </ul>
+                <div class="important-note">
+                    📌 <strong>Степінь добутку:</strong> $(ab)^n = a^n \cdot b^n$.<br>
+                    Кожен множник отримує "свій" степінь.
+                </div>
+            </div>
+
+            <div class="task-group">
+                <div class="task-group-title">⚙️ Знайди показник степеня X</div>
+                <div id="tasks-prop-mult" class="task-container"></div>
+            </div>
+            
+            <div class="task-group">
+                <div class="task-group-title">⚙️ Складніші вирази</div>
+                <div id="tasks-prop-div" class="task-container"></div>
+            </div>
+        </section>
+
+        <section>
+            <h2>3. Нульовий та Від'ємний степінь</h2>
+            <div class="theory-block">
+                <p>Тут математика стає красивою:</p>
+                <ol>
+                    <li><strong>$a^0 = 1$</strong> (якщо $a \neq 0$). Чому? Бо якщо поділити число саме на себе ($5^2 : 5^2$), то за правилом віднімання отримаємо $5^0$, а за логікою ділення — 1.</li>
+                    <li><strong>$a^{-n} = \frac{1}{a^n}$</strong>. Мінус у показнику — це команда "перевернути" число (зробити оберненим).</li>
+                </ol>
+                <div class="warning-note">
+                    Приклад: $2^{-3} = \frac{1}{2^3} = \frac{1}{8}$. Це НЕ від'ємне число! Це просто маленьке дробове число.
+                </div>
+            </div>
+
+            <div class="task-group">
+                <div class="task-group-title">🔄 Завдання на від'ємний степінь</div>
+                <div id="tasks-neg" class="task-container"></div>
+            </div>
+        </section>
+
+        <section>
+            <h2>🎓 Фінальний тест</h2>
+            <div class="theory-block" style="background: #f0fdf4; border-color: var(--success);">
+                <div id="quiz-container"></div>
+            </div>
+            <button id="finish-btn" style="width: 100%; margin-top: 20px; padding: 15px; font-size: 1.1rem; box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);">
+                ✅ Завершити урок
+            </button>
+        </section>
+
+        <div id="final-score"></div>
+    </div>
+
+    <div id="whiteboard-panel">
+        <div id="toolbar">
+            <div class="tool-icon active" onclick="setTool('pen')" title="Ручка">✏️</div>
+            <div class="tool-icon" onclick="setTool('eraser')" title="Гумка (не стирає клітинки)">🧹</div>
+            <div class="tool-icon" onclick="clearDrawings()" title="Очистити все">🗑️</div>
+            <input type="color" id="colorPicker" value="#000000" onchange="setColor(this.value)" style="height: 30px; width: 30px; border: none; cursor: pointer;">
+            
+            <button class="btn-tool" id="close-wb-mobile" onclick="toggleMobileWB()" style="margin-left: auto; display: none;">Закрити</button>
+        </div>
+        <canvas id="whiteboard"></canvas>
+    </div>
+
+    <div id="mobile-toggle" onclick="toggleMobileWB()">🎨</div>
+</div>
+
+<script>
+    // --- НОВІ ЗАВДАННЯ (РОЗМИНКА) ---
+    // Увага: В JS рядках для LaTeX використовуємо подвійний слеш (\\)
+    const tasksFractions = [
+        { 
+            q: "\\left(2\\frac{1}{4} + 3\\frac{2}{3}\\right) : \\frac{71}{12}", 
+            a: "1", 
+            h: "Переведи мішані числа в неправильні дроби. (9/4 і 11/3)", 
+            s: "(\\frac{27}{12} + \\frac{44}{12}) : \\frac{71}{12} = \\frac{71}{12} \\cdot \\frac{12}{71} = 1" 
+        },
+        { 
+            q: "\\frac{7}{9} \\cdot 1.8 - 0.4", 
+            a: "1", 
+            h: "1.8 це 18/10 або 9/5. Спочатку множення.", 
+            s: "\\frac{7}{9} \\cdot \\frac{9}{5} = \\frac{7}{5} = 1.4; 1.4 - 0.4 = 1" 
+        }
+    ];
+
+    const tasksProportions = [
+        { 
+            q: "\\frac{x}{1.2} = \\frac{5}{3}", 
+            a: "2", 
+            h: "Правило хреста: 3x = 1.2 \\cdot 5", 
+            s: "3x = 6 \\Rightarrow x = 2" 
+        },
+        { 
+            q: "\\frac{12}{x+1} = \\frac{3}{2}", 
+            a: "7", 
+            h: "Добуток крайніх дорівнює добутку середніх: 3(x+1) = 12 \\cdot 2", 
+            s: "3(x+1)=24 \\Rightarrow x+1=8 \\Rightarrow x=7" 
+        }
+    ];
+
+    // --- ДАНІ ОСНОВНИХ ЗАВДАНЬ ---
+    const tasksPowers2 = [
+        { q: "2^3", a: "8", h: "2 \\cdot 2 \\cdot 2", s: "8" },
+        { q: "5^2", a: "25", h: "5 \\cdot 5", s: "25" },
+        { q: "(-3)^2", a: "9", h: "(-3) \\cdot (-3)", s: "9 (мінус зникає)" },
+        { q: "-3^2", a: "-9", h: "-(3 \\cdot 3)", s: "-9 (мінус залишається!)" },
+        { q: "10^3", a: "1000", h: "1 з трьома нулями", s: "1000" },
+        { q: "4^2 + 3^2", a: "25", h: "16 + 9", s: "25" }
+    ];
+
+    const tasksPropMult = [];
+    for(let i=0; i<6; i++) {
+        let n = Math.floor(Math.random()*8)+2;
+        let m = Math.floor(Math.random()*8)+2;
+        tasksPropMult.push({
+            q: `x^{${n}} \\cdot x^{${m}} = x^?`, 
+            a: (n+m).toString(), 
+            h: `${n} + ${m}`, 
+            s: `x^{${n+m}}`
+        });
+    }
+
+    const tasksPropDiv = [
+        { q: "(a^3)^4 = a^?", a: "12", h: "3 \\cdot 4", s: "12" },
+        { q: "\\frac{y^{10}}{y^2} = y^?", a: "8", h: "10 - 2", s: "8" },
+        { q: "z^5 \\cdot z = z^?", a: "6", h: "z = z^1, тому 5+1", s: "6" },
+        { q: "(x^2)^3 \\cdot x^4 = x^?", a: "10", h: "2\\cdot3 + 4", s: "6+4=10" }
+    ];
+
+    const tasksNeg = [
+        { q: "3^{-1}", a: "1/3", h: "Обернене до 3", s: "1/3" }, 
+        { q: "2^{-2}", a: "0.25", h: "1/4", s: "0.25" },
+        { q: "5^0", a: "1", h: "Завжди 1", s: "1" },
+        { q: "10^{-1}", a: "0.1", h: "0.1", s: "0.1" }
+    ];
+
+    const quizData = [
+        { q: "Чому дорівнює $(-1)^{10}$?", opts: ["-1", "1", "10", "-10"], ans: 1 },
+        { q: "Спростіть $x^4 : x^4$", opts: ["x", "0", "1", "$x^8$"], ans: 2 },
+        { q: "Оберіть правильну рівність:", opts: ["$2^3 \\cdot 2^2 = 2^6$", "$(2^3)^2 = 2^5$", "$2^3 \\cdot 2^2 = 2^5$", "$2^{-1} = -2$"], ans: 2 },
+        { q: "Обчисліть $2^{-3}$", opts: ["-8", "-6", "0.125", "0.08"], ans: 2 } 
+    ];
+
+    // --- ЛОГІКА ІНТЕРФЕЙСУ ---
+
+    function renderTaskGroup(tasks, containerId, isAlgebra) {
+        const container = document.getElementById(containerId);
+        tasks.forEach((t, i) => {
+            const uid = containerId + '-' + i;
+            const label = isAlgebra ? "x =" : "=";
+            
+            const html = `
+                <div class="task-card">
+                    <div style="font-size:1.2rem; font-weight:bold; margin-bottom:5px;">$${t.q}$</div>
+                    <div class="input-row">
+                        <span>${label}</span>
+                        <input type="text" id="in-${uid}" placeholder="?" onkeydown="if(event.key==='Enter') check('${uid}', '${t.a}')">
+                        <button onclick="check('${uid}', '${t.a}')">OK</button>
+                        <span id="fb-${uid}" style="font-size:1.5rem; margin-left:10px;"></span>
+                    </div>
+                    <div style="margin-top:auto; display:flex; gap:10px;">
+                        <button class="btn-tool" onclick="toggle('hint-${uid}')">💡 Підказка</button>
+                        <button class="btn-tool" onclick="toggle('sol-${uid}')">👁️ Рішення</button>
+                    </div>
+                    <div id="hint-${uid}" style="display:none; color:#666; font-size:0.9rem; margin-top:10px; font-style:italic; border-top:1px solid #eee; padding-top:5px;">Підказка: $${t.h}$</div>
+                    <div id="sol-${uid}" style="display:none; color:var(--primary); font-size:0.9rem; margin-top:5px; font-weight:bold;">Відповідь: $${t.s}$</div>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', html);
+        });
+    }
+
+    function renderQuiz() {
+        const c = document.getElementById('quiz-container');
+        quizData.forEach((item, idx) => {
+            let optsHtml = '';
+            item.opts.forEach((opt, oIdx) => {
+                optsHtml += `<div class="quiz-option" onclick="selectOpt(${idx}, ${oIdx}, this)">${opt}</div>`;
+            });
+            c.innerHTML += `<div style="margin-bottom:25px"><p><strong>${idx+1}. ${item.q}</strong></p>${optsHtml}</div>`;
+        });
+    }
+
+    // РЕНДЕРИНГ ЗАВДАНЬ (В тому числі нових)
+    renderTaskGroup(tasksFractions, 'tasks-warmup-fractions', false);
+    renderTaskGroup(tasksProportions, 'tasks-warmup-proportions', true);
+    
+    renderTaskGroup(tasksPowers2, 'tasks-group-2', false);
+    renderTaskGroup(tasksPropMult, 'tasks-prop-mult', true);
+    renderTaskGroup(tasksPropDiv, 'tasks-prop-div', true);
+    renderTaskGroup(tasksNeg, 'tasks-neg', false);
+    renderQuiz();
+
+    let score = 0;
+    function check(uid, correct) {
+        const inp = document.getElementById('in-' + uid);
+        const fb = document.getElementById('fb-' + uid);
+        let val = inp.value.trim().replace(',', '.');
+        
+        let isCorrect = false;
+        if(val === correct) isCorrect = true;
+        if(correct === "1/3" && (val === "1/3" || val.startsWith("0.33"))) isCorrect = true;
+        
+        if (isCorrect) {
+            if(!inp.classList.contains('correct-input')) score++;
+            inp.classList.add('correct-input');
+            inp.classList.remove('wrong-input');
+            fb.innerHTML = '✨';
+        } else {
+            inp.classList.add('wrong-input');
+            fb.innerHTML = '❌';
+        }
+    }
+
+    function toggle(id) {
+        const el = document.getElementById(id);
+        el.style.display = el.style.display === 'none' ? 'block' : 'none';
+        MathJax.typesetPromise([el]);
+    }
+
+    const userAns = new Array(quizData.length).fill(-1);
+    function selectOpt(qIdx, oIdx, el) {
+        userAns[qIdx] = oIdx;
+        el.parentElement.querySelectorAll('.quiz-option').forEach(o => o.classList.remove('selected'));
+        el.classList.add('selected');
+    }
+
+    document.getElementById('finish-btn').addEventListener('click', () => {
+        let quizScore = 0;
+        userAns.forEach((a, i) => { if(a === quizData[i].ans) quizScore++; });
+        const finalDiv = document.getElementById('final-score');
+        finalDiv.style.display = 'block';
+        finalDiv.innerHTML = `
+            <h2>🏁 Урок завершено!</h2>
+            <p>Вправи: ${score} вірно.</p>
+            <p>Тест: ${quizScore} з ${quizData.length}.</p>
+            <h3>${(score+quizScore > 10) ? "Ти просто космос! 🚀" : "Хороша спроба! Ще трохи практики. 💪"}</h3>
+            <button onclick="location.reload()" style="margin-top:10px;">Спробувати ще раз</button>
+        `;
+        finalDiv.scrollIntoView({behavior: 'smooth'});
+    });
+
+    // --- WHITEBOARD (Виправлено стирання) ---
+    const canvas = document.getElementById('whiteboard');
+    const ctx = canvas.getContext('2d');
+    let painting = false;
+    let tool = 'pen';
+    let color = '#000000';
+
+    function resize() {
+        const p = document.getElementById('whiteboard-panel');
+        // Зберігаємо поточний малюнок
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.width = canvas.width;
+        tempCanvas.height = canvas.height;
+        if(canvas.width > 0) tempCanvas.getContext('2d').drawImage(canvas, 0, 0);
+
+        canvas.width = p.clientWidth;
+        canvas.height = p.clientHeight;
+        
+        // Відновлюємо малюнок
+        if(tempCanvas.width > 0) ctx.drawImage(tempCanvas, 0, 0);
+    }
+    window.addEventListener('resize', resize);
+    setTimeout(resize, 100);
+
+    function startDraw(e) {
+        painting = true;
+        draw(e);
+    }
+    function endDraw() {
+        painting = false;
+        ctx.beginPath();
+    }
+    function draw(e) {
+        if(!painting) return;
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        const x = clientX - rect.left;
+        const y = clientY - rect.top;
+
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+
+        if (tool === 'eraser') {
+            // ВАЖЛИВО: destination-out робить пікселі прозорими
+            // Так ми бачимо CSS-фон (клітинку) під низом
+            ctx.globalCompositeOperation = 'destination-out';
+            ctx.lineWidth = 30;
+            ctx.strokeStyle = "rgba(0,0,0,1)"; 
+        } else {
+            ctx.globalCompositeOperation = 'source-over';
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = color;
+        }
+        
+        ctx.lineTo(x, y);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+    }
+
+    // Події
+    canvas.addEventListener('mousedown', startDraw);
+    canvas.addEventListener('mouseup', endDraw);
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('touchstart', (e)=>{e.preventDefault(); startDraw(e)});
+    canvas.addEventListener('touchend', endDraw);
+    canvas.addEventListener('touchmove', (e)=>{e.preventDefault(); draw(e)});
+
+    function setTool(t) {
+        tool = t;
+        document.querySelectorAll('.tool-icon').forEach(b => b.classList.remove('active'));
+        if(t === 'pen') document.querySelector('.tool-icon[title="Ручка"]').classList.add('active');
+        if(t === 'eraser') document.querySelector('.tool-icon[title="Гумка (не стирає клітинки)"]').classList.add('active');
+    }
+
+    function setColor(c) {
+        color = c;
+        setTool('pen');
+    }
+
+    function clearDrawings() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function toggleMobileWB() {
+        const wb = document.getElementById('whiteboard-panel');
+        const btn = document.getElementById('close-wb-mobile');
+        wb.classList.toggle('active');
+        if(wb.classList.contains('active')) {
+            resize();
+            btn.style.display = 'block';
+        } else {
+            btn.style.display = 'none';
+        }
+    }
+</script>
+</body>
+</html>
