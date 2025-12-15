@@ -85,7 +85,7 @@ window.lessonsData = [
   },
   {
     id: 10,
-    title: "§16. Тотожність $(\\sqrt{a})^2=a$",
+    title: "§16. Тотожність (√a)² = a",
     grade: 8,
     topic: "Алгебра",
     link: "algebra/8/Тест/Тест корінь квадрат.html",
@@ -218,7 +218,7 @@ window.lessonsData = [
   },
   {
     id: 8015,
-    title: "§16. Тотожність $(\\sqrt{a})^2=a$",
+    title: "§16. Тотожність (√a)² = a",
     grade: 8,
     topic: "Алгебра",
     subject_code: "algebra",
@@ -329,7 +329,7 @@ window.lessonsData = [
   },
   {
     id: 18015,
-    title: "ДЗ: §16. Тотожність $(\\sqrt{a})^2=a$",
+    title: "ДЗ: §16. Тотожність (√a)² = a",
     grade: 8,
     topic: "Алгебра",
     link: "algebra/8/Домашня/Домашня корінь квадрат.html",
