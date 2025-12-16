@@ -176,7 +176,7 @@ window.lessonsData = [
     category: "lesson",
     author: "Даша",
   },
-
+  {
     id: 8012,
     title: "§12. Функція y = k/x",
     grade: 8,
