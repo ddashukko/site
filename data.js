@@ -134,6 +134,16 @@ window.lessonsData = [
     author: "Даша",
   },
   {
+    id: 503,
+    title: "Homework_zahlen",
+    grade: 5,
+    topic: "Математика",
+    link: "math_general/5/Homework_zahlen.html",
+    subject_code: "math_general",
+    category: "lesson",
+    author: "Даша",
+  },
+  {
     id: 712,
     title: "Розклад многочлена на множники",
     grade: 7,

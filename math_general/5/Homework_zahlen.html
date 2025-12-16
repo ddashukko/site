@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Математичний Челендж (Лайт)</title>
+    <style>
+      :root {
+        --primary: #4a90e2;
+        --success: #2ecc71;
+        --error: #e74c3c;
+        --bg: #f0f4f8;
+        --card-bg: #ffffff;
+        --text: #2c3e50;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
+        margin: 0;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .container {
+        max-width: 800px;
+        width: 100%;
+        background: var(--card-bg);
+        border-radius: 20px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+        overflow: hidden;
+      }
+
+      h1 {
+        text-align: center;
+        color: var(--primary);
+        margin-bottom: 10px;
+        font-size: 2.5rem;
+      }
+
+      .stats-bar {
+        display: flex;
+        justify-content: space-between;
+        background: #e1e8ed;
+        padding: 15px;
+        border-radius: 15px;
+        margin-bottom: 20px;
+        font-weight: bold;
+        font-size: 1.2rem;
+      }
+
+      .score-box {
+        color: var(--primary);
+      }
+
+      /* Tabs */
+      .tabs {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .tab-btn {
+        background: #dfe6e9;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+      }
+
+      .tab-btn.active {
+        background: var(--primary);
+        color: white;
+        transform: scale(1.05);
+      }
+
+      .tab-content {
+        display: none;
+        animation: fadeIn 0.5s;
+      }
+
+      .tab-content.active {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 15px;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      /* Problem Card */
+      .problem-card {
+        background: #fafafa;
+        border: 2px solid #eee;
+        border-radius: 12px;
+        padding: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 10px;
+        transition: transform 0.2s;
+      }
+
+      .problem-card:hover {
+        transform: translateY(-2px);
+        border-color: #dbeafe;
+      }
+
+      .expression {
+        font-size: 1.3rem;
+        font-weight: 600;
+        letter-spacing: 1px;
+      }
+
+      .input-group {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+
+      input[type="text"] {
+        padding: 10px;
+        border: 2px solid #bdc3c7;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        width: 140px;
+        text-align: center;
+        outline: none;
+        transition: 0.3s;
+      }
+
+      input[type="text"]:focus {
+        border-color: var(--primary);
+      }
+
+      button.check-btn {
+        background: var(--primary);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: 0.2s;
+      }
+
+      button.check-btn:hover {
+        background: #357abd;
+      }
+
+      /* Feedback States */
+      .correct input {
+        border-color: var(--success);
+        background-color: #e8f8f5;
+        color: #27ae60;
+      }
+
+      .incorrect input {
+        border-color: var(--error);
+        background-color: #fdeaea;
+        animation: shake 0.4s;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      .message {
+        font-size: 0.9rem;
+        font-weight: bold;
+        margin-left: 10px;
+      }
+
+      .msg-correct {
+        color: var(--success);
+      }
+      .msg-incorrect {
+        color: var(--error);
+      }
+
+      @keyframes shake {
+        0% {
+          transform: translateX(0);
+        }
+        25% {
+          transform: translateX(-5px);
+        }
+        50% {
+          transform: translateX(5px);
+        }
+        75% {
+          transform: translateX(-5px);
+        }
+        100% {
+          transform: translateX(0);
+        }
+      }
+
+      /* Progress Bar */
+      .progress-container {
+        width: 100%;
+        background-color: #e0e0e0;
+        border-radius: 10px;
+        margin-top: 5px;
+        height: 10px;
+        overflow: hidden;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background-color: var(--success);
+        width: 0%;
+        transition: width 0.5s ease-in-out;
+      }
+
+      .level-badge {
+        background: #ff7675;
+        color: white;
+        font-size: 0.8rem;
+        padding: 2px 8px;
+        border-radius: 10px;
+        margin-right: 5px;
+        vertical-align: middle;
+      }
+      .boss-badge {
+        background: #6c5ce7;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>🚀 Математичний Космос</h1>
+
+      <div class="stats-bar">
+        <div>Прогрес: <span id="progress-text">0/30</span></div>
+        <div class="score-box">Бали: <span id="score">0</span></div>
+      </div>
+      <div class="progress-container">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+
+      <br />
+
+      <div class="tabs">
+        <button class="tab-btn active" onclick="openTab('add')">
+          ➕ Додавання
+        </button>
+        <button class="tab-btn" onclick="openTab('sub')">➖ Віднімання</button>
+        <button class="tab-btn" onclick="openTab('mul')">✖️ Множення</button>
+        <button class="tab-btn" onclick="openTab('div')">➗ Ділення</button>
+      </div>
+
+      <div id="add" class="tab-content active"></div>
+      <div id="sub" class="tab-content"></div>
+      <div id="mul" class="tab-content"></div>
+      <div id="div" class="tab-content"></div>
+    </div>
+
+    <script>
+      // DATA CONFIGURATION - REDUCED TO 30 ITEMS TOTAL
+      const data = {
+        add: [
+          { q: "356 420 + 142 350", a: 498770, level: "Норм" },
+          { q: "4 592 100 + 3 607 900", a: 8200000, level: "Хард" },
+          { q: "8 654 321 + 9 543 679", a: 18198000, level: "Хард" },
+          { q: "123 456 789 + 987 654 321", a: 1111111110, level: "БОС" },
+          { q: "7 007 007 + 5 995 995", a: 13003002, level: "БОС" },
+        ],
+        sub: [
+          { q: "879 564 - 345 123", a: 534441, level: "Норм" },
+          { q: "1 000 000 - 456 123", a: 543877, level: "Хард" },
+          { q: "8 005 004 - 6 998 997", a: 1006007, level: "Хард" },
+          { q: "23 456 789 - 19 876 543", a: 3580246, level: "БОС" },
+          { q: "5 002 000 - 2 999 999", a: 2002001, level: "БОС" },
+        ],
+        mul: [
+          { q: "452 × 36", a: 16272, level: "3x2" },
+          { q: "914 × 83", a: 75862, level: "3x2" },
+          { q: "209 × 58", a: 12122, level: "3x2" },
+          { q: "124 × 115", a: 14260, level: "3x3" },
+          { q: "508 × 204", a: 103632, level: "3x3" },
+          { q: "892 × 123", a: 109716, level: "3x3" },
+          { q: "910 × 540", a: 491400, level: "3x3" },
+          { q: "555 × 444", a: 246420, level: "3x3" },
+          { q: "702 × 309", a: 216918, level: "3x3" },
+          { q: "419 × 725", a: 303775, level: "3x3" },
+        ],
+        div: [
+          { q: "2 548 ÷ 4", a: 637, level: "на 1" },
+          { q: "1 845 ÷ 5", a: 369, level: "на 1" },
+          { q: "9 656 ÷ 8", a: 1207, level: "на 1" },
+          { q: "1 512 ÷ 12", a: 126, level: "на 2" },
+          { q: "2 736 ÷ 24", a: 114, level: "на 2" },
+          { q: "5 928 ÷ 19", a: 312, level: "на 2" },
+          { q: "8 160 ÷ 34", a: 240, level: "на 2" },
+          { q: "9 900 ÷ 75", a: 132, level: "на 2" },
+          { q: "8 832 ÷ 96", a: 92, level: "на 2" },
+          { q: "6 426 ÷ 63", a: 102, level: "на 2" },
+        ],
+      };
+
+      let totalScore = 0;
+      let totalSolved = 0;
+      const totalProblems = 30; // Reduced from 60 to 30
+
+      // RENDER LOGIC
+      function renderSection(id, problems) {
+        const container = document.getElementById(id);
+        let html = "";
+        problems.forEach((p, index) => {
+          let badgeClass = p.level === "БОС" ? "boss-badge" : "level-badge";
+
+          html += `
+            <div class="problem-card" id="${id}-card-${index}">
+                <div>
+                    <span class="${badgeClass}" style="background-color: ${getLevelColor(
+            p.level
+          )}">${p.level}</span>
+                    <span class="expression">${p.q} = </span>
+                </div>
+                <div class="input-group">
+                    <input type="text" id="${id}-in-${index}" placeholder="?" autocomplete="off" onkeypress="handleEnter(event, '${id}', ${index}, ${
+            p.a
+          })">
+                    <button class="check-btn" onclick="checkAnswer('${id}', ${index}, ${
+            p.a
+          })">ОК</button>
+                    <span class="message" id="${id}-msg-${index}"></span>
+                </div>
+            </div>`;
+        });
+        container.innerHTML = html;
+      }
+
+      function getLevelColor(level) {
+        if (level === "БОС" || level === "Хард") return "#ff7675";
+        if (level.includes("3x3")) return "#fdcb6e";
+        return "#74b9ff";
+      }
+
+      // INITIALIZATION
+      renderSection("add", data.add);
+      renderSection("sub", data.sub);
+      renderSection("mul", data.mul);
+      renderSection("div", data.div);
+
+      // TABS LOGIC
+      function openTab(tabId) {
+        document
+          .querySelectorAll(".tab-content")
+          .forEach((el) => el.classList.remove("active"));
+        document
+          .querySelectorAll(".tab-btn")
+          .forEach((el) => el.classList.remove("active"));
+
+        document.getElementById(tabId).classList.add("active");
+        const btns = document.querySelectorAll(".tab-btn");
+        if (tabId === "add") btns[0].classList.add("active");
+        if (tabId === "sub") btns[1].classList.add("active");
+        if (tabId === "mul") btns[2].classList.add("active");
+        if (tabId === "div") btns[3].classList.add("active");
+      }
+
+      // CHECK LOGIC
+      function checkAnswer(section, index, correctVal) {
+        const inputEl = document.getElementById(`${section}-in-${index}`);
+        const cardEl = document.getElementById(`${section}-card-${index}`);
+        const msgEl = document.getElementById(`${section}-msg-${index}`);
+        const btn = cardEl.querySelector("button");
+
+        let userValStr = inputEl.value.replace(/\s/g, "");
+        let userVal = parseInt(userValStr);
+
+        if (cardEl.classList.contains("correct")) return;
+
+        if (userVal === correctVal) {
+          cardEl.classList.remove("incorrect");
+          cardEl.classList.add("correct");
+          msgEl.textContent = getRandomPraise();
+          msgEl.className = "message msg-correct";
+          btn.textContent = "✔";
+          btn.disabled = true;
+          btn.style.background = "#2ecc71";
+
+          updateScore(10);
+          updateProgress();
+        } else {
+          cardEl.classList.add("incorrect");
+          msgEl.textContent = "Спробуй ще!";
+          msgEl.className = "message msg-incorrect";
+
+          setTimeout(() => {
+            cardEl.classList.remove("incorrect");
+          }, 500);
+        }
+      }
+
+      function handleEnter(e, section, index, correctVal) {
+        if (e.key === "Enter") {
+          checkAnswer(section, index, correctVal);
+        }
+      }
+
+      function updateScore(points) {
+        totalScore += points;
+        document.getElementById("score").textContent = totalScore;
+      }
+
+      function updateProgress() {
+        totalSolved++;
+        document.getElementById(
+          "progress-text"
+        ).textContent = `${totalSolved}/${totalProblems}`;
+        let percent = (totalSolved / totalProblems) * 100;
+        document.getElementById("progress-fill").style.width = `${percent}%`;
+
+        if (totalSolved === totalProblems) {
+          setTimeout(
+            () => alert("ВІТАЮ! ТИ ПРОЙШОВ УСІ РІВНІ! ТИ СПРАВЖНІЙ ГЕНІЙ! 🏆"),
+            500
+          );
+        }
+      }
+
+      function getRandomPraise() {
+        const phrases = [
+          "Молодець!",
+          "Супер!",
+          "Правильно!",
+          "Так тримати!",
+          "Круто!",
+        ];
+        return phrases[Math.floor(Math.random() * phrases.length)];
+      }
+    </script>
+  </body>
+</html>
