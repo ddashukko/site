@@ -103,7 +103,6 @@ window.lessonsData = [
     category: "lesson",
     author: "Даша",
   },
-
   {
     id: 501,
     title: "Rechenausdrücke",
@@ -134,7 +133,6 @@ window.lessonsData = [
     category: "lesson",
     author: "Даша",
   },
-
   {
     id: 712,
     title: "Розклад многочлена на множники",
@@ -246,7 +244,6 @@ window.lessonsData = [
     category: "lesson",
     author: "Даша",
   },
-
   {
     id: 9005,
     title: "Рівняння прямої",
@@ -328,7 +325,7 @@ window.lessonsData = [
     author: "Даша",
   },
   {
-    id: 18015,
+    id: 18016,
     title: "ДЗ: §16. Тотожність (√a)² = a",
     grade: 8,
     topic: "Алгебра",
@@ -358,7 +355,7 @@ window.lessonsData = [
     author: "Соня",
   },
   {
-    id: 400601,
+    id: 400602,
     title: "Вадим Урок2",
     grade: 6,
     topic: "Математика",
@@ -368,7 +365,7 @@ window.lessonsData = [
     author: "Соня",
   },
   {
-    id: 400601,
+    id: 400603,
     title: "Вадим Урок3",
     grade: 6,
     topic: "Математика",
@@ -378,7 +375,7 @@ window.lessonsData = [
     author: "Соня",
   },
   {
-    id: 400601,
+    id: 400604,
     title: "Вадим Урок4",
     grade: 6,
     topic: "Математика",
@@ -478,7 +475,7 @@ window.lessonsData = [
     author: "Соня",
   },
   {
-    id: 402102,
+    id: 402103,
     title: "Маринка Урок2",
     grade: 8,
     topic: "Математика",
@@ -488,7 +485,7 @@ window.lessonsData = [
     author: "Соня",
   },
   {
-    id: 402102,
+    id: 402104,
     title: "Маринка Урок3",
     grade: 8,
     topic: "Математика",
@@ -498,7 +495,7 @@ window.lessonsData = [
     author: "Соня",
   },
   {
-    id: 402102,
+    id: 402105,
     title: "Маринка Урок4",
     grade: 8,
     topic: "Математика",
