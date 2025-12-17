@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Урок: Відсотки (6 клас)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
+        
+        body { font-family: 'Nunito', sans-serif; }
+        
+        .split-screen {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Custom Scrollbar */
+        .scroll-container::-webkit-scrollbar { width: 8px; }
+        .scroll-container::-webkit-scrollbar-track { background: #f1f5f9; }
+        .scroll-container::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .scroll-container::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        .canvas-container {
+            position: relative;
+            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+            background-size: 20px 20px;
+            background-color: #fff;
+            cursor: crosshair;
+        }
+
+        .tool-btn {
+            transition: all 0.2s;
+        }
+        .tool-btn.active {
+            background-color: #3b82f6;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        /* Lab Animation */
+        .pie-chart {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: conic-gradient(#3b82f6 var(--p, 0%), #e2e8f0 0);
+            transition: --p 0.5s ease;
+        }
+
+        @property --p {
+            syntax: '<percentage>';
+            inherits: false;
+            initial-value: 0%;
+        }
+
+        details > summary {
+            list-style: none;
+            cursor: pointer;
+        }
+        details > summary::-webkit-details-marker {
+            display: none;
+        }
+        
+        /* Highlight specific hard tasks */
+        .task-featured {
+            border-left: 4px solid #f59e0b;
+            background-color: #fffbeb;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-slate-800">
+
+<div class="split-screen">
+    <div class="scroll-container overflow-y-auto p-6 bg-slate-50 border-r-4 border-slate-200">
+        
+        <header class="mb-8 text-center">
+            <h1 class="text-3xl font-bold text-blue-600 mb-2">Тема: Відсотки</h1>
+            <div class="flex justify-center gap-2 text-sm text-slate-500">
+                <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded">6 Клас</span>
+                <span class="bg-green-100 text-green-800 px-2 py-1 rounded">Початковий рівень</span>
+                <span class="bg-purple-100 text-purple-800 px-2 py-1 rounded">40 Завдань</span>
+            </div>
+            <p class="mt-4 text-slate-600">Привіт! Сьогодні ми розберемося, що таке відсотки і як з ними дружити. Це як заряд батарейки в твоєму телефоні! 🔋</p>
+        </header>
+
+        <section class="mb-10 bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+            <h2 class="text-xl font-bold text-slate-800 mb-4 flex items-center">
+                <span class="bg-blue-500 text-white w-8 h-8 rounded-full flex items-center justify-center mr-2">1</span>
+                Що таке відсоток?
+            </h2>
+            <div class="prose max-w-none text-slate-600">
+                <p class="mb-2"><strong>Відсоток</strong> — це одна сота частина чогось цілого. Слово "цент" означає "сто" (як в слові сантиметр).</p>
+                <div class="bg-yellow-50 p-4 rounded-lg border-l-4 border-yellow-400 my-4">
+                    <p>Запам'ятай базу:</p>
+                    $$ 1 \% = \frac{1}{100} = 0,01 $$
+                    $$ 100 \% = 1 \text{ (це ціле яблуко)} $$
+                </div>
+                <div class="grid grid-cols-2 gap-4 text-center text-sm font-mono mt-4">
+                    <div class="bg-gray-100 p-2 rounded">10% = 0,1 = 1/10</div>
+                    <div class="bg-gray-100 p-2 rounded">50% = 0,5 = 1/2 (Половина)</div>
+                    <div class="bg-gray-100 p-2 rounded">25% = 0,25 = 1/4 (Чверть)</div>
+                    <div class="bg-gray-100 p-2 rounded">75% = 0,75 = 3/4</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-10 bg-indigo-50 p-6 rounded-2xl border border-indigo-100">
+            <h2 class="text-lg font-bold text-indigo-700 mb-4">🧪 Лабораторія: Візуалізатор Відсотків</h2>
+            <div class="flex flex-col items-center gap-6">
+                <div class="pie-chart shadow-lg border-4 border-white" id="labPie"></div>
+                <div class="w-full max-w-xs">
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Тягни повзунок: <span id="labVal">0</span>%</label>
+                    <input type="range" min="0" max="100" value="0" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-indigo-600" id="labRange">
+                </div>
+                <p class="text-sm text-center text-indigo-600 bg-white px-4 py-2 rounded-lg shadow-sm" id="labText">Це 0 частин зі 100</p>
+            </div>
+        </section>
+
+        <section class="mb-8">
+            <h2 class="text-xl font-bold text-slate-800 mb-4">2. Знаходження відсотків від числа</h2>
+            <div class="bg-green-50 p-4 rounded-lg border-l-4 border-green-500 mb-4 text-sm">
+                <strong>Правило:</strong> Щоб знайти відсотки від числа, потрібно це число <u>поділити на 100</u> і <u>помножити на кількість відсотків</u>.
+                <div class="mt-2 font-mono">Приклад: 45% від 80 <br> $$ 80 : 100 \cdot 45 = 36 $$</div>
+            </div>
+            <div id="tasks-part-1" class="space-y-4"></div>
+        </section>
+
+        <section class="mb-8">
+            <h2 class="text-xl font-bold text-slate-800 mb-4">3. Знаходження числа за його відсотком</h2>
+            <div class="bg-orange-50 p-4 rounded-lg border-l-4 border-orange-500 mb-4 text-sm">
+                <strong>Правило:</strong> Якщо ти знаєш частинку, а треба знайти ціле — <u>діли на відсотки</u> і <u>множ на 100</u>.
+                <div class="mt-2 font-mono">Приклад: 23% числа це 46 <br> $$ 46 : 23 \cdot 100 = 200 $$</div>
+            </div>
+            <div id="tasks-part-2" class="space-y-4"></div>
+        </section>
+
+        <section class="mb-8">
+            <h2 class="text-xl font-bold text-slate-800 mb-4">4. Відсоткове відношення</h2>
+            <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500 mb-4 text-sm">
+                <strong>Правило:</strong> Скільки відсотків одне число складає від іншого? Поділи перше на друге і помнож на 100%.
+                <div class="mt-2 font-mono">Приклад: 2 від 5 <br> $$ \frac{2}{5} \cdot 100 \% = 40 \% $$</div>
+            </div>
+            <div id="tasks-part-3" class="space-y-4"></div>
+        </section>
+
+        <section class="mb-10">
+            <h2 class="text-xl font-bold text-slate-800 mb-4">💪 Тренування (Задачі з життя)</h2>
+            <p class="mb-4 text-sm text-slate-500">Тут зібрані цікаві задачі. Уважно читай умову! Особливу увагу зверни на задачі, позначені жовтим.</p>
+            <div id="tasks-mixed" class="space-y-6"></div>
+        </section>
+
+        <section class="mb-10 bg-slate-800 text-white p-6 rounded-2xl">
+            <h2 class="text-xl font-bold mb-4">🏆 Фінальний тест</h2>
+            <div id="quiz-container" class="space-y-6"></div>
+            
+            <button onclick="finishLesson()" class="mt-8 w-full bg-green-500 hover:bg-green-600 text-white font-bold py-4 rounded-xl shadow-lg transform transition active:scale-95 text-lg">
+                Завершити урок та отримати оцінку
+            </button>
+        </section>
+
+        <div id="result-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div class="bg-white p-8 rounded-2xl max-w-md w-full text-center">
+                <div class="text-6xl mb-4">🎉</div>
+                <h3 class="text-2xl font-bold text-slate-800 mb-2">Урок завершено!</h3>
+                <p class="text-slate-600 mb-6" id="result-message">Ти просто космос!</p>
+                <div class="text-4xl font-bold text-blue-600 mb-6" id="result-score">0/100</div>
+                <button onclick="document.getElementById('result-modal').classList.add('hidden')" class="bg-slate-800 text-white px-6 py-2 rounded-lg">Дякую!</button>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="canvas-container relative flex flex-col h-full">
+        <div class="absolute top-4 left-1/2 transform -translate-x-1/2 bg-white shadow-xl rounded-full px-4 py-2 flex gap-4 z-10 border border-slate-200">
+            <button onclick="setTool('pen')" class="tool-btn active p-2 rounded-full text-slate-600 hover:bg-slate-100" title="Олівець">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+            </button>
+            <button onclick="setTool('eraser')" class="tool-btn p-2 rounded-full text-slate-600 hover:bg-slate-100" title="Гумка">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+            </button>
+            <div class="w-px bg-slate-300 mx-1"></div>
+            <button onclick="drawGrid()" class="tool-btn p-2 rounded-full text-slate-600 hover:bg-slate-100" title="Сітка">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
+            </button>
+            <button onclick="drawCircleHelper()" class="tool-btn p-2 rounded-full text-slate-600 hover:bg-slate-100" title="Намалювати коло">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 21a9 9 0 100-18 9 9 0 000 18z"></path></svg>
+            </button>
+            <div class="w-px bg-slate-300 mx-1"></div>
+            <button onclick="clearCanvas()" class="tool-btn p-2 rounded-full text-red-500 hover:bg-red-50" title="Очистити все">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+        
+        <canvas id="whiteboard" class="w-full h-full touch-none"></canvas>
+    </div>
+</div>
+
+<script>
+    /* ================= DATA GENERATION ================= */
+    const tasks = [];
+    
+    // Helper to add task
+    function addTask(type, question, answer, hint, solution, categoryId, isFeatured = false) {
+        const id = `task-${tasks.length}`;
+        tasks.push({ id, answer, type });
+        
+        const featuredClass = isFeatured ? 'task-featured' : 'bg-white';
+        const badge = isFeatured ? '<span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full border border-yellow-200 ml-2">Задача з підручника</span>' : '';
+        
+        const html = `
+        <div class="${featuredClass} p-4 rounded-xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
+            <div class="flex items-start justify-between mb-3">
+                <div class="font-medium text-slate-800 text-lg">
+                    <span class="text-slate-400 mr-2 text-sm">#${tasks.length}</span>
+                    ${question}
+                    ${badge}
+                </div>
+            </div>
+            <div class="flex gap-2 items-center mb-3">
+                <input type="number" id="input-${id}" placeholder="..." 
+                    class="border-2 border-slate-200 rounded-lg px-3 py-2 w-32 focus:outline-none focus:border-blue-500 transition-colors text-lg"
+                    onkeydown="if(event.key === 'Enter') checkAnswer('${id}')">
+                <button onclick="checkAnswer('${id}')" 
+                    class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-colors">
+                    Перевірити
+                </button>
+                <span id="feedback-${id}" class="text-2xl ml-2 hidden"></span>
+            </div>
+            
+            <div class="flex gap-4 text-sm">
+                <details class="group">
+                    <summary class="text-blue-500 hover:text-blue-700 flex items-center gap-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        Підказка
+                    </summary>
+                    <div class="mt-2 text-slate-600 bg-slate-50 p-2 rounded border border-slate-100">
+                        ${hint}
+                    </div>
+                </details>
+                <details class="group">
+                    <summary class="text-purple-500 hover:text-purple-700 flex items-center gap-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+                        Розв'язання
+                    </summary>
+                    <div class="mt-2 text-slate-600 bg-slate-50 p-2 rounded border border-slate-100 font-mono text-xs">
+                        ${solution}
+                    </div>
+                </details>
+            </div>
+        </div>`;
+        
+        document.getElementById(categoryId).innerHTML += html;
+    }
+
+    // Generator 1: Percent of Number
+    function generatePart1(count) {
+        for(let i=0; i<count; i++) {
+            const num = (Math.floor(Math.random() * 20) + 1) * 10; 
+            const pct = (Math.floor(Math.random() * 9) + 1) * 5;   
+            const ans = (num * pct) / 100;
+            addTask(
+                1, 
+                `Знайди ${pct}% від числа ${num}`, 
+                ans, 
+                `Формула: ${num} : 100 · ${pct}`, 
+                `${num} : 100 = ${num/100} <br> ${num/100} · ${pct} = ${ans}`, 
+                'tasks-part-1'
+            );
+        }
+    }
+
+    // Generator 2: Number by Percent
+    function generatePart2(count) {
+        for(let i=0; i<count; i++) {
+            const total = (Math.floor(Math.random() * 10) + 1) * 10;
+            const pct = [10, 20, 25, 50][Math.floor(Math.random() * 4)];
+            const part = (total * pct) / 100;
+            
+            if(!Number.isInteger(part)) { i--; continue; }
+
+            addTask(
+                2,
+                `Знайди число, якщо ${pct}% його дорівнює ${part}`,
+                total,
+                `Формула: ${part} : ${pct} · 100`,
+                `${part} : ${pct} = ${part/pct} <br> ${part/pct} · 100 = ${total}`,
+                'tasks-part-2'
+            );
+        }
+    }
+
+    // Generator 3: Ratio
+    function generatePart3(count) {
+        for(let i=0; i<count; i++) {
+            const denominators = [2, 4, 5, 10, 20, 25];
+            const den = denominators[Math.floor(Math.random() * denominators.length)];
+            const num = Math.floor(Math.random() * (den - 1)) + 1;
+            const ans = (num / den) * 100;
+
+            addTask(
+                3,
+                `Скільки відсотків становить число ${num} від числа ${den}?`,
+                ans,
+                `Формула: ${num} : ${den} · 100%`,
+                `${num} : ${den} = ${num/den} <br> ${num/den} · 100 = ${ans}%`,
+                'tasks-part-3'
+            );
+        }
+    }
+
+    // Mixed Generator containing YOUR SPECIFIC TASKS
+    function generateMixed(count) {
+        // --- INJECTED SPECIFIC TASK 1: Solution (Task 746) ---
+        addTask(
+            3,
+            `<strong>(Задача 746)</strong> До 160 г 15-відсоткового розчину солі додали 40 г води. Яким став відсотковий вміст солі в новому розчині?`,
+            12,
+            `Спочатку знайди масу чистої солі в першому розчині. Потім знайди нову загальну масу розчину (було 160 + додала 40).`,
+            `1) Маса солі: $160 \\cdot 0,15 = 24$ г.<br>2) Нова маса розчину: $160 + 40 = 200$ г.<br>3) Концентрація: $\\frac{24}{200} \\cdot 100\\% = 12\\%$.`,
+            'tasks-mixed',
+            true
+        );
+
+        // --- INJECTED SPECIFIC TASK 2: Cigarettes (Task from screenshot) ---
+        addTask(
+            3,
+            `<strong>(Задача про бюджет)</strong> Визнач, скільки відсотків свого місячного доходу витрачає на цигарки людина, котра викурює одну пачку на добу. Пачка коштує 45 грн, а щомісячна зарплата — 10 800 грн (у місяці 30 днів).`,
+            12.5,
+            `Крок 1: Скільки грошей йде на цигарки за 30 днів?<br>Крок 2: Яку частину ця сума складає від 10800?`,
+            `1) Вартість за місяць: $45 \\cdot 30 = 1350$ грн.<br>2) Відсоток: $\\frac{1350}{10800} \\cdot 100\\%$.<br>$1350 : 108 = 12,5\\%$.`,
+            'tasks-mixed',
+            true
+        );
+
+        // --- INJECTED SPECIFIC TASK 3: Family Budget (Task 783) ---
+        addTask(
+            2,
+            `<strong>(Задача 783)</strong> Сім'я витратила 40% свого місячного заробітку на харчування, 15% цієї суми — на комунальні послуги, 75% залишку — на покупки, а решту — 4860 грн поклала на депозит. Який місячний дохід сім'ї?`,
+            43200,
+            `Тут важливо діяти з кінця або знайти загальний відсоток витрат. Зверни увагу: "15% цієї суми" зазвичай означає від загальної, але "залишок" рахується після обох витрат. <br>Підказка: Знайди який відсоток складає решта (4860 грн).`,
+            `1) Витрати (їжа+комуналка): $40\\% + 15\\% = 55\\%$.<br>2) Залишок 1: $100\\% - 55\\% = 45\\%$.<br>3) На покупки пішло 75% від залишку, отже на депозит залишилось 25% від залишку.<br>4) Частка депозиту від всього: $0,25 \\cdot 0,45 = 0,1125$.<br>5) Дохід: $4860 : 0,1125 = 43200$ грн.`,
+            'tasks-mixed',
+            true
+        );
+
+        // Generate remaining random tasks
+        for(let i=0; i<count-3; i++) {
+            const type = Math.floor(Math.random() * 3);
+            if(type === 0) {
+                 const num = 100 + Math.floor(Math.random()*10)*10;
+                 const pct = Math.floor(Math.random()*20) + 1;
+                 const ans = (num * pct) / 100;
+                 addTask(1, `У саду росте ${num} дерев. ${pct}% з них — яблуні. Скільки яблунь?`, ans, `Шукаємо відсоток від числа: ${num} : 100 · ${pct}`, `${num}*${pct}/100 = ${ans}`, 'tasks-mixed');
+            } else if (type === 1) {
+                const total = 50 * (Math.floor(Math.random()*4)+1);
+                const part = total * 0.1;
+                addTask(2, `Книжка коштує ${part} грн, це 10% моїх заощаджень. Скільки всього у мене грошей?`, total, `Шукаємо число за відсотком: ${part} : 10 · 100`, `${part}/10 * 100 = ${total}`, 'tasks-mixed');
+            } else {
+                 const den = 20;
+                 const num = Math.floor(Math.random()*19)+1;
+                 const ans = (num/den)*100;
+                 addTask(3, `У класі ${den} учнів, з них ${num} — хлопці. Який відсоток хлопців?`, ans, `${num} : ${den} · 100%`, ``, 'tasks-mixed');
+            }
+        }
+    }
+
+    // Quiz Generator
+    function generateQuiz() {
+        const questions = [
+            {q: "Як записати 50% десятковим дробом?", a: 0.5},
+            {q: "Знайди 1% від 300", a: 3},
+            {q: "Половина — це скільки відсотків?", a: 50},
+            {q: "Чверть піци — це скільки %?", a: 25}
+        ];
+        
+        let html = '';
+        questions.forEach((q, idx) => {
+            html += `
+            <div class="bg-slate-700 p-4 rounded-lg border border-slate-600">
+                <p class="font-medium text-lg mb-3">${idx+1}. ${q.q}</p>
+                <div class="flex gap-4">
+                    <input type="number" id="quiz-${idx}" data-ans="${q.a}" placeholder="..." class="bg-slate-800 border border-slate-500 rounded px-2 py-1 text-white w-24">
+                </div>
+            </div>`;
+        });
+        document.getElementById('quiz-container').innerHTML = html;
+    }
+
+    /* ================= LOGIC ================= */
+    
+    function init() {
+        // Generate 40 tasks total
+        generatePart1(10);
+        generatePart2(10);
+        generatePart3(10);
+        generateMixed(10); // Includes the 3 requested tasks
+        generateQuiz();
+        
+        // Lab Logic
+        const range = document.getElementById('labRange');
+        const pie = document.getElementById('labPie');
+        const label = document.getElementById('labVal');
+        const text = document.getElementById('labText');
+        
+        range.addEventListener('input', (e) => {
+            const val = e.target.value;
+            pie.style.setProperty('--p', val + '%');
+            label.innerText = val;
+            text.innerText = `Це ${val} частин зі 100`;
+        });
+
+        // Trigger MathJax
+        MathJax.typesetPromise();
+    }
+
+    function checkAnswer(id) {
+        const input = document.getElementById(`input-${id}`);
+        const feedback = document.getElementById(`feedback-${id}`);
+        const task = tasks.find(t => t.id === id);
+        
+        // Allow comma as decimal separator
+        let val = parseFloat(input.value.replace(',', '.'));
+        
+        // Tolerance for float math
+        if (Math.abs(val - task.answer) < 0.01) {
+            input.classList.remove('border-slate-200', 'border-red-500');
+            input.classList.add('border-green-500', 'bg-green-50');
+            feedback.innerHTML = '✅';
+            feedback.classList.remove('hidden');
+            task.completed = true;
+        } else {
+            input.classList.remove('border-slate-200');
+            input.classList.add('border-red-500', 'bg-red-50');
+            feedback.innerHTML = '❌';
+            feedback.classList.remove('hidden');
+        }
+    }
+
+    function finishLesson() {
+        let score = 0;
+        let totalPossible = tasks.length + 4; // 40 tasks + 4 quiz questions
+        
+        // Count tasks
+        tasks.forEach(t => { if(t.completed) score++; });
+        
+        // Count Quiz
+        for(let i=0; i<4; i++) {
+            const el = document.getElementById(`quiz-${i}`);
+            const correct = parseFloat(el.dataset.ans);
+            const val = parseFloat(el.value.replace(',', '.'));
+            if(Math.abs(val - correct) < 0.01) score++;
+        }
+
+        const percentage = Math.round((score / totalPossible) * 100);
+        
+        document.getElementById('result-score').innerText = `${percentage} / 100 балів`;
+        
+        const msgEl = document.getElementById('result-message');
+        if(percentage === 100) msgEl.innerText = "Ти геній математики! Абсолютний чемпіон! 🏆";
+        else if(percentage >= 80) msgEl.innerText = "Дуже крутий результат! Так тримати! 🚀";
+        else if(percentage >= 50) msgEl.innerText = "Непогано! Ти стараєшся, і це головне! 👍";
+        else msgEl.innerText = "Ти молодець, що пройшов урок! Практика зробить тебе кращим. 🌱";
+
+        document.getElementById('result-modal').classList.remove('hidden');
+    }
+
+    /* ================= CANVAS ================= */
+    const canvas = document.getElementById('whiteboard');
+    const ctx = canvas.getContext('2d');
+    let isDrawing = false;
+    let currentTool = 'pen';
+
+    function resizeCanvas() {
+        const parent = canvas.parentElement;
+        canvas.width = parent.clientWidth;
+        canvas.height = parent.clientHeight;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+    }
+    
+    window.addEventListener('resize', resizeCanvas);
+    setTimeout(resizeCanvas, 100);
+
+    function getPos(e) {
+        const rect = canvas.getBoundingClientRect();
+        return {
+            x: e.clientX - rect.left,
+            y: e.clientY - rect.top
+        };
+    }
+
+    function startDraw(e) {
+        isDrawing = true;
+        const pos = getPos(e);
+        ctx.beginPath();
+        ctx.moveTo(pos.x, pos.y);
+    }
+
+    function draw(e) {
+        if (!isDrawing) return;
+        const pos = getPos(e);
+        
+        if (currentTool === 'pen') {
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = '#1e293b';
+            ctx.lineTo(pos.x, pos.y);
+            ctx.stroke();
+        } else if (currentTool === 'eraser') {
+            ctx.lineWidth = 20;
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineTo(pos.x, pos.y);
+            ctx.stroke();
+        }
+    }
+
+    function stopDraw() {
+        isDrawing = false;
+        ctx.closePath();
+    }
+
+    function setTool(tool) {
+        currentTool = tool;
+        document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+        if(tool === 'pen') document.querySelector('button[title="Олівець"]').classList.add('active');
+        if(tool === 'eraser') document.querySelector('button[title="Гумка"]').classList.add('active');
+    }
+
+    function clearCanvas() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function drawGrid() {
+        ctx.beginPath();
+        ctx.strokeStyle = '#e2e8f0';
+        ctx.lineWidth = 1;
+        for (let x = 0; x <= canvas.width; x += 40) {
+            ctx.moveTo(x, 0);
+            ctx.lineTo(x, canvas.height);
+        }
+        for (let y = 0; y <= canvas.height; y += 40) {
+            ctx.moveTo(0, y);
+            ctx.lineTo(canvas.width, y);
+        }
+        ctx.stroke();
+        ctx.closePath();
+    }
+
+    function drawCircleHelper() {
+        const cx = canvas.width / 2;
+        const cy = canvas.height / 2;
+        ctx.beginPath();
+        ctx.strokeStyle = '#3b82f6';
+        ctx.lineWidth = 3;
+        ctx.arc(cx, cy, 100, 0, 2 * Math.PI);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(cx, cy - 100);
+        ctx.stroke();
+    }
+
+    canvas.addEventListener('mousedown', startDraw);
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('mouseup', stopDraw);
+    canvas.addEventListener('mouseout', stopDraw);
+
+    init();
+</script>
+</body>
+</html>
