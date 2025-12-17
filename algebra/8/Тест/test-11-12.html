@@ -23,8 +23,8 @@
         --primary: #7c3aed;
         --primary-hover: #6d28d9;
         --primary-light: #f5f3ff;
-        --selected-bg: #e0f2fe; /* Світло-блакитний для вибору */
-        --selected-border: #0ea5e9; /* Блакитний для вибору */
+        --selected-bg: #e0f2fe;
+        --selected-border: #0ea5e9;
         --success: #16a34a;
         --error: #dc2626;
         --bg: #f8fafc;
@@ -47,7 +47,6 @@
         overflow: hidden;
       }
 
-      /* ЛІВА ЧАСТИНА - ТЕСТ */
       #tasks-section {
         flex: 1;
         background: var(--bg);
@@ -57,7 +56,6 @@
         border-right: 1px solid var(--border);
       }
 
-      /* ПРАВА ЧАСТИНА - ДОШКА */
       #board-section {
         flex: 1;
         position: relative;
@@ -79,7 +77,6 @@
         touch-action: none;
       }
 
-      /* ІНСТРУМЕНТИ */
       .tools {
         position: absolute;
         top: 15px;
@@ -118,7 +115,6 @@
         border-color: var(--primary);
       }
 
-      /* HEADER */
       header {
         background: var(--card);
         padding: 15px 25px;
@@ -165,7 +161,7 @@
 
       .test-card.disabled {
         opacity: 0.8;
-        pointer-events: none; /* Блокуємо зміни після фінішу */
+        pointer-events: none;
       }
 
       .question-number {
@@ -184,7 +180,6 @@
         line-height: 1.4;
       }
 
-      /* КНОПКИ ВИБОРУ */
       .options-grid {
         display: flex;
         flex-direction: row;
@@ -214,7 +209,6 @@
         background: #f8fafc;
       }
 
-      /* Стан "Обрано" (до перевірки) */
       .option-btn.selected {
         background: var(--selected-bg);
         border-color: var(--selected-border);
@@ -222,21 +216,18 @@
         font-weight: 600;
       }
 
-      /* Стан "Правильно" (після перевірки) */
       .option-btn.correct-answer {
         background: #dcfce7 !important;
         border-color: var(--success) !important;
         color: var(--success) !important;
       }
 
-      /* Стан "Помилка" (після перевірки) */
       .option-btn.wrong-answer {
         background: #fee2e2 !important;
         border-color: var(--error) !important;
         color: var(--error) !important;
       }
 
-      /* ІНПУТИ */
       .input-wrapper {
         display: flex;
         gap: 10px;
@@ -278,7 +269,6 @@
         color: var(--error);
       }
 
-      /* КНОПКА ФІНІШ */
       .finish-block {
         text-align: center;
         margin: 40px 0 60px 0;
@@ -300,7 +290,6 @@
         background: #0f172a;
       }
 
-      /* МОДАЛКА */
       .modal-overlay {
         display: none;
         position: fixed;
@@ -458,162 +447,159 @@
     </div>
 
     <script>
-      // ===========================================
-      // БАЗА ПИТАНЬ (30 шт)
-      // ===========================================
       const questions = [
         // --- СТАНДАРТНИЙ ВИГЛЯД ЧИСЛА ---
         {
           id: 1,
-          q: "Яким є порядок числа $3{,}4 \\cdot 10^{-6}$?",
+          q: "Яким є порядок числа $2{,}7 \\cdot 10^{-8}$?",
           type: "choice",
-          options: ["$6$", "$-6$", "$3{,}4$", "$-4$"],
-          correct: "$-6$",
+          options: ["$8$", "$-8$", "$2{,}7$", "$-7$"],
+          correct: "$-8$",
         },
         {
           id: 2,
-          q: "Яким є порядок числа $4{,}5 \\cdot 10^{14}$?",
+          q: "Яким є порядок числа $1{,}9 \\cdot 10^{12}$?",
           type: "choice",
-          options: ["$14$", "$10$", "$4{,}5$", "$-14$"],
-          correct: "$14$",
+          options: ["$12$", "$19$", "$1{,}9$", "$-12$"],
+          correct: "$12$",
         },
         {
           id: 3,
-          q: "Подайте число $70\\,000$ у стандартному вигляді:",
+          q: "Подайте число $6\\,000\\,000$ у стандартному вигляді:",
           type: "choice",
           options: [
-            "$7 \\cdot 10^4$",
-            "$70 \\cdot 10^3$",
-            "$7 \\cdot 10^5$",
-            "$0{,}7 \\cdot 10^5$",
+            "$6 \\cdot 10^6$",
+            "$60 \\cdot 10^5$",
+            "$6 \\cdot 10^7$",
+            "$0{,}6 \\cdot 10^7$",
           ],
-          correct: "$7 \\cdot 10^4$",
+          correct: "$6 \\cdot 10^6$",
         },
         {
           id: 4,
-          q: "Подайте число $0{,}00029$ у стандартному вигляді:",
+          q: "Подайте число $0{,}00053$ у стандартному вигляді:",
           type: "choice",
           options: [
-            "$29 \\cdot 10^{-5}$",
-            "$2{,}9 \\cdot 10^{-4}$",
-            "$2{,}9 \\cdot 10^{-3}$",
-            "$0{,}29 \\cdot 10^{-3}$",
+            "$53 \\cdot 10^{-5}$",
+            "$5{,}3 \\cdot 10^{-4}$",
+            "$5{,}3 \\cdot 10^{-3}$",
+            "$0{,}53 \\cdot 10^{-3}$",
           ],
-          correct: "$2{,}9 \\cdot 10^{-4}$",
+          correct: "$5{,}3 \\cdot 10^{-4}$",
         },
         {
           id: 5,
-          q: "Запишіть у стандартному вигляді число $45 \\cdot 10^{-6}$:",
+          q: "Запишіть у стандартному вигляді число $38 \\cdot 10^{-5}$:",
           type: "choice",
           options: [
-            "$4{,}5 \\cdot 10^{-7}$",
-            "$4{,}5 \\cdot 10^{-5}$",
-            "$450 \\cdot 10^{-7}$",
-            "$0{,}45 \\cdot 10^{-4}$",
+            "$3{,}8 \\cdot 10^{-6}$",
+            "$3{,}8 \\cdot 10^{-4}$",
+            "$380 \\cdot 10^{-6}$",
+            "$0{,}38 \\cdot 10^{-3}$",
           ],
-          correct: "$4{,}5 \\cdot 10^{-5}$",
+          correct: "$3{,}8 \\cdot 10^{-4}$",
         },
         {
           id: 6,
-          q: "Запишіть у стандартному вигляді число $0{,}4 \\cdot 10^{-3}$:",
+          q: "Запишіть у стандартному вигляді число $0{,}7 \\cdot 10^{-5}$:",
           type: "choice",
           options: [
-            "$4 \\cdot 10^{-2}$",
-            "$4 \\cdot 10^{-4}$",
-            "$0{,}04 \\cdot 10^{-2}$",
-            "$40 \\cdot 10^{-5}$",
+            "$7 \\cdot 10^{-4}$",
+            "$7 \\cdot 10^{-6}$",
+            "$0{,}07 \\cdot 10^{-4}$",
+            "$70 \\cdot 10^{-7}$",
           ],
-          correct: "$4 \\cdot 10^{-4}$",
+          correct: "$7 \\cdot 10^{-6}$",
         },
         {
           id: 7,
-          q: "Запишіть у вигляді десяткового дробу число $5{,}2 \\cdot 10^{-3}$:",
+          q: "Запишіть у вигляді десяткового дробу число $8{,}1 \\cdot 10^{-3}$:",
           type: "input",
-          correct: ["0.0052", "0,0052"],
+          correct: ["0.0081", "0,0081"],
         },
         {
           id: 8,
-          q: "Запишіть ціле число, що дорівнює $4{,}125 \\cdot 10^4$:",
+          q: "Запишіть ціле число, що дорівнює $2{,}015 \\cdot 10^5$:",
           type: "input",
-          correct: ["41250"],
+          correct: ["201500"],
         },
         {
           id: 9,
-          q: "Виконайте множення: $(2{,}3 \\cdot 10^{-6}) \\cdot (3 \\cdot 10^4)$",
+          q: "Виконайте множення: $(1{,}5 \\cdot 10^{-4}) \\cdot (4 \\cdot 10^7)$",
           type: "choice",
           options: [
-            "$6{,}9 \\cdot 10^{-2}$",
-            "$6{,}9 \\cdot 10^{-10}$",
-            "$5{,}3 \\cdot 10^{-2}$",
-            "$6{,}9 \\cdot 10^2$",
+            "$6{,}0 \\cdot 10^{-11}$",
+            "$6{,}0 \\cdot 10^3$",
+            "$5{,}5 \\cdot 10^{3}$",
+            "$60 \\cdot 10^2$",
           ],
-          correct: "$6{,}9 \\cdot 10^{-2}$",
+          correct: "$6{,}0 \\cdot 10^3$",
         },
         {
           id: 10,
-          q: "Виконайте ділення: $(8{,}4 \\cdot 10^6) : (2{,}1 \\cdot 10^3)$",
+          q: "Виконайте ділення: $(9{,}6 \\cdot 10^8) : (3{,}2 \\cdot 10^5)$",
           type: "choice",
           options: [
-            "$4 \\cdot 10^2$",
-            "$4 \\cdot 10^9$",
-            "$4 \\cdot 10^3$",
-            "$6{,}3 \\cdot 10^3$",
+            "$3 \\cdot 10^3$",
+            "$3 \\cdot 10^{13}$",
+            "$3{,}2 \\cdot 10^3$",
+            "$6{,}4 \\cdot 10^3$",
           ],
-          correct: "$4 \\cdot 10^3$",
+          correct: "$3 \\cdot 10^3$",
         },
         {
           id: 11,
-          q: "Порівняйте: $4{,}5 \\cdot 10^{-4}$ і $3{,}9 \\cdot 10^{-4}$",
+          q: "Порівняйте: $7{,}2 \\cdot 10^{-5}$ і $8{,}1 \\cdot 10^{-5}$",
           type: "choice",
           options: ["Перше більше", "Друге більше", "Рівні"],
-          correct: "Перше більше",
+          correct: "Друге більше",
         },
         {
           id: 12,
-          q: "Порівняйте: $2{,}3 \\cdot 10^6$ і $2{,}3 \\cdot 10^5$",
+          q: "Порівняйте: $5{,}1 \\cdot 10^7$ і $5{,}1 \\cdot 10^8$",
           type: "choice",
           options: [
-            "$2{,}3 \\cdot 10^6 > 2{,}3 \\cdot 10^5$",
-            "$2{,}3 \\cdot 10^6 < 2{,}3 \\cdot 10^5$",
+            "$5{,}1 \\cdot 10^7 > 5{,}1 \\cdot 10^8$",
+            "$5{,}1 \\cdot 10^7 < 5{,}1 \\cdot 10^8$",
             "Рівні",
           ],
-          correct: "$2{,}3 \\cdot 10^6 > 2{,}3 \\cdot 10^5$",
+          correct: "$5{,}1 \\cdot 10^7 < 5{,}1 \\cdot 10^8$",
         },
         {
           id: 13,
-          q: "Обчисліть: $3{,}6 \\cdot 10^{-5} + 4{,}2 \\cdot 10^{-5}$",
+          q: "Обчисліть: $2{,}4 \\cdot 10^{-6} + 5{,}1 \\cdot 10^{-6}$",
           type: "choice",
           options: [
-            "$7{,}8 \\cdot 10^{-10}$",
-            "$7{,}8 \\cdot 10^{-5}$",
-            "$1{,}5 \\cdot 10^{-5}$",
+            "$7{,}5 \\cdot 10^{-12}$",
+            "$7{,}5 \\cdot 10^{-6}$",
+            "$2{,}7 \\cdot 10^{-6}$",
           ],
-          correct: "$7{,}8 \\cdot 10^{-5}$",
+          correct: "$7{,}5 \\cdot 10^{-6}$",
         },
         {
           id: 14,
-          q: "Обчисліть: $5{,}7 \\cdot 10^4 - 2{,}4 \\cdot 10^4$",
+          q: "Обчисліть: $8{,}9 \\cdot 10^5 - 3{,}5 \\cdot 10^5$",
           type: "choice",
           options: [
-            "$3{,}3 \\cdot 10^4$",
-            "$3{,}3 \\cdot 10^0$",
-            "$8{,}1 \\cdot 10^4$",
+            "$5{,}4 \\cdot 10^5$",
+            "$5{,}4 \\cdot 10^0$",
+            "$12{,}4 \\cdot 10^5$",
           ],
-          correct: "$3{,}3 \\cdot 10^4$",
+          correct: "$5{,}4 \\cdot 10^5$",
         },
         {
           id: 15,
-          q: "Порядок $b$ = 18. Яким є порядок $10000b$?",
+          q: "Порядок $b$ = 12. Яким є порядок $1000b$?",
           type: "choice",
-          options: ["18", "22", "14", "40000"],
-          correct: "22",
+          options: ["12", "15", "9", "12000"],
+          correct: "15",
         },
         {
           id: 16,
-          q: "Порядок $b$ = 18. Яким є порядок $0{,}001b$?",
+          q: "Порядок $b$ = 12. Яким є порядок $0{,}01b$?",
           type: "choice",
-          options: ["15", "21", "-3", "18"],
-          correct: "15",
+          options: ["10", "14", "-2", "12"],
+          correct: "10",
         },
 
         // --- ГІПЕРБОЛА ---
@@ -622,43 +608,43 @@
           q: "Яка функція задає обернену пропорційність?",
           type: "choice",
           options: [
-            "$y = \\frac{x}{5}$",
-            "$y = \\frac{5}{x}$",
-            "$y = 5x$",
-            "$y = 5+x$",
+            "$y = \\frac{x}{9}$",
+            "$y = \\frac{9}{x}$",
+            "$y = 9x$",
+            "$y = 9+x$",
           ],
-          correct: "$y = \\frac{5}{x}$",
+          correct: "$y = \\frac{9}{x}$",
         },
         {
           id: 18,
-          q: "Чи є $y = -\\frac{8}{x}$ оберненою пропорційністю?",
+          q: "Чи є $y = -\\frac{15}{x}$ оберненою пропорційністю?",
           type: "choice",
           options: ["Так", "Ні", "Тільки при $x>0$"],
           correct: "Так",
         },
         {
           id: 19,
-          q: "Обчисліть $y = \\frac{24}{x}$, якщо $x = -4$.",
+          q: "Обчисліть $y = \\frac{36}{x}$, якщо $x = -9$.",
           type: "input",
-          correct: ["-6"],
+          correct: ["-4"],
         },
         {
           id: 20,
-          q: "Обчисліть $y = \\frac{24}{x}$, якщо $x = 6$.",
+          q: "Обчисліть $y = \\frac{36}{x}$, якщо $x = 12$.",
           type: "input",
-          correct: ["4"],
+          correct: ["3"],
         },
         {
           id: 21,
-          q: "Дано $y = \\frac{120}{x}$. Знайдіть $y$, якщо $x = -60$.",
+          q: "Дано $y = \\frac{80}{x}$. Знайдіть $y$, якщо $x = -20$.",
           type: "input",
-          correct: ["-2"],
+          correct: ["-4"],
         },
         {
           id: 22,
-          q: "Дано $y = \\frac{120}{x}$. Знайдіть $x$, якщо $y = 30$.",
+          q: "Дано $y = \\frac{80}{x}$. Знайдіть $x$, якщо $y = 16$.",
           type: "input",
-          correct: ["4"],
+          correct: ["5"],
         },
         {
           id: 23,
@@ -669,51 +655,51 @@
         },
         {
           id: 24,
-          q: "Область визначення функції $y = \\frac{16}{x}$?",
+          q: "Область визначення функції $y = \\frac{25}{x}$?",
           type: "choice",
           options: ["Всі числа", "Всі числа, крім 0", "Тільки додатні"],
           correct: "Всі числа, крім 0",
         },
         {
           id: 25,
-          q: "Чверті графіка $y = \\frac{10}{x}$?",
+          q: "Чверті графіка $y = \\frac{12}{x}$?",
           type: "choice",
           options: ["I і II", "I і III", "II і IV"],
           correct: "I і III",
         },
         {
           id: 26,
-          q: "Чверті графіка $y = -\\frac{10}{x}$?",
+          q: "Чверті графіка $y = -\\frac{12}{x}$?",
           type: "choice",
           options: ["I і III", "II і IV", "I і II"],
           correct: "II і IV",
         },
         {
           id: 27,
-          q: "Чи належить графіку $y = -\\frac{144}{x}$ точка $A(-12; 12)$?",
+          q: "Чи належить графіку $y = -\\frac{100}{x}$ точка $A(-5; 20)$?",
           type: "choice",
           options: ["Так", "Ні"],
           correct: "Так",
         },
         {
           id: 28,
-          q: "Чи належить графіку $y = -\\frac{144}{x}$ точка $B(24; 6)$?",
+          q: "Чи належить графіку $y = -\\frac{100}{x}$ точка $B(20; 4)$?",
           type: "choice",
           options: ["Так", "Ні"],
           correct: "Ні",
         },
         {
           id: 29,
-          q: "Чи належить графіку $y = -\\frac{144}{x}$ точка $D(72; -2)$?",
+          q: "Чи належить графіку $y = -\\frac{100}{x}$ точка $D(50; -2)$?",
           type: "choice",
           options: ["Так", "Ні"],
           correct: "Так",
         },
         {
           id: 30,
-          q: "Графік $y = \\frac{k}{x}$ проходить через $(2; 5)$. Знайдіть $k$.",
+          q: "Графік $y = \\frac{k}{x}$ проходить через $(3; 7)$. Знайдіть $k$.",
           type: "input",
-          correct: ["10"],
+          correct: ["21"],
         },
       ];
 
@@ -725,7 +711,7 @@
         questions.forEach((item, index) => {
           const card = document.createElement("div");
           card.className = "test-card";
-          card.id = `card-${index}`; // ID для пошуку при перевірці
+          card.id = `card-${index}`;
 
           const num = document.createElement("span");
           num.className = "question-number";
@@ -745,7 +731,6 @@
               const btn = document.createElement("button");
               btn.className = "option-btn";
               btn.innerText = opt;
-              // Просто вибираємо, не перевіряємо
               btn.onclick = () => selectOption(btn, card);
               grid.appendChild(btn);
             });
@@ -756,7 +741,6 @@
             const inp = document.createElement("input");
             inp.className = "input-answer";
             inp.placeholder = "Ваша відповідь...";
-            // Додаємо слухач, щоб рахувати прогрес, коли щось введено
             inp.addEventListener("input", () => checkInputProgress(card));
 
             wrap.appendChild(inp);
@@ -765,7 +749,6 @@
           root.appendChild(card);
         });
 
-        // Рендер формул
         renderMathInElement(document.body, {
           delimiters: [
             { left: "$$", right: "$$", display: true },
@@ -774,27 +757,22 @@
         });
       }
 
-      // Вибір варіанту (тільки візуально)
       function selectOption(btn, card) {
         if (testFinished) return;
 
-        // Знімаємо виділення з інших
         card
           .querySelectorAll(".option-btn")
           .forEach((b) => b.classList.remove("selected"));
-        // Виділяємо поточну
         btn.classList.add("selected");
 
         updateProgress();
       }
 
-      // Перевірка, чи введено щось в інпут (для прогрес-бару)
       function checkInputProgress(card) {
         if (testFinished) return;
         updateProgress();
       }
 
-      // Оновлення лічильника заповнених
       function updateProgress() {
         let filled = 0;
         questions.forEach((q, index) => {
@@ -811,9 +789,6 @@
         ).innerText = `${filled}/${questions.length}`;
       }
 
-      // ===========================================
-      // ФІНІШ І ПЕРЕВІРКА
-      // ===========================================
       function finishTest() {
         if (testFinished) return;
 
@@ -830,7 +805,7 @@
 
         questions.forEach((q, index) => {
           const card = document.getElementById(`card-${index}`);
-          card.classList.add("disabled"); // Блокуємо картку
+          card.classList.add("disabled");
 
           if (q.type === "choice") {
             const selectedBtn = card.querySelector(".selected");
@@ -839,15 +814,12 @@
             let userVal = selectedBtn ? selectedBtn.innerText : null;
 
             if (userVal === q.correct) {
-              // ПРАВИЛЬНО
               correctCount++;
               selectedBtn.classList.add("correct-answer");
               addFeedback(card, "Вірно!", true);
             } else {
-              // НЕПРАВИЛЬНО
               if (selectedBtn) selectedBtn.classList.add("wrong-answer");
 
-              // Підсвітити правильну
               btns.forEach((b) => {
                 if (b.innerText === q.correct)
                   b.classList.add("correct-answer");
@@ -855,7 +827,6 @@
               addFeedback(card, "Помилка", false);
             }
           } else {
-            // INPUT
             const inp = card.querySelector("input");
             let val = inp.value.trim().replace(",", ".");
 
@@ -865,7 +836,6 @@
               addFeedback(card, "Вірно!", true);
             } else {
               inp.classList.add("wrong-answer");
-              // Показати правильну
               const div = document.createElement("div");
               div.className = "feedback-msg wrong";
               div.innerText = `Правильно: ${q.correct[0]}`;
@@ -877,13 +847,7 @@
         showResultModal(correctCount);
       }
 
-      function addFeedback(card, text, isCorrect) {
-        // Можна додати текстовий підпис, якщо треба, але кольорів зазвичай достатньо
-        // const msg = document.createElement('div');
-        // msg.className = isCorrect ? "feedback-msg correct" : "feedback-msg wrong";
-        // msg.innerText = text;
-        // card.appendChild(msg);
-      }
+      function addFeedback(card, text, isCorrect) {}
 
       function showResultModal(count) {
         const total = questions.length;
@@ -922,9 +886,6 @@
         document.getElementById("result-modal").style.display = "none";
       }
 
-      // ===========================================
-      // ДОШКА (CANVAS) - Без змін
-      // ===========================================
       const canvas = document.getElementById("board");
       const ctx = canvas.getContext("2d");
       const boardSection = document.getElementById("board-section");
