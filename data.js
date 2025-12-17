@@ -94,6 +94,16 @@ window.lessonsData = [
     author: "Даша",
   },
   {
+    id: 101,
+    title: "Тестування §11-12",
+    grade: 8,
+    topic: "Алгебра",
+    link: "algebra/8/Тест/test-11-12.html",
+    subject_code: "algebra",
+    category: "test",
+    author: "Даша",
+  },
+  {
     id: 201,
     title: "Перехід через десяток Додавання",
     grade: 2,
