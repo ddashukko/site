@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Урок: Коло, Круг, Сектори (6 клас)</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
+    />
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"
+    ></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    ></script>
+
+    <style>
+      :root {
+        --primary: #4f46e5; /* Indigo */
+        --primary-light: #e0e7ff;
+        --theory-bg: #f0f9ff; /* Light Blue for theory */
+        --theory-border: #0ea5e9;
+        --success: #16a34a;
+        --error: #dc2626;
+        --text: #1e293b;
+        --bg: #f8fafc;
+        --border: #cbd5e1;
+      }
+
+      body {
+        font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        overflow: hidden;
+      }
+
+      /* --- ЛІВА ЧАСТИНА (ТЕОРІЯ + ЗАВДАННЯ) --- */
+      #lesson-section {
+        flex: 1;
+        overflow-y: auto;
+        border-right: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        background: white;
+      }
+
+      header {
+        background: white;
+        padding: 15px 20px;
+        border-bottom: 2px solid var(--primary);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .lesson-title { font-weight: 800; font-size: 1.2rem; color: var(--primary); }
+      .score-box { font-weight: 600; font-size: 1rem; }
+
+      .content-wrapper {
+        padding: 20px;
+        padding-bottom: 80px;
+        max-width: 850px;
+        margin: 0 auto;
+        width: 100%;
+      }
+
+      /* Стилі теорії */
+      .theory-block {
+        background: var(--theory-bg);
+        border-left: 5px solid var(--theory-border);
+        padding: 20px;
+        margin-bottom: 30px;
+        border-radius: 0 8px 8px 0;
+      }
+      .theory-title {
+        margin-top: 0;
+        color: #0369a1;
+        font-size: 1.3rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .theory-content {
+        line-height: 1.6;
+        font-size: 1.05rem;
+      }
+      .important-formula {
+        background: white;
+        padding: 10px;
+        border-radius: 8px;
+        border: 2px solid var(--primary-light);
+        text-align: center;
+        font-weight: bold;
+        margin: 15px 0;
+        font-size: 1.2rem;
+      }
+      .concept-svg {
+        display: block;
+        margin: 15px auto;
+        max-width: 100%;
+        height: auto;
+      }
+
+      /* Стилі завдань */
+      .tasks-group {
+        margin-bottom: 40px;
+      }
+      .task-card {
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 15px;
+        background: white;
+        transition: 0.3s;
+      }
+      .task-card.solved-correct { border-color: var(--success); background: #f0fdf4; }
+      .task-card.solved-wrong { border-color: var(--error); background: #fef2f2; }
+
+      .task-q { font-weight: 500; font-size: 1.1rem; margin-bottom: 10px; }
+      
+      .input-area { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+      .ans-input {
+        padding: 8px 12px;
+        border: 2px solid var(--border);
+        border-radius: 6px;
+        font-size: 1rem;
+        width: 120px;
+      }
+      .btn-check {
+        background: var(--primary); color: white; border: none;
+        padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600;
+      }
+      .btn-check:hover { background: #4338ca; }
+
+      .help-area { margin-top: 10px; font-size: 0.9rem; }
+      .help-btn {
+        background: none; border: none; color: #64748b; 
+        cursor: pointer; text-decoration: underline; margin-right: 15px;
+      }
+      .hint-text, .sol-text { 
+        display: none; margin-top: 5px; padding: 8px; border-radius: 5px; 
+      }
+      .hint-text { background: #fffbeb; color: #b45309; }
+      .sol-text { background: #f1f5f9; color: #334155; }
+
+      /* --- ПРАВА ЧАСТИНА (ДОШКА) --- */
+      #board-section {
+        flex: 1;
+        position: relative;
+        background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+        background-size: 20px 20px;
+        background-color: white;
+      }
+      .tools-panel {
+        position: absolute; top: 15px; left: 15px;
+        background: white; padding: 8px; border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1); display: flex; gap: 8px;
+        z-index: 10;
+      }
+      .tool-btn {
+        width: 40px; height: 40px; border: 1px solid var(--border);
+        border-radius: 6px; cursor: pointer; background: white; font-size: 1.2rem;
+      }
+      .tool-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+      /* МОДАЛКА */
+      .modal {
+        display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000;
+      }
+      .modal-content {
+        background: white; padding: 30px; border-radius: 15px; text-align: center; max-width: 400px;
+        animation: popIn 0.3s ease;
+      }
+      @keyframes popIn { from {transform: scale(0.8); opacity: 0;} to {transform: scale(1); opacity: 1;} }
+
+      @media (max-width: 768px) {
+        body { flex-direction: column; }
+        #board-section { height: 35vh; order: 1; border-bottom: 2px solid var(--border); }
+        #lesson-section { height: 65vh; order: 2; }
+      }
+    </style>
+  </head>
+  <body>
+
+    <div id="lesson-section">
+      <header>
+        <div class="lesson-title">🔵 Коло, Круг та Сектори</div>
+        <div class="score-box">
+          <span style="color:var(--success)">✅ <span id="s-correct">0</span></span>
+          <span style="color:var(--error); margin-left:10px;">❌ <span id="s-wrong">0</span></span>
+        </div>
+      </header>
+
+      <div class="content-wrapper" id="content-root">
+        </div>
+      
+      <div style="text-align:center; padding: 20px;">
+        <button onclick="finishLesson()" style="padding:15px 40px; background:var(--text); color:white; border:none; border-radius:30px; font-size:1.1rem; cursor:pointer;">🏁 Завершити урок</button>
+      </div>
+    </div>
+
+    <div id="board-section">
+      <div class="tools-panel">
+        <button class="tool-btn active" onclick="setTool('pen')" id="btn-pen" title="Олівець">✏️</button>
+        <button class="tool-btn" onclick="setTool('eraser')" id="btn-eraser" title="Гумка">🧹</button>
+        <div style="width:1px; background:#ddd; margin:0 5px;"></div>
+        <button class="tool-btn" onclick="drawGrid()" title="Сітка">▦</button>
+        <button class="tool-btn" onclick="drawCircleTool()" title="Намалювати коло">⭕</button>
+        <button class="tool-btn" onclick="clearBoard()" style="color:red" title="Очистити">🗑️</button>
+      </div>
+      <canvas id="board"></canvas>
+    </div>
+
+    <div id="result-modal" class="modal">
+      <div class="modal-content">
+        <h2 id="modal-h"></h2>
+        <div id="modal-t" style="margin: 20px 0; font-size:1.1rem; color:#555;"></div>
+        <button onclick="document.getElementById('result-modal').style.display='none'" class="btn-check">Добре</button>
+      </div>
+    </div>
+
+    <script>
+      /* ================= ДАНІ УРОКУ ================= */
+      
+      const lessonModules = [
+        {
+          id: "m1",
+          type: "theory",
+          title: "1. Коло та Круг: У чому різниця?",
+          html: `
+            <p>Уяви собі <b>обруч</b> для гімнастики. Це — <b>КОЛО</b>. Коло — це лінія.</p>
+            <p>А тепер уяви <b>монету</b> або <b>піцу</b>. Це — <b>КРУГ</b>. Круг — це частина площини, обмежена колом.</p>
+            
+            <div style="display:flex; justify-content:space-around; align-items:center; margin: 20px 0;">
+              <svg width="150" height="150" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="45" stroke="#4f46e5" stroke-width="3" fill="none" />
+                <circle cx="50" cy="50" r="2" fill="black" />
+                <text x="48" y="55" font-size="10">O</text>
+                <text x="40" y="10" font-size="10" fill="#4f46e5">Коло (лінія)</text>
+              </svg>
+              <svg width="150" height="150" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="45" stroke="none" fill="#e0e7ff" />
+                <circle cx="50" cy="50" r="45" stroke="#4f46e5" stroke-width="1" fill="none" />
+                <text x="35" y="55" font-size="10" fill="#4f46e5">Круг (фігура)</text>
+              </svg>
+            </div>
+
+            <p><b>Основні елементи:</b></p>
+            <ul>
+              <li><b>Радіус ($r$)</b> — відрізок від центра до будь-якої точки кола.</li>
+              <li><b>Діаметр ($d$)</b> — відрізок, що сполучає дві точки кола і проходить через центр.</li>
+            </ul>
+            <div class="important-formula">$$d = 2r$$ (Діаметр удвічі більший за радіус)</div>
+          `
+        },
+        {
+          id: "t1",
+          type: "tasks",
+          items: [
+            { q: "Радіус кола $r = 5$ см. Чому дорівнює діаметр $d$?", a: "10", hint: "$d = 2 \\cdot r$", sol: "$d = 2 \\cdot 5 = 10$ см." },
+            { q: "Діаметр круга $d = 18$ м. Знайди радіус $r$.", a: "9", hint: "$r = d : 2$", sol: "$r = 18 : 2 = 9$ м." },
+            { q: "Найбільша хорда кола дорівнює 20 см. Яка довжина радіуса?", a: "10", hint: "Найбільша хорда — це діаметр.", sol: "Діаметр = 20 см, отже радіус = 10 см." },
+            { q: "Радіус збільшили у 3 рази. У скільки разів збільшився діаметр?", a: "3", hint: "Діаметр прямо залежить від радіуса.", sol: "У 3 рази, бо $d=2r$." },
+            { q: "Чому дорівнює $r$, якщо $d = 2.4$ дм?", a: "1.2", hint: "Поділи 2.4 навпіл.", sol: "$1.2$ дм." }
+          ]
+        },
+        {
+          id: "m2",
+          type: "theory",
+          title: "2. Число $\\pi$ і Довжина кола",
+          html: `
+            <p>Якщо виміряти довжину будь-якого кола (ниткою) і поділити її на діаметр, ми завжди отримаємо одне й те саме число.</p>
+            <p>Це число позначають грецькою буквою <b>$\\pi$ (пі)</b>.</p>
+            <div class="important-formula">$$\\pi \\approx 3.14$$</div>
+            <p><b>Формула довжини кола ($C$):</b></p>
+            <p>Оскільки довжина трохи більше ніж 3 діаметри:</p>
+            <div class="important-formula">$$C = \\pi d$$ або $$C = 2\\pi r$$</div>
+          `
+        },
+        {
+          id: "t2",
+          type: "tasks",
+          items: [
+            { q: "Знайди довжину кола, якщо $d = 10$ см. ($\\pi \\approx 3.14$)", a: "31.4", hint: "$C = 3.14 \\cdot 10$", sol: "$31.4$ см." },
+            { q: "Знайди $C$, якщо радіус $r = 100$ м.", a: "628", hint: "$C = 2 \\cdot 3.14 \\cdot 100$", sol: "$2 \\cdot 100 = 200$. $200 \\cdot 3.14 = 628$." },
+            { q: "Довжина кола $C = 31.4$ дм. Знайди діаметр $d$.", a: "10", hint: "$d = C : \\pi$", sol: "$31.4 : 3.14 = 10$." },
+            { q: "Обчисли довжину кола, якщо $r = 0.5$ см.", a: "3.14", hint: "$d = 1$, тому $C = \\pi$", sol: "$2 \\cdot 0.5 = 1$. $1 \\cdot 3.14 = 3.14$." },
+            { q: "Як зміниться довжина кола, якщо радіус збільшити в 2 рази?", opts: ["Збільшиться в 2 рази", "Збільшиться в 4 рази", "Не зміниться"], a: "Збільшиться в 2 рази", hint: "Формула лінійна: $2\\pi r$", sol: "Пряма пропорційність." }
+          ]
+        },
+        {
+          id: "m3",
+          type: "theory",
+          title: "3. Площа Круга",
+          html: `
+            <p>Щоб знайти, скільки місця займає круг (наприклад, скільки тканини треба на круглу скатертину), шукаємо площу ($S$).</p>
+            <p>Тут радіус треба підносити до <b>квадрата</b>!</p>
+            <div class="important-formula">$$S = \\pi r^2$$</div>
+            <p><i>Пам'ятай:</i> Спочатку підносимо до квадрата, потім множимо на 3.14.</p>
+          `
+        },
+        {
+          id: "t3",
+          type: "tasks",
+          items: [
+            { q: "Знайди площу круга, якщо $r=10$ см.", a: "314", hint: "$S = 3.14 \\cdot 10^2$", sol: "$100 \\cdot 3.14 = 314$ см$^2$." },
+            { q: "Обчисли $S$, якщо радіус $r=1$ м.", a: "3.14", hint: "$1^2 = 1$", sol: "$3.14$ м$^2$." },
+            { q: "Діаметр $d=20$ см. Знайди площу.", a: "314", hint: "Спочатку знайди $r$!", sol: "$r=10$. $S = 314$." },
+            { q: "Площа круга $314$ см$^2$. Чому дорівнює $r^2$?", a: "100", hint: "$r^2 = S : 3.14$", sol: "$314 : 3.14 = 100$." },
+            { q: "Чому дорівнює площа, якщо $r=0$?", a: "0", hint: "Точка не має площі.", sol: "0." }
+          ]
+        },
+        {
+          id: "m4",
+          type: "theory",
+          title: "4. Сектори та Відсотки",
+          html: `
+            <p><b>Сектор</b> — це частина круга, схожа на шматок піци. Він обмежений двома радіусами і дугою.</p>
+            
+            <svg width="120" height="120" viewBox="0 0 100 100" style="display:block; margin:10px auto;">
+              <path d="M50,50 L90,50 A40,40 0 0,0 60,15 Z" fill="#fca5a5" stroke="none" />
+              <circle cx="50" cy="50" r="40" stroke="#333" fill="none" opacity="0.2"/>
+              <path d="M50,50 L90,50" stroke="#333"/>
+              <path d="M50,50 L60,15" stroke="#333"/>
+              <text x="60" y="40" font-size="8">Сектор</text>
+            </svg>
+
+            <p>Повний круг — це <b>$360^\\circ$</b> або <b>$100\\%$</b>.</p>
+            <p>Щоб побудувати кругову діаграму, треба знати правило:</p>
+            <div class="important-formula">$$1\\% = 3.6^\\circ$$</div>
+            <p>(Бо $360 : 100 = 3.6$)</p>
+          `
+        },
+        {
+          id: "t4",
+          type: "tasks",
+          items: [
+            { q: "Яку частину круга складає сектор з кутом $180^\\circ$?", opts: ["Половину", "Третина", "Чверть"], a: "Половину", hint: "$180$ — половина від $360$.", sol: "$\\frac{180}{360} = \\frac{1}{2}$" },
+            { q: "Кут сектора $90^\\circ$. Скільки це відсотків площі круга?", a: "25", hint: "Це чверть.", sol: "$25\\%$." },
+            { q: "Сектор займає $10\\%$ круга. Який його кут?", a: "36", hint: "$10 \\cdot 3.6$", sol: "$36^\\circ$." },
+            { q: "Який кут відповідає $50\\%$ круга?", a: "180", hint: "Половина круга.", sol: "$180^\\circ$." },
+            { q: "Знайди площу сектора $90^\\circ$, якщо площа всього круга 400 см$^2$.", a: "100", hint: "Поділи на 4.", sol: "$400 : 4 = 100$." },
+            // Додаткові задачі на розуміння
+            { q: "У класі 30 учнів. 50% — дівчата. Який кут сектора на діаграмі?", a: "180", hint: "50% = половина.", sol: "$180^\\circ$." },
+            { q: "Скільки градусів у $1\\%$ кругової діаграми?", a: "3.6", hint: "$360 : 100$", sol: "$3.6^\\circ$." },
+            { q: "Кут сектора $36^\\circ$. Яка це частина круга (дріб)?", opts: ["1/10", "1/5", "1/2"], a: "1/10", hint: "Скільки разів 36 влізає в 360?", sol: "$\\frac{36}{360} = \\frac{1}{10}$." },
+            { q: "Площа сектора 5 см$^2$, і це $1/6$ круга. Яка повна площа?", a: "30", hint: "$5 \\cdot 6$", sol: "$30$ см$^2$." },
+            { q: "Сума трьох секторів: $100^\\circ, 100^\\circ, 160^\\circ$. Це повний круг?", opts: ["Так", "Ні"], a: "Так", hint: "Сума має бути 360.", sol: "$100+100+160 = 360$." }
+          ]
+        },
+        {
+          id: "t_final",
+          type: "tasks",
+          items: [
+             { q: "Бонус: Довжина кола 6.28. Знайди площу круга ($S$).", a: "3.14", hint: "Знайди $d$, потім $r$, потім $S$.", sol: "$d = 6.28:3.14=2$. $r=1$. $S=3.14 \\cdot 1^2 = 3.14$." },
+             { q: "Бонус: Сектор 25%. Який кут?", a: "90", hint: "Чверть.", sol: "$90^\\circ$." },
+             { q: "Бонус: $5^2$ (для площі) це...", a: "25", hint: "5 на 5", sol: "25." },
+             { q: "Бонус: $\\pi$ це приблизно...", a: "3.14", hint: "Три цілих...", sol: "3.14" },
+             { q: "Бонус: Якщо $r=2$, то $d=4$, а $C=...$", a: "12.56", hint: "$3.14 \\cdot 4$", sol: "12.56" }
+          ]
+        }
+      ];
+
+      /* ================= ЛОГІКА ДОДАТКУ ================= */
+      
+      let totalCorrect = 0;
+      let totalWrong = 0;
+      let tasksCount = 0;
+
+      function renderContent() {
+        const root = document.getElementById('content-root');
+        
+        lessonModules.forEach(mod => {
+          if(mod.type === 'theory') {
+            // Рендер теорії
+            const div = document.createElement('div');
+            div.className = 'theory-block';
+            div.innerHTML = `
+              <h3 class="theory-title">📚 ${mod.title}</h3>
+              <div class="theory-content">${mod.html}</div>
+            `;
+            root.appendChild(div);
+          } else if (mod.type === 'tasks') {
+            // Рендер групи завдань
+            const groupDiv = document.createElement('div');
+            groupDiv.className = 'tasks-group';
+            
+            mod.items.forEach((item, idx) => {
+              tasksCount++;
+              const uid = `${mod.id}_${idx}`;
+              
+              let interactionHTML = '';
+              if(item.opts) {
+                interactionHTML = `<div class="input-area">
+                  ${item.opts.map(opt => `<button class="btn-check" style="background:white; color:var(--text); border:1px solid var(--border);" onclick="checkOpt(this, '${opt}', '${item.a}', '${uid}')">${opt}</button>`).join('')}
+                </div>`;
+              } else {
+                interactionHTML = `<div class="input-area">
+                  <input type="text" class="ans-input" id="in_${uid}" placeholder="..." onkeydown="if(event.key==='Enter') checkInput('${uid}', '${item.a}')">
+                  <button class="btn-check" onclick="checkInput('${uid}', '${item.a}')">Перевірити</button>
+                </div>`;
+              }
+
+              const taskCard = document.createElement('div');
+              taskCard.className = 'task-card';
+              taskCard.id = `card_${uid}`;
+              taskCard.innerHTML = `
+                <div class="task-q">${tasksCount}. ${item.q}</div>
+                ${interactionHTML}
+                <div class="help-area">
+                   <button class="help-btn" onclick="toggle('hint_${uid}')">Підказка</button>
+                   <button class="help-btn" onclick="toggle('sol_${uid}')">Розв'язання</button>
+                   <div id="hint_${uid}" class="hint-text">💡 ${item.hint}</div>
+                   <div id="sol_${uid}" class="sol-text">📝 ${item.sol}</div>
+                </div>
+              `;
+              groupDiv.appendChild(taskCard);
+            });
+            root.appendChild(groupDiv);
+          }
+        });
+
+        // Запуск рендеру формул
+        renderMathInElement(document.body, {
+          delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "$", right: "$", display: false}
+          ],
+          throwOnError: false
+        });
+      }
+
+      function checkInput(uid, correct) {
+        const inp = document.getElementById(`in_${uid}`);
+        const card = document.getElementById(`card_${uid}`);
+        if(inp.disabled) return;
+        
+        let val = inp.value.trim().replace(',', '.');
+        if(!val) return;
+
+        inp.disabled = true;
+        if(Math.abs(parseFloat(val) - parseFloat(correct)) < 0.1 || val === correct) {
+          card.classList.add('solved-correct');
+          totalCorrect++;
+        } else {
+          card.classList.add('solved-wrong');
+          totalWrong++;
+          document.getElementById(`sol_${uid}`).style.display = 'block';
+        }
+        updateStats();
+      }
+
+      function checkOpt(btn, val, correct, uid) {
+        const card = document.getElementById(`card_${uid}`);
+        if(card.getAttribute('data-done')) return;
+        
+        card.setAttribute('data-done', 'true');
+        const btns = card.querySelectorAll('button.btn-check'); // селектор кнопок варіантів
+        
+        if(val === correct) {
+          btn.style.background = 'var(--success)';
+          btn.style.color = 'white';
+          card.classList.add('solved-correct');
+          totalCorrect++;
+        } else {
+          btn.style.background = 'var(--error)';
+          btn.style.color = 'white';
+          card.classList.add('solved-wrong');
+          totalWrong++;
+          document.getElementById(`sol_${uid}`).style.display = 'block';
+        }
+        updateStats();
+      }
+
+      function toggle(id) {
+        const el = document.getElementById(id);
+        el.style.display = el.style.display === 'block' ? 'none' : 'block';
+        renderMathInElement(el);
+      }
+
+      function updateStats() {
+        document.getElementById('s-correct').innerText = totalCorrect;
+        document.getElementById('s-wrong').innerText = totalWrong;
+      }
+
+      function finishLesson() {
+        const modal = document.getElementById('result-modal');
+        const h = document.getElementById('modal-h');
+        const t = document.getElementById('modal-t');
+        
+        let score = Math.round((totalCorrect / tasksCount) * 12);
+        if(tasksCount === 0) score = 0;
+
+        h.innerText = `Ваша оцінка: ${score} / 12`;
+        
+        if(score >= 10) t.innerText = "Чудовий результат! Ти справжній профі! 🚀";
+        else if(score >= 7) t.innerText = "Гарна робота! Ти добре засвоїв тему. 👍";
+        else t.innerText = "Варто ще трохи повторити формули. Не здавайся! 💪";
+
+        modal.style.display = 'flex';
+      }
+
+      /* ================= ДОШКА (WHITEBOARD) ================= */
+      const canvas = document.getElementById('board');
+      const ctx = canvas.getContext('2d');
+      const section = document.getElementById('board-section');
+      let painting = false;
+      let currentTool = 'pen';
+
+      function resize() {
+        const oldImg = canvas.toDataURL();
+        canvas.width = section.offsetWidth;
+        canvas.height = section.offsetHeight;
+        
+        const img = new Image();
+        img.src = oldImg;
+        img.onload = () => ctx.drawImage(img, 0, 0);
+        
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+      }
+      window.addEventListener('resize', resize);
+      window.addEventListener('load', () => { resize(); renderContent(); });
+
+      function getPos(e) {
+        const r = canvas.getBoundingClientRect();
+        return {
+          x: (e.touches ? e.touches[0].clientX : e.clientX) - r.left,
+          y: (e.touches ? e.touches[0].clientY : e.clientY) - r.top
+        };
+      }
+
+      canvas.addEventListener('mousedown', start);
+      canvas.addEventListener('touchstart', start);
+      canvas.addEventListener('mouseup', stop);
+      canvas.addEventListener('touchend', stop);
+      canvas.addEventListener('mousemove', draw);
+      canvas.addEventListener('touchmove', draw);
+
+      function start(e) { painting = true; draw(e); }
+      function stop() { painting = false; ctx.beginPath(); }
+      function draw(e) {
+        if(!painting) return;
+        const {x, y} = getPos(e);
+        
+        ctx.lineWidth = currentTool === 'pen' ? 2 : 20;
+        ctx.strokeStyle = currentTool === 'pen' ? '#4f46e5' : '#fff';
+        
+        ctx.lineTo(x, y);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+      }
+
+      function setTool(t) {
+        currentTool = t;
+        document.getElementById('btn-pen').classList.toggle('active', t==='pen');
+        document.getElementById('btn-eraser').classList.toggle('active', t==='eraser');
+      }
+
+      function clearBoard() {
+        ctx.clearRect(0,0,canvas.width, canvas.height);
+      }
+
+      function drawGrid() {
+        ctx.beginPath();
+        ctx.strokeStyle = '#e2e8f0';
+        ctx.lineWidth = 1;
+        for(let x=0; x<canvas.width; x+=20) { ctx.moveTo(x,0); ctx.lineTo(x,canvas.height); }
+        for(let y=0; y<canvas.height; y+=20) { ctx.moveTo(0,y); ctx.lineTo(canvas.width,y); }
+        ctx.stroke();
+      }
+
+      function drawCircleTool() {
+        const cx = canvas.width/2;
+        const cy = canvas.height/2;
+        ctx.beginPath();
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = '#000';
+        ctx.arc(cx, cy, 100, 0, Math.PI*2);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(cx, cy, 3, 0, Math.PI*2);
+        ctx.fillStyle='#000'; ctx.fill();
+        ctx.fillText("R", cx+50, cy-5);
+        ctx.beginPath();
+        ctx.moveTo(cx, cy); ctx.lineTo(cx+100, cy);
+        ctx.stroke();
+        setTool('pen');
+      }
+    </script>
+  </body>
+</html>
