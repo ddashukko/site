@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Тест: Квадратні корені (Вправи 16.2 - 16.10)</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
+    />
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"
+    ></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    ></script>
+
+    <style>
+      :root {
+        --primary: #4f46e5;
+        --primary-hover: #4338ca;
+        --bg: #f3f4f6;
+        --card: #ffffff;
+        --text: #1f2937;
+        --success: #16a34a;
+        --success-bg: #dcfce7;
+        --error: #dc2626;
+        --error-bg: #fee2e2;
+        --border: #e5e7eb;
+        --grid-color: #e2e8f0;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        display: flex;
+        overflow: hidden;
+      }
+
+      #tasks-section {
+        flex: 1;
+        background: var(--bg);
+        overflow-y: auto;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 800px;
+        padding-bottom: 50px;
+      }
+
+      header {
+        background: var(--card);
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+
+      .title {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: var(--primary);
+      }
+
+      .timer {
+        font-family: monospace;
+        font-size: 1.2rem;
+        background: #e0e7ff;
+        color: var(--primary);
+        padding: 5px 15px;
+        border-radius: 8px;
+        font-weight: bold;
+      }
+
+      .quiz-card {
+        background: var(--card);
+        border-radius: 12px;
+        padding: 25px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      }
+
+      .question-number {
+        font-size: 0.9rem;
+        color: #6b7280;
+        font-weight: 600;
+        margin-bottom: 10px;
+        text-transform: uppercase;
+      }
+
+      .question-text {
+        font-size: 1.2rem;
+        font-weight: 500;
+        margin-bottom: 10px;
+      }
+
+      .instruction-text {
+        font-size: 0.85rem;
+        color: #6366f1;
+        background: #eef2ff;
+        padding: 6px 10px;
+        border-radius: 6px;
+        margin-bottom: 10px;
+        display: inline-block;
+      }
+
+      .text-answer {
+        width: 100%;
+        padding: 12px;
+        font-size: 1.1rem;
+        border: 2px solid var(--border);
+        border-radius: 8px;
+        outline: none;
+      }
+
+      .text-answer.status-correct {
+        border-color: var(--success);
+        background-color: var(--success-bg);
+      }
+
+      .text-answer.status-wrong {
+        border-color: var(--error);
+        background-color: var(--error-bg);
+      }
+
+      .correct-answer-text {
+        margin-top: 8px;
+        color: var(--error);
+        font-weight: bold;
+        display: none;
+      }
+
+      .btn-submit {
+        width: 100%;
+        padding: 15px;
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      #board-section {
+        flex: 1;
+        position: relative;
+        background-color: #fff;
+        border-left: 4px solid #cbd5e1;
+        background-image: linear-gradient(
+            var(--grid-color) 1px,
+            transparent 1px
+          ),
+          linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+        background-size: 25px 25px;
+      }
+
+      canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+        touch-action: none;
+      }
+
+      .tools {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        display: flex;
+        gap: 10px;
+        z-index: 5;
+        background: white;
+        padding: 5px;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      .btn-tool {
+        padding: 8px;
+        cursor: pointer;
+        border: 1px solid #ddd;
+        background: white;
+        border-radius: 4px;
+      }
+
+      .btn-tool.active {
+        background: var(--primary);
+        color: white;
+      }
+
+      .result-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .result-card {
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        text-align: center;
+        max-width: 400px;
+        width: 90%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="tasks-section">
+      <div class="container">
+        <header>
+          <div class="title">Контрольна (16.2 - 16.10)</div>
+          <div class="timer" id="timer">00:00</div>
+        </header>
+        <form id="quiz-form"></form>
+        <button type="button" class="btn-submit" onclick="finishTest()">
+          Завершити
+        </button>
+      </div>
+    </div>
+
+    <div id="board-section">
+      <div class="tools">
+        <button class="btn-tool active" id="t-pen" onclick="setTool('pen')">
+          🖊️
+        </button>
+        <button class="btn-tool" id="t-eraser" onclick="setTool('eraser')">
+          🧹
+        </button>
+        <button class="btn-tool" onclick="clearCanvas()">❌</button>
+      </div>
+      <canvas id="board"></canvas>
+    </div>
+
+    <div class="result-overlay" id="result-modal">
+      <div class="result-card">
+        <h2>Результат</h2>
+        <div
+          id="final-score"
+          style="font-size: 3rem; color: var(--primary); font-weight: bold"
+        >
+          0
+        </div>
+        <p id="stats-text"></p>
+        <button class="btn-submit" onclick="location.reload()">
+          Спробувати знову
+        </button>
+      </div>
+    </div>
+
+    <script>
+      /* --- CANVAS --- */
+      const canvas = document.getElementById("board");
+      const ctx = canvas.getContext("2d");
+      let painting = false;
+      let tool = "pen";
+
+      function initCanvas() {
+        canvas.width = canvas.parentElement.offsetWidth;
+        canvas.height = canvas.parentElement.offsetHeight;
+        ctx.lineCap = "round";
+        ctx.lineWidth = 2;
+      }
+
+      function startPosition(e) {
+        painting = true;
+        draw(e);
+      }
+      function finishedPosition() {
+        painting = false;
+        ctx.beginPath();
+      }
+      function draw(e) {
+        if (!painting) return;
+        const rect = canvas.getBoundingClientRect();
+        const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+        const y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+
+        ctx.globalCompositeOperation =
+          tool === "pen" ? "source-over" : "destination-out";
+        ctx.lineWidth = tool === "pen" ? 2 : 25;
+        ctx.strokeStyle = tool === "pen" ? "#4f46e5" : "white";
+
+        ctx.lineTo(x, y);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+      }
+
+      canvas.addEventListener("mousedown", startPosition);
+      canvas.addEventListener("mouseup", finishedPosition);
+      canvas.addEventListener("mousemove", draw);
+      canvas.addEventListener("touchstart", startPosition);
+      canvas.addEventListener("touchend", finishedPosition);
+      canvas.addEventListener("touchmove", draw);
+
+      function setTool(t) {
+        tool = t;
+        document
+          .getElementById("t-pen")
+          .classList.toggle("active", t === "pen");
+        document
+          .getElementById("t-eraser")
+          .classList.toggle("active", t === "eraser");
+      }
+      function clearCanvas() {
+        if (confirm("Очистити?"))
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+      window.addEventListener("resize", initCanvas);
+      window.onload = initCanvas;
+
+      /* --- ТЕСТ --- */
+      const questions = [
+        { q: "Обчисліть $(\\sqrt{7})^2$", correct: ["7"], type: "val" },
+        {
+          q: "Обчисліть $(\\sqrt{4,2})^2$",
+          correct: ["4.2", "4,2"],
+          type: "val",
+        },
+        {
+          q: "Чи має корені рівняння $x^2 = -5$? (так/ні)",
+          correct: ["ні", "немає"],
+          type: "val",
+        },
+        { q: "Обчисліть $(-\\sqrt{13})^2$", correct: ["13"], type: "val" },
+        {
+          q: "Обчисліть $\\sqrt{23} \\cdot \\sqrt{23}$",
+          correct: ["23"],
+          type: "val",
+        },
+        { q: "Обчисліть $(3\\sqrt{5})^2$", correct: ["45"], type: "val" },
+        {
+          q: "Обчисліть $-5 \\cdot \\sqrt{2} \\cdot \\sqrt{2}$",
+          correct: ["-10"],
+          type: "val",
+        },
+        {
+          q: "Обчисліть $0,4 \\cdot (-\\sqrt{10})^2$",
+          correct: ["4"],
+          type: "val",
+        },
+        {
+          q: "Обчисліть $20 : (-\\frac{\\sqrt{5}}{2})^2$",
+          correct: ["16"],
+          type: "val",
+        },
+        {
+          q: "Розв'яжіть рівняння $x^2 = 81$",
+          correct: ["9; -9", "-9; 9", "9;-9", "-9;9"],
+          type: "roots",
+        },
+        {
+          q: "Розв'яжіть рівняння $x^2 = 0,36$",
+          correct: ["0.6; -0.6", "-0.6; 0.6", "0,6; -0,6", "-0,6; 0,6"],
+          type: "roots",
+        },
+        {
+          q: "Розв'яжіть рівняння $x^2 = \\frac{25}{49}$",
+          correct: ["5/7; -5/7", "-5/7; 5/7"],
+          type: "roots",
+        },
+      ];
+
+      const form = document.getElementById("quiz-form");
+      questions.forEach((item, index) => {
+        const div = document.createElement("div");
+        div.className = "quiz-card";
+        div.innerHTML = `
+          <div class="question-number">Завдання ${index + 1}</div>
+          <div class="question-text">${item.q}</div>
+          ${
+            item.type === "roots"
+              ? '<div class="instruction-text">Формат: x1; x2</div>'
+              : ""
+          }
+          <input type="text" class="text-answer" id="q-${index}" autocomplete="off">
+          <div class="correct-answer-text" id="ans-${index}">Вірно: ${
+          item.correct[0]
+        }</div>
+        `;
+        form.appendChild(div);
+      });
+
+      let sec = 0;
+      setInterval(() => {
+        sec++;
+        document.getElementById("timer").textContent = `${Math.floor(sec / 60)
+          .toString()
+          .padStart(2, "0")}:${(sec % 60).toString().padStart(2, "0")}`;
+      }, 1000);
+
+      document.addEventListener("DOMContentLoaded", () =>
+        renderMathInElement(document.body)
+      );
+
+      function finishTest() {
+        let score = 0;
+        questions.forEach((q, i) => {
+          const input = document.getElementById(`q-${i}`);
+          const val = input.value.trim().toLowerCase();
+          if (q.correct.some((c) => val === c.toLowerCase())) {
+            score++;
+            input.classList.add("status-correct");
+          } else {
+            input.classList.add("status-wrong");
+            document.getElementById(`ans-${i}`).style.display = "block";
+          }
+        });
+        document.getElementById("result-modal").style.display = "flex";
+        document.getElementById("final-score").textContent = Math.round(
+          (score / questions.length) * 12
+        );
+        document.getElementById(
+          "stats-text"
+        ).textContent = `Вірно: ${score} з ${questions.length}`;
+      }
+    </script>
+  </body>
+</html>
