@@ -113,6 +113,17 @@ window.lessonsData = [
     category: "lesson",
     author: "Даша",
   },
+
+  {
+    id: 202,
+    title: "Перехід через десяток Додавання Домашня",
+    grade: 2,
+    topic: "Математика",
+    link: "math_general/2/test_perehid_cherez.html",
+    subject_code: "math_general",
+    category: "lesson",
+    author: "Даша",
+  },
   {
     id: 501,
     title: "Rechenausdrücke",
