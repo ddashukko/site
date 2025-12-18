@@ -102,7 +102,7 @@ window.lessonsData = [
     subject_code: "algebra",
     category: "test",
     author: "Даша",
-  }
+  },
   {
     id: 101,
     title: "Тестування §11-12",
