@@ -94,6 +94,16 @@ window.lessonsData = [
     author: "Даша",
   },
   {
+    id: 11,
+    title: "Тест2 на Тотожність (√a)² = a",
+    grade: 8,
+    topic: "Алгебра",
+    link: "algebra/8/Тест/Тест корінь квадрат.html",
+    subject_code: "algebra",
+    category: "test",
+    author: "Даша",
+  }
+  {
     id: 101,
     title: "Тестування §11-12",
     grade: 8,
