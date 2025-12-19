@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Klassenarbeit: Natürliche Zahlen (Mit Korrektur)</title>
+    <style>
+      :root {
+        --paper-color: #fdfbf7;
+        --grid-line: #cce0f5;
+        --ink-color: #0000cd;
+        --teacher-red: #c0392b;
+        --correct-green: #27ae60;
+        --bg-correct: #eafaf1;
+        --bg-wrong: #fadbd8;
+      }
+
+      body {
+        font-family: "Times New Roman", serif;
+        background-color: #555;
+        margin: 0;
+        padding: 20px;
+        display: flex;
+        justify-content: center;
+      }
+
+      .sheet {
+        background-color: var(--paper-color);
+        width: 210mm;
+        min-height: 297mm;
+        padding: 20mm;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+        position: relative;
+        box-sizing: border-box;
+        margin-bottom: 20px;
+      }
+
+      .grid-bg-sheet {
+        background-image: linear-gradient(var(--grid-line) 1px, transparent 1px),
+          linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+        background-size: 5mm 5mm;
+      }
+
+      h1,
+      h2,
+      h3 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #000;
+      }
+
+      .header-info {
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 2px solid black;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+        font-weight: bold;
+        font-family: Arial, sans-serif;
+      }
+
+      /* --- СТИЛІ ДЛЯ ПЕРЕВІРКИ (НОВІ) --- */
+      .correct-field {
+        border: 2px solid var(--correct-green) !important;
+        background-color: var(--bg-correct) !important;
+        color: var(--correct-green) !important;
+      }
+
+      .wrong-field {
+        border: 2px solid var(--teacher-red) !important;
+        background-color: var(--bg-wrong) !important;
+        color: var(--teacher-red) !important;
+      }
+
+      .row-correct {
+        background-color: var(--bg-correct) !important;
+      }
+      .row-wrong {
+        background-color: var(--bg-wrong) !important;
+      }
+
+      /* --- СТИЛІ СТОРІНКИ 1 --- */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+        background: white;
+        font-family: Arial, sans-serif;
+      }
+
+      th,
+      td {
+        border: 1px solid black;
+        padding: 8px 4px;
+        text-align: center;
+        vertical-align: middle;
+      }
+
+      th {
+        background-color: #f0f0f0;
+      }
+
+      td.question-text {
+        text-align: left;
+        padding-left: 10px;
+        width: 35%;
+        font-weight: bold;
+      }
+
+      .letter-input {
+        width: 30px;
+        height: 30px;
+        font-size: 1.2rem;
+        text-align: center;
+        text-transform: uppercase;
+        border: 2px solid #2980b9;
+        border-radius: 4px;
+        font-family: "Courier New", monospace;
+        font-weight: bold;
+      }
+
+      /* --- СТИЛІ ДЛЯ МАЛЮВАННЯ --- */
+      .task-block {
+        margin-bottom: 25px;
+        padding: 10px;
+        border: 1px solid #999;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 5px;
+      }
+
+      .drawing-container {
+        position: relative;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #bbb;
+        background-color: white;
+        background-image: linear-gradient(#e0e0e0 1px, transparent 1px),
+          linear-gradient(90deg, #e0e0e0 1px, transparent 1px);
+        background-size: 20px 20px;
+        cursor: crosshair;
+      }
+
+      canvas {
+        display: block;
+        touch-action: none;
+      }
+
+      .tools {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 5px;
+        background: #eee;
+        padding: 5px;
+        border-radius: 4px;
+      }
+
+      .tool-btn {
+        padding: 5px 10px;
+        font-size: 14px;
+        background: white;
+        border: 1px solid #999;
+        cursor: pointer;
+        border-radius: 3px;
+      }
+
+      .tool-btn.active {
+        background: #2c3e50;
+        color: white;
+        border-color: #000;
+      }
+
+      .task-input {
+        font-family: "Courier New", monospace;
+        font-size: 1.2rem;
+        padding: 5px;
+        width: 120px;
+        border: none;
+        border-bottom: 2px solid #2c3e50;
+        background: transparent;
+        text-align: right;
+        font-weight: bold;
+      }
+
+      /* Навігація */
+      .nav-buttons {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 40px;
+      }
+
+      button.nav-btn {
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        background-color: #2c3e50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        margin-left: 10px;
+      }
+
+      button.nav-btn:hover {
+        background-color: #34495e;
+      }
+
+      button.check-btn {
+        background-color: #27ae60;
+      }
+      button.check-btn:hover {
+        background-color: #219150;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      /* Результати */
+      .result-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.85);
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+      }
+      .result-box {
+        background: white;
+        padding: 40px;
+        border-radius: 8px;
+        width: 500px;
+        text-align: center;
+        font-family: sans-serif;
+      }
+      .grade-mark {
+        font-size: 4rem;
+        color: var(--teacher-red);
+        font-family: "Brush Script MT", cursive;
+        margin: 20px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="sheet" id="page1">
+      <div class="header-info">
+        <span>Klassenarbeit: Natürliche Zahlen</span>
+        <span>Datum: ___________</span>
+        <span>Name: ___________</span>
+      </div>
+
+      <h3>1. Aufgabe: Wähle die richtige Lösung (A, B, C oder D).</h3>
+      <p>Schreibe den Buchstaben in die Spalte „Lösung“. (10 Punkte)</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 35%">Aufgabe</th>
+            <th style="width: 10%">A</th>
+            <th style="width: 10%">B</th>
+            <th style="width: 10%">C</th>
+            <th style="width: 10%">D</th>
+            <th style="width: 15%; color: #c0392b">Lösung</th>
+          </tr>
+        </thead>
+        <tbody id="table-p1"></tbody>
+      </table>
+
+      <div class="nav-buttons" style="justify-content: flex-end">
+        <button class="nav-btn" onclick="showPage('page2')">
+          Nächste Seite &rarr;
+        </button>
+      </div>
+    </div>
+
+    <div class="sheet grid-bg-sheet hidden" id="page2">
+      <div class="header-info">
+        <span>Seite 2</span>
+      </div>
+
+      <h3>Schriftliche Rechenverfahren</h3>
+      <p>
+        Rechne im karierten Feld (du kannst zeichnen). Trage unten das
+        <strong>Endergebnis</strong> ein.
+      </p>
+
+      <div class="task-block">
+        <label
+          ><strong>2. Aufgabe:</strong> Berechne schriftlich 8.347 +
+          12.594</label
+        >
+        <div class="tools">
+          <button
+            class="tool-btn active"
+            onclick="setTool(this, 'canvas1', 'pen')"
+          >
+            🖊️ Stift
+          </button>
+          <button class="tool-btn" onclick="setTool(this, 'canvas1', 'eraser')">
+            ⬜ Radierer
+          </button>
+          <button class="tool-btn" onclick="clearCanvas('canvas1')">
+            🗑️ Alles löschen
+          </button>
+        </div>
+        <div class="drawing-container">
+          <canvas id="canvas1" width="700" height="200"></canvas>
+        </div>
+        <div style="text-align: right">
+          Ergebnis: <input type="number" id="p2_q1" class="task-input" />
+        </div>
+      </div>
+
+      <div class="task-block">
+        <label
+          ><strong>3. Aufgabe:</strong> Berechne schriftlich 24.005 - 628</label
+        >
+        <div class="tools">
+          <button
+            class="tool-btn active"
+            onclick="setTool(this, 'canvas2', 'pen')"
+          >
+            🖊️ Stift
+          </button>
+          <button class="tool-btn" onclick="setTool(this, 'canvas2', 'eraser')">
+            ⬜ Radierer
+          </button>
+          <button class="tool-btn" onclick="clearCanvas('canvas2')">
+            🗑️ Alles löschen
+          </button>
+        </div>
+        <div class="drawing-container">
+          <canvas id="canvas2" width="700" height="200"></canvas>
+        </div>
+        <div style="text-align: right">
+          Ergebnis: <input type="number" id="p2_q2" class="task-input" />
+        </div>
+      </div>
+
+      <div class="task-block">
+        <label
+          ><strong>4. Aufgabe:</strong> Berechne schriftlich 15.648 : 12</label
+        >
+        <div class="tools">
+          <button
+            class="tool-btn active"
+            onclick="setTool(this, 'canvas3', 'pen')"
+          >
+            🖊️ Stift
+          </button>
+          <button class="tool-btn" onclick="setTool(this, 'canvas3', 'eraser')">
+            ⬜ Radierer
+          </button>
+          <button class="tool-btn" onclick="clearCanvas('canvas3')">
+            🗑️ Alles löschen
+          </button>
+        </div>
+        <div class="drawing-container">
+          <canvas id="canvas3" width="700" height="250"></canvas>
+        </div>
+        <div style="text-align: right">
+          Ergebnis: <input type="number" id="p2_q3" class="task-input" />
+        </div>
+      </div>
+
+      <div class="task-block">
+        <label
+          ><strong>5. Aufgabe:</strong> Berechne schriftlich 4.826 · 235</label
+        >
+        <div class="tools">
+          <button
+            class="tool-btn active"
+            onclick="setTool(this, 'canvas4', 'pen')"
+          >
+            🖊️ Stift
+          </button>
+          <button class="tool-btn" onclick="setTool(this, 'canvas4', 'eraser')">
+            ⬜ Radierer
+          </button>
+          <button class="tool-btn" onclick="clearCanvas('canvas4')">
+            🗑️ Alles löschen
+          </button>
+        </div>
+        <div class="drawing-container">
+          <canvas id="canvas4" width="700" height="250"></canvas>
+        </div>
+        <div style="text-align: right">
+          Ergebnis: <input type="number" id="p2_q4" class="task-input" />
+        </div>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="nav-btn" onclick="showPage('page1')">
+          &larr; Zurück
+        </button>
+        <button class="nav-btn" onclick="showPage('page3')">
+          Nächste Seite &rarr;
+        </button>
+      </div>
+    </div>
+
+    <div class="sheet hidden" id="page3">
+      <div class="header-info">
+        <span>Seite 3</span>
+      </div>
+
+      <h3>6. Aufgabe: Statistische Kennwerte (10 Punkte)</h3>
+      <p>Kreuze an, welche Aussage passt.</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Aussage</th>
+            <th>Durchschnitt</th>
+            <th>Zentralwert</th>
+            <th>Spannweite</th>
+          </tr>
+        </thead>
+        <tbody id="logicTableBody">
+          <tr id="logicRow1">
+            <td class="question-text">
+              „Ich notiere die Zahl, die in der sortierten Reihe genau in der
+              Mitte steht.“
+            </td>
+            <td><input type="radio" name="logic1" value="wrong" /></td>
+            <td><input type="radio" name="logic1" value="correct" /></td>
+            <td><input type="radio" name="logic1" value="wrong" /></td>
+          </tr>
+          <tr id="logicRow2">
+            <td class="question-text">
+              „Ich addiere alle Noten und teile durch die Anzahl der Fächer.“
+            </td>
+            <td><input type="radio" name="logic2" value="correct" /></td>
+            <td><input type="radio" name="logic2" value="wrong" /></td>
+            <td><input type="radio" name="logic2" value="wrong" /></td>
+          </tr>
+          <tr id="logicRow3">
+            <td class="question-text">
+              „Mich interessiert der Unterschied zwischen Maximum und Minimum.“
+            </td>
+            <td><input type="radio" name="logic3" value="wrong" /></td>
+            <td><input type="radio" name="logic3" value="wrong" /></td>
+            <td><input type="radio" name="logic3" value="correct" /></td>
+          </tr>
+          <tr id="logicRow4">
+            <td class="question-text">
+              „Ich will wissen, wie viel ich im Mittel pro Woche lese.“
+            </td>
+            <td><input type="radio" name="logic4" value="correct" /></td>
+            <td><input type="radio" name="logic4" value="wrong" /></td>
+            <td><input type="radio" name="logic4" value="wrong" /></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <hr />
+
+      <h3>7. Aufgabe: Sachaufgabe (12 Punkte)</h3>
+      <p>
+        Eine Gruppe möchte <strong>38 Apfelsaftflaschen</strong> und
+        <strong>9 Orangensaftflaschen</strong> holen. Maximal kann man
+        <strong>6 Flaschen</strong> auf einmal tragen. <br />
+        Wie oft muss man gehen?
+      </p>
+
+      <div class="task-block" style="border: none; background: transparent">
+        <div class="tools">
+          <button
+            class="tool-btn active"
+            onclick="setTool(this, 'canvas5', 'pen')"
+          >
+            🖊️ Stift
+          </button>
+          <button class="tool-btn" onclick="setTool(this, 'canvas5', 'eraser')">
+            ⬜ Radierer
+          </button>
+          <button class="tool-btn" onclick="clearCanvas('canvas5')">
+            🗑️ Alles löschen
+          </button>
+        </div>
+        <div class="drawing-container">
+          <canvas id="canvas5" width="700" height="150"></canvas>
+        </div>
+        <p>
+          Antwort: Man muss
+          <input
+            type="number"
+            id="p3_wordproblem"
+            class="task-input"
+            style="width: 50px"
+          />
+          mal gehen.
+        </p>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="nav-btn" onclick="showPage('page2')">
+          &larr; Zurück
+        </button>
+        <div style="display: flex">
+          <button class="nav-btn check-btn" onclick="checkErrors()">
+            ✔ Fehler prüfen
+          </button>
+          <button
+            class="nav-btn"
+            onclick="finishTest()"
+            style="background-color: var(--teacher-red)"
+          >
+            Zusammenfassung & Note
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="result-overlay" id="resultOverlay">
+      <div class="result-box">
+        <h2>Ergebnis</h2>
+        <p>Du hast <span id="totalPoints">0</span> von 50 Punkten erreicht.</p>
+        <div class="grade-mark" id="finalGrade">Note: 6</div>
+        <div style="text-align: left; margin-top: 20px; font-size: 0.9rem">
+          <p>Seite 1: <span id="scoreP1">0</span> / 10</p>
+          <p>Seite 2: <span id="scoreP2">0</span> / 18</p>
+          <p>Seite 3: <span id="scoreP3">0</span> / 22</p>
+        </div>
+        <button
+          class="nav-btn"
+          onclick="location.reload()"
+          style="margin-top: 20px"
+        >
+          Nochmal versuchen
+        </button>
+        <button
+          class="nav-btn"
+          onclick="document.getElementById('resultOverlay').style.display='none'"
+          style="margin-top: 20px; background: #999"
+        >
+          Zurück zu den Fehlern
+        </button>
+      </div>
+    </div>
+
+    <script>
+      // --- ДАНІ ---
+      const p1_data = [
+        { q: "6 · 14 =", opts: ["84", "74", "94", "64"], ans: 0 },
+        { q: "2 + 18 + 5 + 25 + 9 =", opts: ["49", "59", "60", "58"], ans: 1 },
+        { q: "844 : 4 =", opts: ["221", "211", "212", "422"], ans: 1 },
+        {
+          q: "Runde auf Tausender: 815 ≈",
+          opts: ["800", "900", "1000", "0"],
+          ans: 2,
+        },
+        {
+          q: "Runde auf Zehner: 15.208 ≈",
+          opts: ["15200", "15210", "15208", "15205"],
+          ans: 1,
+        },
+        {
+          q: "Runde auf Hunderter: 33.562 ≈",
+          opts: ["33500", "33600", "33560", "34000"],
+          ans: 1,
+        },
+        {
+          q: "45 Cent + 75 Cent =",
+          opts: ["120 €", "1,20 €", "1,15 €", "12 €"],
+          ans: 1,
+        },
+        {
+          q: "Der Zentralwert von 3, 5, 9, 5, 8 ist...",
+          opts: ["3", "5", "8", "6"],
+          ans: 1,
+        },
+        {
+          q: "Der Durchschnitt von 10, 4, 10 ist...",
+          opts: ["8", "12", "7", "24"],
+          ans: 0,
+        },
+        {
+          q: "Werte: 2, 20, 5. Spannweite ist...",
+          opts: ["22", "15", "18", "10"],
+          ans: 2,
+        },
+      ];
+      const letters = ["A", "B", "C", "D"];
+
+      // Рендер таблиці сторінки 1
+      const tbody = document.getElementById("table-p1");
+      p1_data.forEach((item, index) => {
+        let row = `<tr><td class="question-text">${item.q}</td>`;
+        item.opts.forEach((opt) => (row += `<td>${opt}</td>`));
+        row += `<td><input type="text" maxlength="1" id="p1_input_${index}" class="letter-input"></td></tr>`;
+        tbody.innerHTML += row;
+      });
+
+      // --- ЛОГІКА МАЛЮВАННЯ (Canvas) ---
+      const canvases = document.querySelectorAll("canvas");
+      canvases.forEach((canvas) => {
+        const ctx = canvas.getContext("2d");
+        let isDrawing = false;
+        let lastX = 0,
+          lastY = 0;
+
+        ctx.lineJoin = "round";
+        ctx.lineCap = "round";
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = "#0000CD";
+
+        function startDrawing(e) {
+          isDrawing = true;
+          [lastX, lastY] = getCoords(e, canvas);
+        }
+        function draw(e) {
+          if (!isDrawing) return;
+          e.preventDefault();
+          const [x, y] = getCoords(e, canvas);
+          ctx.beginPath();
+          ctx.moveTo(lastX, lastY);
+          ctx.lineTo(x, y);
+          ctx.stroke();
+          [lastX, lastY] = [x, y];
+        }
+        function stopDrawing() {
+          isDrawing = false;
+        }
+
+        canvas.addEventListener("mousedown", startDrawing);
+        canvas.addEventListener("mousemove", draw);
+        canvas.addEventListener("mouseup", stopDrawing);
+        canvas.addEventListener("mouseout", stopDrawing);
+        canvas.addEventListener("touchstart", startDrawing);
+        canvas.addEventListener("touchmove", draw);
+        canvas.addEventListener("touchend", stopDrawing);
+      });
+
+      function getCoords(e, canvas) {
+        const rect = canvas.getBoundingClientRect();
+        let clientX = e.clientX,
+          clientY = e.clientY;
+        if (e.touches && e.touches.length > 0) {
+          clientX = e.touches[0].clientX;
+          clientY = e.touches[0].clientY;
+        }
+        return [clientX - rect.left, clientY - rect.top];
+      }
+
+      function setTool(btn, canvasId, tool) {
+        btn.parentElement
+          .querySelectorAll(".tool-btn")
+          .forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        const canvas = document.getElementById(canvasId);
+        const ctx = canvas.getContext("2d");
+        if (tool === "pen") {
+          ctx.globalCompositeOperation = "source-over";
+          ctx.lineWidth = 2;
+          canvas.style.cursor = "crosshair";
+        } else if (tool === "eraser") {
+          ctx.globalCompositeOperation = "destination-out";
+          ctx.lineWidth = 15;
+          canvas.style.cursor = "cell";
+        }
+      }
+
+      function clearCanvas(canvasId) {
+        const canvas = document.getElementById(canvasId);
+        canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
+      }
+
+      // --- НАВІГАЦІЯ ---
+      function showPage(pageId) {
+        document
+          .querySelectorAll(".sheet")
+          .forEach((el) => el.classList.add("hidden"));
+        document.getElementById(pageId).classList.remove("hidden");
+        window.scrollTo(0, 0);
+      }
+
+      // --- ПЕРЕВІРКА ПОМИЛОК (Тільки візуально) ---
+      function checkErrors() {
+        // Сторінка 1
+        p1_data.forEach((item, index) => {
+          const el = document.getElementById(`p1_input_${index}`);
+          const val = el.value.toUpperCase().trim();
+          el.classList.remove("correct-field", "wrong-field");
+
+          if (val === letters[item.ans]) {
+            el.classList.add("correct-field");
+          } else if (val !== "") {
+            el.classList.add("wrong-field");
+          }
+        });
+
+        // Сторінка 2
+        // Правильні: 20941, 23377, 1304, 1134110
+        checkNumberField("p2_q1", 20941);
+        checkNumberField("p2_q2", 23377);
+        checkNumberField("p2_q3", 1304);
+        checkNumberField("p2_q4", 1134110);
+
+        // Сторінка 3 (Таблиця)
+        checkLogicRow("logic1", "logicRow1");
+        checkLogicRow("logic2", "logicRow2");
+        checkLogicRow("logic3", "logicRow3");
+        checkLogicRow("logic4", "logicRow4");
+
+        // Сторінка 3 (Задача)
+        checkNumberField("p3_wordproblem", 8);
+
+        alert("Die Fehler wurden markiert (Rot = Falsch, Grün = Richtig).");
+      }
+
+      function checkNumberField(id, correctVal) {
+        const el = document.getElementById(id);
+        el.classList.remove("correct-field", "wrong-field");
+        if (parseInt(el.value) === correctVal) {
+          el.classList.add("correct-field");
+        } else if (el.value !== "") {
+          el.classList.add("wrong-field");
+        }
+      }
+
+      function checkLogicRow(radioName, rowId) {
+        const row = document.getElementById(rowId);
+        const selected = document.querySelector(
+          `input[name="${radioName}"]:checked`
+        );
+        row.classList.remove("row-correct", "row-wrong");
+
+        if (selected) {
+          if (selected.value === "correct") {
+            row.classList.add("row-correct");
+          } else {
+            row.classList.add("row-wrong");
+          }
+        }
+      }
+
+      // --- ФІНАЛЬНА ОЦІНКА ---
+      function finishTest() {
+        checkErrors(); // Спочатку підсвітити помилки
+
+        let points = 0;
+        // P1
+        p1_data.forEach((item, index) => {
+          if (
+            document
+              .getElementById(`p1_input_${index}`)
+              .value.toUpperCase()
+              .trim() === letters[item.ans]
+          )
+            points++;
+        });
+        const scoreP1 = points;
+
+        // P2
+        let p2_points = 0;
+        if (parseInt(document.getElementById("p2_q1").value) === 20941)
+          p2_points += 3;
+        if (parseInt(document.getElementById("p2_q2").value) === 23377)
+          p2_points += 3;
+        if (parseInt(document.getElementById("p2_q3").value) === 1304)
+          p2_points += 6;
+        if (parseInt(document.getElementById("p2_q4").value) === 1134110)
+          p2_points += 6;
+        points += p2_points;
+
+        // P3
+        let p3_points = 0;
+        ["logic1", "logic2", "logic3", "logic4"].forEach((name) => {
+          const el = document.querySelector(`input[name="${name}"]:checked`);
+          if (el && el.value === "correct") p3_points += 2.5;
+        });
+        if (parseInt(document.getElementById("p3_wordproblem").value) === 8)
+          p3_points += 12;
+        points += p3_points;
+
+        // Результат
+        document.getElementById("totalPoints").innerText = points;
+        document.getElementById("scoreP1").innerText = scoreP1;
+        document.getElementById("scoreP2").innerText = p2_points;
+        document.getElementById("scoreP3").innerText = p3_points;
+
+        let grade = 6;
+        if (points >= 45) grade = 1;
+        else if (points >= 38) grade = 2;
+        else if (points >= 30) grade = 3;
+        else if (points >= 20) grade = 4;
+        else if (points >= 10) grade = 5;
+
+        document.getElementById("finalGrade").innerText = "Note: " + grade;
+        document.getElementById("resultOverlay").style.display = "flex";
+      }
+    </script>
+  </body>
+</html>

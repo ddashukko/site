@@ -185,6 +185,17 @@ window.lessonsData = [
     author: "Даша",
   },
   {
+    id: 506,
+    title:
+      "Контрольна з теми: додавання віднімання ділення та множення в стовбчик",
+    grade: 5,
+    topic: "Математика",
+    link: "math_general/5/test_simulator.html",
+    subject_code: "math_general",
+    category: "lesson",
+    author: "Даша",
+  },
+  {
     id: 712,
     title: "Розклад многочлена на множники",
     grade: 7,
