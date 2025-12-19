@@ -408,6 +408,16 @@ window.lessonsData = [
     author: "Даша",
   },
   {
+    id: 18100,
+    title: "Повторення тем 1-11",
+    grade: 8,
+    topic: "Алгебра",
+    link: "algebra/8/lesson_repetition_1 - 11.html",
+    subject_code: "algebra",
+    category: "homework",
+    author: "Даша",
+  },
+  {
     id: 400601,
     title: "Відсоткові розрахунки",
     grade: 6,
