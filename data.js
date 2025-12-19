@@ -412,7 +412,7 @@ window.lessonsData = [
     title: "Повторення тем 1-11",
     grade: 8,
     topic: "Алгебра",
-    link: "algebra/8/lesson_repetition_1 - 11.html",
+    link: "algebra/8/lesson_repetition_1-11.html",
     subject_code: "algebra",
     category: "homework",
     author: "Даша",
