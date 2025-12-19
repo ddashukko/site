@@ -115,21 +115,32 @@ window.lessonsData = [
   },
   {
     id: 201,
-    title: "Перехід через десяток Додавання",
+    title:
+      "Урок1. Перехід через десяток. Додавання двоцифрового числа до одноцифрового",
     grade: 2,
     topic: "Математика",
-    link: "math_general/2/Перехід через десяток Додавання.html",
+    link: "math_general/2/factoring_numbers_addition.html",
     subject_code: "math_general",
     category: "lesson",
     author: "Даша",
   },
-
   {
     id: 202,
-    title: "Перехід через десяток Додавання Домашня",
+    title:
+      "Урок2. Перехід через десяток. Віднімання від двоцифрового числа одноцифрового",
     grade: 2,
     topic: "Математика",
-    link: "math_general/2/test_perehid_cherez.html",
+    link: "math_general/2/factoring_numbers_subtraction.html",
+    subject_code: "math_general",
+    category: "lesson",
+    author: "Даша",
+  },
+  {
+    id: 203,
+    title: "Домашня1",
+    grade: 2,
+    topic: "Математика",
+    link: "math_general/2/HW_factoring_numbers_addition.html",
     subject_code: "math_general",
     category: "lesson",
     author: "Даша",

@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Великий Урок Віднімання: Жабки</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* ЗАГАЛЬНІ СТИЛІ (ЖАБ'ЯЧА ТЕМА) */
+      body {
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+        font-family: "Fredoka", sans-serif;
+        background-color: #f0fdf4; /* Світло-зелений фон */
+        background-image: radial-gradient(#86efac 2px, transparent 2px);
+        background-size: 25px 25px;
+        color: #14532d; /* Темно-зелений текст */
+      }
+
+      canvas#confetti {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 9999;
+      }
+      .hidden {
+        display: none;
+      }
+
+      /* Розділювач */
+      .section-divider {
+        height: 50px;
+        background: linear-gradient(to bottom, #f0fdf4, #dcfce7);
+        border-top: 5px dashed #22c55e;
+        border-bottom: 5px dashed #16a34a;
+        opacity: 0.6;
+      }
+
+      /* =========================================
+           ЧАСТИНА 1: ТРЕНАЖЕР "СТРИБКИ"
+           ========================================= */
+      #quest-section {
+        padding: 40px 20px;
+        min-height: 100vh;
+      }
+
+      #quest-section .container {
+        max-width: 800px;
+        margin: 0 auto;
+      }
+
+      #quest-section header {
+        text-align: center;
+        margin-bottom: 30px;
+        background: white;
+        padding: 20px;
+        border-radius: 25px;
+        border: 4px solid #4ade80; /* Зелена рамка */
+        box-shadow: 0 10px 20px rgba(21, 128, 61, 0.1);
+      }
+
+      #quest-section h1 {
+        color: #16a34a; /* Яскраво-зелений */
+        margin: 0;
+        font-size: 2.5em;
+        text-shadow: 2px 2px 0px #fff;
+      }
+
+      .progress-container {
+        margin-top: 15px;
+        background: #dcfce7;
+        height: 20px;
+        border-radius: 10px;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .progress-bar {
+        height: 100%;
+        background: linear-gradient(90deg, #4ade80, #16a34a);
+        width: 0%;
+        transition: width 0.5s ease;
+      }
+
+      /* Картки Тренажера */
+      .task-card {
+        background: white;
+        border-radius: 25px;
+        padding: 25px;
+        margin-bottom: 30px;
+        border: 3px solid #bbf7d0;
+        position: relative;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s;
+      }
+
+      .task-card.done {
+        opacity: 0.6;
+        border-color: #e5e7eb;
+        background: #f9fafb;
+        pointer-events: none;
+      }
+      .task-card.done::after {
+        content: "🐸 Ква-ква! (Готово)";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(-5deg);
+        font-size: 2.5em;
+        color: #15803d;
+        font-weight: bold;
+        background: rgba(255, 255, 255, 0.95);
+        border: 3px solid #15803d;
+        padding: 15px;
+        border-radius: 15px;
+        z-index: 10;
+        white-space: nowrap;
+      }
+
+      .badge {
+        padding: 5px 15px;
+        border-radius: 20px;
+        color: white;
+        font-weight: bold;
+        font-size: 0.9em;
+        background: #16a34a;
+      }
+
+      /* Схема розкладання (вусики/лапки) */
+      .diagram {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+        margin: 20px 0;
+        font-size: 1.8em;
+        font-weight: bold;
+        color: #15803d;
+      }
+
+      .num-box {
+        padding: 10px 15px;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 0 rgba(0, 0, 0, 0.05);
+        min-width: 40px;
+        text-align: center;
+        border: 2px solid #bbf7d0;
+      }
+
+      .split-box {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+      }
+
+      .legs {
+        display: flex;
+        gap: 20px;
+        margin-top: 5px;
+        position: relative;
+        padding-top: 15px;
+      }
+
+      .leg-line-left {
+        position: absolute;
+        top: -5px;
+        left: 25%;
+        width: 3px;
+        height: 20px;
+        background: #22c55e;
+        transform: rotate(30deg);
+        border-radius: 5px;
+      }
+      .leg-line-right {
+        position: absolute;
+        top: -5px;
+        right: 25%;
+        width: 3px;
+        height: 20px;
+        background: #22c55e;
+        transform: rotate(-30deg);
+        border-radius: 5px;
+      }
+
+      /* Inputs for Quest */
+      #quest-section input {
+        width: 45px;
+        height: 45px;
+        text-align: center;
+        font-size: 0.9em;
+        border: 2px solid #e5e7eb;
+        border-radius: 12px;
+        font-family: inherit;
+        color: #15803d;
+        background: white;
+        font-weight: bold;
+      }
+      #quest-section input:focus {
+        outline: none;
+        border-color: #22c55e;
+        background: #f0fdf4;
+      }
+
+      .steps-row {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 8px;
+        font-size: 1.3em;
+        background: #ecfdf5; /* М'ятний фон */
+        padding: 15px;
+        border-radius: 15px;
+        margin-top: 15px;
+        color: #064e3b;
+      }
+
+      .quest-btn {
+        display: block;
+        width: 100%;
+        margin-top: 20px;
+        padding: 12px;
+        font-size: 1.2em;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        color: white;
+        font-weight: bold;
+        background: #16a34a;
+        box-shadow: 0 4px 0 #14532d;
+        transition: 0.2s;
+        font-family: inherit;
+      }
+      .quest-btn:hover {
+        filter: brightness(1.1);
+      }
+      .quest-btn:active {
+        transform: translateY(4px);
+        box-shadow: none;
+      }
+
+      .feedback-msg {
+        text-align: center;
+        margin-top: 10px;
+        font-weight: bold;
+        min-height: 24px;
+        font-size: 1.1em;
+      }
+
+      /* =========================================
+           ЧАСТИНА 2: ЖАБКА-РОЗУМНИЦЯ
+           ========================================= */
+      #fairy-section {
+        padding: 40px 20px;
+        min-height: 100vh;
+      }
+
+      #fairy-section .container {
+        max-width: 700px;
+        margin: 0 auto;
+      }
+
+      #fairy-section h1 {
+        text-align: center;
+        color: #15803d;
+        font-size: 2.5em;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 0px #fff;
+      }
+
+      #fairy-section .subtitle {
+        text-align: center;
+        margin-bottom: 40px;
+        font-size: 1.3em;
+        color: #166534;
+      }
+
+      /* Стиль блоків */
+      .block-card {
+        background: white;
+        border-radius: 25px;
+        padding: 30px;
+        margin-bottom: 40px;
+        box-shadow: 0 10px 20px rgba(22, 163, 74, 0.1);
+        border: 4px solid transparent;
+      }
+
+      .block-1 {
+        border-color: #86efac;
+      }
+      .block-2 {
+        border-color: #4ade80;
+      }
+      /* Стиль для МІНІ-БЛОКУ X */
+      .mini-block-x {
+        border-color: #fbbf24; /* Бурштиновий колір */
+        background: #fffbeb; /* Дуже світлий жовтий фон */
+      }
+      .block-3 {
+        border-color: #22c55e;
+      }
+
+      .block-header {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 25px;
+        font-size: 1.5em;
+        font-weight: bold;
+      }
+
+      .block-1 .block-header {
+        color: #16a34a;
+      }
+      .block-2 .block-header {
+        color: #15803d;
+      }
+      .mini-block-x .block-header {
+        color: #b45309; /* Коричнево-жовтий текст */
+      }
+      .block-3 .block-header {
+        color: #14532d;
+      }
+
+      .icon-box {
+        width: 50px;
+        height: 50px;
+        background: #f0fdf4;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2em;
+      }
+      .mini-block-x .icon-box {
+        background: #fef3c7;
+      }
+
+      .example-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #fafafa;
+        padding: 10px 20px;
+        border-radius: 15px;
+        font-size: 1.8em;
+        border: 1px solid #f3f4f6;
+        margin-bottom: 15px;
+        color: #14532d;
+      }
+
+      /* Inputs for Fairy */
+      #fairy-section input {
+        width: 80px;
+        height: 50px;
+        font-size: 1em;
+        text-align: center;
+        border: 3px solid #e5e7eb;
+        border-radius: 12px;
+        color: #14532d;
+        font-family: inherit;
+        font-weight: bold;
+        outline: none;
+        transition: 0.3s;
+      }
+      #fairy-section input:focus {
+        border-color: #22c55e;
+        background: #f0fdf4;
+      }
+
+      #fairy-section input.correct {
+        border-color: #22c55e;
+        background-color: #dcfce7;
+        color: #15803d;
+      }
+      #fairy-section input.wrong {
+        border-color: #ef4444;
+        background-color: #fee2e2;
+        color: #b91c1c;
+      }
+
+      .fairy-btn {
+        display: block;
+        width: 100%;
+        margin-top: 25px;
+        padding: 15px;
+        font-size: 1.2em;
+        font-weight: bold;
+        color: white;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: transform 0.2s;
+        font-family: inherit;
+      }
+
+      .btn-block-1 {
+        background: #22c55e;
+        box-shadow: 0 4px 0 #15803d;
+      }
+      .btn-block-2 {
+        background: #16a34a;
+        box-shadow: 0 4px 0 #14532d;
+      }
+      .btn-block-x {
+        background: #eab308; /* Жовта кнопка */
+        box-shadow: 0 4px 0 #a16207;
+      }
+      .btn-block-3 {
+        background: #15803d;
+        box-shadow: 0 4px 0 #052e16;
+      }
+
+      .fairy-btn:active {
+        transform: translateY(4px);
+        box-shadow: none;
+      }
+      .fairy-btn:disabled {
+        opacity: 0.6;
+        cursor: default;
+        transform: none;
+        box-shadow: none;
+      }
+
+      .score-display {
+        text-align: center;
+        margin-top: 10px;
+        font-weight: bold;
+        font-size: 1.1em;
+        height: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="confetti" class="hidden"></canvas>
+
+    <section id="quest-section">
+      <div class="container">
+        <header>
+          <h1>🐸 Жабки-Стрибунці</h1>
+          <p style="margin: 5px 0; color: #166534">
+            Частина 1: Віднімання частинами (5 завдань)
+          </p>
+          <div class="progress-text">
+            Виконано: <span id="quest-score">0</span> з 5
+          </div>
+          <div class="progress-container">
+            <div class="progress-bar" id="quest-progress-bar"></div>
+          </div>
+        </header>
+
+        <div id="tasks-container"></div>
+
+        <div
+          id="quest-final-message"
+          style="text-align: center; display: none; padding: 40px"
+        >
+          <h2 style="font-size: 2.5em; color: #16a34a">КВА-КВА! 🎉</h2>
+          <p style="font-size: 1.5em">
+            Болото пройдено успішно! Гортай вниз до практики 👇
+          </p>
+          <button
+            onclick="document.getElementById('fairy-section').scrollIntoView({behavior: 'smooth'})"
+            style="
+              padding: 15px 30px;
+              font-size: 1.2em;
+              border-radius: 50px;
+              border: none;
+              background: #15803d;
+              color: white;
+              cursor: pointer;
+              box-shadow: 0 5px 0 #052e16;
+            "
+          >
+            Стрибаємо далі 🚀
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <section id="fairy-section">
+      <div class="container">
+        <h1>🌿 Жабка-Розумниця 🌿</h1>
+        <p class="subtitle">Частина 2: Практика віднімання</p>
+
+        <div class="block-card block-1">
+          <div class="block-header">
+            <div class="icon-box">🪷</div>
+            <span>Рівень 1 (20-40)</span>
+          </div>
+          <div class="examples-list">
+            <div class="example-row">
+              <span>25 - 7 =</span> <input type="number" data-ans="18" />
+            </div>
+            <div class="example-row">
+              <span>32 - 4 =</span> <input type="number" data-ans="28" />
+            </div>
+            <div class="example-row">
+              <span>23 - 5 =</span> <input type="number" data-ans="18" />
+            </div>
+            <div class="example-row">
+              <span>31 - 6 =</span> <input type="number" data-ans="25" />
+            </div>
+            <div class="example-row">
+              <span>40 - 8 =</span> <input type="number" data-ans="32" />
+            </div>
+          </div>
+          <div class="score-display" id="score-1"></div>
+          <button
+            class="fairy-btn btn-block-1"
+            onclick="checkFairyBlock(this, 'block-1', 'score-1')"
+          >
+            Перевірити
+          </button>
+        </div>
+
+        <div class="block-card block-2">
+          <div class="block-header">
+            <div class="icon-box">🦟</div>
+            <span>Рівень 2 (40-70)</span>
+          </div>
+          <div class="examples-list">
+            <div class="example-row">
+              <span>44 - 6 =</span> <input type="number" data-ans="38" />
+            </div>
+            <div class="example-row">
+              <span>52 - 5 =</span> <input type="number" data-ans="47" />
+            </div>
+            <div class="example-row">
+              <span>63 - 8 =</span> <input type="number" data-ans="55" />
+            </div>
+            <div class="example-row">
+              <span>55 - 9 =</span> <input type="number" data-ans="46" />
+            </div>
+            <div class="example-row">
+              <span>70 - 4 =</span> <input type="number" data-ans="66" />
+            </div>
+          </div>
+          <div class="score-display" id="score-2"></div>
+          <button
+            class="fairy-btn btn-block-2"
+            onclick="checkFairyBlock(this, 'block-2', 'score-2')"
+          >
+            Перевірити
+          </button>
+        </div>
+
+        <div class="block-card mini-block-x">
+          <div class="block-header">
+            <div class="icon-box">🚁</div>
+            <span>Секрет Золотої Бабки</span>
+          </div>
+          <div
+            style="
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              gap: 15px;
+            "
+          >
+            <p style="font-size: 1.3em; margin: 0; text-align: center">
+              Знайди невідоме число <b>x</b>:
+            </p>
+            <div
+              style="
+                background: white;
+                padding: 15px 30px;
+                border-radius: 15px;
+                border: 3px solid #fbbf24;
+                font-size: 2.2em;
+                font-weight: bold;
+                color: #b45309;
+                box-shadow: 0 4px 0 rgba(0, 0, 0, 0.05);
+              "
+            >
+              x + 8 = 65
+            </div>
+            <div style="font-size: 1.5em; margin-top: 10px">
+              <span>x = </span>
+              <input
+                type="number"
+                id="input-x-task"
+                placeholder="?"
+                style="
+                  width: 90px;
+                  height: 60px;
+                  font-size: 1.1em;
+                  border-color: #fbbf24;
+                  color: #b45309;
+                "
+              />
+            </div>
+          </div>
+          <div class="score-display" id="score-x"></div>
+          <button class="fairy-btn btn-block-x" onclick="checkXTask()">
+            Розгадати
+          </button>
+        </div>
+
+        <div class="block-card block-3">
+          <div class="block-header">
+            <div class="icon-box">👑</div>
+            <span>Рівень 3 (70-100)</span>
+          </div>
+          <div class="examples-list">
+            <div class="example-row">
+              <span>82 - 6 =</span> <input type="number" data-ans="76" />
+            </div>
+            <div class="example-row">
+              <span>94 - 8 =</span> <input type="number" data-ans="86" />
+            </div>
+            <div class="example-row">
+              <span>71 - 3 =</span> <input type="number" data-ans="68" />
+            </div>
+            <div class="example-row">
+              <span>85 - 7 =</span> <input type="number" data-ans="78" />
+            </div>
+            <div class="example-row">
+              <span>100 - 9 =</span> <input type="number" data-ans="91" />
+            </div>
+          </div>
+          <div class="score-display" id="score-3"></div>
+          <button
+            class="fairy-btn btn-block-3"
+            onclick="checkFairyBlock(this, 'block-3', 'score-3')"
+          >
+            Перевірити
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <script>
+      /* =========================================
+         ЛОГІКА ТРЕНАЖЕРА (ЧАСТИНА 1)
+         ========================================= */
+      const questTasks = [
+        { id: 1, n1: 32, n2: 5, s1: 2, s2: 3, inter: 30, res: 27 },
+        { id: 2, n1: 43, n2: 6, s1: 3, s2: 3, inter: 40, res: 37 },
+        { id: 3, n1: 54, n2: 8, s1: 4, s2: 4, inter: 50, res: 46 },
+        { id: 4, n1: 61, n2: 5, s1: 1, s2: 4, inter: 60, res: 56 },
+        { id: 5, n1: 85, n2: 7, s1: 5, s2: 2, inter: 80, res: 78 },
+      ];
+
+      const questContainer = document.getElementById("tasks-container");
+      let questCompleted = 0;
+
+      function renderQuestTask(t) {
+        return `
+        <div class="task-card" id="card-${t.id}">
+            <div class="task-header">
+                <div class="badge">Завдання ${t.id}</div>
+                <div style="font-weight: bold; font-size: 1.2em; color: #16a34a;">${t.n1} - ${t.n2} = ?</div>
+            </div>
+            <p style="text-align: center; margin: 0 0 10px 0;">
+                Розклади число <b>${t.n2}</b>. <br>
+                <small style="color: #666">Скільки треба відняти від ${t.n1}, щоб стало ${t.inter}?</small>
+            </p>
+            <div class="diagram">
+                <div class="num-box" style="border-color: #4ade80;">${t.n1}</div> <div>-</div>
+                <div class="split-box">
+                    <div class="num-box" style="border: 2px solid #16a34a;">${t.n2}</div>
+                    <div class="legs">
+                        <div class="leg-line-left"></div> <div class="leg-line-right"></div>
+                        <input type="number" id="q-${t.id}-s1" placeholder="?">
+                        <input type="number" id="q-${t.id}-s2" placeholder="?">
+                    </div>
+                </div>
+            </div>
+            <div class="steps-row">
+                <span>1) ${t.n1} - </span>
+                <input type="number" id="q-${t.id}-st1" style="width: 40px;" placeholder="?">
+                <span> = </span>
+                <input type="number" id="q-${t.id}-int" style="width: 45px;" placeholder="${t.inter}?">
+            </div>
+            <div class="steps-row">
+                <span>2) <b>${t.inter}</b> - </span>
+                <input type="number" id="q-${t.id}-st2" style="width: 40px;" placeholder="?">
+                <span> = </span>
+                <input type="number" id="q-${t.id}-fin" style="width: 50px; border-color: #16a34a;" placeholder="?">
+            </div>
+            <div class="feedback-msg" id="msg-${t.id}"></div>
+            <button class="quest-btn" onclick="checkQuestTask(${t.id})">Перевірити</button>
+        </div>`;
+      }
+
+      questTasks.forEach(
+        (t) => (questContainer.innerHTML += renderQuestTask(t))
+      );
+
+      function checkQuestTask(id) {
+        const t = questTasks.find((x) => x.id === id);
+        const s1 = parseInt(document.getElementById(`q-${id}-s1`).value);
+        const s2 = parseInt(document.getElementById(`q-${id}-s2`).value);
+        const st1 = parseInt(document.getElementById(`q-${id}-st1`).value);
+        const int = parseInt(document.getElementById(`q-${id}-int`).value);
+        const st2 = parseInt(document.getElementById(`q-${id}-st2`).value);
+        const fin = parseInt(document.getElementById(`q-${id}-fin`).value);
+
+        const msg = document.getElementById(`msg-${id}`);
+        let correct = true;
+        let err = "";
+
+        if (s1 !== t.s1) {
+          correct = false;
+          err = `Перший стрибок: скільки забрати до круглого?`;
+        } else if (s2 !== t.s2) {
+          correct = false;
+          err = `Другий стрибок: що залишилось від ${t.n2}?`;
+        } else if (st1 !== t.s1) {
+          correct = false;
+          err = "Крок 1: що віднімаємо спочатку?";
+        } else if (int !== t.inter) {
+          correct = false;
+          err = `Має вийти кругле число ${t.inter}`;
+        } else if (st2 !== t.s2) {
+          correct = false;
+          err = "Крок 2: що віднімаємо потім?";
+        } else if (fin !== t.res) {
+          correct = false;
+          err = "Результат неправильний";
+        }
+
+        if (correct) {
+          msg.textContent = "Вірно! Ква!";
+          msg.style.color = "#16a34a";
+          document.getElementById(`card-${id}`).classList.add("done");
+          questCompleted++;
+          document.getElementById("quest-score").innerText = questCompleted;
+          document.getElementById("quest-progress-bar").style.width =
+            (questCompleted / 5) * 100 + "%";
+
+          if (questCompleted === 5) {
+            triggerConfetti();
+            document.getElementById("quest-final-message").style.display =
+              "block";
+          }
+        } else {
+          msg.textContent = err;
+          msg.style.color = "#be123c";
+        }
+      }
+
+      /* =========================================
+         ЛОГІКА БЛОКІВ ТА ІКСА
+         ========================================= */
+      function checkFairyBlock(btn, blockClass, scoreId) {
+        const block = document.querySelector("." + blockClass);
+        const inputs = block.querySelectorAll("input");
+        const scoreDiv = document.getElementById(scoreId);
+        let correctCount = 0;
+        let allFilled = true;
+
+        inputs.forEach((input) => {
+          const val = input.value.trim();
+          const correctVal = input.getAttribute("data-ans");
+          input.classList.remove("correct", "wrong");
+
+          if (val === "") {
+            allFilled = false;
+            return;
+          }
+          if (val === correctVal) {
+            input.classList.add("correct");
+            correctCount++;
+          } else {
+            input.classList.add("wrong");
+          }
+        });
+
+        if (!allFilled) {
+          scoreDiv.textContent = "Заповни всі віконечка!";
+          scoreDiv.style.color = "#b91c1c";
+          return;
+        }
+
+        if (correctCount === 5) {
+          scoreDiv.textContent = "5/5 Чудово!";
+          scoreDiv.style.color = "#16a34a";
+          btn.textContent = "Рівень пройдено! 🐸";
+          btn.disabled = true;
+          triggerConfetti();
+        } else {
+          scoreDiv.textContent = `${correctCount} з 5 правильно. Виправ помилки!`;
+          scoreDiv.style.color = "#b91c1c";
+        }
+      }
+
+      // Перевірка завдання з Іксом
+      function checkXTask() {
+        const input = document.getElementById("input-x-task");
+        const scoreDiv = document.getElementById("score-x");
+        const btn = document.querySelector(".btn-block-x");
+
+        if (!input.value) {
+          scoreDiv.textContent = "Напиши число!";
+          scoreDiv.style.color = "#b91c1c";
+          return;
+        }
+
+        const val = parseInt(input.value);
+        // x + 8 = 65 => x = 65 - 8 = 57
+        const ans = 57;
+
+        input.classList.remove("correct", "wrong");
+
+        if (val === ans) {
+          input.classList.add("correct");
+          scoreDiv.textContent = "Правильно! x = 57";
+          scoreDiv.style.color = "#16a34a";
+          btn.textContent = "Розгадано! 🎉";
+          btn.disabled = true;
+          triggerConfetti();
+        } else {
+          input.classList.add("wrong");
+          scoreDiv.textContent = "Невірно. Підказка: 65 - 8";
+          scoreDiv.style.color = "#b91c1c";
+        }
+      }
+
+      /* =========================================
+         КОНФЕТІ (ЗЕЛЕНІ ВІДТІНКИ)
+         ========================================= */
+      function triggerConfetti() {
+        const canvas = document.getElementById("confetti");
+        canvas.classList.remove("hidden");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        const pieces = [];
+        for (let i = 0; i < 200; i++) {
+          const hue = Math.floor(Math.random() * 60) + 90;
+          pieces.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height - canvas.height,
+            color: `hsl(${hue}, 80%, 60%)`,
+            size: Math.random() * 8 + 4,
+            speed: Math.random() * 5 + 3,
+          });
+        }
+        function draw() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          let active = false;
+          pieces.forEach((p) => {
+            p.y += p.speed;
+            if (p.y < canvas.height) active = true;
+            ctx.fillStyle = p.color;
+            ctx.fillRect(p.x, p.y, p.size, p.size);
+          });
+          if (active) requestAnimationFrame(draw);
+          else ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+        draw();
+      }
+    </script>
+  </body>
+</html>
