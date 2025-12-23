@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Тест 2: Властивості кореня (Частина 2)</title>
+    <title>Тест 2: Властивості кореня (17.11-17.21)</title>
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
@@ -17,10 +17,12 @@
       src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
     ></script>
     <style>
-      /* Стилі ідентичні першому тесту */
+      /* Стилі ідентичні тесту №1 */
       :root {
         --primary: #7c3aed;
         --primary-light: #f5f3ff;
+        --selected: #dbeafe;
+        --selected-border: #3b82f6;
         --success: #16a34a;
         --error: #dc2626;
         --bg: #f8fafc;
@@ -38,22 +40,32 @@
         align-items: center;
       }
       .test-container {
-        max-width: 600px;
+        max-width: 800px;
         width: 100%;
         background: var(--card);
         border-radius: 12px;
-        padding: 20px;
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+      header {
+        background: var(--primary-light);
+        padding: 20px;
+        border-bottom: 2px solid var(--primary);
+        text-align: center;
+      }
+      .header-title {
+        font-weight: 800;
+        font-size: 1.5rem;
+        color: var(--primary);
       }
       .question-block {
-        margin-bottom: 20px;
+        padding: 20px;
         border-bottom: 1px solid var(--border);
-        padding-bottom: 15px;
       }
-      .question-title {
-        font-weight: bold;
-        margin-bottom: 10px;
-        color: var(--primary);
+      .question-text {
+        font-size: 1.1rem;
+        font-weight: 500;
+        margin-bottom: 15px;
       }
       .options {
         display: flex;
@@ -62,55 +74,130 @@
       }
       .option-btn {
         flex: 1;
-        min-width: 80px;
-        padding: 10px;
-        border: 1px solid #cbd5e1;
+        min-width: 120px;
+        padding: 12px;
+        border: 2px solid #e2e8f0;
         background: white;
         border-radius: 8px;
         cursor: pointer;
         transition: 0.2s;
+        font-size: 1rem;
       }
-      .option-btn:hover {
+      .option-btn:hover:not(:disabled) {
         background: var(--primary-light);
         border-color: var(--primary);
       }
-      .option-btn.correct {
-        background: var(--success);
-        color: white;
+      .option-btn.active {
+        background: var(--selected);
+        border-color: var(--selected-border);
+        color: #1e3a8a;
+        font-weight: 600;
+      }
+      .option-btn.correct-answer {
+        background: var(--success) !important;
+        border-color: var(--success) !important;
+        color: white !important;
+      }
+      .option-btn.wrong-choice {
+        background: var(--error) !important;
+        border-color: var(--error) !important;
+        color: white !important;
+      }
+      .input-answer {
+        padding: 10px;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        width: 150px;
+        font-size: 1.1rem;
+      }
+      .input-answer.correct-answer {
         border-color: var(--success);
+        background: #f0fdf4;
+        color: var(--success);
       }
-      .option-btn.wrong {
-        background: var(--error);
-        color: white;
+      .input-answer.wrong-choice {
         border-color: var(--error);
+        background: #fef2f2;
+        color: var(--error);
       }
-      .result-box {
+      .finish-section {
+        padding: 30px;
         text-align: center;
-        margin-top: 20px;
+        background: #f8fafc;
+      }
+      .btn-finish {
+        padding: 15px 50px;
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        font-size: 1.2rem;
+        cursor: pointer;
+      }
+      .btn-finish:hover {
+        transform: scale(1.05);
+      }
+      .modal-overlay {
         display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+      }
+      .modal-card {
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        text-align: center;
       }
     </style>
   </head>
   <body>
     <div class="test-container">
-      <h2 style="text-align: center; color: var(--primary)">
-        Тест №2: Властивості (17.11 - 17.21)
-      </h2>
-      <div id="quiz-content"></div>
-      <div id="result-box" class="result-box">
-        <h3>Результат: <span id="score">0</span>/12</h3>
+      <header>
+        <div class="header-title">Тест №2: Вправи 17.11 — 17.21</div>
+        <div style="color: #64748b; margin-top: 5px">
+          Заповніть всі поля та натисніть "Завершити"
+        </div>
+      </header>
+
+      <div id="questions-container"></div>
+
+      <div class="finish-section">
+        <button class="btn-finish" onclick="finishTest()">
+          Завершити тест
+        </button>
+      </div>
+    </div>
+
+    <div id="result-modal" class="modal-overlay">
+      <div class="modal-card">
+        <h2>Результат</h2>
+        <h1
+          style="color: var(--primary); font-size: 3rem; margin: 10px 0"
+          id="score-val"
+        >
+          0/12
+        </h1>
+        <p id="feedback-text">...</p>
         <button
-          onclick="location.reload()"
+          onclick="document.getElementById('result-modal').style.display='none'"
           style="
+            margin-top: 20px;
             padding: 10px 20px;
-            background: var(--primary);
+            background: #334155;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
           "
         >
-          Спробувати ще раз
+          Переглянути помилки
         </button>
       </div>
     </div>
@@ -119,148 +206,183 @@
       const questions = [
         {
           id: 1,
-          q: "Обчисліть: $\\frac{\\sqrt{12}}{\\sqrt{3}}$",
-          a: "2",
-          opts: ["2", "4", "$\\sqrt{4}$", "6"],
+          q: "Подайте як частку: $\\sqrt{\\frac{2}{5}}$",
+          a: "$\\frac{\\sqrt{2}}{\\sqrt{5}}$",
+          opts: [
+            "$\\frac{\\sqrt{2}}{\\sqrt{5}}$",
+            "$\\frac{2}{5}$",
+            "$\\frac{\\sqrt{2}}{5}$",
+          ],
         },
         {
           id: 2,
-          q: "Обчисліть: $\\frac{\\sqrt{50}}{\\sqrt{2}}$",
-          a: "5",
-          opts: ["5", "25", "10", "$\\sqrt{20}$"],
+          q: "Подайте як частку: $\\sqrt{3\\frac{2}{7}}$",
+          a: "$\\frac{\\sqrt{23}}{\\sqrt{7}}$",
+          opts: [
+            "$\\frac{\\sqrt{23}}{\\sqrt{7}}$",
+            "$\\frac{\\sqrt{3}}{\\sqrt{7}}$",
+            "$\\frac{23}{7}$",
+          ],
         },
         {
           id: 3,
-          q: "Знайдіть значення: $\\sqrt{2} \\cdot \\sqrt{18}$",
-          a: "6",
-          opts: ["6", "36", "4", "9"],
+          q: "Обчисліть: $\\sqrt{2} \\cdot \\sqrt{32}$",
+          a: "8",
+          type: "input",
         },
         {
           id: 4,
-          q: "Знайдіть значення: $\\sqrt{5} \\cdot \\sqrt{20}$",
-          a: "10",
-          opts: ["10", "100", "5", "25"],
+          q: "Обчисліть: $\\sqrt{0,9} \\cdot \\sqrt{2,5}$",
+          a: "1.5",
+          type: "input",
         },
         {
           id: 5,
-          q: "Обчисліть: $\\sqrt{2^6}$",
-          a: "8",
-          opts: ["8", "64", "6", "12"],
+          q: "Обчисліть: $\\frac{\\sqrt{45}}{\\sqrt{5}}$",
+          a: "3",
+          opts: ["3", "9", "5", "$\\sqrt{9}$"],
         },
         {
           id: 6,
-          q: "Обчисліть: $\\sqrt{(-3)^4}$",
-          a: "9",
-          opts: ["9", "-9", "81", "-81"],
+          q: "Обчисліть: $\\frac{\\sqrt{24}}{\\sqrt{1,5}}$",
+          a: "4",
+          opts: ["4", "16", "2", "8"],
         },
         {
           id: 7,
-          q: "Спростіть вираз: $\\sqrt{m^2}$, якщо $m < 0$",
-          a: "$-m$",
-          opts: ["$m$", "$-m$", "$m^2$", "$1$"],
+          q: "Обчисліть: $\\sqrt{9^4}$",
+          a: "81",
+          opts: ["81", "9", "27", "18"],
         },
         {
           id: 8,
-          q: "Спростіть: $\\sqrt{16x^2}$, якщо $x \\ge 0$",
-          a: "$4x$",
-          opts: ["$4x$", "$16x$", "$4|x|$", "$8x$"],
+          q: "Обчисліть: $\\sqrt{(-2)^{10}}$",
+          a: "32",
+          opts: ["32", "-32", "1024", "64"],
         },
         {
           id: 9,
-          q: "Обчисліть: $\\sqrt{1\\frac{11}{25}}$",
-          a: "1.2",
-          opts: ["1.2", "6/5", "36/25", "0.6"],
+          q: "Спростіть: $\\sqrt{m^2}$",
+          a: "$|m|$",
+          opts: ["$m$", "$|m|$", "$m^2$"],
         },
         {
           id: 10,
-          q: "Знайдіть значення: $\\sqrt{10^2 - 8^2}$",
-          a: "6",
-          opts: ["6", "2", "36", "18"],
+          q: "Спростіть: $-0,1\\sqrt{a^2}$",
+          a: "$-0,1|a|$",
+          opts: ["$-0,1a$", "$-0,1|a|$", "$0,1a$"],
         },
         {
           id: 11,
-          q: "Розкладіть на множники та обчисліть: $\\sqrt{90 \\cdot 10}$",
-          a: "30",
-          opts: ["30", "900", "3", "90"],
+          q: "Обчисліть: $\\sqrt{4\\frac{33}{64}}$",
+          a: "2.125",
+          opts: ["2.125", "2.5", "17/8", "19/8"],
         },
         {
           id: 12,
-          q: "Обчисліть: $\\sqrt{1\\frac{7}{9} \\cdot \\frac{4}{25}}$",
-          a: "$\\frac{8}{15}$",
-          opts: [
-            "$\\frac{8}{15}$",
-            "$\\frac{4}{15}$",
-            "$\\frac{16}{25}$",
-            "$0.5$",
-          ],
+          q: "Обчисліть: $\\sqrt{20^2 - 16^2}$",
+          a: "12",
+          type: "input",
         },
       ];
 
-      const quizContainer = document.getElementById("quiz-content");
-      let score = 0;
+      const container = document.getElementById("questions-container");
 
       questions.forEach((item, index) => {
         const div = document.createElement("div");
         div.className = "question-block";
+        div.dataset.ans = item.a;
+        div.dataset.type = item.type || "opts";
 
-        // Перемішуємо варіанти (проста логіка)
-        // Для демо залишимо як є, або можна додати shuffle
+        let html = `<div class="question-text">${index + 1}. ${item.q}</div>`;
 
-        let buttonsHtml = "";
-        item.opts.forEach((opt) => {
-          // Safe quotes
-          const safeOpt = opt.replace(/"/g, "&quot;");
-          const safeAns = item.a.replace(/"/g, "&quot;");
-          buttonsHtml += `<button class="option-btn" onclick="checkAnswer(this, '${safeOpt}', '${safeAns}')">${opt}</button>`;
-        });
-
-        div.innerHTML = `
-        <div class="question-title">${index + 1}. ${item.q}</div>
-        <div class="options">${buttonsHtml}</div>
-    `;
-        quizContainer.appendChild(div);
+        if (item.type === "input") {
+          html += `<input type="text" class="input-answer" placeholder="...">`;
+        } else {
+          html += `<div class="options">`;
+          item.opts.forEach((opt) => {
+            const safeOpt = opt.replace(/"/g, "&quot;");
+            html += `<button class="option-btn" onclick="selectOpt(this, '${safeOpt}')">${opt}</button>`;
+          });
+          html += `</div>`;
+        }
+        div.innerHTML = html;
+        container.appendChild(div);
       });
 
-      function checkAnswer(btn, val, ans) {
-        const parent = btn.parentElement;
-        if (parent.classList.contains("answered")) return;
-        parent.classList.add("answered");
+      function selectOpt(btn, val) {
+        const parent = btn.closest(".options");
+        parent
+          .querySelectorAll(".option-btn")
+          .forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        btn.closest(".question-block").dataset.userChoice = val;
+      }
 
-        // Remove LaTeX formatting for comparison just in case, or compare raw strings carefully
-        // Тут просте порівняння рядків
-        if (val === ans) {
-          btn.classList.add("correct");
-          score++;
-        } else {
-          btn.classList.add("wrong");
-          // Показати правильну
-          const allBtns = parent.querySelectorAll(".option-btn");
-          allBtns.forEach((b) => {
-            if (
-              b.innerText.includes(ans) ||
-              b.getAttribute("onclick").includes(ans)
-            ) {
-              b.classList.add("correct"); // Підсвітити правильну (спрощено)
+      function finishTest() {
+        const blocks = document.querySelectorAll(".question-block");
+        let score = 0;
+
+        blocks.forEach((block) => {
+          const correct = block.dataset.ans;
+          const type = block.dataset.type;
+          let isCorrect = false;
+
+          if (type === "input") {
+            const input = block.querySelector("input");
+            const val = input.value.trim().replace(",", ".");
+            if (val == correct) {
+              // Нестроге порівняння для чисел (12 == "12")
+              isCorrect = true;
+              input.classList.add("correct-answer");
+            } else {
+              input.classList.add("wrong-choice");
+              // Можна додати підказку input.value += ` (Правильно: ${correct})`;
             }
-          });
-        }
+          } else {
+            const choice = block.dataset.userChoice;
+            const normChoice = choice ? choice.replace(/\s/g, "") : "";
+            const normCorrect = correct.replace(/\s/g, "");
 
-        // Перевірка чи всі відповіли
-        const answeredCount =
-          document.querySelectorAll(".options.answered").length;
-        if (answeredCount === questions.length) {
-          document.getElementById("result-box").style.display = "block";
-          document.getElementById("score").innerText = score;
-        }
+            if (normChoice === normCorrect) isCorrect = true;
+
+            const btns = block.querySelectorAll(".option-btn");
+            btns.forEach((btn) => {
+              const btnVal = btn
+                .getAttribute("onclick")
+                .match(/'([^']+)'/)[1]
+                .replace(/\s/g, "");
+
+              if (btnVal === normCorrect) btn.classList.add("correct-answer");
+              if (btn.classList.contains("active") && !isCorrect)
+                btn.classList.add("wrong-choice");
+
+              btn.disabled = true;
+            });
+          }
+
+          if (isCorrect) score++;
+        });
+
+        document.getElementById(
+          "score-val"
+        ).innerText = `${score}/${questions.length}`;
+
+        let msg = "Добре!";
+        if (score === questions.length) msg = "Бездоганно!";
+        else if (score < questions.length / 2) msg = "Спробуй ще раз";
+
+        document.getElementById("feedback-text").innerText = msg;
+        document.getElementById("result-modal").style.display = "flex";
       }
 
       document.addEventListener("DOMContentLoaded", () => {
-        renderMathInElement(document.body, {
-          delimiters: [
-            { left: "$$", right: "$$", display: true },
-            { left: "$", right: "$", display: false },
-          ],
-        });
+        if (window.renderMathInElement) {
+          renderMathInElement(document.body, {
+            delimiters: [{ left: "$", right: "$", display: false }],
+            throwOnError: false,
+          });
+        }
       });
     </script>
   </body>
