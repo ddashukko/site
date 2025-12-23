@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Тест 2: Властивості кореня (Частина 2)</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
+    />
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"
+    ></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    ></script>
+    <style>
+      /* Стилі ідентичні першому тесту */
+      :root {
+        --primary: #7c3aed;
+        --primary-light: #f5f3ff;
+        --success: #16a34a;
+        --error: #dc2626;
+        --bg: #f8fafc;
+        --card: #ffffff;
+        --text: #1e293b;
+        --border: #e2e8f0;
+      }
+      body {
+        font-family: -apple-system, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .test-container {
+        max-width: 600px;
+        width: 100%;
+        background: var(--card);
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      }
+      .question-block {
+        margin-bottom: 20px;
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 15px;
+      }
+      .question-title {
+        font-weight: bold;
+        margin-bottom: 10px;
+        color: var(--primary);
+      }
+      .options {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .option-btn {
+        flex: 1;
+        min-width: 80px;
+        padding: 10px;
+        border: 1px solid #cbd5e1;
+        background: white;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+      .option-btn:hover {
+        background: var(--primary-light);
+        border-color: var(--primary);
+      }
+      .option-btn.correct {
+        background: var(--success);
+        color: white;
+        border-color: var(--success);
+      }
+      .option-btn.wrong {
+        background: var(--error);
+        color: white;
+        border-color: var(--error);
+      }
+      .result-box {
+        text-align: center;
+        margin-top: 20px;
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="test-container">
+      <h2 style="text-align: center; color: var(--primary)">
+        Тест №2: Властивості (17.11 - 17.21)
+      </h2>
+      <div id="quiz-content"></div>
+      <div id="result-box" class="result-box">
+        <h3>Результат: <span id="score">0</span>/12</h3>
+        <button
+          onclick="location.reload()"
+          style="
+            padding: 10px 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+          "
+        >
+          Спробувати ще раз
+        </button>
+      </div>
+    </div>
+
+    <script>
+      const questions = [
+        {
+          id: 1,
+          q: "Обчисліть: $\\frac{\\sqrt{12}}{\\sqrt{3}}$",
+          a: "2",
+          opts: ["2", "4", "$\\sqrt{4}$", "6"],
+        },
+        {
+          id: 2,
+          q: "Обчисліть: $\\frac{\\sqrt{50}}{\\sqrt{2}}$",
+          a: "5",
+          opts: ["5", "25", "10", "$\\sqrt{20}$"],
+        },
+        {
+          id: 3,
+          q: "Знайдіть значення: $\\sqrt{2} \\cdot \\sqrt{18}$",
+          a: "6",
+          opts: ["6", "36", "4", "9"],
+        },
+        {
+          id: 4,
+          q: "Знайдіть значення: $\\sqrt{5} \\cdot \\sqrt{20}$",
+          a: "10",
+          opts: ["10", "100", "5", "25"],
+        },
+        {
+          id: 5,
+          q: "Обчисліть: $\\sqrt{2^6}$",
+          a: "8",
+          opts: ["8", "64", "6", "12"],
+        },
+        {
+          id: 6,
+          q: "Обчисліть: $\\sqrt{(-3)^4}$",
+          a: "9",
+          opts: ["9", "-9", "81", "-81"],
+        },
+        {
+          id: 7,
+          q: "Спростіть вираз: $\\sqrt{m^2}$, якщо $m < 0$",
+          a: "$-m$",
+          opts: ["$m$", "$-m$", "$m^2$", "$1$"],
+        },
+        {
+          id: 8,
+          q: "Спростіть: $\\sqrt{16x^2}$, якщо $x \\ge 0$",
+          a: "$4x$",
+          opts: ["$4x$", "$16x$", "$4|x|$", "$8x$"],
+        },
+        {
+          id: 9,
+          q: "Обчисліть: $\\sqrt{1\\frac{11}{25}}$",
+          a: "1.2",
+          opts: ["1.2", "6/5", "36/25", "0.6"],
+        },
+        {
+          id: 10,
+          q: "Знайдіть значення: $\\sqrt{10^2 - 8^2}$",
+          a: "6",
+          opts: ["6", "2", "36", "18"],
+        },
+        {
+          id: 11,
+          q: "Розкладіть на множники та обчисліть: $\\sqrt{90 \\cdot 10}$",
+          a: "30",
+          opts: ["30", "900", "3", "90"],
+        },
+        {
+          id: 12,
+          q: "Обчисліть: $\\sqrt{1\\frac{7}{9} \\cdot \\frac{4}{25}}$",
+          a: "$\\frac{8}{15}$",
+          opts: [
+            "$\\frac{8}{15}$",
+            "$\\frac{4}{15}$",
+            "$\\frac{16}{25}$",
+            "$0.5$",
+          ],
+        },
+      ];
+
+      const quizContainer = document.getElementById("quiz-content");
+      let score = 0;
+
+      questions.forEach((item, index) => {
+        const div = document.createElement("div");
+        div.className = "question-block";
+
+        // Перемішуємо варіанти (проста логіка)
+        // Для демо залишимо як є, або можна додати shuffle
+
+        let buttonsHtml = "";
+        item.opts.forEach((opt) => {
+          // Safe quotes
+          const safeOpt = opt.replace(/"/g, "&quot;");
+          const safeAns = item.a.replace(/"/g, "&quot;");
+          buttonsHtml += `<button class="option-btn" onclick="checkAnswer(this, '${safeOpt}', '${safeAns}')">${opt}</button>`;
+        });
+
+        div.innerHTML = `
+        <div class="question-title">${index + 1}. ${item.q}</div>
+        <div class="options">${buttonsHtml}</div>
+    `;
+        quizContainer.appendChild(div);
+      });
+
+      function checkAnswer(btn, val, ans) {
+        const parent = btn.parentElement;
+        if (parent.classList.contains("answered")) return;
+        parent.classList.add("answered");
+
+        // Remove LaTeX formatting for comparison just in case, or compare raw strings carefully
+        // Тут просте порівняння рядків
+        if (val === ans) {
+          btn.classList.add("correct");
+          score++;
+        } else {
+          btn.classList.add("wrong");
+          // Показати правильну
+          const allBtns = parent.querySelectorAll(".option-btn");
+          allBtns.forEach((b) => {
+            if (
+              b.innerText.includes(ans) ||
+              b.getAttribute("onclick").includes(ans)
+            ) {
+              b.classList.add("correct"); // Підсвітити правильну (спрощено)
+            }
+          });
+        }
+
+        // Перевірка чи всі відповіли
+        const answeredCount =
+          document.querySelectorAll(".options.answered").length;
+        if (answeredCount === questions.length) {
+          document.getElementById("result-box").style.display = "block";
+          document.getElementById("score").innerText = score;
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false },
+          ],
+        });
+      });
+    </script>
+  </body>
+</html>
