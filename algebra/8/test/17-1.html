@@ -524,7 +524,7 @@
             {
               id: "10)",
               q: "$0,5 \\cdot \\sqrt{16^2} + \\sqrt{(-1)^2}$",
-              a: "9",
+              a: "3",
               type: "input",
             },
           ],
@@ -588,7 +588,8 @@
               html += `<div class="options-container">`;
               task.opts.forEach((opt) => {
                 const safeOpt = opt.replace(/"/g, "&quot;");
-                html += `<button class="option-btn" onclick="selectOpt(this, '${safeOpt}')">${opt}</button>`;
+                // *** FIXED: Added data-val and removed arg from onclick ***
+                html += `<button class="option-btn" data-val="${safeOpt}" onclick="selectOpt(this)">${opt}</button>`;
               });
               html += `</div>`;
             }
@@ -610,15 +611,16 @@
         setTimeout(resizeCanvas, 100);
       });
 
-      function selectOpt(btn, val) {
-        // Just visual selection, no grading yet
+      // *** FIXED: Get value from dataset ***
+      function selectOpt(btn) {
+        const val = btn.dataset.val;
+
         const container = btn.closest(".options-container");
         container
           .querySelectorAll(".option-btn")
           .forEach((b) => b.classList.remove("user-selected"));
         btn.classList.add("user-selected");
 
-        // Store user choice in dataset for later grading
         btn.closest(".task-row").dataset.userChoice = val;
       }
 
@@ -655,11 +657,8 @@
             if (userChoice === correctAns) isCorrect = true;
 
             row.querySelectorAll(".option-btn").forEach((btn) => {
-              const btnVal = btn.innerText.replace(/\s/g, ""); // Simplified check via text or onclick
-              // Accurate extraction from onclick is safer if latex is involved:
-              const originalAttr = btn.getAttribute("onclick");
-              const btnValRaw = originalAttr.match(/'([^']+)'/)[1];
-              const btnValClean = btnValRaw.replace(/\s/g, "");
+              // *** FIXED: Get val directly from dataset, no regex needed ***
+              const btnValClean = btn.dataset.val.replace(/\s/g, "");
 
               // If this button is the correct answer -> mark green
               if (btnValClean === correctAns) {
