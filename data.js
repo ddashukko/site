@@ -249,7 +249,16 @@ window.lessonsData = [
     category: "test",
     author: "Даша",
   },
-
+  {
+    id: "alg-8-test-17",
+    title: "Тест: §17. Властивості арифметичного квадратного кореня",
+    grade: 8,
+    topic: "Алгебра",
+    link: "algebra/8/test/17-arithmetic-square-root-properties.html",
+    subject_code: "algebra",
+    category: "test",
+    author: "Даша",
+  },
   // ==========================================
   // 8 КЛАС (Алгебра - УРОКИ) - Автор: Даша
   // ==========================================
@@ -329,6 +338,16 @@ window.lessonsData = [
     grade: 8,
     topic: "Алгебра",
     link: "algebra/8/lesson/16-root-identity-and-equations.html",
+    subject_code: "algebra",
+    category: "lesson",
+    author: "Даша",
+  },
+  {
+    id: "alg-8-lesson-17",
+    title: "§17. Властивості арифметичного квадратного кореня",
+    grade: 8,
+    topic: "Алгебра",
+    link: "algebra/8/lesson/17-arithmetic-square-root-properties.html",
     subject_code: "algebra",
     category: "lesson",
     author: "Даша",
@@ -413,6 +432,16 @@ window.lessonsData = [
     grade: 8,
     topic: "Алгебра",
     link: "algebra/8/homework/16-root-identity-and-equations.html",
+    subject_code: "algebra",
+    category: "homework",
+    author: "Даша",
+  },
+  {
+    id: "alg-8-hw-17",
+    title: "ДЗ: §17. Властивості арифметичного квадратного кореня",
+    grade: 8,
+    topic: "Алгебра",
+    link: "algebra/8/homework/17-arithmetic-square-root-properties.html",
     subject_code: "algebra",
     category: "homework",
     author: "Даша",
