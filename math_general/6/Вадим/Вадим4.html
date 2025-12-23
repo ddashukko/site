@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Методична розробка: Додатні та від'ємні числа</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --secondary: #4f46e5;
+            --success: #10b981;
+            --danger: #ef4444;
+            --bg: #f3f4f6;
+            --card-bg: #ffffff;
+            --text: #1f2937;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            overflow: hidden;
+        }
+
+        .main-container {
+            display: flex;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* ЛІВА ЧАСТИНА - КОНТЕНТ */
+        .content-panel {
+            flex: 1;
+            overflow-y: auto;
+            padding: 40px;
+            border-right: 2px solid #e5e7eb;
+            background: var(--card-bg);
+            scroll-behavior: smooth;
+        }
+
+        .lesson-title {
+            color: var(--secondary);
+            border-left: 5px solid var(--primary);
+            padding-left: 15px;
+            margin-bottom: 30px;
+        }
+
+        .theory-section {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 1px solid #e5e7eb;
+            line-height: 1.6;
+        }
+
+        .task-block {
+            background: white;
+            border: 1px solid #f3f4f6;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .math-input {
+            width: 120px;
+            padding: 10px;
+            border: 2px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            margin: 10px 0;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .math-input:focus { border-color: var(--primary); }
+
+        .btn {
+            padding: 10px 18px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.2s;
+            margin-right: 5px;
+            font-size: 0.9rem;
+        }
+
+        .btn-check { background: var(--primary); color: white; }
+        .btn-check:hover { background: var(--secondary); }
+        .btn-hint { background: #f3f4f6; color: #4b5563; }
+        .btn-sol { background: #fef3c7; color: #92400e; }
+
+        .info-box {
+            display: none;
+            margin-top: 10px;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            background: #fffbeb;
+            border: 1px dashed #f59e0b;
+        }
+
+        .feedback-msg { margin-top: 10px; font-weight: bold; }
+
+        /* ПРАВА ЧАСТИНА - ДОШКА */
+        .whiteboard-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #1e293b;
+        }
+
+        .whiteboard-controls {
+            padding: 15px;
+            background: #0f172a;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        canvas {
+            flex: 1;
+            background: white;
+            cursor: crosshair;
+        }
+
+        .control-btn {
+            background: #334155;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .control-btn:hover { background: #475569; }
+        .control-btn.active { background: var(--primary); }
+
+        /* ТЕСТОВИЙ БЛОК */
+        .test-section {
+            margin-top: 50px;
+            padding: 30px;
+            background: #eef2ff;
+            border-radius: 20px;
+        }
+
+        .test-question {
+            margin-bottom: 25px;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .option-btn {
+            padding: 10px;
+            background: #f9fafb;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            cursor: pointer;
+            text-align: left;
+        }
+
+        .option-btn:hover { background: #f3f4f6; }
+
+        #final-modal {
+            display: none;
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 40px;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+            z-index: 1000;
+            text-align: center;
+            width: 80%; max-width: 500px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="main-container">
+    <div class="content-panel" id="scroll-area">
+        <h1 class="lesson-title">Додатні та від'ємні числа. Координатна пряма</h1>
+        
+        <div class="theory-section">
+            <h3>📉 Знайомство з числами</h3>
+            <p>Додатні числа — це звичні нам числа більше за \( 0 \). Наприклад: \( 5, 12, 100 \).</p>
+            <p>Від'ємні числа — це числа, які менші за \( 0 \). Перед ними завжди ставиться знак "мінус": \( -5, -12, -100 \).</p>
+            <p>Число \( 0 \) — не є ні додатним, ні від'ємним. Це "кордон".</p>
+        </div>
+
+        <div id="tasks-list">
+            </div>
+
+        <div class="test-section" id="test-area">
+            <h2>📝 Фінальний Тест (10 запитань)</h2>
+            <div id="test-container"></div>
+        </div>
+
+        <div style="height: 100px;"></div>
+        <button class="btn btn-check" style="width: 100%; padding: 20px; font-size: 1.2rem;" onclick="showFinalResult()">ЗАВЕРШИТИ УРОК</button>
+    </div>
+
+    <div class="whiteboard-panel">
+        <div class="whiteboard-controls">
+            <button class="control-btn active" onclick="setMode('draw')">✏️ Олівець</button>
+            <button class="control-btn" onclick="setMode('erase')">🧽 Гумка</button>
+            <button class="control-btn" onclick="clearBoard()">🗑️ Очистити</button>
+            <button class="control-btn" onclick="drawGrid()">🌐 Сітка</button>
+            <button class="control-btn" style="background: #059669;" onclick="drawCoordinateAxis()">📏 Координатна пряма</button>
+        </div>
+        <canvas id="whiteboard"></canvas>
+    </div>
+</div>
+
+<div id="final-modal">
+    <h2 id="result-title">Молодець!</h2>
+    <div style="font-size: 3rem; margin: 20px 0;" id="result-score">0 / 50</div>
+    <p id="result-text"></p>
+    <button class="btn btn-check" onclick="location.reload()">Спробувати ще раз</button>
+</div>
+
+<script>
+    // --- ГЕНЕРАЦІЯ 40 ЗАВДАНЬ ---
+    const tasks = [
+        // Блок 1: Поняття (1-10)
+        { q: "Запиши число 'три градуси морозу'", a: "-3", h: "Мороз — це мінус.", s: "Відповідь: -3" },
+        { q: "Запиши число 'сім градусів тепла'", a: "7", h: "Тепло — це плюс.", s: "Відповідь: 7" },
+        { q: "Глибина моря 200 метрів. Запиши числом.", a: "-200", h: "Нижче рівня моря — це від'ємне число.", s: "Відповідь: -200" },
+        { q: "Висота гори 1500 метрів. Запиши числом.", a: "1500", h: "Над рівнем моря — це додатне число.", s: "Відповідь: 1500" },
+        { q: "Запиши борг у \( 50 \) грн.", a: "-50", h: "Борг — це мінус.", s: "Відповідь: -50" },
+        { q: "Запиши прибуток у \( 120 \) грн.", a: "120", h: "Прибуток — це плюс.", s: "Відповідь: 120" },
+        { q: "Яке число не є ні додатним, ні від'ємним?", a: "0", h: "Це точка відліку.", s: "Відповідь: 0" },
+        { q: "Запиши число, що знаходиться на \( 4 \) одиниці ліворуч від \( 0 \).", a: "-4", h: "Ліворуч від нуля живуть від'ємні числа.", s: "Відповідь: -4" },
+        { q: "Запиши число, що знаходиться на \( 8 \) одиниць праворуч від \( 0 \).", a: "8", h: "Праворуч від нуля живуть додатні числа.", s: "Відповідь: 8" },
+        { q: "Який знак має число \( -(-5) \)? (напиши + або -)", a: "+", h: "Два мінуси перетворюються на плюс.", s: "Відповідь: +" },
+        // Блок 2: Координатна пряма (11-20)
+        { q: "Відстань від \( 0 \) до \( -10 \) становить...", a: "10", h: "Відстань завжди додатна.", s: "Відповідь: 10" },
+        { q: "Яка координата середини між \( 0 \) та \( -6 \)?", a: "-3", h: "Поділи -6 навпіл.", s: "Відповідь: -3" },
+        { q: "Точка \( A \) має координату \( -2 \). Її перемістили на \( 3 \) вправо. Де вона?", a: "1", h: "-2 + 3 = ?", s: "Відповідь: 1" },
+        { q: "Точка \( B \) має координату \( 1 \). Її перемістили на \( 5 \) вліво. Де вона?", a: "-4", h: "1 - 5 = ?", s: "Відповідь: -4" },
+        { q: "Скільки цілих чисел між \( -2 \) та \( 2 \) (не рахуючи їх)?", a: "3", h: "Це числа: -1, 0, 1.", s: "Відповідь: 3" },
+        { q: "Запиши координату точки, віддаленої від \( 0 \) на \( 5 \) одиниць ліворуч.", a: "-5", h: "Ліворуч — це мінус.", s: "Відповідь: -5" },
+        { q: "Яка точка знаходиться між \( -10 \) та \( -8 \)?", a: "-9", h: "Число посередині.", s: "Відповідь: -9" },
+        { q: "Число \( -12.5 \) знаходиться між цілими числами \( -13 \) та...", a: "-12", h: "Воно правіше за -13.", s: "Відповідь: -12" },
+        { q: "Яке число на \( 1 \) більше за \( -1 \)?", a: "0", h: "-1 + 1 = ?", s: "Відповідь: 0" },
+        { q: "Яке число на \( 1 \) менше за \( 0 \)?", a: "-1", h: "Крок вліво від нуля.", s: "Відповідь: -1" },
+        // Блок 3: Протилежні (21-30)
+        { q: "Запиши протилежне до \( 14 \).", a: "-14", h: "Зміни знак на протилежний.", s: "Відповідь: -14" },
+        { q: "Запиши протилежне до \( -21 \).", a: "21", h: "Мінус на мінус дає плюс.", s: "Відповідь: 21" },
+        { q: "Чому дорівнює \( -(-30) \)?", a: "30", h: "Заперечення від'ємного числа.", s: "Відповідь: 30" },
+        { q: "Знайди \( x \), якщо \( -x = 5 \).", a: "-5", h: "Якщо мінус ікс це 5, то ікс це...", s: "Відповідь: -5" },
+        { q: "Знайди \( x \), якщо \( -x = -8 \).", a: "8", h: "Прибери мінуси з обох сторін.", s: "Відповідь: 8" },
+        { q: "Сума двох протилежних чисел завжди дорівнює...", a: "0", h: "Наприклад: 5 + (-5) = ?", s: "Відповідь: 0" },
+        { q: "Запиши число, протилежне саме собі.", a: "0", h: "Тільки одне таке число.", s: "Відповідь: 0" },
+        { q: "Запиши \( -(+7) \).", a: "-7", h: "Мінус перед плюсом — це мінус.", s: "Відповідь: -7" },
+        { q: "Протилежне до \( -(-2) \) це...", a: "-2", h: "-(-2) = 2. Протилежне до 2 це...", s: "Відповідь: -2" },
+        { q: "Яка координата точки, симетричної до \( M(6) \) відносно нуля?", a: "-6", h: "Симетрія — це протилежне значення.", s: "Відповідь: -6" },
+        // Блок 4: Порівняння (31-40)
+        { q: "Що більше: \( 0 \) чи \( -5 \)?", a: "0", h: "Будь-яке від'ємне число менше за нуль.", s: "Відповідь: 0" },
+        { q: "Що більше: \( -10 \) чи \( -1 \)?", a: "-1", h: "На прямій більше те, що правіше (ближче до 0).", s: "Відповідь: -1" },
+        { q: "Що менше: \( -100 \) чи \( 1 \)?", a: "-100", h: "Від'ємне завжди менше за додатне.", s: "Відповідь: -100" },
+        { q: "Порівняй \( -5 \) і \( -6 \). Яке число лівіше?", a: "-6", h: "Чим більша цифра з мінусом, тим вона менша.", s: "Відповідь: -6" },
+        { q: "Яке найбільше ціле від'ємне число?", a: "-1", h: "Воно знаходиться найближче до нуля зліва.", s: "Відповідь: -1" },
+        { q: "Розташуй в порядку зростання: \( -3, 0, -5 \). Яке перше?", a: "-5", h: "Зростання — від найменшого.", s: "Відповідь: -5" },
+        { q: "Чи правда, що \( -8 > -2 \)? (так/ні)", a: "ні", h: "-8 набагато лівіше.", s: "Відповідь: ні" },
+        { q: "Знайди ціле число \( x \), якщо \( -2 < x < 0 \).", a: "-1", h: "Число між -2 та 0.", s: "Відповідь: -1" },
+        { q: "Який знак треба поставити: \( -12 ... -20 \)? ( < чи > )", a: ">", h: "-12 тепліше ніж -20.", s: "Відповідь: >" },
+        { q: "Яке число найдалі від нуля: \( -7, 0, 5 \)?", a: "-7", h: "Число з найбільшою 'цифрою' без знаку.", s: "Відповідь: -7" }
+    ];
+
+    const testQuestions = [
+        { q: "Яке з чисел є від'ємним?", o: ["0", "5", "-2", "10"], a: 2 },
+        { q: "Де на прямій розташовані від'ємні числа відносно 0?", o: ["Справа", "Зліва", "Зверху", "Всюди"], a: 1 },
+        { q: "Чому дорівнює \( -(-15) \)?", o: ["-15", "0", "15", "-30"], a: 2 },
+        { q: "Яке число більше за \( -3 \)?", o: ["-5", "-10", "-2", "-4"], a: 2 },
+        { q: "Число, протилежне до \( 0 \):", o: ["-1", "1", "0", "Не існує"], a: 2 },
+        { q: "Температура була \( -2^\circ \), а стала \( -5^\circ \). Вона:", o: ["Піднялась", "Впала", "Не змінилась", "Стала нуль"], a: 1 },
+        { q: "Яка відстань від \( 0 \) до точки \( K(-7) \)?", o: ["-7", "0", "7", "14"], a: 2 },
+        { q: "Яке з тверджень правильне?", o: ["\( -5 > 0 \)", "\( 0 < -2 \)", "\( -10 > -20 \)", "\( -3 = 3 \)"], a: 2 },
+        { q: "Сума \( 10 + (-10) \) дорівнює:", o: ["20", "-20", "0", "10"], a: 2 },
+        { q: "Яка координата точки, що на \( 2 \) одиниці правіше за \( -2 \)?", o: ["-4", "0", "2", "-2"], a: 1 }
+    ];
+
+    let totalPoints = 0;
+
+    // Рендеринг завдань
+    const tasksContainer = document.getElementById('tasks-list');
+    tasks.forEach((t, i) => {
+        const block = document.createElement('div');
+        block.className = 'task-block';
+        block.innerHTML = `
+            <div><strong>№${i+1}.</strong> ${t.q}</div>
+            <input type="text" class="math-input" id="ans-${i}">
+            <div>
+                <button class="btn btn-check" onclick="checkTask(${i})">Перевірити</button>
+                <button class="btn btn-hint" onclick="toggleBox('hint-${i}')">Підказка</button>
+                <button class="btn btn-sol" onclick="toggleBox('sol-${i}')">Розв'язок</button>
+            </div>
+            <div id="hint-${i}" class="info-box">💡 ${t.h}</div>
+            <div id="sol-${i}" class="info-box">✅ ${t.s}</div>
+            <div id="msg-${i}" class="feedback-msg"></div>
+        `;
+        tasksContainer.appendChild(block);
+    });
+
+    // Рендеринг тесту
+    const testContainer = document.getElementById('test-container');
+    testQuestions.forEach((t, i) => {
+        const qBlock = document.createElement('div');
+        qBlock.className = 'test-question';
+        qBlock.innerHTML = `
+            <p><strong>${i+1}. ${t.q}</strong></p>
+            <div class="options-grid">
+                ${t.o.map((opt, idx) => `<button class="option-btn" id="q${i}-o${idx}" onclick="checkTest(${i}, ${idx})">${opt}</button>`).join('')}
+            </div>
+        `;
+        testContainer.appendChild(qBlock);
+    });
+
+    function toggleBox(id) {
+        const el = document.getElementById(id);
+        el.style.display = (el.style.display === 'block') ? 'none' : 'block';
+    }
+
+    function checkTask(i) {
+        const val = document.getElementById(`ans-${i}`).value.trim().toLowerCase();
+        const msg = document.getElementById(`msg-${i}`);
+        if (val === tasks[i].a.toLowerCase()) {
+            msg.innerText = "Правильно! 🌟";
+            msg.style.color = "var(--success)";
+            totalPoints++;
+        } else {
+            msg.innerText = "Спробуй ще раз ✍️";
+            msg.style.color = "var(--danger)";
+        }
+    }
+
+    let testScore = 0;
+    function checkTest(qIdx, optIdx) {
+        const correct = testQuestions[qIdx].a;
+        const btns = document.querySelectorAll(`[id^="q${qIdx}-o"]`);
+        btns.forEach(b => b.style.pointerEvents = 'none');
+        
+        if (optIdx === correct) {
+            document.getElementById(`q${qIdx}-o${optIdx}`).style.background = "#d1fae5";
+            testScore++;
+        } else {
+            document.getElementById(`q${qIdx}-o${optIdx}`).style.background = "#fee2e2";
+            document.getElementById(`q${qIdx}-o${correct}`).style.background = "#d1fae5";
+        }
+    }
+
+    function showFinalResult() {
+        const modal = document.getElementById('final-modal');
+        const scoreDisplay = document.getElementById('result-score');
+        const textDisplay = document.getElementById('result-text');
+        
+        const finalSum = Math.min(totalPoints + testScore, 50);
+        modal.style.display = 'block';
+        scoreDisplay.innerText = `${finalSum} / 50`;
+        
+        if (finalSum > 40) textDisplay.innerText = "Ти — професор математики! Чудова робота! 🏆";
+        else if (finalSum > 25) textDisplay.innerText = "Гарний результат! Продовжуй в тому ж дусі! 🚀";
+        else textDisplay.innerText = "Ти на початку шляху. Головне — практика! 💪";
+    }
+
+    // --- WHITEBOARD LOGIC ---
+    const canvas = document.getElementById('whiteboard');
+    const ctx = canvas.getContext('2d');
+    let drawing = false;
+    let mode = 'draw';
+
+    function initCanvas() {
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+        ctx.lineCap = 'round';
+        ctx.lineWidth = 3;
+    }
+
+    window.addEventListener('resize', initCanvas);
+    initCanvas();
+
+    function setMode(m) {
+        mode = m;
+        document.querySelectorAll('.control-btn').forEach(b => b.classList.remove('active'));
+        event.target.classList.add('active');
+    }
+
+    canvas.addEventListener('mousedown', (e) => { drawing = true; draw(e); });
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('mouseup', () => { drawing = false; ctx.beginPath(); });
+
+    function draw(e) {
+        if (!drawing) return;
+        ctx.lineWidth = mode === 'erase' ? 30 : 3;
+        ctx.strokeStyle = mode === 'erase' ? 'white' : '#1e293b';
+
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        ctx.lineTo(x, y);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+    }
+
+    function clearBoard() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function drawGrid() {
+        ctx.strokeStyle = '#e2e8f0';
+        ctx.lineWidth = 1;
+        for (let i = 0; i < canvas.width; i += 40) {
+            ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, canvas.height); ctx.stroke();
+        }
+        for (let i = 0; i < canvas.height; i += 40) {
+            ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(canvas.width, i); ctx.stroke();
+        }
+    }
+
+    function drawCoordinateAxis() {
+        const midY = canvas.height / 2;
+        ctx.strokeStyle = '#1e293b';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(50, midY);
+        ctx.lineTo(canvas.width - 50, midY);
+        // Arrow
+        ctx.lineTo(canvas.width - 65, midY - 10);
+        ctx.moveTo(canvas.width - 50, midY);
+        ctx.lineTo(canvas.width - 65, midY + 10);
+        ctx.stroke();
+
+        // 0 point
+        const midX = canvas.width / 2;
+        ctx.beginPath();
+        ctx.moveTo(midX, midY - 15);
+        ctx.lineTo(midX, midY + 15);
+        ctx.stroke();
+        ctx.font = "20px Arial";
+        ctx.fillText("0", midX - 5, midY + 40);
+
+        // Unit segment
+        ctx.beginPath();
+        ctx.moveTo(midX + 50, midY - 10);
+        ctx.lineTo(midX + 50, midY + 10);
+        ctx.stroke();
+        ctx.fillText("1", midX + 45, midY + 40);
+    }
+</script>
+
+</body>
+</html>
