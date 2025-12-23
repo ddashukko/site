@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Алгебра 8: Дійсні числа (Урок 15)</title>
+    <title>Алгебра 8: Степені з цілим показником</title>
 
     <link
       rel="stylesheet"
@@ -170,7 +170,7 @@
         padding-left: 20px;
       }
       .theory-content li {
-        margin-bottom: 5px;
+        margin-bottom: 8px;
         line-height: 1.5;
       }
 
@@ -200,15 +200,6 @@
         line-height: 1.5;
       }
 
-      .visual-container {
-        display: flex;
-        justify-content: center;
-        padding: 20px;
-        background: #fff;
-        border-bottom: 1px solid var(--border);
-        overflow-x: auto;
-      }
-
       .task-row {
         padding: 15px 20px;
         border-bottom: 1px solid var(--border);
@@ -228,7 +219,7 @@
 
       .task-content {
         display: flex;
-        align-items: center;
+        align-items: baseline;
         gap: 10px;
       }
       .task-number {
@@ -246,27 +237,21 @@
         flex-wrap: wrap;
         gap: 10px;
         padding-bottom: 5px;
-        align-items: stretch; /* Щоб кнопки були однакової висоти в ряду */
       }
       .option-btn {
         flex: 1;
         background: white;
         border: 1px solid #cbd5e1;
         border-radius: 8px;
-        padding: 12px 15px;
+        padding: 10px 15px;
         font-size: 1rem;
         cursor: pointer;
-        min-width: 120px;
-        white-space: normal;
-        word-wrap: break-word;
+        min-width: 70px;
         transition: 0.2s;
         display: flex;
         align-items: center;
         justify-content: center;
         text-align: center;
-        height: auto;
-        min-height: 52px; /* Трохи збільшили висоту для дробів */
-        line-height: 1.5;
       }
       .option-btn:hover:not(:disabled) {
         border-color: var(--primary);
@@ -321,6 +306,7 @@
         background: #fef2f2;
       }
 
+      /* --- СТИЛІ ДЛЯ КНОПОК ВНИЗУ --- */
       .finish-section {
         margin-top: 40px;
         text-align: center;
@@ -340,26 +326,32 @@
         cursor: pointer;
         box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
         transition: transform 0.2s;
-
-        /* Додано для сумісності з тегом <a> */
-        display: inline-block;
-        text-decoration: none;
-        line-height: 1.2;
       }
       .btn-finish:hover {
         transform: scale(1.05);
         background-color: #1d4ed8;
       }
-      /* Стиль для кнопки тестування (інший колір) */
-      .btn-test-link {
-        background-color: #8b5cf6; /* Фіолетовий */
-        box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+
+      .btn-test {
+        padding: 15px 40px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: white;
+        background: #7c3aed;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
+        transition: transform 0.2s;
+        text-decoration: none;
+        display: inline-block;
       }
-      .btn-test-link:hover {
-        background-color: #7c3aed;
+      .btn-test:hover {
+        transform: scale(1.05);
+        background-color: #6d28d9;
       }
 
-      /* Стиль для кнопки Домашня робота (помаранчевий) */
+      /* Стиль для третьої кнопки (Домашня робота) */
       .btn-homework {
         padding: 15px 40px;
         font-size: 1.2rem;
@@ -373,7 +365,6 @@
         transition: transform 0.2s;
         text-decoration: none;
         display: inline-block;
-        line-height: 1.2;
       }
       .btn-homework:hover {
         transform: scale(1.05);
@@ -514,7 +505,7 @@
   <body>
     <div id="tasks-section">
       <header>
-        <div class="header-title">Алгебра 8: Дійсні числа</div>
+        <div class="header-title">Алгебра 8: Степені</div>
         <div class="stats-container">
           <span class="stat-correct">✅ <span id="val-correct">0</span></span>
           <span class="stat-wrong">❌ <span id="val-wrong">0</span></span>
@@ -523,19 +514,20 @@
 
       <div class="content-container" id="quiz-root">
         <div class="theory-block">
-          <div class="theory-title">📚 Шпаргалка: Множини чисел</div>
+          <div class="theory-title">📚 Шпаргалка: Властивості степеня</div>
           <div class="theory-content">
             <ul>
-              <li>$\boldsymbol{N}$ — натуральні (1, 2, 3...)</li>
-              <li>$\boldsymbol{Z}$ — цілі (..., -2, -1, 0, 1, 2...)</li>
-              <li>$\boldsymbol{Q}$ — раціональні (дроби $m/n$)</li>
               <li>
-                $\boldsymbol{R}$ — дійсні (всі раціональні + ірраціональні)
+                $a^m \cdot a^n = a^{m+n}$ (при множенні показники додаються).
               </li>
+              <li>$a^m : a^n = a^{m-n}$ (при діленні віднімаються).</li>
               <li>
-                Ірраціональні — нескінченні неперіодичні дроби ($\pi$,
-                $\sqrt{2}$)
+                $(a^m)^n = a^{m \cdot n}$ (при піднесенні до степеня
+                перемножуються).
               </li>
+              <li>$(ab)^n = a^n b^n$ (степінь добутку).</li>
+              <li>$a^{-n} = \frac{1}{a^n}$ (від'ємний показник).</li>
+              <li>$a^0 = 1$ (якщо $a \neq 0$).</li>
             </ul>
           </div>
         </div>
@@ -587,6 +579,10 @@
     </div>
 
     <script>
+      // !!! ПОСИЛАННЯ НА ІНШІ СТОРІНКИ !!!
+      const TEST_LINK = "властивості степеня тест.html";
+      const HOMEWORK_LINK = "властивості степеня дм.html";
+
       const canvas = document.getElementById("board");
       const ctx = canvas.getContext("2d");
       const boardSection = document.getElementById("board-section");
@@ -633,6 +629,7 @@
       function draw(e) {
         if (!painting) return;
         if (e.type.startsWith("touch")) {
+          // e.preventDefault(); // Забрали, щоб не блокувати скрол на мобільних, якщо торкатися за межами канвасу
         }
 
         const pos = getMousePos(e);
@@ -735,7 +732,6 @@
         ctx.fillText("x", w - 20, cy + 20);
         ctx.fillText("y", cx + 15, 20);
         ctx.fillText("0", cx - 15, cy + 20);
-        ctx.fillText("1", cx + step - 3, cy + 20);
 
         ctx.beginPath();
         ctx.strokeStyle = prevStrokeStyle;
@@ -747,393 +743,408 @@
         }
       }
 
+      // =========================================================
+      // КОНТЕНТ (ВЗЯТО З ПЕРШОГО КОДУ ТА АДАПТОВАНО)
+      // =========================================================
       const exercises = [
         {
-          id: "15.1",
-          title: "15.1. (Усно)",
-          desc: "Чи правильно, що:",
+          id: "10.1",
+          title: "10.1. (Усно.) Які з рівностей є тотожностями:",
+          desc: "Перевірте правильність наведених нижче рівностей.",
           tasks: [
             {
               id: "1)",
-              q: "$8$ — натуральне число?",
-              a: "Так",
-              opts: ["Так", "Ні"],
-            },
-            {
-              id: "2)",
-              q: "$-4,5$ — ціле число?",
+              q: "$x^4 \\cdot x^{-6} = x^{-24}$",
               a: "Ні",
               opts: ["Так", "Ні"],
             },
             {
-              id: "3)",
-              q: "$\\sqrt{5}$ — раціональне число?",
-              a: "Ні",
-              opts: ["Так", "Ні"],
-            },
-            {
-              id: "4)",
-              q: "$-\\frac{2}{9}$ — дійсне число?",
-              a: "Так",
-              opts: ["Так", "Ні"],
-            },
-          ],
-        },
-        {
-          id: "15.2",
-          title: "15.2. Класифікація чисел",
-          desc: "Дано числа: $\\sqrt{10}; 0,333...; 45; -1,(6); \\pi; 23; -4,2; 0; -\\sqrt{3}; -3\\frac{1}{5}$. Оберіть правильний набір для кожного пункту:",
-          tasks: [
-            {
-              id: "1)",
-              q: "Натуральні числа:",
-              a: "$45$; $23$",
-              opts: [
-                "$45$; $23$; $0$",
-                "$45$; $23$",
-                "$45$; $23$; $0,333...$",
-                "Всі додатні",
-              ],
-            },
-            {
               id: "2)",
-              q: "Цілі невід'ємні числа:",
-              a: "$45$; $23$; $0$",
-              opts: [
-                "$45$; $23$",
-                "$0$",
-                "$45$; $23$; $0$",
-                "$45$; $23$; $-4,2$",
-              ],
-            },
-            {
-              id: "3)",
-              q: "Раціональні від'ємні числа:",
-              a: "$-1,(6)$; $-4,2$; $-3\\frac{1}{5}$",
-              opts: [
-                "$-1,(6)$; $-4,2$; $-3\\frac{1}{5}$",
-                "$-\\sqrt{3}$; $-4,2$",
-                "$-4,2$; $-3\\frac{1}{5}$; $-1,(6)$; $-\\sqrt{3}$",
-                "$-4,2$",
-              ],
-            },
-            {
-              id: "4)",
-              q: "Ірраціональні числа:",
-              a: "$\\sqrt{10}$; $\\pi$; $-\\sqrt{3}$",
-              opts: [
-                "$\\sqrt{10}$; $\\pi$",
-                "$0,333...$; $\\pi$",
-                "$\\sqrt{10}$; $\\pi$; $-\\sqrt{3}$",
-                "Всі корені",
-              ],
-            },
-          ],
-        },
-        {
-          id: "15.4",
-          title: "15.4. Відношення цілого до натурального",
-          desc: "Подайте число як відношення цілого числа до натурального (наприклад, $a/b$):",
-          tasks: [
-            { id: "1)", q: "$15$", a: ["15/1"], type: "input" },
-            { id: "2)", q: "$-12$", a: ["-12/1"], type: "input" },
-            { id: "3)", q: "$3\\frac{1}{4}$", a: ["13/4"], type: "input" },
-            { id: "4)", q: "$-2,3$", a: ["-23/10"], type: "input" },
-          ],
-        },
-        {
-          id: "15.6",
-          title: "15.6. Підмножини дробів",
-          desc: "З множини $\\{\\frac{1}{5}; \\frac{8}{7}; \\frac{3}{3}; \\frac{2}{9}; \\frac{6}{1}; \\frac{4}{5}\\}$ виділіть підмножину:",
-          tasks: [
-            {
-              id: "1)",
-              q: "Правильних дробів:",
-              // Оновлено: використовуємо \dfrac та сувору відповідність рядків
-              a: "$\\dfrac{1}{5}$; $\\dfrac{2}{9}$; $\\dfrac{4}{5}$",
-              opts: [
-                "$\\dfrac{1}{5}$; $\\dfrac{4}{5}$",
-                "$\\dfrac{1}{5}$; $\\dfrac{2}{9}$; $\\dfrac{4}{5}$",
-                "$\\dfrac{3}{3}$; $\\dfrac{6}{1}$",
-                "$\\dfrac{8}{7}$; $\\dfrac{3}{3}$",
-              ],
-            },
-            {
-              id: "2)",
-              q: "Неправильних дробів:",
-              a: "$\\dfrac{8}{7}$; $\\dfrac{3}{3}$; $\\dfrac{6}{1}$",
-              opts: [
-                "$\\dfrac{8}{7}$; $\\dfrac{6}{1}$",
-                "$\\dfrac{3}{3}$",
-                "$\\dfrac{8}{7}$; $\\dfrac{3}{3}$; $\\dfrac{6}{1}$",
-                "Всі інші",
-              ],
-            },
-          ],
-        },
-        {
-          id: "15.8",
-          title: "15.8. Нескінченний десятковий дріб",
-          desc: "Подайте число $\\frac{5}{33}$ у вигляді нескінченного десяткового дробу й округліть його:",
-          tasks: [
-            {
-              id: "1)",
-              q: "До сотих ($0,xx$):",
-              a: "0.15",
-              type: "input",
-            },
-            {
-              id: "2)",
-              q: "До тисячних ($0,xxx$):",
-              a: "0.152",
-              type: "input",
-            },
-          ],
-        },
-        {
-          id: "15.10",
-          title: "15.10. (Усно) Належність до множин",
-          desc: "Чи правильно записано твердження ($N$-нат, $Z$-цілі, $Q$-рац, $R$-дійсні)?",
-          tasks: [
-            { id: "1)", q: "$5 \\notin N$", a: "Ні", opts: ["Так", "Ні"] },
-            { id: "2)", q: "$-3 \\in Z$", a: "Так", opts: ["Так", "Ні"] },
-            { id: "3)", q: "$7 \\notin Q$", a: "Ні", opts: ["Так", "Ні"] },
-            { id: "4)", q: "$15 \\in R$", a: "Так", opts: ["Так", "Ні"] },
-            {
-              id: "5)",
-              q: "$-2,5 \\notin N$",
-              a: "Так",
-              opts: ["Так", "Ні"],
-            },
-            { id: "6)", q: "$-4,1 \\in Q$", a: "Так", opts: ["Так", "Ні"] },
-            {
-              id: "7)",
-              q: "$-5,12 \\notin R$",
-              a: "Ні",
-              opts: ["Так", "Ні"],
-            },
-            {
-              id: "8)",
-              q: "$\\sqrt{5} \\in Q$",
-              a: "Ні",
-              opts: ["Так", "Ні"],
-            },
-            {
-              id: "9)",
-              q: "$\\sqrt{36} \\in N$",
-              a: "Так",
-              opts: ["Так", "Ні"],
-            },
-            {
-              id: "10)",
-              q: "$-\\sqrt{16} \\notin R$",
-              a: "Ні",
-              opts: ["Так", "Ні"],
-            },
-            {
-              id: "11)",
-              q: "$\\sqrt{1/4} \\notin Z$",
-              a: "Так",
-              opts: ["Так", "Ні"],
-            },
-            {
-              id: "12)",
-              q: "$\\sqrt{1\\frac{7}{9}} \\in Q$",
-              a: "Так",
-              opts: ["Так", "Ні"],
-            },
-          ],
-        },
-        {
-          id: "15.11",
-          title: "15.11. Порівняння чисел",
-          desc: "Порівняйте числа:",
-          tasks: [
-            {
-              id: "1)",
-              q: "$1,200$ і $1,215$",
-              a: "<",
-              opts: [">", "<", "="],
-            },
-            {
-              id: "2)",
-              q: "$-3,52$ і $-3,25$",
-              a: "<",
-              opts: [">", "<", "="],
-            },
-            {
-              id: "3)",
-              q: "$-\\frac{1}{10}$ і $0$",
-              a: "<",
-              opts: [">", "<", "="],
-            },
-            {
-              id: "4)",
-              q: "$\\pi$ і $3,15$",
-              a: "<",
-              opts: [">", "<", "="],
-            },
-            {
-              id: "5)",
-              q: "$-\\pi$ і $-3,1$",
-              a: "<",
-              opts: [">", "<", "="],
-            },
-            {
-              id: "6)",
-              q: "$1,6$ і $1,(6)$",
-              a: "<",
-              opts: [">", "<", "="],
-            },
-            {
-              id: "7)",
-              q: "$-1,73$ і $-\\sqrt{3}$",
-              a: ">",
-              opts: [">", "<", "="],
-            },
-            {
-              id: "8)",
-              q: "$\\sqrt{2}$ і $1,4$",
-              a: ">",
-              opts: [">", "<", "="],
-            },
-            {
-              id: "9)",
-              q: "$2\\frac{5}{13}$ і $2,(39)$",
-              a: "<",
-              opts: [">", "<", "="],
-            },
-          ],
-        },
-        {
-          id: "15.13",
-          title: "15.13. Наближене значення",
-          desc: "Знайдіть наближене значення виразу, округливши значення кореня до сотих (підказка: $\\sqrt{10} \\approx 3,16$; $\\sqrt{3} \\approx 1,73$):",
-          tasks: [
-            { id: "1)", q: "$\\sqrt{10} + 1,15$", a: "4.31", type: "input" },
-            { id: "2)", q: "$4,25 - \\sqrt{3}$", a: "2.52", type: "input" },
-          ],
-        },
-        {
-          id: "15.15",
-          title: "15.15. Характеристика множини",
-          desc: "Множина $A$ складається з коренів рівняння $0x = 5$. Що це за множина?",
-          tasks: [
-            {
-              id: "1)",
-              q: "Множина $A = $?",
-              a: "Порожня множина",
-              opts: [
-                "$\\{0\\}$",
-                "$\\{5\\}$",
-                "Порожня множина $\\varnothing$",
-                "Множина дійсних чисел",
-              ],
-            },
-          ],
-        },
-        {
-          id: "15.16",
-          title: "15.16. Підмножини",
-          desc: "Чи правильно, що $A \\subset B$ ($A$ є підмножиною $B$), якщо:",
-          tasks: [
-            {
-              id: "1)",
-              q: "$A=\\{2\\}; B=\\{2; 4; 6\\}$",
-              a: "Так",
-              opts: ["Так", "Ні"],
-            },
-            {
-              id: "2)",
-              q: "$A=\\{\\Delta\\}; B=\\{\\Delta; \\square\\}$",
+              q: "$b^5 \\cdot b^{-8} = b^{-3}$",
               a: "Так",
               opts: ["Так", "Ні"],
             },
             {
               id: "3)",
-              q: "$A=\\varnothing; B=\\{1; 2\\}$",
-              a: "Так",
+              q: "$y^3 \\cdot y^{-3} = y$",
+              a: "Ні",
               opts: ["Так", "Ні"],
             },
             {
               id: "4)",
-              q: "$A=\\{x; y\\}; B=\\{x\\}$",
-              a: "Ні",
+              q: "$k^9 : k^{-3} = k^{12}$",
+              a: "Так",
               opts: ["Так", "Ні"],
             },
             {
               id: "5)",
-              q: "$A$ - прості числа; $B$ - натуральні",
-              a: "Так",
+              q: "$p^2 : p^6 = p^4$",
+              a: "Ні",
               opts: ["Так", "Ні"],
             },
             {
               id: "6)",
-              q: "$A$ - цілі числа; $B$ - натуральні, кратні 10",
-              a: "Ні",
+              q: "$(c^4)^{-2} = c^{-8}$",
+              a: "Так",
               opts: ["Так", "Ні"],
             },
           ],
         },
         {
-          id: "15.18",
-          title: "15.18. Спадання",
-          desc: "Розмістіть у порядку спадання числа: $0,22$; $0,(2)$; $0,02$; $\\frac{1}{5}$; $\\frac{3}{4}$.",
+          id: "10.2",
+          title: "10.2. Подайте у вигляді степеня добуток:",
+          desc: "Властивість: $a^m \\cdot a^n = a^{m+n}$.",
           tasks: [
             {
               id: "1)",
-              q: "Правильний порядок:",
-              a: "$\\frac{3}{4}$; $0,(2)$; $0,22$; $\\frac{1}{5}$; $0,02$",
+              q: "$x^6 \\cdot x^{-3}$",
+              a: "$x^3$",
+              opts: ["$x^3$", "$x^9$", "$x^{-3}$", "$x^2$"],
+            },
+            {
+              id: "2)",
+              q: "$y^{-5} \\cdot y^8$",
+              a: "$y^3$",
+              opts: ["$y^{-13}$", "$y^3$", "$y^{40}$", "$y^{-3}$"],
+            },
+            {
+              id: "3)",
+              q: "$b^{12} \\cdot b^{-12}$",
+              a: "1",
+              opts: ["$b$", "0", "1", "$b^{24}$"],
+            },
+            {
+              id: "4)",
+              q: "$c^{-6} \\cdot c^{-2}$",
+              a: "$c^{-8}$",
+              opts: ["$c^{-4}$", "$c^{12}$", "$c^{-8}$", "$c^8$"],
+            },
+          ],
+        },
+        {
+          id: "10.4",
+          title: "10.4. Подайте у вигляді степеня частку:",
+          desc: "Властивість: $a^m : a^n = a^{m-n}$.",
+          tasks: [
+            {
+              id: "1)",
+              q: "$a^4 : a^{-3}$",
+              a: "$a^7$",
+              opts: ["$a^1$", "$a^7$", "$a^{-7}$", "$a^{12}$"],
+            },
+            {
+              id: "2)",
+              q: "$b^7 : b^9$",
+              a: "$b^{-2}$",
+              opts: ["$b^2$", "$b^{16}$", "$b^{-2}$", "$b^{-16}$"],
+            },
+            {
+              id: "3)",
+              q: "$z^{-5} : z^{-5}$",
+              a: "1",
+              opts: ["$z$", "0", "$z^{-10}$", "1"],
+            },
+            {
+              id: "4)",
+              q: "$n^{-2} : n^{-10}$",
+              a: "$n^8$",
+              opts: ["$n^{-12}$", "$n^8$", "$n^{-8}$", "$n^{12}$"],
+            },
+          ],
+        },
+        {
+          id: "10.6",
+          title: "10.6. Піднесіть степінь до степеня:",
+          desc: "Властивість: $(a^m)^n = a^{m \\cdot n}$.",
+          tasks: [
+            {
+              id: "1)",
+              q: "$(y^{-3})^{-4}$",
+              a: "$y^{12}$",
+              opts: ["$y^{-7}$", "$y^{12}$", "$y^{-12}$", "$y^7$"],
+            },
+            {
+              id: "2)",
+              q: "$(m^{-2})^{12}$",
+              a: "$m^{-24}$",
+              opts: ["$m^{-10}$", "$m^{10}$", "$m^{-24}$", "$m^{24}$"],
+            },
+            {
+              id: "3)",
+              q: "$(x^0)^{-8}$",
+              a: "1",
+              opts: ["$x^{-8}$", "0", "1", "$x^8$"],
+            },
+            {
+              id: "4)",
+              q: "$(k^5)^{-3}$",
+              a: "$k^{-15}$",
+              opts: ["$k^2$", "$k^{15}$", "$k^{-15}$", "$k^{-8}$"],
+            },
+          ],
+        },
+        {
+          id: "10.10",
+          title: "10.10. Обчисліть:",
+          desc: "Знайдіть числове значення виразу.",
+          tasks: [
+            { id: "1)", q: "$3^8 \\cdot 3^{-7}$", a: "3", type: "input" },
+            {
+              id: "2)",
+              q: "$4^{-5} \\cdot 4$",
+              a: "1/256",
+              opts: ["1/64", "1/256", "1/16", "-16"],
+            },
+            {
+              id: "3)",
+              q: "$\\left(\\frac{1}{3}\\right)^{-6} \\cdot \\left(\\frac{1}{3}\\right)^4$",
+              a: "9",
+              type: "input",
+            },
+            {
+              id: "4)",
+              q: "$\\left(\\frac{1}{5}\\right)^{-9} \\cdot \\left(\\frac{1}{5}\\right)^7$",
+              a: "25",
+              type: "input",
+            },
+            {
+              id: "5)",
+              q: "$2^{10} : 2^{11}$",
+              a: "0.5|0,5|1/2",
+              type: "input",
+            },
+            {
+              id: "6)",
+              q: "$5^{-12} : 5^{-13}$",
+              a: "5",
+              type: "input",
+            },
+            {
+              id: "7)",
+              q: "$6 : 6^{-1}$",
+              a: "36",
+              type: "input",
+            },
+            {
+              id: "8)",
+              q: "$(3^{-2})^3$",
+              a: "1/729",
+              opts: ["1/243", "-729", "1/729", "1/9"],
+            },
+            {
+              id: "9)",
+              q: "$\\left(\\left(\\frac{1}{4}\\right)^{-1}\\right)^{-3}$",
+              a: "1/64",
+              opts: ["64", "1/64", "12", "1/12"],
+            },
+          ],
+        },
+        {
+          id: "10.12",
+          title: "10.12. Спростіть вираз з основою $x$:",
+          desc: "",
+          tasks: [
+            {
+              id: "1)",
+              q: "$x^9 : x^4 \\cdot x^{-15}$",
+              a: "$x^{-10}$",
+              opts: ["$x^{-2}$", "$x^{-10}$", "$x^{20}$", "$x^{10}$"],
+            },
+            {
+              id: "2)",
+              q: "$(x^4)^{-2} \\cdot x^{10}$",
+              a: "$x^2$",
+              opts: ["$x^2$", "$x^{-2}$", "$x^{18}$", "$x^{-18}$"],
+            },
+            {
+              id: "3)",
+              q: "$(x^{-6})^2 : x^5$",
+              a: "$x^{-17}$",
+              opts: ["$x^{-7}$", "$x^{-17}$", "$x^{17}$", "$x^{-1}$"],
+            },
+            {
+              id: "4)",
+              q: "$x^0 \\cdot (x^{-2})^5 \\cdot x^8$",
+              a: "$x^{-2}$",
+              opts: ["$x^2$", "$x^{-2}$", "$x^{-10}$", "1"],
+            },
+            {
+              id: "5)",
+              q: "$x^{-4} \\cdot x^0 : x^3 : x$",
+              a: "$x^{-8}$",
+              opts: ["$x^{-1}$", "$x^{-7}$", "$x^{-8}$", "$x^0$"],
+            },
+            {
+              id: "6)",
+              q: "$(x^2)^{-4} \\cdot (x^{-1})^{-5}$",
+              a: "$x^{-3}$",
+              opts: ["$x^{-3}$", "$x^{-13}$", "$x^3$", "$x^{13}$"],
+            },
+          ],
+        },
+        {
+          id: "10.14",
+          title: "10.14. Спростіть вираз (коефіцієнти):",
+          desc: "Окремо перемножте числа та окремо степені.",
+          tasks: [
+            {
+              id: "1)",
+              q: "$3x^{-5}y^4 \\cdot 6x^8y^{-2}$",
+              a: "$18x^3y^2$",
               opts: [
-                "$\\frac{3}{4}$; $0,(2)$; $0,22$; $\\frac{1}{5}$; $0,02$",
-                "$0,(2)$; $0,22$; $\\frac{3}{4}$; $\\frac{1}{5}$; $0,02$",
-                "$\\frac{3}{4}$; $0,22$; $0,(2)$; $0,02$; $\\frac{1}{5}$",
-                "$\\frac{1}{5}$; $0,02$; $0,22$; $0,(2)$; $\\frac{3}{4}$",
+                "$18x^3y^2$",
+                "$9x^3y^2$",
+                "$18x^{-13}y^2$",
+                "$18x^3y^{-2}$",
+              ],
+            },
+            {
+              id: "2)",
+              q: "$5a^{-8}b^3 \\cdot 0.2a^{10}b^{-7}$",
+              a: "$a^2b^{-4}$",
+              opts: ["$a^2b^{-4}$", "$5a^2b^{-4}$", "$a^{-18}b^4$", "$a^2b^4$"],
+            },
+            {
+              id: "3)",
+              q: "$\\frac{1}{4}p^{-6}q^8 \\cdot (-12p^7q^{-5})$",
+              a: "$-3pq^3$",
+              opts: ["$-3pq^3$", "$3pq^3$", "$-3p^{-13}q^3$", "$-48pq^3$"],
+            },
+            {
+              id: "4)",
+              q: "$\\left(-\\frac{3}{5}x^{-4}y^{-2}\\right) \\cdot \\left(-2\\frac{1}{2}x^{-3}y^{-5}\\right)$",
+              a: "$1.5x^{-7}y^{-7}$",
+              opts: [
+                "$-1.5x^{-7}y^{-7}$",
+                "$1.5x^{-7}y^{-7}$",
+                "$1.5x^{12}y^{10}$",
+                "$x^{-7}y^{-7}$",
               ],
             },
           ],
         },
         {
-          id: "15.20",
-          title: "15.20. Властивості чисел",
-          desc: "Чи правильно, що:",
+          id: "10.16",
+          title: "10.16. Подайте у вигляді добутку степенів:",
+          desc: "$(ab)^n = a^n b^n$.",
           tasks: [
             {
               id: "1)",
-              q: "Сума двох натуральних чисел — натуральне?",
-              a: "Так",
-              opts: ["Так", "Ні"],
+              q: "$(mn)^{-3}$",
+              a: "$m^{-3}n^{-3}$",
+              opts: ["$m^{-3}n^{-3}$", "$mn^{-3}$", "$m^{-3}n$", "$m^3n^3$"],
             },
             {
               id: "2)",
-              q: "Різниця двох раціональних чисел — раціональне?",
-              a: "Так",
-              opts: ["Так", "Ні"],
+              q: "$(xy^{-3})^{-2}$",
+              a: "$x^{-2}y^6$",
+              opts: ["$x^{-2}y^{-6}$", "$x^{-2}y^6$", "$x^2y^6$", "$xy^6$"],
             },
             {
               id: "3)",
-              q: "Будь-яке натуральне число є цілим?",
-              a: "Так",
-              opts: ["Так", "Ні"],
+              q: "$(a^{-5}b^2)^{-1}$",
+              a: "$a^5b^{-2}$",
+              opts: ["$a^{-5}b^{-2}$", "$a^5b^2$", "$a^5b^{-2}$", "$a^{-6}b$"],
             },
             {
               id: "4)",
-              q: "Множина дійсних чисел складається тільки з додатних і від'ємних?",
-              a: "Ні",
-              opts: ["Так", "Ні"],
+              q: "$(k^0z^{-4})^{-3}$",
+              a: "$z^{12}$",
+              opts: ["$k^{-3}z^{12}$", "$z^{12}$", "$z^{-12}$", "$k^0z^{12}$"],
             },
           ],
         },
         {
-          id: "15.21",
-          title: "15.21. Пошук числа",
-          desc: "Запишіть будь-яке раціональне число, що міститься між $2,33$ і $2,(3)$.",
+          id: "10.18",
+          title: "10.18. Подайте у вигляді степеня вираз:",
+          desc: "",
           tasks: [
             {
               id: "1)",
-              q: "Число:",
-              a: ["2.331", "2.332", "2.333", "2.3315", "2.3325"],
+              q: "$125x^{-3}$",
+              a: "$(5x^{-1})^3$",
+              opts: [
+                "$(5x)^{-3}$",
+                "$(5x^{-1})^3$",
+                "$(125x)^{-3}$",
+                "$5x^{-3}$",
+              ],
+            },
+            {
+              id: "2)",
+              q: "$0.001y^{-6}$",
+              a: "$(0.1y^{-2})^3$",
+              opts: [
+                "$(0.1y^{-2})^3$",
+                "$(0.1y^{-6})^3$",
+                "$(0.01y^2)^3$",
+                "$(0.1y)^{-6}$",
+              ],
+            },
+            {
+              id: "3)",
+              q: "$0.0081a^{-4}b^{16}$",
+              a: "$(0.3a^{-1}b^4)^4$",
+              opts: [
+                "$(0.3a^{-1}b^4)^4$",
+                "$(0.03ab^{-4})^4$",
+                "$(0.9a^{-1}b^4)^4$",
+                "$(0.3ab)^4$",
+              ],
+            },
+            {
+              id: "4)",
+              q: "$2\\frac{7}{9}p^{14}q^{-18}$",
+              a: "$(\\frac{5}{3} p^7q^{-9})^2$",
+              opts: [
+                "$(\\frac{5}{3} p^7q^{-9})^2$",
+                "$(\\frac{25}{9} p^7q^{-9})^2$",
+                "$(\\frac{5}{3} p^{12}q^{-16})^2$",
+                "$(1.6 p^7q^{-9})^2$",
+              ],
+            },
+          ],
+        },
+        {
+          id: "10.21",
+          title: "10.21. Знайдіть значення виразу:",
+          desc: "",
+          tasks: [
+            {
+              id: "1)",
+              q: "$81 \\cdot 3^{-5}$",
+              a: "1/3",
+              opts: ["3", "1/3", "9", "-3"],
+            },
+            {
+              id: "2)",
+              q: "$27 \\cdot (3^{-2})^3$",
+              a: "1/27",
+              opts: ["1/27", "27", "1/9", "1"],
+            },
+            {
+              id: "3)",
+              q: "$2^{-9} \\cdot 4^6 : 16$",
+              a: "0.5|0,5|1/2",
               type: "input",
+            },
+            {
+              id: "4)",
+              q: "$36^{-1} \\cdot \\left(\\frac{1}{6}\\right)^{-4}$",
+              a: "36",
+              type: "input",
+            },
+            {
+              id: "5)",
+              q: "$\\frac{25^{-4} \\cdot 5^{-6}}{(-5)^{-16}}$",
+              a: "25",
+              type: "input",
+            },
+            {
+              id: "6)",
+              q: "$\\frac{10^{-5} \\cdot 2^{-8}}{32^{-3}}$",
+              a: "4/3125",
+              opts: ["4/3125", "125", "2/625", "0.005"],
             },
           ],
         },
@@ -1148,7 +1159,6 @@
 
         exercises.forEach((ex) => {
           totalTasksCount += ex.tasks.length;
-          if (ex.manualPoints) totalTasksCount += ex.manualPoints;
         });
 
         exercises.forEach((ex) => {
@@ -1156,18 +1166,11 @@
           exBlock.className = "exercise-block";
 
           exBlock.innerHTML = `
-                  <div class="exercise-header">
-                      <h3 class="exercise-title">${ex.title}</h3>
-                      <p class="exercise-desc">${ex.desc}</p>
-                  </div>
-              `;
-
-          if (ex.visual) {
-            const visualDiv = document.createElement("div");
-            visualDiv.className = "visual-container";
-            visualDiv.innerHTML = ex.visual;
-            exBlock.appendChild(visualDiv);
-          }
+                        <div class="exercise-header">
+                            <h3 class="exercise-title">${ex.title}</h3>
+                            <p class="exercise-desc">${ex.desc}</p>
+                        </div>
+                    `;
 
           const taskList = document.createElement("div");
           taskList.className = "task-list";
@@ -1177,27 +1180,27 @@
             row.className = "task-row";
 
             let contentHTML = `
-                      <div class="task-content">
-                          <div class="task-number">${task.id}</div>
-                          <div class="task-question">${task.q}</div>
-                      </div>
-                  `;
+                            <div class="task-content">
+                                <div class="task-number">${task.id}</div>
+                                <div class="task-question">${task.q}</div>
+                            </div>
+                        `;
 
             let actionHTML = "";
             if (task.type === "input") {
               const answers = Array.isArray(task.a) ? task.a.join("|") : task.a;
               actionHTML = `
-                          <div class="input-group">
-                              <input type="text" class="input-answer" placeholder="..." onkeypress="if(event.key==='Enter') this.nextElementSibling.click()">
-                              <button class="btn-check" onclick="checkInput(this, '${answers}')">OK</button>
-                          </div>
-                      `;
+                                <div class="input-group">
+                                    <input type="text" class="input-answer" placeholder="..." onkeypress="if(event.key==='Enter') this.nextElementSibling.click()">
+                                    <button class="btn-check" onclick="checkInput(this, '${answers}')">OK</button>
+                                </div>
+                            `;
             } else {
               actionHTML = `<div class="options-container">`;
               task.opts.forEach((opt) => {
                 const isCorrect = opt === task.a;
-                // Escaping single quotes for HTML attribute
-                const safeOpt = opt.replace(/'/g, "&apos;");
+                // Екранування для HTML атрибутів
+                const safeOpt = opt.replace(/"/g, "&quot;");
                 actionHTML += `<button class="option-btn" onclick="checkOpt(this, ${isCorrect})">${opt}</button>`;
               });
               actionHTML += `</div>`;
@@ -1212,16 +1215,19 @@
           root.appendChild(exBlock);
         });
 
-        // МОДИФІКОВАНО: Додано кнопку "Пройти тестування" та "Домашня робота"
+        // =========================================================
+        // ГЕНЕРАЦІЯ 3-Х КНОПОК
+        // =========================================================
         const finishSection = document.createElement("div");
         finishSection.className = "finish-section";
         finishSection.innerHTML = `
-            <button class="btn-finish" onclick="finishLesson()">Завершити урок</button>
-            <a href="Тест Числові множини.html" class="btn-finish btn-test-link">Пройти тестування</a>
-            <a href="Домашня Числові множини.html" class="btn-homework">Домашня робота</a>
-          `;
+              <button class="btn-finish" onclick="finishLesson()">Завершити урок</button>
+              <a href="../test/10-exponent-properties.html" class="btn-test">👉 Пройти перевірочний тест</a>
+              <a href="../homework/10-exponent-properties.html" class="btn-homework">🏠 Домашня робота</a>
+            `;
         root.appendChild(finishSection);
 
+        // Render Math
         if (window.renderMathInElement) {
           renderMathInElement(document.body, {
             delimiters: [
@@ -1273,7 +1279,6 @@
         if (row.classList.contains("done")) return;
 
         let val = input.value.trim().replace(",", ".");
-
         const correctArr = ansStr.split("|");
 
         row.classList.add("done");
@@ -1302,10 +1307,10 @@
         const body = document.getElementById("modal-content-body");
 
         const correctInputs = document.querySelectorAll(
-          ".input-answer.correct, .table-input.correct, .option-btn.selected-correct"
+          ".input-answer.correct, .option-btn.selected-correct"
         ).length;
         const wrongInputs = document.querySelectorAll(
-          ".input-answer.wrong, .table-input.wrong, .option-btn.selected-wrong"
+          ".input-answer.wrong, .option-btn.selected-wrong"
         ).length;
         const distinctAnswered = correctInputs + wrongInputs;
 
@@ -1318,8 +1323,8 @@
         let html = ``;
         if (distinctAnswered === 0) {
           html = `<div class="modal-result-title">Упс... 😶</div>
-                      <div style="font-size:1.1rem; margin:15px 0; color:#475569;">Ти не дав жодної відповіді. Спробуй розв'язати хоча б щось!</div>
-                      <button class="modal-footer-btn" onclick="closeModal()">Повернутись</button>`;
+                        <div style="font-size:1.1rem; margin:15px 0; color:#475569;">Ти не дав жодної відповіді. Спробуй розв'язати хоча б щось!</div>
+                        <button class="modal-footer-btn" onclick="closeModal()">Повернутись</button>`;
         } else {
           let msg = "";
           let color = "#2563eb";
@@ -1338,30 +1343,30 @@
           }
 
           html = `
-                  <div class="modal-result-title" style="color:${color}">${msg}</div>
-                  
-                  <div>
-                      <div style="font-size: 1rem; color: #64748b;">Твоя точність</div>
-                      <div class="modal-score-big" style="color:${color}">${efficiency}%</div>
-                      <div class="modal-score-sub">
-                          (Правильних спроб: ${totalCorrect} з ${attempts})
-                      </div>
-                  </div>
-
-                  <div class="modal-progress-container">
-                        <div style="font-size: 1rem; color: #334155; display:flex; justify-content:space-between;">
-                          <span>Прогрес уроку:</span>
-                          <strong>${distinctAnswered} / ${totalTasksCount}</strong>
+                    <div class="modal-result-title" style="color:${color}">${msg}</div>
+                    
+                    <div>
+                        <div style="font-size: 1rem; color: #64748b;">Твоя точність</div>
+                        <div class="modal-score-big" style="color:${color}">${efficiency}%</div>
+                        <div class="modal-score-sub">
+                            (Правильних спроб: ${totalCorrect} з ${attempts})
                         </div>
-                        <div class="modal-bar-bg">
-                          <div class="modal-bar-fill" style="width: ${
-                            (distinctAnswered / totalTasksCount) * 100
-                          }%; background: ${color};"></div>
-                        </div>
-                  </div>
+                    </div>
 
-                  <button class="modal-footer-btn" onclick="closeModal()">Закрити</button>
-              `;
+                    <div class="modal-progress-container">
+                          <div style="font-size: 1rem; color: #334155; display:flex; justify-content:space-between;">
+                            <span>Прогрес уроку:</span>
+                            <strong>${distinctAnswered} / ${totalTasksCount}</strong>
+                          </div>
+                          <div class="modal-bar-bg">
+                            <div class="modal-bar-fill" style="width: ${
+                              (distinctAnswered / totalTasksCount) * 100
+                            }%; background: ${color};"></div>
+                          </div>
+                    </div>
+
+                    <button class="modal-footer-btn" onclick="closeModal()">Закрити</button>
+                `;
         }
 
         body.innerHTML = html;

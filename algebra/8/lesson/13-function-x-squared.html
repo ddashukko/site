@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Алгебра 8: Функція y = k/x + Дошка</title>
+    <title>Алгебра 8: Функція y = x² (Урок + Тест)</title>
 
     <link
       rel="stylesheet"
@@ -44,7 +44,6 @@
         overflow: hidden;
       }
 
-      /* --- ЛІВА ЧАСТИНА: ЗАВДАННЯ --- */
       #tasks-section {
         flex: 1;
         background: var(--bg);
@@ -53,7 +52,6 @@
         flex-direction: column;
       }
 
-      /* --- ПРАВА ЧАСТИНА: ДОШКА --- */
       #board-section {
         flex: 1;
         position: relative;
@@ -88,7 +86,6 @@
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         border: 1px solid var(--border);
         flex-wrap: wrap;
-        z-index: 10;
       }
 
       .btn-tool {
@@ -358,7 +355,6 @@
         color: var(--error);
       }
 
-      /* --- ОНОВЛЕНІ СТИЛІ ДЛЯ КНОПОК --- */
       .finish-section {
         margin-top: 40px;
         text-align: center;
@@ -378,31 +374,39 @@
         cursor: pointer;
         box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
         transition: transform 0.2s;
-        display: inline-block;
-        text-decoration: none;
-        line-height: 1.2;
       }
       .btn-finish:hover {
         transform: scale(1.05);
         background-color: #1d4ed8;
       }
 
-      /* Стиль для кнопки тестування (фіолетовий) */
-      .btn-test-link {
-        background-color: #8b5cf6;
-        box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+      /* Стиль для ФІОЛЕТОВОЇ кнопки тестування */
+      .btn-test {
+        padding: 15px 40px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: white;
+        background: #7c3aed; /* Фіолетовий колір */
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
+        transition: transform 0.2s;
+        text-decoration: none; /* Щоб посилання не підкреслювалось */
+        display: inline-block;
       }
-      .btn-test-link:hover {
-        background-color: #7c3aed;
+      .btn-test:hover {
+        transform: scale(1.05);
+        background-color: #6d28d9;
       }
 
-      /* Стиль для кнопки Домашня робота (помаранчевий) */
+      /* --- НОВИЙ СТИЛЬ ДЛЯ КНОПКИ ДОМАШНЯ РОБОТА --- */
       .btn-homework {
         padding: 15px 40px;
         font-size: 1.2rem;
         font-weight: bold;
         color: white;
-        background: #ea580c;
+        background: #ea580c; /* Помаранчевий */
         border: none;
         border-radius: 50px;
         cursor: pointer;
@@ -410,14 +414,12 @@
         transition: transform 0.2s;
         text-decoration: none;
         display: inline-block;
-        line-height: 1.2;
       }
       .btn-homework:hover {
         transform: scale(1.05);
         background-color: #c2410c;
       }
 
-      /* --- СТИЛІ ДЛЯ МОДАЛЬНОГО ВІКНА --- */
       .modal-overlay {
         display: none;
         position: fixed;
@@ -559,7 +561,7 @@
   <body>
     <div id="tasks-section">
       <header>
-        <div class="header-title">Алгебра 8: Функція $y = k/x$</div>
+        <div class="header-title">Алгебра 8: Функція $y = x^2$</div>
         <div class="stats-container">
           <span class="stat-correct">✅ <span id="val-correct">0</span></span>
           <span class="stat-wrong">❌ <span id="val-wrong">0</span></span>
@@ -568,15 +570,13 @@
 
       <div class="content-container" id="quiz-root">
         <div class="theory-block">
-          <div class="theory-title">📚 Шпаргалка: $y = \frac{k}{x}$</div>
+          <div class="theory-title">📚 Шпаргалка: $y = x^2$</div>
           <div class="theory-content">
             <ul>
-              <li>Це <strong>гіпербола</strong>.</li>
-              <li>$k > 0$: графік у I та III чвертях.</li>
-              <li>$k < 0$: графік у II та IV чвертях.</li>
-              <li>
-                Графік ніколи не перетинає осі координат ($x \ne 0, y \ne 0$).
-              </li>
+              <li>Це <strong>парабола</strong>.</li>
+              <li>Графік проходить через $(0; 0)$.</li>
+              <li>Гілки напрямлені вгору.</li>
+              <li>$y \ge 0$ для будь-якого $x$.</li>
             </ul>
           </div>
         </div>
@@ -793,328 +793,204 @@
         }
       }
 
-      /* --- 2. ЛОГІКА ЗАВДАНЬ --- */
+      /* --- 2. ЛОГІКА ЗАВДАНЬ (ОНОВЛЕНА) --- */
 
       const exercises = [
         {
-          id: "12.1",
-          title: "12.1.",
-          desc: "Які з функцій задають обернену пропорційність:",
+          id: "13.1",
+          title: "13.1.",
+          desc: "Вкажіть, яка з функцій є параболою ($y=x^2$):",
           tasks: [
             {
               id: "1)",
-              q: "$y = \\frac{14}{x}$",
-              a: "Так",
-              opts: ["Так", "Ні"],
+              q: "$y = 5x$",
+              a: "Пряма",
+              opts: ["Пряма", "Парабола", "Гіпербола"],
             },
             {
               id: "2)",
-              q: "$y = \\frac{x}{14}$",
-              a: "Ні",
-              opts: ["Так", "Ні"],
+              q: "$y = x^2$",
+              a: "Парабола",
+              opts: ["Пряма", "Парабола", "Гіпербола"],
             },
             {
               id: "3)",
-              q: "$y = -\\frac{5}{x}$",
-              a: "Так",
-              opts: ["Так", "Ні"],
+              q: "$y = \\frac{10}{x}$",
+              a: "Гіпербола",
+              opts: ["Пряма", "Парабола", "Гіпербола"],
             },
-            { id: "4)", q: "$y = 7$", a: "Ні", opts: ["Так", "Ні"] },
           ],
         },
         {
-          id: "12.3",
-          title: "12.3.",
-          desc: "У яких координатних кутах лежить графік функції:",
+          id: "13.2",
+          title: "13.2.",
+          desc: "Для функції $y = x^2$ знайдіть значення $y$, що відповідає значенню:",
+          tasks: [
+            { id: "1)", q: "$x = -3$", a: "9", type: "input" },
+            { id: "2)", q: "$x = 0$", a: "0", type: "input" },
+            { id: "3)", q: "$x = 9$", a: "81", type: "input" },
+          ],
+        },
+        {
+          id: "13.4",
+          title: "13.4.",
+          desc: "Використовуючи графік функції $y = x^2$, знайдіть:",
+          tasks: [
+            { id: "1)", q: "$y$, якщо $x = -2$", a: "4", type: "input" },
+            {
+              id: "2)",
+              q: "$x$ (додатнє), якщо $y = 16$",
+              a: "4",
+              type: "input",
+            },
+            {
+              id: "3)",
+              q: "$x$ (від'ємне), якщо $y = 16$",
+              a: "-4",
+              type: "input",
+            },
+          ],
+        },
+        {
+          id: "13.6",
+          title: "13.6.",
+          desc: "Побудуйте графік функції $y = x^2$. Заповніть таблицю:",
+          manualPoints: 6,
+          visual: `
+            <div style="width: 100%; overflow-x: auto; padding-bottom: 10px;">
+                <table class="math-table" id="table-13-6" style="min-width: 400px;">
+                    <tr>
+                        <th>x</th>
+                        <td>-3</td>
+                        <td>-2</td>
+                        <td>-1</td>
+                        <td>0</td>
+                        <td>1</td>
+                        <td>2</td>
+                        <td>3</td>
+                    </tr>
+                    <tr>
+                        <th>y</th>
+                        <td><input type="text" class="table-input" data-ans="9" oninput="this.classList.remove('wrong')"></td>
+                        <td><input type="text" class="table-input" data-ans="4" oninput="this.classList.remove('wrong')"></td>
+                        <td><input type="text" class="table-input" data-ans="1" oninput="this.classList.remove('wrong')"></td>
+                        <td><input type="text" class="table-input" data-ans="0" oninput="this.classList.remove('wrong')"></td>
+                        <td><input type="text" class="table-input" data-ans="1" oninput="this.classList.remove('wrong')"></td>
+                        <td><input type="text" class="table-input" data-ans="4" oninput="this.classList.remove('wrong')"></td>
+                        <td><input type="text" class="table-input" data-ans="9" oninput="this.classList.remove('wrong')"></td>
+                    </tr>
+                </table>
+            </div>
+            <div style="text-align: center; margin-top: 15px;">
+                <button class="btn-check" onclick="checkTable('table-13-6', this)">Перевірити таблицю</button>
+            </div>
+          `,
+          tasks: [],
+        },
+        {
+          id: "13.8",
+          title: "13.8.",
+          desc: "Чи проходить графік функції $y = x^2$ через точку:",
+          tasks: [
+            { id: "1)", q: "A(-5; 25)", a: "Так", opts: ["Так", "Ні"] },
+            { id: "2)", q: "B(4; 15)", a: "Ні", opts: ["Так", "Ні"] },
+            { id: "3)", q: "C(0; 5)", a: "Ні", opts: ["Так", "Ні"] },
+          ],
+        },
+        {
+          id: "13.10",
+          title: "13.10.",
+          desc: "Знайдіть область значень функції $y = x^2$, якщо:",
           tasks: [
             {
               id: "1)",
-              q: "$y = \\frac{25}{x}$",
-              a: "I і III",
-              opts: ["I і II", "I і III", "II і IV"],
+              q: "$-3 \\le x \\le 0$",
+              a: "$0 \\le y \\le 9$",
+              opts: [
+                "$0 \\le y \\le 9$",
+                "$-9 \\le y \\le 0$",
+                "$0 \\le y \\le 3$",
+              ],
             },
             {
               id: "2)",
-              q: "$y = -\\frac{15}{x}$",
-              a: "II і IV",
-              opts: ["I і III", "II і IV", "I і IV"],
-            },
-          ],
-        },
-        {
-          id: "12.4",
-          title: "12.4.",
-          desc: "Обчисліть значення функції $y = \\frac{24}{x}$, якщо значення аргументу дорівнює:",
-          tasks: [
-            { id: "1)", q: "-2", a: "-12", type: "input" },
-            { id: "2)", q: "6", a: "4", type: "input" },
-            { id: "3)", q: "-12", a: "-2", type: "input" },
-            { id: "4)", q: "0.5", a: "48", type: "input" },
-          ],
-        },
-        {
-          id: "12.6",
-          title: "12.6.",
-          desc: "Обернену пропорційність задано формулою $y = \\frac{100}{x}$. Перенесіть таблицю в зошит і заповніть її:",
-          manualPoints: 4,
-          visual: `
-            <div style="width: 100%; overflow-x: auto; padding-bottom: 10px;">
-                <table class="math-table" id="table-12-6" style="min-width: 400px;">
-                    <tr>
-                        <th>x</th>
-                        <td>-50</td>
-                        <td>20</td>
-                        <td><input type="text" class="table-input" data-ans="10" oninput="this.classList.remove('wrong')"></td>
-                        <td><input type="text" class="table-input" data-ans="-4" oninput="this.classList.remove('wrong')"></td>
-                    </tr>
-                    <tr>
-                        <th>y</th>
-                        <td><input type="text" class="table-input" data-ans="-2" oninput="this.classList.remove('wrong')"></td>
-                        <td><input type="text" class="table-input" data-ans="5" oninput="this.classList.remove('wrong')"></td>
-                        <td>10</td>
-                        <td>-25</td>
-                    </tr>
-                </table>
-            </div>
-            <div style="text-align: center; margin-top: 15px;">
-                <button class="btn-check" onclick="checkTable('table-12-6', this)">Перевірити таблицю</button>
-            </div>
-          `,
-          tasks: [],
-        },
-        {
-          id: "12.8",
-          title: "12.8.",
-          desc: "Побудуйте графік функції $y = -\\frac{12}{x}$. Заповніть таблицю та натисніть кнопку перевірки:",
-          manualPoints: 8,
-          visual: `
-            <div style="width: 100%; overflow-x: auto; padding-bottom: 10px;">
-                <table class="math-table" id="table-12-8" style="min-width: 500px;">
-                    <tr>
-                        <th>x</th>
-                        <td>-12</td><td>-6</td><td>-4</td><td>-3</td><td>3</td><td>4</td><td>6</td><td>12</td>
-                    </tr>
-                    <tr>
-                        <th>y</th>
-                        <td><input type="text" class="table-input" data-ans="1" oninput="this.classList.remove('wrong')"></td>
-                        <td><input type="text" class="table-input" data-ans="2" oninput="this.classList.remove('wrong')"></td>
-                        <td><input type="text" class="table-input" data-ans="3" oninput="this.classList.remove('wrong')"></td>
-                        <td><input type="text" class="table-input" data-ans="4" oninput="this.classList.remove('wrong')"></td>
-                        <td><input type="text" class="table-input" data-ans="-4" oninput="this.classList.remove('wrong')"></td>
-                        <td><input type="text" class="table-input" data-ans="-3" oninput="this.classList.remove('wrong')"></td>
-                        <td><input type="text" class="table-input" data-ans="-2" oninput="this.classList.remove('wrong')"></td>
-                        <td><input type="text" class="table-input" data-ans="-1" oninput="this.classList.remove('wrong')"></td>
-                    </tr>
-                </table>
-            </div>
-            <div style="text-align: center; margin-top: 15px;">
-                <button class="btn-check" onclick="checkTable('table-12-8', this)">Перевірити таблицю</button>
-            </div>
-          `,
-          tasks: [],
-        },
-        {
-          id: "12.10",
-          title: "12.10.",
-          desc: "Не виконуючи побудови графіка функції $y = \\frac{120}{x}$, з'ясуйте, чи належить йому точка:",
-          tasks: [
-            { id: "1)", q: "A(4; 30)", a: "Так", opts: ["Так", "Ні"] },
-            { id: "2)", q: "B(-6; 20)", a: "Ні", opts: ["Так", "Ні"] },
-            { id: "3)", q: "C(-2; -60)", a: "Так", opts: ["Так", "Ні"] },
-          ],
-        },
-        {
-          id: "12.12",
-          title: "12.12.",
-          desc: "(Усно.) Графіки яких функцій проходять через точку $A(2; -8)$:",
-          tasks: [
-            {
-              id: "1)",
-              q: "Варіанти:",
-              a: "$y = -\\frac{16}{x}$",
+              q: "$-1 \\le x \\le 2$",
+              a: "$0 \\le y \\le 4$",
               opts: [
-                "$y = \\frac{16}{x}$",
-                "$y = -\\frac{16}{x}$",
-                "$y = -\\frac{4}{x}$",
+                "$1 \\le y \\le 4$",
+                "$0 \\le y \\le 4$",
+                "$0 \\le y \\le 2$",
               ],
             },
           ],
         },
         {
-          id: "12.13",
-          title: "12.13.",
-          desc: "Загальна вартість товару 200 грн. Ціна товару — $x$ грн, кількість — $y$ кг.",
+          id: "13.11",
+          title: "13.11.",
+          desc: "Порівняйте значення функції $f(x) = x^2$, якщо:",
           tasks: [
             {
               id: "1)",
-              q: "Чи є залежність оберненою пропорційністю?",
-              a: "Так",
-              opts: ["Так", "Ні"],
+              q: "$x = -5$ і $x = 3$",
+              a: ">",
+              opts: [">", "<", "="],
             },
             {
               id: "2)",
-              q: "Запишіть формулу:",
-              a: "$y = \\frac{200}{x}$",
-              opts: ["$y = 200x$", "$y = \\frac{200}{x}$", "$y = 200 - x$"],
+              q: "$x = -0.5$ і $x = 0.5$",
+              a: "=",
+              opts: [">", "<", "="],
             },
           ],
         },
         {
-          id: "12.14",
-          title: "12.14.",
-          desc: "Побудуйте графік функції $y = \\frac{12}{x}$. За графіком знайдіть:",
+          id: "13.12",
+          title: "13.12.",
+          desc: "Розв'яжіть графічно рівняння $x^2 = 3x$ (знайдіть корені):",
           tasks: [
             {
               id: "1)",
-              q: "значення функції, якщо значення аргументу дорівнює -2",
-              a: "-6",
+              q: "x1 =",
+              a: "0",
               type: "input",
             },
             {
               id: "2)",
-              q: "значення аргументу, для яких функція дорівнює 4",
+              q: "x2 =",
               a: "3",
               type: "input",
             },
           ],
         },
         {
-          id: "12.16",
-          title: "12.16.",
-          desc: "Графік оберненої пропорційності проходить через точку $M(-3; 5)$. Задайте цю функцію формулою.",
-          tasks: [
-            { id: "1)", q: "Знайдіть k:", a: "-15", type: "input" },
-            {
-              id: "2)",
-              q: "Формула:",
-              a: "$y = -\\frac{15}{x}$",
-              opts: ["$y = \\frac{15}{x}$", "$y = -\\frac{15}{x}$"],
-            },
-          ],
-        },
-        {
-          id: "12.18",
-          title: "12.18.",
-          desc: "Функцію задано формулою $y = \\frac{24}{x}$ для $2 \\le x \\le 6$. Запишіть область значень цієї функції.",
-          tasks: [
-            { id: "1)", q: "y_max =", a: "12", type: "input" },
-            { id: "2)", q: "y_min =", a: "4", type: "input" },
-            {
-              id: "3)",
-              q: "Область значень:",
-              a: "$4 \\le y \\le 12$",
-              opts: [
-                "$2 \\le y \\le 6$",
-                "$4 \\le y \\le 12$",
-                "$0 \\le y \\le 24$",
-              ],
-            },
-          ],
-        },
-        {
-          id: "12.21",
-          title: "12.21.",
-          desc: "Побудуйте графік функції $y = \\frac{8}{|x|}$. Складіть таблицю значень (ви самі обираєте значення x та обчислюєте y):",
-          manualPoints: 16,
-          visual: `
-            <div style="width: 100%; overflow-x: auto; padding-bottom: 10px;">
-                <table class="math-table" id="table-12-21" style="min-width: 500px;">
-                    <tr>
-                        <th>x</th>
-                        <td><input type="text" class="table-input flex-x" oninput="this.classList.remove('wrong')"></td>
-                        <td><input type="text" class="table-input flex-x" oninput="this.classList.remove('wrong')"></td>
-                        <td><input type="text" class="table-input flex-x" oninput="this.classList.remove('wrong')"></td>
-                        <td><input type="text" class="table-input flex-x" oninput="this.classList.remove('wrong')"></td>
-                        <td><input type="text" class="table-input flex-x" oninput="this.classList.remove('wrong')"></td>
-                        <td><input type="text" class="table-input flex-x" oninput="this.classList.remove('wrong')"></td>
-                        <td><input type="text" class="table-input flex-x" oninput="this.classList.remove('wrong')"></td>
-                        <td><input type="text" class="table-input flex-x" oninput="this.classList.remove('wrong')"></td>
-                    </tr>
-                    <tr>
-                        <th>y</th>
-                        <td><input type="text" class="table-input flex-y" oninput="this.classList.remove('wrong')"></td>
-                        <td><input type="text" class="table-input flex-y" oninput="this.classList.remove('wrong')"></td>
-                        <td><input type="text" class="table-input flex-y" oninput="this.classList.remove('wrong')"></td>
-                        <td><input type="text" class="table-input flex-y" oninput="this.classList.remove('wrong')"></td>
-                        <td><input type="text" class="table-input flex-y" oninput="this.classList.remove('wrong')"></td>
-                        <td><input type="text" class="table-input flex-y" oninput="this.classList.remove('wrong')"></td>
-                        <td><input type="text" class="table-input flex-y" oninput="this.classList.remove('wrong')"></td>
-                        <td><input type="text" class="table-input flex-y" oninput="this.classList.remove('wrong')"></td>
-                    </tr>
-                </table>
-            </div>
-            <div style="text-align: center; margin-top: 15px;">
-                <button class="btn-check" onclick="checkFlexibleTable('table-12-21', this, (x) => 8 / Math.abs(x))">Перевірити розрахунки</button>
-            </div>
-          `,
-          tasks: [],
-        },
-        {
-          id: "12.22",
-          title: "12.22.",
-          desc: "Побудуйте графік функції: \\[ y = \\begin{cases} \\frac{8}{x}, & \\text{якщо } x \\le -2 \\\\\\\\ 2x, & \\text{якщо } -2 < x < 2 \\\\\\\\ \\frac{8}{x}, & \\text{якщо } x \\ge 2 \\end{cases} \\]",
-          tasks: [
-            { id: "1)", q: "При x = -4", a: "-2", type: "input" },
-            { id: "2)", q: "При x = 1", a: "2", type: "input" },
-            { id: "3)", q: "При x = 4", a: "2", type: "input" },
-          ],
-        },
-        {
-          id: "12.24",
-          title: "12.24.",
-          desc: "Побудуйте графік функції (попередньо спростивши вираз) $y = \\frac{6x - 12}{3x - 1.5x^2}$:",
+          id: "13.14",
+          title: "13.14.",
+          desc: "Побудуйте графік функції (попередньо спростивши) $y = \\frac{x^3 - 3x^2}{x - 3}$:",
           tasks: [
             {
               id: "1)",
               q: "Спрощена формула:",
-              a: "$y = -\\frac{4}{x}$",
-              opts: [
-                "$y = \\frac{2}{x}$",
-                "$y = -\\frac{4}{x}$",
-                "$y = \\frac{4}{x}$",
-              ],
+              a: "$y = x^2$",
+              opts: ["$y = x$", "$y = x^2$", "$y = 3x^2$"],
             },
           ],
         },
         {
-          id: "12.25",
-          title: "12.25.",
-          desc: "Знайдіть значення виразу:",
-          tasks: [
-            { id: "1)", q: "$4^{-2}$", a: "0.0625", type: "input" },
-            { id: "2)", q: "$(-2)^{-3}$", a: "-0.125", type: "input" },
-            { id: "3)", q: "$(-0.2)^{-2}$", a: "25", type: "input" },
-          ],
-        },
-        {
-          id: "12.26",
-          title: "12.26.",
-          desc: "Спростіть вираз:",
+          id: "13.16",
+          title: "13.16 (Додаткове).",
+          desc: "Розв'яжіть графічно рівняння $x^2 = x + 2$ (знайдіть точки перетину параболи і прямої):",
           tasks: [
             {
               id: "1)",
-              q: "$(\\frac{1}{2} x^{-2} y)^{-2} \\cdot (4 x^{-1} y^2)$",
-              a: "$16 x^3$",
-              opts: ["$4 x^3$", "$16 x^3$", "$16 x y^4$"],
+              q: "Менший корінь (x1):",
+              a: "-1",
+              type: "input",
             },
             {
               id: "2)",
-              q: "$(2 a^{-1} b^2)^{-3} \\cdot 8 a^{-2} b$",
-              a: "$\\frac{a}{b^5}$",
-              opts: ["$\\frac{a}{b^5}$", "$\\frac{1}{a b^5}$", "$a b^5$"],
-            },
-          ],
-        },
-        {
-          id: "12.27",
-          title: "12.27.",
-          desc: "Обчисліть: $(1 + (1 + 2^{-1})^{-1})^{-2}$",
-          tasks: [
-            {
-              id: "1)",
-              q: "Відповідь:",
-              a: "0.36",
-              opts: ["0.36", "1.44", "0.64"],
+              q: "Більший корінь (x2):",
+              a: "2",
+              type: "input",
             },
           ],
         },
@@ -1137,11 +1013,11 @@
           exBlock.className = "exercise-block";
 
           exBlock.innerHTML = `
-                    <div class="exercise-header">
-                        <h3 class="exercise-title">${ex.title}</h3>
-                        <p class="exercise-desc">${ex.desc}</p>
-                    </div>
-                `;
+                <div class="exercise-header">
+                    <h3 class="exercise-title">${ex.title}</h3>
+                    <p class="exercise-desc">${ex.desc}</p>
+                </div>
+            `;
 
           if (ex.visual) {
             const visualDiv = document.createElement("div");
@@ -1176,9 +1052,9 @@
             } else {
               actionHTML = `<div class="options-container">`;
               task.opts.forEach((opt) => {
-                const safeOpt = opt.replace(/"/g, "&quot;");
-                const safeAns = task.a.replace(/"/g, "&quot;");
-                actionHTML += `<button class="option-btn" onclick="checkOpt(this, '${safeOpt}', '${safeAns}')">${opt}</button>`;
+                // Виправляємо проблему порівняння: перевіряємо на рівність тут, у циклі генерації
+                const isCorrect = opt === task.a;
+                actionHTML += `<button class="option-btn" onclick="checkOpt(this, ${isCorrect})">${opt}</button>`;
               });
               actionHTML += `</div>`;
             }
@@ -1192,13 +1068,13 @@
           root.appendChild(exBlock);
         });
 
-        // МОДИФІКОВАНО: Додано кнопку "Пройти тестування" та "Домашня робота"
         const finishSection = document.createElement("div");
         finishSection.className = "finish-section";
+        // МОДИФІКОВАНО: ДОДАНО КНОПКУ ДОМАШНЯ РОБОТА
         finishSection.innerHTML = `
               <button class="btn-finish" onclick="finishLesson()">Завершити урок</button>
-              <a href="Тест Гіпербола.html" class="btn-finish btn-test-link">Пройти тестування</a>
-              <a href="Домашня Гіпербола.html" class="btn-homework">Домашня робота</a>
+              <a href="../test/13-function-x-squared.html" target="_blank" class="btn-test">Пройти тестування</a>
+              <a href="../homework/13-function-x-squared.html" target="_blank" class="btn-homework">Домашня робота</a>
             `;
         root.appendChild(finishSection);
 
@@ -1267,79 +1143,14 @@
         updateStats();
       }
 
-      function checkFlexibleTable(tableId, btn, calculateLogic) {
-        const table = document.getElementById(tableId);
-        const xInputs = table.querySelectorAll(".flex-x");
-        const yInputs = table.querySelectorAll(".flex-y");
-
-        for (let i = 0; i < xInputs.length; i++) {
-          const inputX = xInputs[i];
-          const inputY = yInputs[i];
-
-          if (inputX.disabled) continue;
-
-          const valXStr = inputX.value.trim().replace(",", ".");
-          const valYStr = inputY.value.trim().replace(",", ".");
-
-          if (valXStr === "" || valYStr === "") {
-            continue;
-          }
-
-          const x = parseFloat(valXStr);
-          const y = parseFloat(valYStr);
-
-          if (isNaN(x) || isNaN(y)) {
-            inputX.classList.add("wrong");
-            inputY.classList.add("wrong");
-            totalWrong += 2;
-            continue;
-          }
-
-          if (x === 0) {
-            inputX.classList.add("wrong");
-            inputY.classList.add("wrong");
-            totalWrong += 2;
-            continue;
-          }
-
-          const expectedY = calculateLogic(x);
-
-          if (Math.abs(y - expectedY) < 0.0001) {
-            inputX.classList.add("correct");
-            inputX.classList.remove("wrong");
-
-            inputY.classList.add("correct");
-            inputY.classList.remove("wrong");
-
-            inputX.disabled = true;
-            inputY.disabled = true;
-            totalCorrect += 2;
-          } else {
-            inputY.classList.add("wrong");
-            inputX.classList.add("wrong");
-            totalWrong += 2;
-          }
-        }
-
-        const activeX = table.querySelectorAll(".flex-x:not(:disabled)");
-        if (activeX.length === 0) {
-          btn.disabled = true;
-          btn.innerText = "Перевірено";
-        }
-        updateStats();
-      }
-
-      function checkOpt(btn, val, ans) {
+      function checkOpt(btn, isCorrect) {
         const row = btn.closest(".task-row");
         if (row.classList.contains("done")) return;
         row.classList.add("done");
 
-        const v = val.replace(/\\/g, "").replace(/\s/g, "");
-        const a = ans.replace(/\\/g, "").replace(/\s/g, "");
-
         row.querySelectorAll(".option-btn").forEach((b) => (b.disabled = true));
 
-        if (v === a) {
+        if (isCorrect) {
           btn.classList.add("selected-correct");
           row.classList.add("solved-correct");
           totalCorrect++;
@@ -1433,8 +1244,8 @@
 
                     <div class="modal-progress-container">
                          <div style="font-size: 1rem; color: #334155; display:flex; justify-content:space-between;">
-                            <span>Прогрес уроку:</span>
-                            <strong>${distinctAnswered} / ${totalTasksCount}</strong>
+                           <span>Прогрес уроку:</span>
+                           <strong>${distinctAnswered} / ${totalTasksCount}</strong>
                          </div>
                          <div class="modal-bar-bg">
                             <div class="modal-bar-fill" style="width: ${
