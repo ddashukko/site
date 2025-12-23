@@ -3,8 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Тест 1: Властивості кореня (17.1-17.9)</title>
-
+    <title>Тест 1: Властивості (17.1-17.9)</title>
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
@@ -17,175 +16,259 @@
       defer
       src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
     ></script>
-
     <style>
       :root {
         --primary: #7c3aed;
         --primary-light: #f5f3ff;
-        --selected: #dbeafe; /* Light blue for selection */
-        --selected-border: #3b82f6;
         --success: #16a34a;
         --error: #dc2626;
         --bg: #f8fafc;
         --card: #ffffff;
         --text: #1e293b;
         --border: #e2e8f0;
+        --grid-color: #e2e8f0;
+        --selected: #3b82f6;
+        --selected-light: #eff6ff;
       }
-
       body {
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
           sans-serif;
         background-color: var(--bg);
         color: var(--text);
         margin: 0;
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-      }
-
-      .test-container {
-        max-width: 800px;
-        width: 100%;
-        background: var(--card);
-        border-radius: 12px;
         padding: 0;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        height: 100vh;
+        display: flex;
         overflow: hidden;
       }
-
-      header {
-        background: var(--primary-light);
-        padding: 20px;
-        border-bottom: 2px solid var(--primary);
-        text-align: center;
+      #tasks-section {
+        flex: 1;
+        background: var(--bg);
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
       }
-
+      #board-section {
+        flex: 1;
+        position: relative;
+        background-color: #fff;
+        border-left: 4px solid #cbd5e1;
+        background-image: linear-gradient(
+            var(--grid-color) 1px,
+            transparent 1px
+          ),
+          linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+        background-size: 25px 25px;
+        cursor: crosshair;
+        overflow: hidden;
+      }
+      canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+        touch-action: none;
+      }
+      .tools {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        display: flex;
+        gap: 10px;
+        background: rgba(255, 255, 255, 0.95);
+        padding: 8px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        border: 1px solid var(--border);
+        flex-wrap: wrap;
+        z-index: 10;
+      }
+      .btn-tool {
+        border: 1px solid #cbd5e1;
+        background: white;
+        padding: 8px 12px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 40px;
+      }
+      .btn-tool.active {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+      }
+      header {
+        background: var(--card);
+        padding: 15px 20px;
+        border-bottom: 2px solid var(--primary);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+      }
       .header-title {
         font-weight: 800;
-        font-size: 1.5rem;
+        font-size: 1.2rem;
         color: var(--primary);
+        display: flex;
+        align-items: center;
+        gap: 10px;
       }
-
-      .exercise-block {
+      .test-badge {
+        background: var(--primary);
+        color: white;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+      .content-container {
         padding: 20px;
+        padding-bottom: 80px;
+        max-width: 800px;
+        margin: 0 auto;
+        width: 100%;
+        box-sizing: border-box;
+      }
+      .exercise-block {
+        background: var(--card);
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        margin-bottom: 30px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      }
+      .exercise-header {
+        background: var(--primary-light);
+        padding: 15px 20px;
         border-bottom: 1px solid var(--border);
       }
-
       .exercise-title {
+        margin: 0;
         font-size: 1.1rem;
         font-weight: 700;
         color: var(--primary);
-        margin-bottom: 5px;
       }
-
-      .exercise-desc {
-        font-size: 0.95rem;
-        color: #64748b;
-        margin-bottom: 15px;
-      }
-
       .task-row {
-        margin-bottom: 20px;
-        padding-bottom: 15px;
-        border-bottom: 1px dashed var(--border);
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
       }
       .task-row:last-child {
         border-bottom: none;
-        margin-bottom: 0;
+      }
+      .task-row.solved-correct {
+        background-color: #f0fdf4;
+      }
+      .task-row.solved-wrong {
+        background-color: #fef2f2;
       }
 
+      .task-content {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .task-number {
+        font-weight: 600;
+        color: #94a3b8;
+        min-width: 25px;
+      }
       .task-question {
         font-size: 1.1rem;
         font-weight: 500;
-        margin-bottom: 10px;
-        display: flex;
-        gap: 10px;
       }
-
-      /* Options Styling */
       .options-container {
         display: flex;
-        gap: 10px;
         flex-wrap: wrap;
+        gap: 10px;
       }
       .option-btn {
         flex: 1;
-        min-width: 100px;
         background: white;
-        border: 2px solid #e2e8f0;
+        border: 1px solid #cbd5e1;
         border-radius: 8px;
-        padding: 12px 15px;
+        padding: 10px 15px;
         font-size: 1rem;
         cursor: pointer;
+        min-width: 70px;
         transition: 0.2s;
-        text-align: center;
       }
       .option-btn:hover:not(:disabled) {
-        border-color: var(--primary);
-        background: var(--primary-light);
+        border-color: var(--selected);
+        background: var(--selected-light);
       }
-
-      /* Active state (Selected by user) */
-      .option-btn.active {
-        background: var(--selected);
-        border-color: var(--selected-border);
-        color: #1e3a8a;
-        font-weight: 600;
+      /* Стан вибору користувачем (до перевірки) */
+      .option-btn.user-selected {
+        background: var(--selected-light);
+        border-color: var(--selected);
+        color: var(--selected);
+        font-weight: bold;
+        box-shadow: 0 0 0 1px var(--selected);
       }
-
-      /* Result states (Applied on Finish) */
-      .option-btn.correct-answer {
+      /* Фінальні стани */
+      .option-btn.final-correct {
         background: var(--success) !important;
+        color: white !important;
         border-color: var(--success) !important;
-        color: white !important;
       }
-      .option-btn.wrong-choice {
+      .option-btn.final-wrong {
         background: var(--error) !important;
-        border-color: var(--error) !important;
         color: white !important;
+        border-color: var(--error) !important;
       }
 
-      /* Input Styling */
+      .input-group {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
       .input-answer {
-        padding: 12px;
-        border: 2px solid #e2e8f0;
+        padding: 10px;
+        border: 1px solid #cbd5e1;
         border-radius: 8px;
-        width: 150px;
-        font-size: 1.1rem;
-        transition: 0.2s;
+        width: 140px;
+        font-size: 1rem;
       }
       .input-answer:focus {
-        border-color: var(--primary);
         outline: none;
+        border-color: var(--selected);
+        box-shadow: 0 0 0 2px var(--selected-light);
       }
-      .input-answer.correct-answer {
+      .input-answer.final-correct {
         border-color: var(--success);
-        background-color: #f0fdf4;
+        background: #f0fdf4;
         color: var(--success);
         font-weight: bold;
       }
-      .input-answer.wrong-choice {
+      .input-answer.final-wrong {
         border-color: var(--error);
-        background-color: #fef2f2;
+        background: #fef2f2;
         color: var(--error);
       }
-
-      .correct-val-hint {
+      .correct-hint {
         display: none;
         color: var(--success);
         font-weight: bold;
-        margin-left: 10px;
         font-size: 0.9rem;
+        margin-left: 10px;
       }
 
       .finish-section {
-        padding: 30px;
+        margin-top: 40px;
         text-align: center;
-        background: #f8fafc;
       }
       .btn-finish {
-        padding: 15px 50px;
+        padding: 15px 40px;
         font-size: 1.2rem;
         font-weight: bold;
         color: white;
@@ -198,10 +281,8 @@
       }
       .btn-finish:hover {
         transform: scale(1.05);
-        background-color: #6d28d9;
       }
 
-      /* Modal */
       .modal-overlay {
         display: none;
         position: fixed;
@@ -210,6 +291,7 @@
         width: 100%;
         height: 100%;
         background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(5px);
         z-index: 1000;
         justify-content: center;
         align-items: center;
@@ -218,63 +300,169 @@
         background: white;
         padding: 40px;
         border-radius: 20px;
-        max-width: 400px;
+        max-width: 450px;
         width: 90%;
         text-align: center;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        position: relative;
       }
-      .modal-score {
-        font-size: 3rem;
+      .modal-result-title {
+        font-size: 2rem;
+        font-weight: 800;
+        color: var(--primary);
+        margin-bottom: 20px;
+      }
+      .modal-score-big {
+        font-size: 4rem;
         font-weight: 900;
         color: var(--primary);
+        line-height: 1;
         margin: 10px 0;
+      }
+      .modal-footer-btn {
+        margin-top: 30px;
+        padding: 12px 30px;
+        background: var(--text);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        cursor: pointer;
+      }
+
+      @media (max-width: 768px) {
+        body {
+          flex-direction: column;
+        }
+        #board-section {
+          height: 40vh;
+          border-left: none;
+          border-top: 4px solid #cbd5e1;
+          order: 2;
+        }
+        #tasks-section {
+          height: 60vh;
+          border-bottom: 4px solid #cbd5e1;
+          order: 1;
+        }
       }
     </style>
   </head>
   <body>
-    <div class="test-container">
+    <div id="tasks-section">
       <header>
-        <div class="header-title">Тест №1: Вправи 17.1 — 17.9</div>
-        <div style="color: #64748b; margin-top: 5px">
-          Заповніть всі поля та натисніть "Завершити"
+        <div class="header-title">
+          <span class="test-badge">Тест 1</span>
+          <span>Вправи 17.1 — 17.9</span>
         </div>
       </header>
+      <div class="content-container" id="quiz-root"></div>
+    </div>
 
-      <div id="quiz-root"></div>
-
-      <div class="finish-section">
-        <button class="btn-finish" onclick="finishTest()">
-          Завершити тест
+    <div id="board-section">
+      <div class="tools">
+        <button class="btn-tool active" onclick="setTool('pen')" id="t-pen">
+          🖊️
+        </button>
+        <button class="btn-tool" onclick="setTool('eraser')" id="t-eraser">
+          🧹
+        </button>
+        <button
+          class="btn-tool"
+          onclick="clearCanvasSafe()"
+          style="color: red; border-color: #fee2e2"
+        >
+          ❌
         </button>
       </div>
+      <canvas id="board"></canvas>
     </div>
 
     <div id="result-modal" class="modal-overlay">
       <div class="modal-card">
-        <h2>Результат</h2>
-        <div class="modal-score" id="score-display">0/12</div>
-        <p id="score-text">Спробуйте ще раз!</p>
-        <button
-          onclick="closeModal()"
-          style="
-            padding: 10px 30px;
-            background: var(--text);
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 20px;
-          "
-        >
-          Повернутись до помилок
-        </button>
+        <div id="modal-content-body"></div>
       </div>
     </div>
 
     <script>
+      // --- LOGIC: BOARD ---
+      const canvas = document.getElementById("board");
+      const ctx = canvas.getContext("2d");
+      const boardSection = document.getElementById("board-section");
+      let painting = false;
+      let tool = "pen";
+
+      function resizeCanvas() {
+        const temp = document.createElement("canvas");
+        const tempCtx = temp.getContext("2d");
+        temp.width = canvas.width;
+        temp.height = canvas.height;
+        if (canvas.width > 0) tempCtx.drawImage(canvas, 0, 0);
+        canvas.width = boardSection.offsetWidth;
+        canvas.height = boardSection.offsetHeight;
+        ctx.drawImage(temp, 0, 0);
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+      }
+      window.addEventListener("resize", resizeCanvas);
+      window.addEventListener("load", resizeCanvas);
+
+      function getMousePos(e) {
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return { x: clientX - rect.left, y: clientY - rect.top };
+      }
+      function draw(e) {
+        if (!painting) return;
+        const pos = getMousePos(e);
+        ctx.lineWidth = tool === "pen" ? 2 : 25;
+        ctx.strokeStyle = tool === "pen" ? "#7c3aed" : "#ffffff";
+        ctx.globalCompositeOperation =
+          tool === "pen" ? "source-over" : "destination-out";
+        ctx.lineTo(pos.x, pos.y);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(pos.x, pos.y);
+      }
+      canvas.addEventListener("mousedown", (e) => {
+        painting = true;
+        draw(e);
+      });
+      canvas.addEventListener("mouseup", () => {
+        painting = false;
+        ctx.beginPath();
+      });
+      canvas.addEventListener("mousemove", draw);
+      canvas.addEventListener("touchstart", (e) => {
+        painting = true;
+        draw(e);
+      });
+      canvas.addEventListener("touchend", () => {
+        painting = false;
+        ctx.beginPath();
+      });
+      canvas.addEventListener("touchmove", draw);
+
+      function setTool(t) {
+        tool = t;
+        document
+          .getElementById("t-pen")
+          .classList.toggle("active", t === "pen");
+        document
+          .getElementById("t-eraser")
+          .classList.toggle("active", t === "eraser");
+      }
+      function clearCanvasSafe() {
+        if (confirm("Очистити дошку?"))
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+
+      // --- LOGIC: QUIZ DATA ---
       const exercises = [
         {
           id: "1",
-          title: "Властивості (Так/Ні)",
+          title: "17.1. Властивості (Так/Ні)",
           tasks: [
             {
               id: "1)",
@@ -292,7 +480,7 @@
         },
         {
           id: "2",
-          title: "Обчислення добутку",
+          title: "17.3. Обчислення добутку",
           tasks: [
             { id: "3)", q: "$\\sqrt{49 \\cdot 100}$", a: "70", type: "input" },
             {
@@ -311,7 +499,7 @@
         },
         {
           id: "3",
-          title: "Обчислення частки",
+          title: "17.5. Обчислення частки",
           tasks: [
             {
               id: "6)",
@@ -330,7 +518,7 @@
         },
         {
           id: "4",
-          title: "Степені під коренем",
+          title: "17.7. Степені під коренем",
           tasks: [
             { id: "9)", q: "$\\sqrt{(-9)^2}$", a: "9", type: "input" },
             {
@@ -343,7 +531,7 @@
         },
         {
           id: "5",
-          title: "Розкладання на множники",
+          title: "17.9. Розкладання на множники",
           tasks: [
             {
               id: "11)",
@@ -371,35 +559,34 @@
         },
       ];
 
+      // --- LOGIC: RENDER & EXECUTION ---
       document.addEventListener("DOMContentLoaded", () => {
         const root = document.getElementById("quiz-root");
 
-        exercises.forEach((ex, blockIndex) => {
+        exercises.forEach((ex) => {
           const block = document.createElement("div");
           block.className = "exercise-block";
-          block.innerHTML = `<div class="exercise-title">${ex.title}</div>`;
+          block.innerHTML = `<div class="exercise-header"><h3 class="exercise-title">${ex.title}</h3></div>`;
 
-          ex.tasks.forEach((task, taskIndex) => {
+          ex.tasks.forEach((task) => {
             const row = document.createElement("div");
             row.className = "task-row";
-            // Унікальний ID для кожного питання
-            row.dataset.qid = `${blockIndex}-${taskIndex}`;
             row.dataset.answer = task.a;
             row.dataset.type = task.type || "opts";
 
-            let html = `<div class="task-question"><span>${task.id}</span> <span>${task.q}</span></div>`;
+            let html = `<div class="task-content">
+                          <div class="task-number">${task.id}</div>
+                          <div class="task-question">${task.q}</div>
+                        </div>`;
 
             if (task.type === "input") {
-              html += `
-                    <div style="display:flex; align-items:center;">
-                        <input type="text" class="input-answer" placeholder="Відповідь">
-                        <span class="correct-val-hint">Правильно: ${task.a}</span>
-                    </div>
-                `;
+              html += `<div class="input-group">
+                          <input type="text" class="input-answer" placeholder="Відповідь">
+                          <span class="correct-hint">Відповідь: ${task.a}</span>
+                        </div>`;
             } else {
               html += `<div class="options-container">`;
               task.opts.forEach((opt) => {
-                // Екранування для HTML атрибуту
                 const safeOpt = opt.replace(/"/g, "&quot;");
                 html += `<button class="option-btn" onclick="selectOpt(this, '${safeOpt}')">${opt}</button>`;
               });
@@ -411,110 +598,121 @@
           root.appendChild(block);
         });
 
-        renderMath();
+        const finishDiv = document.createElement("div");
+        finishDiv.className = "finish-section";
+        finishDiv.innerHTML = `<button class="btn-finish" onclick="finishTest()">Завершити тест</button>`;
+        root.appendChild(finishDiv);
+
+        renderMathInElement(document.body, {
+          delimiters: [{ left: "$", right: "$", display: false }],
+          throwOnError: false,
+        });
+        setTimeout(resizeCanvas, 100);
       });
 
       function selectOpt(btn, val) {
-        // Знаходимо батьківський контейнер
+        // Just visual selection, no grading yet
         const container = btn.closest(".options-container");
-        // Прибираємо активний клас у сусідів
         container
           .querySelectorAll(".option-btn")
-          .forEach((b) => b.classList.remove("active"));
-        // Додаємо активний клас натиснутому
-        btn.classList.add("active");
-        // Зберігаємо вибір у data-атрибут рядка
-        const row = btn.closest(".task-row");
-        row.dataset.userChoice = val;
+          .forEach((b) => b.classList.remove("user-selected"));
+        btn.classList.add("user-selected");
+
+        // Store user choice in dataset for later grading
+        btn.closest(".task-row").dataset.userChoice = val;
       }
 
       function finishTest() {
-        const rows = document.querySelectorAll(".task-row");
         let score = 0;
         let total = 0;
+        let answered = 0;
 
-        rows.forEach((row) => {
+        document.querySelectorAll(".task-row").forEach((row) => {
           total++;
-          const correctAns = row.dataset.answer;
-          const type = row.dataset.type;
+          const correctAns = row.dataset.answer.replace(/\s/g, "");
           let isCorrect = false;
 
-          if (type === "input") {
+          if (row.dataset.type === "input") {
             const input = row.querySelector("input");
-            let userVal = input.value.trim().replace(",", "."); // Заміна коми на крапку
+            const val = input.value.trim().replace(",", ".");
+            if (val.length > 0) answered++;
 
-            // Проста перевірка (string comparison)
-            if (userVal === correctAns) {
+            if (val == correctAns) {
               isCorrect = true;
-              input.classList.add("correct-answer");
+              input.classList.add("final-correct");
             } else {
-              input.classList.add("wrong-choice");
-              // Показати правильну відповідь
-              row.querySelector(".correct-val-hint").style.display = "inline";
+              if (val.length > 0) input.classList.add("final-wrong");
+              row.querySelector(".correct-hint").style.display = "inline";
             }
+            input.disabled = true;
           } else {
-            // Тестові кнопки
-            const userChoice = row.dataset.userChoice; // Значення з selectOpt (LaTeX рядок)
-            const btns = row.querySelectorAll(".option-btn");
+            const userChoice = (row.dataset.userChoice || "").replace(
+              /\s/g,
+              ""
+            );
+            if (userChoice.length > 0) answered++;
 
-            // Нормалізація для порівняння (прибираємо пробіли для надійності)
-            const normUser = userChoice ? userChoice.replace(/\s/g, "") : "";
-            const normAns = correctAns.replace(/\s/g, "");
+            if (userChoice === correctAns) isCorrect = true;
 
-            if (normUser === normAns) {
-              isCorrect = true;
-            }
+            row.querySelectorAll(".option-btn").forEach((btn) => {
+              const btnVal = btn.innerText.replace(/\s/g, ""); // Simplified check via text or onclick
+              // Accurate extraction from onclick is safer if latex is involved:
+              const originalAttr = btn.getAttribute("onclick");
+              const btnValRaw = originalAttr.match(/'([^']+)'/)[1];
+              const btnValClean = btnValRaw.replace(/\s/g, "");
 
-            btns.forEach((btn) => {
-              const btnText = btn.innerText; // Вміст кнопки може бути змінений KaTeX, тому краще брати з onclick
-              // Але ми використовуємо onclick атрибут для витягування значення
-              const btnVal = btn.getAttribute("onclick").match(/'([^']+)'/)[1];
-              const normBtn = btnVal.replace(/\s/g, "");
-
-              if (normBtn === normAns) {
-                btn.classList.add("correct-answer"); // Зелене правильному
+              // If this button is the correct answer -> mark green
+              if (btnValClean === correctAns) {
+                btn.classList.add("final-correct");
               }
-              if (btn.classList.contains("active") && !isCorrect) {
-                btn.classList.add("wrong-choice"); // Червоне обраному неправильному
+              // If this was selected but wrong -> mark red
+              if (btn.classList.contains("user-selected") && !isCorrect) {
+                btn.classList.add("final-wrong");
               }
-              btn.disabled = true; // Блокуємо
+              btn.disabled = true;
             });
           }
 
-          if (isCorrect) score++;
+          if (isCorrect) {
+            score++;
+            row.classList.add("solved-correct");
+          } else {
+            row.classList.add("solved-wrong");
+          }
         });
 
-        // Show result
+        showResult(score, total);
+      }
+
+      function showResult(score, total) {
         const modal = document.getElementById("result-modal");
-        const scoreDisplay = document.getElementById("score-display");
-        const scoreText = document.getElementById("score-text");
+        const body = document.getElementById("modal-content-body");
+        let score12 = Math.round((score / total) * 12);
 
-        scoreDisplay.innerText = score + " / " + total;
+        let color = "#7c3aed";
+        let msg = "Результат";
+        if (score12 >= 10) {
+          msg = "Чудово!";
+          color = "#16a34a";
+        } else if (score12 >= 7) {
+          msg = "Добре!";
+        } else if (score12 >= 4) {
+          msg = "Непогано";
+          color = "#f59e0b";
+        } else {
+          msg = "Треба повторити";
+          color = "#dc2626";
+        }
 
-        let msg = "Треба ще повчитись...";
-        if (score === total) msg = "Ідеально! 🔥";
-        else if (score >= total * 0.7) msg = "Чудовий результат! 👍";
-
-        scoreText.innerText = msg;
+        body.innerHTML = `
+          <div class="modal-result-title" style="color:${color}">${msg}</div>
+          <div class="modal-score-big" style="color:${color}">${score12}</div>
+          <div style="color:#64748b">(балів з 12)</div>
+          <div style="margin: 15px 0; font-size: 1.1rem">Правильно: <b>${score}</b> з ${total}</div>
+          <button class="modal-footer-btn" onclick="document.getElementById('result-modal').style.display='none'">Переглянути помилки</button>
+        `;
         modal.style.display = "flex";
       }
-
-      function closeModal() {
-        document.getElementById("result-modal").style.display = "none";
-      }
-
-      function renderMath() {
-        if (window.renderMathInElement) {
-          renderMathInElement(document.body, {
-            delimiters: [
-              { left: "$$", right: "$$", display: true },
-              { left: "$", right: "$", display: false },
-            ],
-            throwOnError: false,
-          });
-        }
-      }
-      window.onload = renderMath;
     </script>
   </body>
 </html>

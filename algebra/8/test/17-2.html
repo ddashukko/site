@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Тест 2: Властивості кореня (17.11-17.21)</title>
+    <title>Тест 2: Властивості (17.11 - 17.21)</title>
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
@@ -17,122 +17,219 @@
       src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
     ></script>
     <style>
-      /* Стилі ідентичні тесту №1 */
       :root {
         --primary: #7c3aed;
         --primary-light: #f5f3ff;
-        --selected: #dbeafe;
-        --selected-border: #3b82f6;
         --success: #16a34a;
         --error: #dc2626;
         --bg: #f8fafc;
         --card: #ffffff;
         --text: #1e293b;
         --border: #e2e8f0;
+        --grid-color: #e2e8f0;
+        --selected: #3b82f6;
+        --selected-light: #eff6ff;
       }
       body {
-        font-family: -apple-system, sans-serif;
-        background: var(--bg);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        background-color: var(--bg);
         color: var(--text);
-        padding: 20px;
+        margin: 0;
+        padding: 0;
+        height: 100vh;
         display: flex;
-        flex-direction: column;
-        align-items: center;
-      }
-      .test-container {
-        max-width: 800px;
-        width: 100%;
-        background: var(--card);
-        border-radius: 12px;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         overflow: hidden;
       }
+      #tasks-section {
+        flex: 1;
+        background: var(--bg);
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+      }
+      #board-section {
+        flex: 1;
+        position: relative;
+        background-color: #fff;
+        border-left: 4px solid #cbd5e1;
+        background-image: linear-gradient(
+            var(--grid-color) 1px,
+            transparent 1px
+          ),
+          linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+        background-size: 25px 25px;
+        cursor: crosshair;
+        overflow: hidden;
+      }
+      canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+        touch-action: none;
+      }
+      .tools {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        display: flex;
+        gap: 10px;
+        background: rgba(255, 255, 255, 0.95);
+        padding: 8px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        border: 1px solid var(--border);
+        z-index: 10;
+      }
+      .btn-tool {
+        border: 1px solid #cbd5e1;
+        background: white;
+        padding: 8px 12px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1.2rem;
+        min-width: 40px;
+      }
+      .btn-tool.active {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+      }
       header {
-        background: var(--primary-light);
-        padding: 20px;
+        background: var(--card);
+        padding: 15px 20px;
         border-bottom: 2px solid var(--primary);
-        text-align: center;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 100;
       }
       .header-title {
         font-weight: 800;
-        font-size: 1.5rem;
+        font-size: 1.2rem;
         color: var(--primary);
+        display: flex;
+        align-items: center;
+        gap: 10px;
       }
-      .question-block {
+      .test-badge {
+        background: var(--primary);
+        color: white;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+      }
+      .content-container {
         padding: 20px;
+        padding-bottom: 80px;
+        max-width: 800px;
+        margin: 0 auto;
+        width: 100%;
+        box-sizing: border-box;
+      }
+      .exercise-block {
+        background: var(--card);
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        margin-bottom: 30px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      }
+      .exercise-header {
+        background: var(--primary-light);
+        padding: 15px 20px;
         border-bottom: 1px solid var(--border);
       }
-      .question-text {
+      .exercise-title {
+        margin: 0;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--primary);
+      }
+      .task-row {
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .task-row:last-child {
+        border-bottom: none;
+      }
+      .task-row.solved-correct {
+        background-color: #f0fdf4;
+      }
+      .task-row.solved-wrong {
+        background-color: #fef2f2;
+      }
+      .task-content {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .task-number {
+        font-weight: 600;
+        color: #94a3b8;
+        min-width: 25px;
+      }
+      .task-question {
         font-size: 1.1rem;
         font-weight: 500;
-        margin-bottom: 15px;
       }
-      .options {
+      .options-container {
         display: flex;
-        gap: 10px;
         flex-wrap: wrap;
+        gap: 10px;
       }
       .option-btn {
         flex: 1;
-        min-width: 120px;
-        padding: 12px;
-        border: 2px solid #e2e8f0;
         background: white;
+        border: 1px solid #cbd5e1;
         border-radius: 8px;
-        cursor: pointer;
-        transition: 0.2s;
+        padding: 10px 15px;
         font-size: 1rem;
+        cursor: pointer;
+        min-width: 70px;
+        transition: 0.2s;
       }
       .option-btn:hover:not(:disabled) {
-        background: var(--primary-light);
-        border-color: var(--primary);
+        border-color: var(--selected);
+        background: var(--selected-light);
       }
-      .option-btn.active {
-        background: var(--selected);
-        border-color: var(--selected-border);
-        color: #1e3a8a;
-        font-weight: 600;
+      .option-btn.user-selected {
+        background: var(--selected-light);
+        border-color: var(--selected);
+        color: var(--selected);
+        font-weight: bold;
+        box-shadow: 0 0 0 1px var(--selected);
       }
-      .option-btn.correct-answer {
+      .option-btn.final-correct {
         background: var(--success) !important;
+        color: white !important;
         border-color: var(--success) !important;
-        color: white !important;
       }
-      .option-btn.wrong-choice {
+      .option-btn.final-wrong {
         background: var(--error) !important;
-        border-color: var(--error) !important;
         color: white !important;
-      }
-      .input-answer {
-        padding: 10px;
-        border: 2px solid #e2e8f0;
-        border-radius: 8px;
-        width: 150px;
-        font-size: 1.1rem;
-      }
-      .input-answer.correct-answer {
-        border-color: var(--success);
-        background: #f0fdf4;
-        color: var(--success);
-      }
-      .input-answer.wrong-choice {
-        border-color: var(--error);
-        background: #fef2f2;
-        color: var(--error);
+        border-color: var(--error) !important;
       }
       .finish-section {
-        padding: 30px;
+        margin-top: 40px;
         text-align: center;
-        background: #f8fafc;
       }
       .btn-finish {
-        padding: 15px 50px;
-        background: var(--primary);
+        padding: 15px 40px;
+        font-size: 1.2rem;
+        font-weight: bold;
         color: white;
+        background: var(--primary);
         border: none;
         border-radius: 50px;
-        font-size: 1.2rem;
         cursor: pointer;
+        box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4);
+        transition: transform 0.2s;
       }
       .btn-finish:hover {
         transform: scale(1.05);
@@ -145,6 +242,7 @@
         width: 100%;
         height: 100%;
         background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(5px);
         z-index: 1000;
         justify-content: center;
         align-items: center;
@@ -153,237 +251,377 @@
         background: white;
         padding: 40px;
         border-radius: 20px;
+        max-width: 450px;
+        width: 90%;
         text-align: center;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      }
+      .modal-result-title {
+        font-size: 2rem;
+        font-weight: 800;
+        color: var(--primary);
+        margin-bottom: 20px;
+      }
+      .modal-score-big {
+        font-size: 4rem;
+        font-weight: 900;
+        color: var(--primary);
+        margin: 10px 0;
+      }
+      .modal-footer-btn {
+        margin-top: 30px;
+        padding: 12px 30px;
+        background: var(--text);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+
+      @media (max-width: 768px) {
+        body {
+          flex-direction: column;
+        }
+        #board-section {
+          height: 40vh;
+          border-left: none;
+          border-top: 4px solid #cbd5e1;
+          order: 2;
+        }
+        #tasks-section {
+          height: 60vh;
+          border-bottom: 4px solid #cbd5e1;
+          order: 1;
+        }
       }
     </style>
   </head>
   <body>
-    <div class="test-container">
+    <div id="tasks-section">
       <header>
-        <div class="header-title">Тест №2: Вправи 17.11 — 17.21</div>
-        <div style="color: #64748b; margin-top: 5px">
-          Заповніть всі поля та натисніть "Завершити"
+        <div class="header-title">
+          <span class="test-badge">Тест 2</span>
+          <span>Властивості (17.11 - 17.21)</span>
         </div>
       </header>
+      <div class="content-container" id="quiz-root"></div>
+    </div>
 
-      <div id="questions-container"></div>
-
-      <div class="finish-section">
-        <button class="btn-finish" onclick="finishTest()">
-          Завершити тест
+    <div id="board-section">
+      <div class="tools">
+        <button class="btn-tool active" onclick="setTool('pen')" id="t-pen">
+          🖊️
+        </button>
+        <button class="btn-tool" onclick="setTool('eraser')" id="t-eraser">
+          🧹
+        </button>
+        <button
+          class="btn-tool"
+          onclick="clearCanvasSafe()"
+          style="color: red; border-color: #fee2e2"
+        >
+          ❌
         </button>
       </div>
+      <canvas id="board"></canvas>
     </div>
 
     <div id="result-modal" class="modal-overlay">
       <div class="modal-card">
-        <h2>Результат</h2>
-        <h1
-          style="color: var(--primary); font-size: 3rem; margin: 10px 0"
-          id="score-val"
-        >
-          0/12
-        </h1>
-        <p id="feedback-text">...</p>
-        <button
-          onclick="document.getElementById('result-modal').style.display='none'"
-          style="
-            margin-top: 20px;
-            padding: 10px 20px;
-            background: #334155;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-          "
-        >
-          Переглянути помилки
-        </button>
+        <div id="modal-content-body"></div>
       </div>
     </div>
 
     <script>
-      const questions = [
+      // --- BOARD ---
+      const canvas = document.getElementById("board");
+      const ctx = canvas.getContext("2d");
+      const boardSection = document.getElementById("board-section");
+      let painting = false;
+      let tool = "pen";
+      function resizeCanvas() {
+        const temp = document.createElement("canvas");
+        const tempCtx = temp.getContext("2d");
+        temp.width = canvas.width;
+        temp.height = canvas.height;
+        if (canvas.width > 0) tempCtx.drawImage(canvas, 0, 0);
+        canvas.width = boardSection.offsetWidth;
+        canvas.height = boardSection.offsetHeight;
+        ctx.drawImage(temp, 0, 0);
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+      }
+      window.addEventListener("resize", resizeCanvas);
+      window.addEventListener("load", resizeCanvas);
+      function getMousePos(e) {
+        const rect = canvas.getBoundingClientRect();
+        return {
+          x: (e.touches ? e.touches[0].clientX : e.clientX) - rect.left,
+          y: (e.touches ? e.touches[0].clientY : e.clientY) - rect.top,
+        };
+      }
+      function draw(e) {
+        if (!painting) return;
+        const pos = getMousePos(e);
+        ctx.lineWidth = tool === "pen" ? 2 : 25;
+        ctx.strokeStyle = tool === "pen" ? "#7c3aed" : "#ffffff";
+        ctx.globalCompositeOperation =
+          tool === "pen" ? "source-over" : "destination-out";
+        ctx.lineTo(pos.x, pos.y);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(pos.x, pos.y);
+      }
+      canvas.addEventListener("mousedown", (e) => {
+        painting = true;
+        draw(e);
+      });
+      canvas.addEventListener("mouseup", () => {
+        painting = false;
+        ctx.beginPath();
+      });
+      canvas.addEventListener("mousemove", draw);
+      canvas.addEventListener("touchstart", (e) => {
+        painting = true;
+        draw(e);
+      });
+      canvas.addEventListener("touchend", () => {
+        painting = false;
+        ctx.beginPath();
+      });
+      canvas.addEventListener("touchmove", draw);
+      function setTool(t) {
+        tool = t;
+        document
+          .getElementById("t-pen")
+          .classList.toggle("active", t === "pen");
+        document
+          .getElementById("t-eraser")
+          .classList.toggle("active", t === "eraser");
+      }
+      function clearCanvasSafe() {
+        if (confirm("Очистити?"))
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+
+      // --- DATA ---
+      const exercises = [
         {
-          id: 1,
-          q: "Подайте як частку: $\\sqrt{\\frac{2}{5}}$",
-          a: "$\\frac{\\sqrt{2}}{\\sqrt{5}}$",
-          opts: [
-            "$\\frac{\\sqrt{2}}{\\sqrt{5}}$",
-            "$\\frac{2}{5}$",
-            "$\\frac{\\sqrt{2}}{5}$",
+          id: "1",
+          title: "Частина 1: Прості обчислення",
+          tasks: [
+            {
+              id: "1)",
+              q: "$\\frac{\\sqrt{12}}{\\sqrt{3}}$",
+              a: "2",
+              opts: ["4", "2", "$\\sqrt{4}$", "6"],
+            },
+            {
+              id: "2)",
+              q: "$\\frac{\\sqrt{50}}{\\sqrt{2}}$",
+              a: "5",
+              opts: ["25", "10", "5", "$\\sqrt{20}$"],
+            },
+            {
+              id: "3)",
+              q: "$\\sqrt{2} \\cdot \\sqrt{18}$",
+              a: "6",
+              opts: ["36", "6", "4", "9"],
+            },
+            {
+              id: "4)",
+              q: "$\\sqrt{5} \\cdot \\sqrt{20}$",
+              a: "10",
+              opts: ["100", "5", "10", "25"],
+            },
           ],
         },
         {
-          id: 2,
-          q: "Подайте як частку: $\\sqrt{3\\frac{2}{7}}$",
-          a: "$\\frac{\\sqrt{23}}{\\sqrt{7}}$",
-          opts: [
-            "$\\frac{\\sqrt{23}}{\\sqrt{7}}$",
-            "$\\frac{\\sqrt{3}}{\\sqrt{7}}$",
-            "$\\frac{23}{7}$",
+          id: "2",
+          title: "Частина 2: Степені",
+          tasks: [
+            {
+              id: "5)",
+              q: "$\\sqrt{2^6}$",
+              a: "8",
+              opts: ["64", "6", "8", "12"],
+            },
+            {
+              id: "6)",
+              q: "$\\sqrt{(-3)^4}$",
+              a: "9",
+              opts: ["-9", "9", "81", "-81"],
+            },
+            {
+              id: "7)",
+              q: "$\\sqrt{m^2}$, якщо $m < 0$",
+              a: "$-m$",
+              opts: ["$m$", "$m^2$", "$-m$", "$1$"],
+            },
+            {
+              id: "8)",
+              q: "$\\sqrt{16x^2}$, якщо $x \\ge 0$",
+              a: "$4x$",
+              opts: ["$16x$", "$4x$", "$4|x|$", "$8x$"],
+            },
           ],
         },
         {
-          id: 3,
-          q: "Обчисліть: $\\sqrt{2} \\cdot \\sqrt{32}$",
-          a: "8",
-          type: "input",
-        },
-        {
-          id: 4,
-          q: "Обчисліть: $\\sqrt{0,9} \\cdot \\sqrt{2,5}$",
-          a: "1.5",
-          type: "input",
-        },
-        {
-          id: 5,
-          q: "Обчисліть: $\\frac{\\sqrt{45}}{\\sqrt{5}}$",
-          a: "3",
-          opts: ["3", "9", "5", "$\\sqrt{9}$"],
-        },
-        {
-          id: 6,
-          q: "Обчисліть: $\\frac{\\sqrt{24}}{\\sqrt{1,5}}$",
-          a: "4",
-          opts: ["4", "16", "2", "8"],
-        },
-        {
-          id: 7,
-          q: "Обчисліть: $\\sqrt{9^4}$",
-          a: "81",
-          opts: ["81", "9", "27", "18"],
-        },
-        {
-          id: 8,
-          q: "Обчисліть: $\\sqrt{(-2)^{10}}$",
-          a: "32",
-          opts: ["32", "-32", "1024", "64"],
-        },
-        {
-          id: 9,
-          q: "Спростіть: $\\sqrt{m^2}$",
-          a: "$|m|$",
-          opts: ["$m$", "$|m|$", "$m^2$"],
-        },
-        {
-          id: 10,
-          q: "Спростіть: $-0,1\\sqrt{a^2}$",
-          a: "$-0,1|a|$",
-          opts: ["$-0,1a$", "$-0,1|a|$", "$0,1a$"],
-        },
-        {
-          id: 11,
-          q: "Обчисліть: $\\sqrt{4\\frac{33}{64}}$",
-          a: "2.125",
-          opts: ["2.125", "2.5", "17/8", "19/8"],
-        },
-        {
-          id: 12,
-          q: "Обчисліть: $\\sqrt{20^2 - 16^2}$",
-          a: "12",
-          type: "input",
+          id: "3",
+          title: "Частина 3: Мішані завдання",
+          tasks: [
+            {
+              id: "9)",
+              q: "$\\sqrt{1\\frac{11}{25}}$",
+              a: "1.2",
+              opts: ["6/5", "36/25", "1.2", "0.6"],
+            },
+            {
+              id: "10)",
+              q: "$\\sqrt{10^2 - 8^2}$",
+              a: "6",
+              opts: ["2", "36", "6", "18"],
+            },
+            {
+              id: "11)",
+              q: "$\\sqrt{90 \\cdot 10}$",
+              a: "30",
+              opts: ["900", "30", "3", "90"],
+            },
+            {
+              id: "12)",
+              q: "$\\sqrt{1\\frac{7}{9} \\cdot \\frac{4}{25}}$",
+              a: "$\\frac{8}{15}$",
+              opts: [
+                "$\\frac{4}{15}$",
+                "$\\frac{8}{15}$",
+                "$\\frac{16}{25}$",
+                "$0.5$",
+              ],
+            },
+          ],
         },
       ];
 
-      const container = document.getElementById("questions-container");
-
-      questions.forEach((item, index) => {
-        const div = document.createElement("div");
-        div.className = "question-block";
-        div.dataset.ans = item.a;
-        div.dataset.type = item.type || "opts";
-
-        let html = `<div class="question-text">${index + 1}. ${item.q}</div>`;
-
-        if (item.type === "input") {
-          html += `<input type="text" class="input-answer" placeholder="...">`;
-        } else {
-          html += `<div class="options">`;
-          item.opts.forEach((opt) => {
-            const safeOpt = opt.replace(/"/g, "&quot;");
-            html += `<button class="option-btn" onclick="selectOpt(this, '${safeOpt}')">${opt}</button>`;
-          });
-          html += `</div>`;
+      // --- HELPER: SHUFFLE ARRAY ---
+      function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]];
         }
-        div.innerHTML = html;
-        container.appendChild(div);
+      }
+
+      // --- RENDER ---
+      document.addEventListener("DOMContentLoaded", () => {
+        const root = document.getElementById("quiz-root");
+
+        exercises.forEach((ex) => {
+          const block = document.createElement("div");
+          block.className = "exercise-block";
+          block.innerHTML = `<div class="exercise-header"><h3 class="exercise-title">${ex.title}</h3></div>`;
+          ex.tasks.forEach((task) => {
+            // Перемішуємо варіанти перед рендерингом
+            if (task.opts && task.opts.length) {
+              shuffleArray(task.opts);
+            }
+
+            const row = document.createElement("div");
+            row.className = "task-row";
+            row.dataset.answer = task.a;
+
+            let html = `<div class="task-content">
+                          <div class="task-number">${task.id}</div>
+                          <div class="task-question">${task.q}</div>
+                        </div>
+                        <div class="options-container">`;
+
+            task.opts.forEach((opt) => {
+              const safeOpt = opt.replace(/"/g, "&quot;");
+              html += `<button class="option-btn" onclick="selectOpt(this, '${safeOpt}')">${opt}</button>`;
+            });
+            html += `</div>`;
+            row.innerHTML = html;
+            block.appendChild(row);
+          });
+          root.appendChild(block);
+        });
+
+        const finishDiv = document.createElement("div");
+        finishDiv.className = "finish-section";
+        finishDiv.innerHTML = `<button class="btn-finish" onclick="finishTest()">Завершити тест</button>`;
+        root.appendChild(finishDiv);
+
+        renderMathInElement(document.body, {
+          delimiters: [{ left: "$", right: "$", display: false }],
+          throwOnError: false,
+        });
+        setTimeout(resizeCanvas, 100);
       });
 
       function selectOpt(btn, val) {
-        const parent = btn.closest(".options");
-        parent
+        const container = btn.closest(".options-container");
+        container
           .querySelectorAll(".option-btn")
-          .forEach((b) => b.classList.remove("active"));
-        btn.classList.add("active");
-        btn.closest(".question-block").dataset.userChoice = val;
+          .forEach((b) => b.classList.remove("user-selected"));
+        btn.classList.add("user-selected");
+        btn.closest(".task-row").dataset.userChoice = val;
       }
 
       function finishTest() {
-        const blocks = document.querySelectorAll(".question-block");
         let score = 0;
-
-        blocks.forEach((block) => {
-          const correct = block.dataset.ans;
-          const type = block.dataset.type;
+        let total = 0;
+        document.querySelectorAll(".task-row").forEach((row) => {
+          total++;
+          const correctAns = row.dataset.answer.replace(/\s/g, "");
+          const userChoice = (row.dataset.userChoice || "").replace(/\s/g, "");
           let isCorrect = false;
 
-          if (type === "input") {
-            const input = block.querySelector("input");
-            const val = input.value.trim().replace(",", ".");
-            if (val == correct) {
-              // Нестроге порівняння для чисел (12 == "12")
-              isCorrect = true;
-              input.classList.add("correct-answer");
-            } else {
-              input.classList.add("wrong-choice");
-              // Можна додати підказку input.value += ` (Правильно: ${correct})`;
-            }
+          if (userChoice === correctAns) {
+            isCorrect = true;
+            score++;
+            row.classList.add("solved-correct");
           } else {
-            const choice = block.dataset.userChoice;
-            const normChoice = choice ? choice.replace(/\s/g, "") : "";
-            const normCorrect = correct.replace(/\s/g, "");
-
-            if (normChoice === normCorrect) isCorrect = true;
-
-            const btns = block.querySelectorAll(".option-btn");
-            btns.forEach((btn) => {
-              const btnVal = btn
-                .getAttribute("onclick")
-                .match(/'([^']+)'/)[1]
-                .replace(/\s/g, "");
-
-              if (btnVal === normCorrect) btn.classList.add("correct-answer");
-              if (btn.classList.contains("active") && !isCorrect)
-                btn.classList.add("wrong-choice");
-
-              btn.disabled = true;
-            });
+            row.classList.add("solved-wrong");
           }
 
-          if (isCorrect) score++;
+          row.querySelectorAll(".option-btn").forEach((btn) => {
+            const originalAttr = btn.getAttribute("onclick");
+            const btnValRaw = originalAttr.match(/'([^']+)'/)[1];
+            const btnValClean = btnValRaw.replace(/\s/g, "");
+
+            if (btnValClean === correctAns) {
+              btn.classList.add("final-correct");
+            }
+            if (btn.classList.contains("user-selected") && !isCorrect) {
+              btn.classList.add("final-wrong");
+            }
+            btn.disabled = true;
+          });
         });
 
-        document.getElementById(
-          "score-val"
-        ).innerText = `${score}/${questions.length}`;
+        const modal = document.getElementById("result-modal");
+        const body = document.getElementById("modal-content-body");
 
-        let msg = "Добре!";
-        if (score === questions.length) msg = "Бездоганно!";
-        else if (score < questions.length / 2) msg = "Спробуй ще раз";
-
-        document.getElementById("feedback-text").innerText = msg;
-        document.getElementById("result-modal").style.display = "flex";
-      }
-
-      document.addEventListener("DOMContentLoaded", () => {
-        if (window.renderMathInElement) {
-          renderMathInElement(document.body, {
-            delimiters: [{ left: "$", right: "$", display: false }],
-            throwOnError: false,
-          });
+        let color = "#7c3aed";
+        let msg = "Результат";
+        if (score >= 10) {
+          msg = "Супер!";
+          color = "#16a34a";
+        } else if (score >= 7) {
+          msg = "Добре!";
+        } else {
+          msg = "Можна краще";
+          color = "#dc2626";
         }
-      });
+
+        body.innerHTML = `
+          <div class="modal-result-title" style="color:${color}">${msg}</div>
+          <div class="modal-score-big" style="color:${color}">${score}</div>
+          <div style="color:#64748b">(балів з ${total})</div>
+          <button class="modal-footer-btn" onclick="document.getElementById('result-modal').style.display='none'">Переглянути помилки</button>
+        `;
+        modal.style.display = "flex";
+      }
     </script>
   </body>
 </html>
