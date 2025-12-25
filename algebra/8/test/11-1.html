@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Тест: Стандартний вигляд числа (Варіант 2)</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
+    />
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"
+    ></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    ></script>
+    <style>
+      :root {
+        --primary: #7c3aed;
+        --primary-light: #f5f3ff;
+        --success: #16a34a;
+        --error: #dc2626;
+        --bg: #f8fafc;
+        --card: #ffffff;
+        --text: #1e293b;
+        --border: #e2e8f0;
+        --grid-color: #e2e8f0;
+        --selected: #3b82f6;
+        --selected-light: #eff6ff;
+      }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        display: flex;
+        overflow: hidden;
+      }
+      #tasks-section {
+        flex: 1;
+        background: var(--bg);
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+      }
+      #board-section {
+        flex: 1;
+        position: relative;
+        background-color: #fff;
+        border-left: 4px solid #cbd5e1;
+        background-image: linear-gradient(
+            var(--grid-color) 1px,
+            transparent 1px
+          ),
+          linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+        background-size: 25px 25px;
+        cursor: crosshair;
+        overflow: hidden;
+      }
+      canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+        touch-action: none;
+      }
+      .tools {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        display: flex;
+        gap: 10px;
+        background: rgba(255, 255, 255, 0.95);
+        padding: 8px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        border: 1px solid var(--border);
+        flex-wrap: wrap;
+        z-index: 10;
+      }
+      .btn-tool {
+        border: 1px solid #cbd5e1;
+        background: white;
+        padding: 8px 12px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 40px;
+      }
+      .btn-tool.active {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+      }
+      header {
+        background: var(--card);
+        padding: 15px 20px;
+        border-bottom: 2px solid var(--primary);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+      }
+      .header-title {
+        font-weight: 800;
+        font-size: 1.2rem;
+        color: var(--primary);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .test-badge {
+        background: var(--primary);
+        color: white;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+      .content-container {
+        padding: 20px;
+        padding-bottom: 80px;
+        max-width: 800px;
+        margin: 0 auto;
+        width: 100%;
+        box-sizing: border-box;
+      }
+      .exercise-block {
+        background: var(--card);
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        margin-bottom: 30px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      }
+      .exercise-header {
+        background: var(--primary-light);
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border);
+      }
+      .exercise-title {
+        margin: 0;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--primary);
+      }
+      .task-row {
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .task-row:last-child {
+        border-bottom: none;
+      }
+      .task-row.solved-correct {
+        background-color: #f0fdf4;
+      }
+      .task-row.solved-wrong {
+        background-color: #fef2f2;
+      }
+
+      .task-content {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .task-number {
+        font-weight: 600;
+        color: #94a3b8;
+        min-width: 25px;
+      }
+      .task-question {
+        font-size: 1.1rem;
+        font-weight: 500;
+      }
+      .options-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .option-btn {
+        flex: 1;
+        background: white;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        padding: 10px 15px;
+        font-size: 1rem;
+        cursor: pointer;
+        min-width: 70px;
+        transition: 0.2s;
+      }
+      .option-btn:hover:not(:disabled) {
+        border-color: var(--selected);
+        background: var(--selected-light);
+      }
+      /* Стан вибору користувачем (до перевірки) */
+      .option-btn.user-selected {
+        background: var(--selected-light);
+        border-color: var(--selected);
+        color: var(--selected);
+        font-weight: bold;
+        box-shadow: 0 0 0 1px var(--selected);
+      }
+      /* Фінальні стани */
+      .option-btn.final-correct {
+        background: var(--success) !important;
+        color: white !important;
+        border-color: var(--success) !important;
+      }
+      .option-btn.final-wrong {
+        background: var(--error) !important;
+        color: white !important;
+        border-color: var(--error) !important;
+      }
+
+      .input-group {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+      .input-answer {
+        padding: 10px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        width: 140px;
+        font-size: 1rem;
+      }
+      .input-answer:focus {
+        outline: none;
+        border-color: var(--selected);
+        box-shadow: 0 0 0 2px var(--selected-light);
+      }
+      .input-answer.final-correct {
+        border-color: var(--success);
+        background: #f0fdf4;
+        color: var(--success);
+        font-weight: bold;
+      }
+      .input-answer.final-wrong {
+        border-color: var(--error);
+        background: #fef2f2;
+        color: var(--error);
+      }
+      .correct-hint {
+        display: none;
+        color: var(--success);
+        font-weight: bold;
+        font-size: 0.9rem;
+        margin-left: 10px;
+      }
+
+      .finish-section {
+        margin-top: 40px;
+        text-align: center;
+      }
+      .btn-finish {
+        padding: 15px 40px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: white;
+        background: var(--primary);
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4);
+        transition: transform 0.2s;
+      }
+      .btn-finish:hover {
+        transform: scale(1.05);
+      }
+
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(5px);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+      }
+      .modal-card {
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        max-width: 450px;
+        width: 90%;
+        text-align: center;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        position: relative;
+      }
+      .modal-result-title {
+        font-size: 2rem;
+        font-weight: 800;
+        color: var(--primary);
+        margin-bottom: 20px;
+      }
+      .modal-score-big {
+        font-size: 4rem;
+        font-weight: 900;
+        color: var(--primary);
+        line-height: 1;
+        margin: 10px 0;
+      }
+      .modal-footer-btn {
+        margin-top: 30px;
+        padding: 12px 30px;
+        background: var(--text);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        cursor: pointer;
+      }
+
+      @media (max-width: 768px) {
+        body {
+          flex-direction: column;
+        }
+        #board-section {
+          height: 40vh;
+          border-left: none;
+          border-top: 4px solid #cbd5e1;
+          order: 2;
+        }
+        #tasks-section {
+          height: 60vh;
+          border-bottom: 4px solid #cbd5e1;
+          order: 1;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="tasks-section">
+      <header>
+        <div class="header-title">
+          <span class="test-badge">Тест 2</span>
+          <span>Стандартний вигляд числа (Вар. 2)</span>
+        </div>
+      </header>
+      <div class="content-container" id="quiz-root"></div>
+    </div>
+
+    <div id="board-section">
+      <div class="tools">
+        <button class="btn-tool active" onclick="setTool('pen')" id="t-pen">
+          🖊️
+        </button>
+        <button class="btn-tool" onclick="setTool('eraser')" id="t-eraser">
+          🧹
+        </button>
+        <button
+          class="btn-tool"
+          onclick="clearCanvasSafe()"
+          style="color: red; border-color: #fee2e2"
+        >
+          ❌
+        </button>
+      </div>
+      <canvas id="board"></canvas>
+    </div>
+
+    <div id="result-modal" class="modal-overlay">
+      <div class="modal-card">
+        <div id="modal-content-body"></div>
+      </div>
+    </div>
+
+    <script>
+      // --- LOGIC: BOARD ---
+      const canvas = document.getElementById("board");
+      const ctx = canvas.getContext("2d");
+      const boardSection = document.getElementById("board-section");
+      let painting = false;
+      let tool = "pen";
+
+      function resizeCanvas() {
+        const temp = document.createElement("canvas");
+        const tempCtx = temp.getContext("2d");
+        temp.width = canvas.width;
+        temp.height = canvas.height;
+        if (canvas.width > 0) tempCtx.drawImage(canvas, 0, 0);
+        canvas.width = boardSection.offsetWidth;
+        canvas.height = boardSection.offsetHeight;
+        ctx.drawImage(temp, 0, 0);
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+      }
+      window.addEventListener("resize", resizeCanvas);
+      window.addEventListener("load", resizeCanvas);
+
+      function getMousePos(e) {
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return { x: clientX - rect.left, y: clientY - rect.top };
+      }
+      function draw(e) {
+        if (!painting) return;
+        const pos = getMousePos(e);
+        ctx.lineWidth = tool === "pen" ? 2 : 25;
+        ctx.strokeStyle = tool === "pen" ? "#7c3aed" : "#ffffff";
+        ctx.globalCompositeOperation =
+          tool === "pen" ? "source-over" : "destination-out";
+        ctx.lineTo(pos.x, pos.y);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(pos.x, pos.y);
+      }
+      canvas.addEventListener("mousedown", (e) => {
+        painting = true;
+        draw(e);
+      });
+      canvas.addEventListener("mouseup", () => {
+        painting = false;
+        ctx.beginPath();
+      });
+      canvas.addEventListener("mousemove", draw);
+      canvas.addEventListener("touchstart", (e) => {
+        painting = true;
+        draw(e);
+      });
+      canvas.addEventListener("touchend", () => {
+        painting = false;
+        ctx.beginPath();
+      });
+      canvas.addEventListener("touchmove", draw);
+
+      function setTool(t) {
+        tool = t;
+        document
+          .getElementById("t-pen")
+          .classList.toggle("active", t === "pen");
+        document
+          .getElementById("t-eraser")
+          .classList.toggle("active", t === "eraser");
+      }
+      function clearCanvasSafe() {
+        if (confirm("Очистити дошку?"))
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+
+      // --- LOGIC: QUIZ DATA (НОВІ ЧИСЛА) ---
+      const exercises = [
+        {
+          id: "1",
+          title: "11.1. Чи записано число у стандартному вигляді?",
+          tasks: [
+            {
+              id: "1)",
+              q: "Чи є число $5,6 \\cdot 10^{12}$ записаним у стандартному вигляді?",
+              a: "Так",
+              opts: ["Так", "Ні"],
+            },
+            {
+              id: "2)",
+              q: "Чи є число $0,03 \\cdot 10^5$ записаним у стандартному вигляді?",
+              a: "Ні",
+              opts: ["Так", "Ні"],
+            },
+            {
+              id: "3)",
+              q: "Чи є число $12,5 \\cdot 10^{-2}$ записаним у стандартному вигляді?",
+              a: "Ні",
+              opts: ["Так", "Ні"],
+            },
+          ],
+        },
+        {
+          id: "2",
+          title: "11.3. Порядок числа",
+          tasks: [
+            {
+              id: "4)",
+              q: "Назвіть порядок числа $3,8 \\cdot 10^9$",
+              a: "9",
+              type: "input",
+            },
+            {
+              id: "5)",
+              q: "Назвіть порядок числа $1,05 \\cdot 10^{-8}$",
+              a: "-8",
+              type: "input",
+            },
+          ],
+        },
+        {
+          id: "3",
+          title: "11.5. Запишіть у стандартному вигляді (прості)",
+          tasks: [
+            {
+              id: "6)",
+              q: "Запишіть число $40\\,000$ у стандартному вигляді:",
+              a: "$4 \\cdot 10^4$",
+              opts: ["$4 \\cdot 10^4$", "$40 \\cdot 10^3$", "$4 \\cdot 10^5$"],
+            },
+            {
+              id: "7)",
+              q: "Запишіть число $63\\,000$ у стандартному вигляді:",
+              a: "$6,3 \\cdot 10^4$",
+              opts: [
+                "$63 \\cdot 10^3$",
+                "$6,3 \\cdot 10^4$",
+                "$0,63 \\cdot 10^5$",
+              ],
+            },
+            {
+              id: "8)",
+              q: "Запишіть число $0,005$ у стандартному вигляді:",
+              a: "$5 \\cdot 10^{-3}$",
+              opts: [
+                "$5 \\cdot 10^{-2}$",
+                "$5 \\cdot 10^{-3}$",
+                "$50 \\cdot 10^{-4}$",
+              ],
+            },
+            {
+              id: "9)",
+              q: "Запишіть число $0,029$ у стандартному вигляді:",
+              a: "$2,9 \\cdot 10^{-2}$",
+              opts: [
+                "$2,9 \\cdot 10^{-2}$",
+                "$2,9 \\cdot 10^{-3}$",
+                "$29 \\cdot 10^{-3}$",
+              ],
+            },
+          ],
+        },
+        {
+          id: "4",
+          title: "11.8. Подайте у стандартному вигляді (складніші)",
+          tasks: [
+            {
+              id: "10)",
+              q: "Подайте $54 \\cdot 10^6$ у стандартному вигляді:",
+              a: "$5,4 \\cdot 10^7$",
+              opts: [
+                "$5,4 \\cdot 10^7$",
+                "$5,4 \\cdot 10^5$",
+                "$540 \\cdot 10^5$",
+              ],
+            },
+            {
+              id: "11)",
+              q: "Подайте $325 \\cdot 10^{-4}$ у стандартному вигляді:",
+              a: "$3,25 \\cdot 10^{-2}$",
+              opts: [
+                "$3,25 \\cdot 10^{-2}$",
+                "$3,25 \\cdot 10^{-6}$",
+                "$32,5 \\cdot 10^{-3}$",
+              ],
+            },
+            {
+              id: "12)",
+              q: "Подайте $0,6 \\cdot 10^{-5}$ у стандартному вигляді:",
+              a: "$6 \\cdot 10^{-6}$",
+              opts: [
+                "$6 \\cdot 10^{-6}$",
+                "$6 \\cdot 10^{-4}$",
+                "$0,6 \\cdot 10^{-6}$",
+              ],
+            },
+          ],
+        },
+      ];
+
+      // --- LOGIC: RENDER & EXECUTION ---
+      document.addEventListener("DOMContentLoaded", () => {
+        const root = document.getElementById("quiz-root");
+
+        exercises.forEach((ex) => {
+          const block = document.createElement("div");
+          block.className = "exercise-block";
+          block.innerHTML = `<div class="exercise-header"><h3 class="exercise-title">${ex.title}</h3></div>`;
+
+          ex.tasks.forEach((task) => {
+            const row = document.createElement("div");
+            row.className = "task-row";
+            row.dataset.answer = task.a;
+            row.dataset.type = task.type || "opts";
+
+            let html = `<div class="task-content">
+                          <div class="task-number">${task.id}</div>
+                          <div class="task-question">${task.q}</div>
+                        </div>`;
+
+            if (task.type === "input") {
+              html += `<div class="input-group">
+                          <input type="text" class="input-answer" placeholder="Відповідь">
+                          <span class="correct-hint">Відповідь: ${task.a}</span>
+                        </div>`;
+            } else {
+              html += `<div class="options-container">`;
+              task.opts.forEach((opt) => {
+                const safeOpt = opt.replace(/"/g, "&quot;");
+                html += `<button class="option-btn" data-val="${safeOpt}" onclick="selectOpt(this)">${opt}</button>`;
+              });
+              html += `</div>`;
+            }
+            row.innerHTML = html;
+            block.appendChild(row);
+          });
+          root.appendChild(block);
+        });
+
+        const finishDiv = document.createElement("div");
+        finishDiv.className = "finish-section";
+        finishDiv.innerHTML = `<button class="btn-finish" onclick="finishTest()">Завершити тест</button>`;
+        root.appendChild(finishDiv);
+
+        renderMathInElement(document.body, {
+          delimiters: [{ left: "$", right: "$", display: false }],
+          throwOnError: false,
+        });
+        setTimeout(resizeCanvas, 100);
+      });
+
+      function selectOpt(btn) {
+        const val = btn.dataset.val;
+
+        const container = btn.closest(".options-container");
+        container
+          .querySelectorAll(".option-btn")
+          .forEach((b) => b.classList.remove("user-selected"));
+        btn.classList.add("user-selected");
+
+        btn.closest(".task-row").dataset.userChoice = val;
+      }
+
+      function finishTest() {
+        let score = 0;
+        let total = 0;
+        let answered = 0;
+
+        document.querySelectorAll(".task-row").forEach((row) => {
+          total++;
+          const correctAns = row.dataset.answer.replace(/\s/g, "");
+          let isCorrect = false;
+
+          if (row.dataset.type === "input") {
+            const input = row.querySelector("input");
+            const val = input.value.trim().replace(",", ".");
+            if (val.length > 0) answered++;
+
+            if (val == correctAns) {
+              isCorrect = true;
+              input.classList.add("final-correct");
+            } else {
+              if (val.length > 0) input.classList.add("final-wrong");
+              row.querySelector(".correct-hint").style.display = "inline";
+            }
+            input.disabled = true;
+          } else {
+            const userChoice = (row.dataset.userChoice || "").replace(
+              /\s/g,
+              ""
+            );
+            if (userChoice.length > 0) answered++;
+
+            if (userChoice === correctAns) isCorrect = true;
+
+            row.querySelectorAll(".option-btn").forEach((btn) => {
+              const btnValClean = btn.dataset.val.replace(/\s/g, "");
+
+              if (btnValClean === correctAns) {
+                btn.classList.add("final-correct");
+              }
+              if (btn.classList.contains("user-selected") && !isCorrect) {
+                btn.classList.add("final-wrong");
+              }
+              btn.disabled = true;
+            });
+          }
+
+          if (isCorrect) {
+            score++;
+            row.classList.add("solved-correct");
+          } else {
+            row.classList.add("solved-wrong");
+          }
+        });
+
+        showResult(score, total);
+      }
+
+      function showResult(score, total) {
+        const modal = document.getElementById("result-modal");
+        const body = document.getElementById("modal-content-body");
+        let score12 = Math.round((score / total) * 12);
+
+        let color = "#7c3aed";
+        let msg = "Результат";
+        if (score12 >= 10) {
+          msg = "Чудово!";
+          color = "#16a34a";
+        } else if (score12 >= 7) {
+          msg = "Добре!";
+        } else if (score12 >= 4) {
+          msg = "Непогано";
+          color = "#f59e0b";
+        } else {
+          msg = "Треба повторити";
+          color = "#dc2626";
+        }
+
+        body.innerHTML = `
+          <div class="modal-result-title" style="color:${color}">${msg}</div>
+          <div class="modal-score-big" style="color:${color}">${score12}</div>
+          <div style="color:#64748b">(балів з 12)</div>
+          <div style="margin: 15px 0; font-size: 1.1rem">Правильно: <b>${score}</b> з ${total}</div>
+          <button class="modal-footer-btn" onclick="document.getElementById('result-modal').style.display='none'">Переглянути помилки</button>
+        `;
+        modal.style.display = "flex";
+      }
+    </script>
+  </body>
+</html>

@@ -3,10 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>
-      Сторінка підручника - Властивості арифметичного квадратного кореня
-      (Виправлено)
-    </title>
+    <title>Сторінка підручника - Властивості кореня (Фінальна версія)</title>
     <style>
       body {
         background-color: #e6e6e6;
@@ -71,6 +68,7 @@
         width: 100%;
       }
 
+      /* Стилі для дробів */
       .fraction {
         display: inline-block;
         text-align: center;
@@ -86,28 +84,39 @@
 
       .fraction span.numerator {
         border-bottom: 1px solid #000;
-        padding-bottom: 1px; /* Трохи відступу знизу для чисельника */
+        padding-bottom: 1px;
       }
 
       .fraction span.denominator {
         border-top: 0;
-        padding-top: 1px; /* Трохи відступу зверху для знаменника */
+        padding-top: 1px;
       }
 
+      /* --- ВИПРАВЛЕНИЙ КОРІНЬ (FLEX FIX) --- */
       .sqrt {
+        display: inline-flex; /* Гарантує стиковку елементів */
+        align-items: flex-start; /* Вирівнювання по верху */
         white-space: nowrap;
-        display: inline-block;
       }
 
-      /* --- ВИПРАВЛЕННЯ КОРЕНЯ --- */
+      /* Символ галочки */
+      .sqrt::before {
+        content: "\221A"; /* Символ кореня */
+        font-family: sans-serif; /* Цей шрифт дає кращу форму галочки */
+        font-size: 1.1em;
+        line-height: 1;
+        padding-right: 1px;
+        margin-top: 3px; /* Підгонка під лінію */
+      }
+
+      /* Вміст під лінією */
       .sqrt > span {
         border-top: 1px solid #000;
-        padding-top: 4px; /* Збільшено відступ, щоб риска була вище */
-        display: inline-block; /* Важливо для коректного відображення висоти */
-        margin-top: 2px;
-        vertical-align: top; /* Вирівнювання по верху */
+        padding-top: 2px; /* Відступ, щоб лінія не різала текст */
+        margin-top: 0.3em; /* Опускаємо вміст, щоб лінія зійшлася з галочкою */
+        display: block;
       }
-      /* -------------------------- */
+      /* -------------------------------------- */
 
       .list-num {
         margin-right: 3px;
@@ -173,34 +182,34 @@
           <div class="grid-3-col">
             <div class="sub-item">
               <span class="list-num">1)</span>
-              <span class="sqrt">&radic;<span>25 &middot; 64</span></span
+              <span class="sqrt"><span>25 &middot; 64</span></span
               >;
             </div>
             <div class="sub-item">
               <span class="list-num">2)</span>
-              <span class="sqrt">&radic;<span>81 &middot; 9</span></span
+              <span class="sqrt"><span>81 &middot; 9</span></span
               >;
             </div>
             <div class="sub-item">
               <span class="list-num">3)</span>
-              <span class="sqrt">&radic;<span>0,36 &middot; 1,44</span></span
+              <span class="sqrt"><span>0,36 &middot; 1,44</span></span
               >;
             </div>
             <div class="sub-item">
               <span class="list-num">4)</span>
-              <span class="sqrt">&radic;<span>0,04 &middot; 225</span></span
+              <span class="sqrt"><span>0,04 &middot; 225</span></span
               >;
             </div>
             <div class="sub-item">
               <span class="list-num">5)</span>
               <span class="sqrt"
-                >&radic;<span>1,21 &middot; 0,25 &middot; 900</span></span
+                ><span>1,21 &middot; 0,25 &middot; 900</span></span
               >;
             </div>
             <div class="sub-item">
               <span class="list-num">6)</span>
               <span class="sqrt"
-                >&radic;<span>3,61 &middot; 100 &middot; 0,04</span></span
+                ><span>3,61 &middot; 100 &middot; 0,04</span></span
               >.
             </div>
           </div>
@@ -215,7 +224,7 @@
             <div class="sub-item">
               <span class="list-num">1)</span>
               <span class="sqrt"
-                >&radic;<span>
+                ><span>
                   <div class="fraction">
                     <span class="numerator">36</span>
                     <span class="denominator">49</span>
@@ -226,7 +235,7 @@
             <div class="sub-item">
               <span class="list-num">2)</span>
               <span class="sqrt"
-                >&radic;<span>
+                ><span>
                   <div class="fraction">
                     <span class="numerator">169</span>
                     <span class="denominator">400</span>
@@ -237,7 +246,7 @@
             <div class="sub-item">
               <span class="list-num">3)</span>
               <span class="sqrt"
-                >&radic;<span>
+                ><span>
                   <div class="fraction">
                     <span class="numerator">25</span>
                     <span class="denominator">576</span>
@@ -248,7 +257,7 @@
             <div class="sub-item">
               <span class="list-num">4)</span>
               <span class="sqrt"
-                >&radic;<span
+                ><span
                   >1
                   <div class="fraction">
                     <span class="numerator">9</span>
@@ -260,7 +269,7 @@
             <div class="sub-item">
               <span class="list-num">5)</span>
               <span class="sqrt"
-                >&radic;<span
+                ><span
                   >2
                   <div class="fraction">
                     <span class="numerator">14</span>
@@ -272,7 +281,7 @@
             <div class="sub-item">
               <span class="list-num">6)</span>
               <span class="sqrt"
-                >&radic;<span
+                ><span
                   >30
                   <div class="fraction">
                     <span class="numerator">1</span>
@@ -293,25 +302,25 @@
             <div class="sub-item">
               <span class="list-num">1)</span>
               <span class="sqrt"
-                >&radic;<span>2,3<sup>2</sup></span></span
+                ><span>2,3<sup>2</sup></span></span
               >;
             </div>
             <div class="sub-item">
               <span class="list-num">2)</span>
               <span class="sqrt"
-                >&radic;<span>(&minus;0,6)<sup>2</sup></span></span
+                ><span>(&minus;0,6)<sup>2</sup></span></span
               >;
             </div>
             <div class="sub-item">
               <span class="list-num">3)</span>
               5<span class="sqrt"
-                >&radic;<span>6<sup>2</sup></span></span
+                ><span>6<sup>2</sup></span></span
               >;
             </div>
             <div class="sub-item">
               <span class="list-num">4)</span>
               &minus;4<span class="sqrt"
-                >&radic;<span>3<sup>2</sup></span></span
+                ><span>3<sup>2</sup></span></span
               >;
             </div>
             <div class="sub-item">
@@ -321,19 +330,19 @@
                 <span class="denominator">5</span>
               </div>
               <span class="sqrt"
-                >&radic;<span>(&minus;10)<sup>2</sup></span></span
+                ><span>(&minus;10)<sup>2</sup></span></span
               >;
             </div>
             <div class="sub-item">
               <span class="list-num">6)</span>
               &minus;0,2<span class="sqrt"
-                >&radic;<span>30<sup>2</sup></span></span
+                ><span>30<sup>2</sup></span></span
               >;
             </div>
             <div class="sub-item">
               <span class="list-num">7)</span>
               &minus;2<span class="sqrt"
-                >&radic;<span>(&minus;8)<sup>2</sup></span></span
+                ><span>(&minus;8)<sup>2</sup></span></span
               >;
             </div>
             <div class="sub-item">
@@ -343,7 +352,7 @@
                 <span class="denominator">7</span>
               </div>
               <span class="sqrt"
-                >&radic;<span>
+                ><span>
                   <span style="display: inline-block; vertical-align: middle">
                     (
                     <div class="fraction">
@@ -366,24 +375,24 @@
           <div class="grid-4-col">
             <div class="sub-item">
               <span class="list-num">1)</span>
-              <span class="sqrt">&radic;<span>5 &middot; 13</span></span
+              <span class="sqrt"><span>5 &middot; 13</span></span
               >;
             </div>
             <div class="sub-item">
               <span class="list-num">2)</span>
-              <span class="sqrt">&radic;<span>21</span></span
+              <span class="sqrt"><span>21</span></span
               >;
             </div>
             <div class="sub-item">
               <span class="list-num">3)</span>
               <span class="sqrt"
-                >&radic;<span>17<i>m</i></span></span
+                ><span>17<i>m</i></span></span
               >;
             </div>
             <div class="sub-item">
               <span class="list-num">4)</span>
               <span class="sqrt"
-                >&radic;<span>14<i>n</i></span></span
+                ><span>14<i>n</i></span></span
               >.
             </div>
           </div>
@@ -398,7 +407,7 @@
             <div class="sub-item">
               <span class="list-num">1)</span>
               <span class="sqrt"
-                >&radic;<span>
+                ><span>
                   <div class="fraction">
                     <span class="numerator">5</span>
                     <span class="denominator">13</span>
@@ -409,7 +418,7 @@
             <div class="sub-item">
               <span class="list-num">2)</span>
               <span class="sqrt"
-                >&radic;<span
+                ><span
                   >4
                   <div class="fraction">
                     <span class="numerator">1</span>
@@ -421,7 +430,7 @@
             <div class="sub-item">
               <span class="list-num">3)</span>
               <span class="sqrt"
-                >&radic;<span>
+                ><span>
                   <div class="fraction">
                     <span class="numerator"><i>x</i></span>
                     <span class="denominator">23</span>
@@ -432,7 +441,7 @@
             <div class="sub-item">
               <span class="list-num">4)</span>
               <span class="sqrt"
-                >&radic;<span>
+                ><span>
                   <div class="fraction">
                     <span class="numerator">7</span>
                     <span class="denominator"><i>y</i></span>
@@ -451,32 +460,32 @@
           <div class="grid-3-col">
             <div class="sub-item">
               <span class="list-num">1)</span>
-              <span class="sqrt">&radic;<span>2</span></span> &middot;
-              <span class="sqrt">&radic;<span>8</span></span
+              <span class="sqrt"><span>2</span></span> &middot;
+              <span class="sqrt"><span>8</span></span
               >;
             </div>
             <div class="sub-item">
               <span class="list-num">2)</span>
-              <span class="sqrt">&radic;<span>3</span></span> &middot;
-              <span class="sqrt">&radic;<span>27</span></span
+              <span class="sqrt"><span>3</span></span> &middot;
+              <span class="sqrt"><span>27</span></span
               >;
             </div>
             <div class="sub-item">
               <span class="list-num">3)</span>
-              <span class="sqrt">&radic;<span>0,08</span></span> &middot;
-              <span class="sqrt">&radic;<span>200</span></span
+              <span class="sqrt"><span>0,08</span></span> &middot;
+              <span class="sqrt"><span>200</span></span
               >;
             </div>
             <div class="sub-item">
               <span class="list-num">4)</span>
-              <span class="sqrt">&radic;<span>0,2</span></span> &middot;
-              <span class="sqrt">&radic;<span>0,8</span></span
+              <span class="sqrt"><span>0,2</span></span> &middot;
+              <span class="sqrt"><span>0,8</span></span
               >;
             </div>
             <div class="sub-item">
               <span class="list-num">5)</span>
               <span class="sqrt"
-                >&radic;<span>
+                ><span>
                   <div class="fraction">
                     <span class="numerator">3</span>
                     <span class="denominator">8</span>
@@ -485,7 +494,7 @@
               >
               &middot;
               <span class="sqrt"
-                >&radic;<span>
+                ><span>
                   <div class="fraction">
                     <span class="numerator">1</span>
                     <span class="denominator">3</span>
@@ -494,7 +503,7 @@
               >
               &middot;
               <span class="sqrt"
-                >&radic;<span>
+                ><span>
                   <div class="fraction">
                     <span class="numerator">8</span>
                     <span class="denominator">25</span>
@@ -505,7 +514,7 @@
             <div class="sub-item">
               <span class="list-num">6)</span>
               <span class="sqrt"
-                >&radic;<span>
+                ><span>
                   <div class="fraction">
                     <span class="numerator">13</span>
                     <span class="denominator">14</span>
@@ -514,14 +523,14 @@
               >
               &middot;
               <span class="sqrt"
-                >&radic;<span>
+                ><span>
                   <div class="fraction">
                     <span class="numerator">1</span>
                     <span class="denominator">14</span>
                   </div>
                 </span></span
               >
-              &middot; <span class="sqrt">&radic;<span>13</span></span
+              &middot; <span class="sqrt"><span>13</span></span
               >.
             </div>
           </div>
@@ -537,10 +546,10 @@
               <span class="list-num">1)</span>
               <div class="fraction">
                 <span class="numerator"
-                  ><span class="sqrt">&radic;<span>72</span></span></span
+                  ><span class="sqrt"><span>72</span></span></span
                 >
                 <span class="denominator"
-                  ><span class="sqrt">&radic;<span>2</span></span></span
+                  ><span class="sqrt"><span>2</span></span></span
                 >
               </div>
               ;
@@ -549,10 +558,10 @@
               <span class="list-num">2)</span>
               <div class="fraction">
                 <span class="numerator"
-                  ><span class="sqrt">&radic;<span>4,8</span></span></span
+                  ><span class="sqrt"><span>4,8</span></span></span
                 >
                 <span class="denominator"
-                  ><span class="sqrt">&radic;<span>0,3</span></span></span
+                  ><span class="sqrt"><span>0,3</span></span></span
                 >
               </div>
               ;
@@ -561,10 +570,10 @@
               <span class="list-num">3)</span>
               <div class="fraction">
                 <span class="numerator"
-                  ><span class="sqrt">&radic;<span>450</span></span></span
+                  ><span class="sqrt"><span>450</span></span></span
                 >
                 <span class="denominator"
-                  ><span class="sqrt">&radic;<span>2</span></span></span
+                  ><span class="sqrt"><span>2</span></span></span
                 >
               </div>
               ;
@@ -573,10 +582,10 @@
               <span class="list-num">4)</span>
               <div class="fraction">
                 <span class="numerator"
-                  ><span class="sqrt">&radic;<span>5</span></span></span
+                  ><span class="sqrt"><span>5</span></span></span
                 >
                 <span class="denominator"
-                  ><span class="sqrt">&radic;<span>125</span></span></span
+                  ><span class="sqrt"><span>125</span></span></span
                 >
               </div>
               ;
@@ -585,10 +594,10 @@
               <span class="list-num">5)</span>
               <div class="fraction">
                 <span class="numerator"
-                  ><span class="sqrt">&radic;<span>20</span></span></span
+                  ><span class="sqrt"><span>20</span></span></span
                 >
                 <span class="denominator"
-                  ><span class="sqrt">&radic;<span>45</span></span></span
+                  ><span class="sqrt"><span>45</span></span></span
                 >
               </div>
               ;
@@ -597,10 +606,10 @@
               <span class="list-num">6)</span>
               <div class="fraction">
                 <span class="numerator"
-                  ><span class="sqrt">&radic;<span>0,08</span></span></span
+                  ><span class="sqrt"><span>0,08</span></span></span
                 >
                 <span class="denominator"
-                  ><span class="sqrt">&radic;<span>0,32</span></span></span
+                  ><span class="sqrt"><span>0,32</span></span></span
                 >
               </div>
               .
@@ -617,37 +626,37 @@
             <div class="sub-item">
               <span class="list-num">1)</span>
               <span class="sqrt"
-                >&radic;<span>5<sup>4</sup></span></span
+                ><span>5<sup>4</sup></span></span
               >;
             </div>
             <div class="sub-item">
               <span class="list-num">2)</span>
               <span class="sqrt"
-                >&radic;<span>2<sup>6</sup></span></span
+                ><span>2<sup>6</sup></span></span
               >;
             </div>
             <div class="sub-item">
               <span class="list-num">3)</span>
               <span class="sqrt"
-                >&radic;<span>3<sup>8</sup></span></span
+                ><span>3<sup>8</sup></span></span
               >;
             </div>
             <div class="sub-item">
               <span class="list-num">4)</span>
               <span class="sqrt"
-                >&radic;<span>(&minus;3)<sup>4</sup></span></span
+                ><span>(&minus;3)<sup>4</sup></span></span
               >;
             </div>
             <div class="sub-item">
               <span class="list-num">5)</span>
               <span class="sqrt"
-                >&radic;<span>(&minus;1)<sup>8</sup></span></span
+                ><span>(&minus;1)<sup>8</sup></span></span
               >;
             </div>
             <div class="sub-item">
               <span class="list-num">6)</span>
               <span class="sqrt"
-                >&radic;<span>(&minus;2)<sup>10</sup></span></span
+                ><span>(&minus;2)<sup>10</sup></span></span
               >.
             </div>
           </div>
@@ -662,13 +671,13 @@
             <div class="sub-item">
               <span class="list-num">1)</span>
               <span class="sqrt"
-                >&radic;<span><i>p</i><sup>2</sup></span></span
+                ><span><i>p</i><sup>2</sup></span></span
               >;
             </div>
             <div class="sub-item">
               <span class="list-num">2)</span>
               &minus;5<span class="sqrt"
-                >&radic;<span><i>y</i><sup>2</sup></span></span
+                ><span><i>y</i><sup>2</sup></span></span
               >;
             </div>
             <div class="sub-item">
@@ -678,7 +687,7 @@
                 <span class="denominator">3</span>
               </div>
               <span class="sqrt"
-                >&radic;<span><i>c</i><sup>2</sup></span></span
+                ><span><i>c</i><sup>2</sup></span></span
               >;
             </div>
             <div class="sub-item">
@@ -687,7 +696,7 @@
                 <span class="numerator">9</span>
                 <span class="denominator"
                   ><span class="sqrt"
-                    >&radic;<span><i>m</i><sup>2</sup></span></span
+                    ><span><i>m</i><sup>2</sup></span></span
                   ></span
                 >
               </div>
@@ -705,7 +714,7 @@
             <div class="sub-item">
               <span class="list-num">1)</span>
               <span class="sqrt"
-                >&radic;<span>
+                ><span>
                   1
                   <div class="fraction">
                     <span class="numerator">9</span>
@@ -722,7 +731,7 @@
             <div class="sub-item">
               <span class="list-num">2)</span>
               <span class="sqrt"
-                >&radic;<span>
+                ><span>
                   1
                   <div class="fraction">
                     <span class="numerator">17</span>
@@ -732,7 +741,7 @@
               >
               &middot;
               <span class="sqrt"
-                >&radic;<span>
+                ><span>
                   1
                   <div class="fraction">
                     <span class="numerator">15</span>
@@ -744,20 +753,19 @@
             <div class="sub-item">
               <span class="list-num">3)</span>
               <span class="sqrt"
-                >&radic;<span>29<sup>2</sup> &minus; 21<sup>2</sup></span></span
+                ><span>29<sup>2</sup> &minus; 21<sup>2</sup></span></span
               >;
             </div>
             <div class="sub-item">
               <span class="list-num">4)</span>
               <span class="sqrt"
-                >&radic;<span
-                  >0,17<sup>2</sup> &minus; 0,15<sup>2</sup></span
-                ></span
+                ><span>0,17<sup>2</sup> &minus; 0,15<sup>2</sup></span></span
               >.
             </div>
           </div>
         </div>
       </div>
+
       <div class="problem">
         <span class="problem-number">17.24.</span>
         <div class="problem-text">
@@ -765,36 +773,35 @@
           <div class="grid-3-col">
             <div class="sub-item">
               <span class="list-num">1)</span>
-              <span class="sqrt">&radic;<span>50 &middot; 72</span></span
+              <span class="sqrt"><span>90 &middot; 490</span></span
               >;
             </div>
             <div class="sub-item">
               <span class="list-num">2)</span>
-              <span class="sqrt">&radic;<span>32 &middot; 50</span></span
+              <span class="sqrt"><span>20 &middot; 180</span></span
               >;
             </div>
             <div class="sub-item">
               <span class="list-num">3)</span>
-              <span class="sqrt">&radic;<span>16,9 &middot; 2,5</span></span
+              <span class="sqrt"><span>12,1 &middot; 0,4</span></span
               >;
             </div>
             <div class="sub-item">
               <span class="list-num">4)</span>
-              <span class="sqrt">&radic;<span>4,9</span></span> &middot;
-              <span class="sqrt">&radic;<span>40</span></span
+              <span class="sqrt"><span>2,5</span></span> &middot;
+              <span class="sqrt"><span>10</span></span
               >;
             </div>
             <div class="sub-item">
               <span class="list-num">5)</span>
-              <span class="sqrt">&radic;<span>7</span></span> &middot;
-              <span class="sqrt">&radic;<span>14</span></span> &middot;
-              <span class="sqrt">&radic;<span>2</span></span
+              <span class="sqrt"><span>11</span></span> &middot;
+              <span class="sqrt"><span>22</span></span> &middot;
+              <span class="sqrt"><span>2</span></span
               >;
             </div>
             <div class="sub-item">
               <span class="list-num">6)</span>
-              <span class="sqrt"
-                >&radic;<span>28 &middot; 12 &middot; 21</span></span
+              <span class="sqrt"><span>10 &middot; 15 &middot; 6</span></span
               >.
             </div>
           </div>
@@ -809,19 +816,19 @@
             <div class="sub-item">
               <span class="list-num">1)</span>
               <span class="sqrt"
-                >&radic;<span
-                  >(&minus;3)<sup>4</sup> &middot; 2<sup>2</sup></span
+                ><span
+                  >(&minus;5)<sup>4</sup> &middot; 3<sup>2</sup></span
                 ></span
               >
               &minus;
               <span class="sqrt"
-                >&radic;<span>(&minus;2)<sup>6</sup></span></span
+                ><span>(&minus;2)<sup>6</sup></span></span
               >;
             </div>
             <div class="sub-item">
               <span class="list-num">2)</span>
               <span class="sqrt"
-                >&radic;<span>16<sup>3</sup></span></span
+                ><span>25<sup>3</sup></span></span
               >.
             </div>
           </div>
@@ -836,32 +843,32 @@
             <div class="sub-item">
               <span class="list-num">1)</span>
               <span class="sqrt"
-                >&radic;<span>0,64<i>x</i><sup>2</sup></span></span
+                ><span>0,81<i>x</i><sup>2</sup></span></span
               >, якщо <i>x</i> &#8805; 0;
             </div>
             <div class="sub-item">
               <span class="list-num">2)</span>
               <span class="sqrt"
-                >&radic;<span>
+                ><span>
                   <div class="fraction">
-                    <span class="numerator">36</span>
-                    <span class="denominator">49</span>
+                    <span class="numerator">49</span>
+                    <span class="denominator">100</span>
                   </div>
-                  <i>n</i><sup>2</sup></span
+                  <i>y</i><sup>2</sup></span
                 ></span
-              >, якщо <i>n</i> < 0;
+              >, якщо <i>y</i> < 0;
             </div>
             <div class="sub-item">
               <span class="list-num">3)</span>
-              5<span class="sqrt"
-                >&radic;<span><i>c</i><sup>12</sup></span></span
+              4<span class="sqrt"
+                ><span><i>a</i><sup>6</sup></span></span
               >;
             </div>
             <div class="sub-item">
               <span class="list-num">4)</span>
               <span class="sqrt"
-                >&radic;<span>0,04<i>y</i><sup>10</sup></span></span
-              >, якщо <i>y</i> < 0.
+                ><span>0,09<i>b</i><sup>18</sup></span></span
+              >, якщо <i>b</i> < 0.
             </div>
           </div>
         </div>
@@ -875,48 +882,44 @@
             <div class="sub-item">
               <span class="list-num">1)</span>
               <span class="sqrt"
-                >&radic;<span
-                  >81<i>m</i><sup>2</sup><i>n</i><sup>12</sup></span
-                ></span
-              >, якщо <i>m</i> &#8805; 0;
+                ><span>49<i>x</i><sup>2</sup><i>y</i><sup>10</sup></span></span
+              >, якщо <i>x</i> &#8805; 0;
             </div>
             <div class="sub-item">
               <span class="list-num">2)</span>
               <div class="fraction">
                 <span class="numerator">1</span>
-                <span class="denominator">5</span>
+                <span class="denominator">3</span>
               </div>
-              <i>x</i><i>y</i>
+              <i>a</i><i>b</i>
               <span class="sqrt"
-                >&radic;<span
-                  >100<i>x</i><sup>10</sup><i>y</i><sup>4</sup></span
-                ></span
-              >, якщо <i>x</i> < 0, <i>y</i> > 0;
+                ><span>36<i>a</i><sup>8</sup><i>b</i><sup>4</sup></span></span
+              >, якщо <i>a</i> < 0, <i>b</i> > 0;
             </div>
             <div class="sub-item">
               <span class="list-num">3)</span>
               <span class="sqrt"
-                >&radic;<span>
+                ><span>
                   <div class="fraction">
                     <span class="numerator"
-                      ><i>p</i><sup>4</sup><i>q</i><sup>16</sup></span
+                      ><i>m</i><sup>6</sup><i>n</i><sup>20</sup></span
                     >
-                    <span class="denominator"><i>r</i><sup>6</sup></span>
+                    <span class="denominator"><i>k</i><sup>2</sup></span>
                   </div>
                 </span></span
-              >, якщо <i>r</i> < 0;
+              >, якщо <i>k</i> < 0;
             </div>
             <div class="sub-item">
               <span class="list-num">4)</span>
-              2<i>x</i><sup>3</sup>
+              5<i>c</i><sup>2</sup>
               <span class="sqrt"
-                >&radic;<span>
+                ><span>
                   <div class="fraction">
-                    <span class="numerator"><i>y</i><sup>10</sup></span>
-                    <span class="denominator"><i>x</i><sup>6</sup></span>
+                    <span class="numerator"><i>d</i><sup>18</sup></span>
+                    <span class="denominator"><i>c</i><sup>8</sup></span>
                   </div>
                 </span></span
-              >, якщо <i>y</i> > 0.
+              >, якщо <i>d</i> > 0.
             </div>
           </div>
         </div>
@@ -930,40 +933,40 @@
             <div class="sub-item">
               <span class="list-num">1)</span>
               <span class="sqrt"
-                >&radic;<span>(<i>x</i> &minus; 5)<sup>2</sup></span></span
-              >, якщо <i>x</i> &#8805; 5;
+                ><span>(<i>x</i> &minus; 3)<sup>2</sup></span></span
+              >, якщо <i>x</i> &#8805; 3;
             </div>
             <div class="sub-item">
               <span class="list-num">2)</span>
               <span class="sqrt"
-                >&radic;<span><i>y</i><sup>2</sup> + 6<i>y</i> + 9</span></span
-              >, якщо <i>y</i> < &minus;3;
+                ><span><i>n</i><sup>2</sup> + 10<i>n</i> + 25</span></span
+              >, якщо <i>n</i> < &minus;5;
             </div>
             <div class="sub-item">
               <span class="list-num">3)</span>
-              (<i>b</i> &minus; 4)<span class="sqrt"
-                >&radic;<span>
+              (<i>y</i> &minus; 6)<span class="sqrt"
+                ><span>
                   <div class="fraction">
                     <span class="numerator">1</span>
                     <span class="denominator"
-                      ><i>b</i><sup>2</sup> &minus; 8<i>b</i> + 16</span
+                      ><i>y</i><sup>2</sup> &minus; 12<i>y</i> + 36</span
                     >
                   </div>
                 </span></span
-              >, якщо <i>b</i> > 4;
+              >, якщо <i>y</i> > 6;
             </div>
             <div class="sub-item">
               <span class="list-num">4)</span>
-              (<i>c</i> &minus; 2)<span class="sqrt"
-                >&radic;<span>
+              (<i>m</i> &minus; 1)<span class="sqrt"
+                ><span>
                   <div class="fraction">
-                    <span class="numerator">4</span>
+                    <span class="numerator">9</span>
                     <span class="denominator"
-                      ><i>c</i><sup>2</sup> &minus; 4<i>c</i> + 4</span
+                      ><i>m</i><sup>2</sup> &minus; 2<i>m</i> + 1</span
                     >
                   </div>
                 </span></span
-              >, якщо <i>c</i> < 2.
+              >, якщо <i>m</i> < 1.
             </div>
           </div>
         </div>
@@ -976,29 +979,29 @@
           <div class="grid-2-col">
             <div class="sub-item">
               <span class="list-num">1)</span>
-              (<span class="sqrt">&radic;<span>7</span></span> &minus;
-              <span class="sqrt">&radic;<span>10</span></span
+              (<span class="sqrt"><span>3</span></span> &minus;
+              <span class="sqrt"><span>12</span></span
               >)<sup>2</sup> &minus;
               <span class="sqrt"
-                >&radic;<span
-                  >(<span class="sqrt">&radic;<span>10</span></span> &minus;
-                  4)<sup>2</sup></span
+                ><span
+                  >(<span class="sqrt"><span>12</span></span> &minus; 5)<sup
+                    >2</sup
+                  ></span
                 ></span
               >;
             </div>
             <div class="sub-item">
               <span class="list-num">2)</span>
               <span class="sqrt"
-                >&radic;<span
-                  >4 &minus; 2<span class="sqrt"
-                    >&radic;<span>3</span></span
-                  ></span
+                ><span
+                  >7 &minus; 4<span class="sqrt"><span>3</span></span></span
                 ></span
               >.
             </div>
           </div>
         </div>
       </div>
+
       <div class="page-number">135</div>
     </div>
   </body>
