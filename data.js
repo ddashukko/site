@@ -169,7 +169,7 @@ window.lessonsData = [
     title: "Додавання та віднімання многочленів",
     grade: 7,
     topic: "Алгебра",
-    link: "algebra/7/lesson/11-polynomials-addition-subtraction.html",
+    link: "algebra/7/lesson/11-polinomials-addition-subtraction.html",
     subject_code: "algebra",
     category: "lesson",
     author: "Даша",
