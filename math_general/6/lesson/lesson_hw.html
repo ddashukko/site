@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ДЗ: Рівняння (Контроль)</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
+    />
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"
+    ></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    ></script>
+
+    <style>
+      :root {
+        --primary: #ea580c; /* Помаранчевий */
+        --primary-hover: #c2410c;
+        --success: #16a34a;
+        --error: #dc2626;
+        --bg: #f8fafc;
+        --card: #ffffff;
+        --text: #1e293b;
+        --border: #e2e8f0;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      header {
+        background: var(--card);
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      }
+
+      .header-title {
+        font-weight: 800;
+        font-size: 1.2rem;
+        color: var(--primary);
+      }
+
+      .mode-badge {
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 600;
+      }
+      .mode-student {
+        background: #eff6ff;
+        color: #2563eb;
+      }
+      .mode-teacher {
+        background: #fef2f2;
+        color: #dc2626;
+        border: 1px solid #dc2626;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 0 20px;
+        flex: 1;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      .task-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+      }
+
+      .task-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        color: #64748b;
+        font-size: 0.9rem;
+        font-weight: bold;
+        text-transform: uppercase;
+      }
+
+      .task-q {
+        font-size: 1.15rem;
+        margin-bottom: 15px;
+      }
+
+      .input-group {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+
+      .hw-input {
+        padding: 12px;
+        border: 2px solid var(--border);
+        border-radius: 8px;
+        font-size: 1rem;
+        width: 100%;
+        box-sizing: border-box;
+        transition: 0.2s;
+      }
+      .hw-input:focus {
+        border-color: var(--primary);
+        outline: none;
+      }
+
+      /* Стилі для режиму Вчителя */
+      .teacher-feedback {
+        margin-top: 10px;
+        padding: 10px;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        display: none; /* Ховаємо за замовчуванням */
+      }
+      .hw-input.t-correct {
+        border-color: var(--success);
+        background: #f0fdf4;
+        color: var(--success);
+      }
+      .hw-input.t-wrong {
+        border-color: var(--error);
+        background: #fef2f2;
+        color: var(--error);
+      }
+      .teacher-feedback.show-correct {
+        display: block;
+        color: var(--success);
+        background: #dcfce7;
+      }
+      .teacher-feedback.show-wrong {
+        display: block;
+        color: var(--error);
+        background: #fee2e2;
+      }
+
+      .btn-submit {
+        display: block;
+        width: 100%;
+        padding: 15px;
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        cursor: pointer;
+        margin-bottom: 50px;
+        transition: 0.2s;
+      }
+      .btn-submit:hover {
+        background: var(--primary-hover);
+      }
+
+      /* Модальне вікно */
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(5px);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+      }
+      .modal-card {
+        background: white;
+        padding: 30px;
+        border-radius: 20px;
+        text-align: center;
+        max-width: 450px;
+        width: 90%;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+      }
+      .result-link-box {
+        background: #f1f5f9;
+        padding: 10px;
+        border-radius: 8px;
+        word-break: break-all;
+        font-family: monospace;
+        font-size: 0.8rem;
+        margin: 15px 0;
+        border: 1px solid #cbd5e1;
+        max-height: 100px;
+        overflow-y: auto;
+      }
+      .btn-copy {
+        background: #0f172a;
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 8px;
+        font-size: 1rem;
+        cursor: pointer;
+        font-weight: bold;
+      }
+      .btn-copy:active {
+        transform: scale(0.98);
+      }
+
+      /* Блок оцінки для вчителя */
+      .teacher-score-panel {
+        display: none;
+        background: #fff7ed;
+        border: 2px solid var(--primary);
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+        text-align: center;
+      }
+      .score-big {
+        font-size: 2.5rem;
+        font-weight: 900;
+        color: var(--primary);
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="header-title">📝 Контрольна робота</div>
+      <div id="mode-badge" class="mode-badge mode-student">Учень</div>
+    </header>
+
+    <div class="container">
+      <div id="teacher-panel" class="teacher-score-panel">
+        <h2>Результат учня:</h2>
+        <div class="score-big"><span id="final-score">0</span> / 12</div>
+        <p>Перегляньте детальні відповіді нижче 👇</p>
+      </div>
+
+      <div id="tasks-container"></div>
+
+      <button id="finish-btn" class="btn-submit" onclick="finishTest()">
+        Завершити і здати роботу
+      </button>
+    </div>
+
+    <div id="share-modal" class="modal-overlay">
+      <div class="modal-card">
+        <div style="font-size: 3rem; margin-bottom: 10px">✅</div>
+        <h2>Робота завершена!</h2>
+        <p>
+          Результати збережено. Скопіюй посилання нижче та надішли його вчителю:
+        </p>
+
+        <div class="result-link-box" id="result-link">...</div>
+
+        <button class="btn-copy" onclick="copyLink()">
+          📋 Скопіювати посилання
+        </button>
+        <p style="font-size: 0.8rem; color: #64748b; margin-top: 15px">
+          Після цього сторінку можна закрити.
+        </p>
+      </div>
+    </div>
+
+    <script>
+      /* --- БАЗА ЗАВДАНЬ (12 шт) --- */
+      const tasks = [
+        {
+          id: 1,
+          q: "Чи є число 4 коренем рівняння $3x - 2 = 10$?",
+          a: ["так", "Так"],
+        },
+        {
+          id: 2,
+          q: "Чи є число 2 коренем рівняння $x + 20 = 25$?",
+          a: ["ні", "Ні"],
+        },
+        { id: 3, q: "Розв'яжіть рівняння: $y + 240 = 560$", a: ["320"] },
+        { id: 4, q: "Знайдіть корінь: $800 - x = 350$", a: ["450"] },
+        { id: 5, q: "Розв'яжіть: $(x + 40) - 30 = 90$", a: ["80"] },
+        { id: 6, q: "Знайдіть корінь: $400 - (x - 50) = 200$", a: ["250"] },
+        {
+          id: 7,
+          q: "Яке число $a$ треба підставити, щоб коренем рівняння $(x + a) - 10 = 50$ було число 20?",
+          a: ["40"],
+        },
+        {
+          id: 8,
+          q: "Знайдіть $a$, якщо коренем рівняння $(a - x) + 5 = 25$ є число 5.",
+          a: ["25"],
+        },
+        { id: 9, q: "Розв'яжіть рівняння: $5x = 2x + 15$", a: ["5"] },
+        { id: 10, q: "Знайдіть корінь: $10x - 4 = 8x$", a: ["2"] },
+        { id: 11, q: "Розв'яжіть: $-2 + 5x = 3x + 8$", a: ["5"] },
+        { id: 12, q: "Знайдіть корінь: $20 - 4x = x + 5$", a: ["3"] },
+      ];
+
+      const container = document.getElementById("tasks-container");
+
+      // Ініціалізація сторінки
+      document.addEventListener("DOMContentLoaded", () => {
+        // Рендеримо завдання
+        tasks.forEach((task, index) => {
+          const card = document.createElement("div");
+          card.className = "task-card";
+          card.innerHTML = `
+            <div class="task-header">Завдання №${index + 1}</div>
+            <div class="task-q">${task.q}</div>
+            <div class="input-group">
+              <input type="text" class="hw-input" id="inp-${index}" placeholder="Ваша відповідь...">
+              <div class="teacher-feedback" id="feed-${index}"></div>
+            </div>
+          `;
+          container.appendChild(card);
+        });
+
+        // Підключаємо KaTeX
+        renderMathInElement(document.body, {
+          delimiters: [{ left: "$", right: "$", display: false }],
+        });
+
+        // Перевіряємо, чи ми в режимі вчителя (чи є дані в URL)
+        checkMode();
+      });
+
+      // --- ЛОГІКА СТУДЕНТА ---
+
+      function finishTest() {
+        const answers = [];
+        let filledCount = 0;
+
+        tasks.forEach((_, index) => {
+          const val = document.getElementById(`inp-${index}`).value.trim();
+          answers.push(val);
+          if (val) filledCount++;
+        });
+
+        if (filledCount < tasks.length) {
+          if (!confirm("Ти відповів не на всі питання. Все одно здати роботу?"))
+            return;
+        }
+
+        // Генеруємо "секретний код" з відповідей
+        const data = {
+          t: Date.now(), // час здачі
+          ans: answers,
+        };
+
+        // Шифруємо в Base64 (щоб не було видно відповідей просто так в URL)
+        // Використовуємо encodeURIComponent для підтримки кирилиці
+        const encoded = btoa(
+          unescape(encodeURIComponent(JSON.stringify(data)))
+        );
+
+        // Створюємо повне посилання
+        const fullLink =
+          window.location.href.split("?")[0] + "?result=" + encoded;
+
+        document.getElementById("result-link").innerText = fullLink;
+        document.getElementById("share-modal").style.display = "flex";
+      }
+
+      function copyLink() {
+        const text = document.getElementById("result-link").innerText;
+        navigator.clipboard.writeText(text).then(() => {
+          alert("Посилання скопійовано! Надішли його вчителю.");
+        });
+      }
+
+      // --- ЛОГІКА ВЧИТЕЛЯ ---
+
+      function checkMode() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const resultParam = urlParams.get("result");
+
+        if (resultParam) {
+          enableTeacherMode(resultParam);
+        }
+      }
+
+      function enableTeacherMode(encodedData) {
+        try {
+          // Декодуємо дані
+          const jsonString = decodeURIComponent(escape(atob(encodedData)));
+          const data = JSON.parse(jsonString);
+          const studentAnswers = data.ans;
+
+          // Змінюємо інтерфейс
+          document.getElementById("mode-badge").className =
+            "mode-badge mode-teacher";
+          document.getElementById("mode-badge").innerText = "Режим Вчителя";
+          document.getElementById("finish-btn").style.display = "none";
+          document.getElementById("teacher-panel").style.display = "block";
+
+          let score = 0;
+
+          // Проходимо по всіх завданнях і перевіряємо
+          tasks.forEach((task, index) => {
+            const inp = document.getElementById(`inp-${index}`);
+            const feed = document.getElementById(`feed-${index}`);
+
+            const studentVal = studentAnswers[index] || "";
+            // Заміна коми на крапку для перевірки
+            const normalizedVal = studentVal.replace(",", ".");
+
+            inp.value = studentVal; // Показуємо відповідь учня
+            inp.disabled = true; // Блокуємо редагування
+
+            if (task.a.includes(normalizedVal)) {
+              // Правильно
+              inp.classList.add("t-correct");
+              feed.className = "teacher-feedback show-correct";
+              feed.innerHTML = "✅ Правильно!";
+              score++;
+            } else {
+              // Неправильно
+              inp.classList.add("t-wrong");
+              feed.className = "teacher-feedback show-wrong";
+              feed.innerHTML = `❌ Помилка. Правильна відповідь: <strong>${task.a[0]}</strong>`;
+            }
+          });
+
+          // Виводимо загальний бал
+          document.getElementById("final-score").innerText = score;
+        } catch (e) {
+          alert("Помилка обробки результатів. Можливо, посилання пошкоджене.");
+          console.error(e);
+        }
+      }
+    </script>
+  </body>
+</html>
