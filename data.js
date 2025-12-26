@@ -136,7 +136,7 @@ window.lessonsData = [
     title: "10. Рівняння",
     grade: 6,
     topic: "Алгебра",
-    link: "algebra/6/lesson/lesson-one.html",
+    link: "math_general/6/lesson/lesson-one.html",
     subject_code: "algebra",
     category: "lesson",
     author: "Даша",
