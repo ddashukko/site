@@ -131,7 +131,16 @@ window.lessonsData = [
     category: "lesson",
     author: "Даша",
   },
-
+  {
+    id: "alg-6-eq-intro",
+    title: "10. Рівняння",
+    grade: 6,
+    topic: "Алгебра",
+    link: "algebra/6/lesson/lesson-one.html",
+    subject_code: "algebra",
+    category: "lesson",
+    author: "Даша",
+  },
   // ==========================================
   // 7 КЛАС (Алгебра) - Автор: Даша
   // ==========================================
@@ -140,7 +149,7 @@ window.lessonsData = [
     title: "Загальні відомості про рівняння",
     grade: 7,
     topic: "Алгебра",
-    link: "algebra/7/01-equations-intro.html",
+    link: "algebra/7/lesson/01-equations-intro.html",
     subject_code: "algebra",
     category: "lesson",
     author: "Даша",
@@ -150,7 +159,7 @@ window.lessonsData = [
     title: "Лінійні рівняння з однією змінною",
     grade: 7,
     topic: "Алгебра",
-    link: "algebra/7/02-linear-equations.html",
+    link: "algebra/7/lesson/02-linear-equations.html",
     subject_code: "algebra",
     category: "lesson",
     author: "Даша",
@@ -160,7 +169,7 @@ window.lessonsData = [
     title: "Додавання та віднімання многочленів",
     grade: 7,
     topic: "Алгебра",
-    link: "algebra/7/11-polynomials-addition-subtraction.html",
+    link: "algebra/7/lesson/11-polynomials-addition-subtraction.html",
     subject_code: "algebra",
     category: "lesson",
     author: "Даша",

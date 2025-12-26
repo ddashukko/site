@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Тест: Рівняння та їх властивості</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
+    />
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"
+    ></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    ></script>
+
+    <style>
+      :root {
+        --primary: #4f46e5;
+        --primary-hover: #4338ca;
+        --bg: #f3f4f6;
+        --card: #ffffff;
+        --text: #1f2937;
+        --success: #16a34a;
+        --success-bg: #dcfce7;
+        --error: #dc2626;
+        --error-bg: #fee2e2;
+        --border: #e5e7eb;
+        --grid-color: #e2e8f0;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        display: flex;
+        overflow: hidden;
+      }
+
+      /* --- ЛІВА ЧАСТИНА (ТЕСТ) --- */
+      #tasks-section {
+        flex: 1;
+        background: var(--bg);
+        overflow-y: auto;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 800px;
+        padding-bottom: 50px;
+      }
+
+      header {
+        background: var(--card);
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+
+      .title {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: var(--primary);
+        margin: 0;
+      }
+
+      .timer {
+        font-family: monospace;
+        font-size: 1.2rem;
+        background: #e0e7ff;
+        color: var(--primary);
+        padding: 5px 15px;
+        border-radius: 8px;
+        font-weight: bold;
+      }
+
+      .quiz-card {
+        background: var(--card);
+        border-radius: 12px;
+        padding: 25px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        border: 2px solid transparent;
+        transition: transform 0.2s;
+      }
+
+      .question-number {
+        font-size: 0.9rem;
+        color: #6b7280;
+        font-weight: 600;
+        margin-bottom: 10px;
+        text-transform: uppercase;
+      }
+
+      .question-text {
+        font-size: 1.2rem;
+        font-weight: 500;
+        margin-bottom: 10px;
+        line-height: 1.5;
+      }
+
+      .instruction-text {
+        font-size: 0.9rem;
+        color: #6366f1;
+        font-style: italic;
+        margin-bottom: 15px;
+        background: #eef2ff;
+        padding: 8px 12px;
+        border-radius: 6px;
+        display: inline-block;
+      }
+
+      .text-answer {
+        width: 100%;
+        padding: 15px;
+        font-size: 1.1rem;
+        border: 2px solid var(--border);
+        border-radius: 8px;
+        box-sizing: border-box;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+      .text-answer:focus {
+        border-color: var(--primary);
+      }
+
+      .text-answer.status-correct {
+        border-color: var(--success);
+        background-color: var(--success-bg);
+        color: #064e3b;
+      }
+      .text-answer.status-wrong {
+        border-color: var(--error);
+        background-color: var(--error-bg);
+        color: #7f1d1d;
+      }
+
+      .correct-answer-text {
+        margin-top: 10px;
+        color: var(--error);
+        font-weight: bold;
+        font-size: 0.95rem;
+      }
+
+      .btn-submit {
+        display: block;
+        width: 100%;
+        padding: 15px;
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        cursor: pointer;
+        margin-top: 30px;
+        transition: background 0.2s;
+      }
+      .btn-submit:hover {
+        background: var(--primary-hover);
+      }
+      .btn-submit:disabled {
+        background: #9ca3af;
+        cursor: not-allowed;
+      }
+
+      /* --- ПРАВА ЧАСТИНА (ДОШКА) --- */
+      #board-section {
+        flex: 1;
+        position: relative;
+        background-color: #fff;
+        border-left: 4px solid #cbd5e1;
+        background-image: linear-gradient(
+            var(--grid-color) 1px,
+            transparent 1px
+          ),
+          linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+        background-size: 25px 25px;
+        cursor: crosshair;
+        overflow: hidden;
+      }
+
+      canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+        touch-action: none;
+      }
+
+      .tools {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        display: flex;
+        gap: 10px;
+        background: rgba(255, 255, 255, 0.95);
+        padding: 8px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        border: 1px solid var(--border);
+        flex-wrap: wrap;
+        z-index: 5;
+      }
+
+      .btn-tool {
+        border: 1px solid #cbd5e1;
+        background: white;
+        padding: 8px 12px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 1.2rem;
+        transition: 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 40px;
+      }
+      .btn-tool:hover {
+        background: #f1f5f9;
+      }
+      .btn-tool.active {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+      }
+
+      /* --- МОДАЛЬНЕ ВІКНО --- */
+      .result-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(5px);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .result-card {
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        max-width: 500px;
+        width: 90%;
+        text-align: center;
+        animation: slideUp 0.3s ease;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+      }
+
+      .score-circle {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: var(--primary);
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin: 0 auto 20px;
+      }
+
+      .modal-buttons {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        margin-top: 20px;
+      }
+
+      .btn-secondary {
+        background: #374151;
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+      .btn-secondary:hover {
+        background: #1f2937;
+      }
+
+      .btn-restart {
+        background: var(--primary);
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+      .btn-restart:hover {
+        background: var(--primary-hover);
+      }
+
+      @keyframes slideUp {
+        from {
+          transform: translateY(50px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      @media (max-width: 768px) {
+        body {
+          flex-direction: column;
+        }
+        #board-section {
+          height: 35vh;
+          border-left: none;
+          border-top: 4px solid #cbd5e1;
+          order: 2;
+        }
+        #tasks-section {
+          height: 65vh;
+          order: 1;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="tasks-section">
+      <div class="container">
+        <header>
+          <div class="title">Тест: Рівняння та їх властивості</div>
+          <div class="timer" id="timer">00:00</div>
+        </header>
+
+        <form id="quiz-form"></form>
+
+        <button
+          type="button"
+          id="submit-btn"
+          class="btn-submit"
+          onclick="finishTest()"
+        >
+          Завершити тест
+        </button>
+      </div>
+    </div>
+
+    <div id="board-section">
+      <div class="tools">
+        <button
+          class="btn-tool active"
+          onclick="setTool('pen')"
+          id="t-pen"
+          title="Ручка"
+        >
+          🖊️
+        </button>
+        <button
+          class="btn-tool"
+          onclick="setTool('eraser')"
+          id="t-eraser"
+          title="Гумка"
+        >
+          🧹
+        </button>
+        <button
+          class="btn-tool"
+          onclick="drawSystem()"
+          title="Додати координатну пряму"
+        >
+          📉
+        </button>
+        <button
+          class="btn-tool"
+          onclick="clearCanvasSafe()"
+          style="color: red; border-color: #fee2e2"
+          title="Очистити все"
+        >
+          ❌
+        </button>
+      </div>
+      <canvas id="board"></canvas>
+    </div>
+
+    <div class="result-overlay" id="result-modal">
+      <div class="result-card">
+        <h2 style="margin-top: 0">Результат</h2>
+        <div class="score-circle" id="final-score">0</div>
+        <p style="font-size: 1.1rem; color: #4b5563; margin-bottom: 20px">
+          Правильних відповідей: <span id="correct-count">0</span> з
+          <span id="total-count">0</span>
+        </p>
+        <div
+          id="feedback-msg"
+          style="font-weight: bold; margin-bottom: 20px"
+        ></div>
+
+        <div class="modal-buttons">
+          <button class="btn-secondary" onclick="closeModalReview()">
+            Переглянути помилки
+          </button>
+          <button class="btn-restart" onclick="location.reload()">
+            Пройти ще раз
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      /* --- 1. ЛОГІКА ДОШКИ --- */
+      const canvas = document.getElementById("board");
+      const ctx = canvas.getContext("2d");
+      const boardSection = document.getElementById("board-section");
+      let painting = false;
+      let tool = "pen";
+
+      function resizeCanvas() {
+        const temp = document.createElement("canvas");
+        const tempCtx = temp.getContext("2d");
+        temp.width = canvas.width;
+        temp.height = canvas.height;
+        if (canvas.width > 0 && canvas.height > 0) {
+          tempCtx.drawImage(canvas, 0, 0);
+        }
+        canvas.width = boardSection.offsetWidth;
+        canvas.height = boardSection.offsetHeight;
+        ctx.drawImage(temp, 0, 0);
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+      }
+
+      window.addEventListener("resize", resizeCanvas);
+      window.addEventListener("load", resizeCanvas);
+
+      function getMousePos(e) {
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return { x: clientX - rect.left, y: clientY - rect.top };
+      }
+      function startPosition(e) {
+        painting = true;
+        draw(e);
+      }
+      function finishedPosition() {
+        painting = false;
+        ctx.beginPath();
+      }
+      function draw(e) {
+        if (!painting) return;
+        const pos = getMousePos(e);
+        if (tool === "pen") {
+          ctx.lineWidth = 2;
+          ctx.strokeStyle = "#4f46e5";
+          ctx.globalCompositeOperation = "source-over";
+        } else {
+          ctx.lineWidth = 25;
+          ctx.strokeStyle = "#ffffff";
+          ctx.globalCompositeOperation = "destination-out";
+        }
+        ctx.lineTo(pos.x, pos.y);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(pos.x, pos.y);
+      }
+
+      canvas.addEventListener("mousedown", startPosition);
+      canvas.addEventListener("mouseup", finishedPosition);
+      canvas.addEventListener("mousemove", draw);
+      canvas.addEventListener("mouseout", finishedPosition);
+      canvas.addEventListener("touchstart", startPosition);
+      canvas.addEventListener("touchend", finishedPosition);
+      canvas.addEventListener("touchmove", draw);
+
+      function setTool(t) {
+        tool = t;
+        document
+          .getElementById("t-pen")
+          .classList.toggle("active", t === "pen");
+        document
+          .getElementById("t-eraser")
+          .classList.toggle("active", t === "eraser");
+      }
+      function clearCanvasSafe() {
+        if (confirm("Очистити дошку?")) {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+      }
+      function drawSystem() {
+        const prevStrokeStyle = ctx.strokeStyle;
+        const prevLineWidth = ctx.lineWidth;
+        const prevComposite = ctx.globalCompositeOperation;
+        ctx.globalCompositeOperation = "source-over";
+        ctx.strokeStyle = "#334155";
+        ctx.lineWidth = 2;
+        ctx.fillStyle = "#334155";
+        ctx.font = "16px Arial";
+        const w = canvas.width;
+        const h = canvas.height;
+        const cx = Math.floor(w / 2);
+        const cy = Math.floor(h / 2);
+        const step = 25;
+        ctx.beginPath();
+        ctx.moveTo(0, cy);
+        ctx.lineTo(w, cy);
+        ctx.moveTo(cx, h);
+        ctx.lineTo(cx, 0);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.lineWidth = 1;
+        for (let x = cx + step; x < w; x += step) {
+          ctx.moveTo(x, cy - 3);
+          ctx.lineTo(x, cy + 3);
+        }
+        for (let x = cx - step; x > 0; x -= step) {
+          ctx.moveTo(x, cy - 3);
+          ctx.lineTo(x, cy + 3);
+        }
+        for (let y = cy + step; y < h; y += step) {
+          ctx.moveTo(cx - 3, y);
+          ctx.lineTo(cx + 3, y);
+        }
+        for (let y = cy - step; y > 0; y -= step) {
+          ctx.moveTo(cx - 3, y);
+          ctx.lineTo(cx + 3, y);
+        }
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.strokeStyle = prevStrokeStyle;
+        ctx.lineWidth = prevLineWidth;
+        ctx.globalCompositeOperation = prevComposite;
+        if (tool === "eraser") setTool("pen");
+      }
+
+      /* --- 2. ЛОГІКА ТЕСТУ --- */
+      // Завдання на основі вправ 291-1145
+      const questions = [
+        {
+          id: 1,
+          q: "Розв'яжіть рівняння $5x = 45$.",
+          correct: ["9"],
+          type: "single",
+        },
+        {
+          id: 2, // 291 (подібне)
+          q: "Чи є число 3 коренем рівняння $2x - 1 = 5$? (Впишіть: так або ні)",
+          correct: ["так", "Так"],
+          type: "single",
+        },
+        {
+          id: 3, // 293 (подібне)
+          q: "Розв'яжіть рівняння $238 + y = 416$.",
+          correct: ["178"],
+          type: "single",
+        },
+        {
+          id: 4, // 295 (подібне)
+          q: "Знайдіть корінь рівняння $(x - 100) + 50 = 200$.",
+          correct: ["250"],
+          type: "single",
+        },
+        {
+          id: 5, // 1126 (подібне)
+          q: "Розв'яжіть рівняння $7x = -30 + 2x$.",
+          correct: ["-6"],
+          type: "single",
+        },
+        {
+          id: 6, // 1128 (подібне)
+          q: "Розв'яжіть рівняння $-6(x + 2) = 4x - 17$. (Введіть десятковий дріб)",
+          correct: ["0.5", "0,5"],
+          type: "single",
+        },
+        {
+          id: 7, // 1130 (подібне)
+          q: "Знайдіть корінь рівняння $0,8(4x + 5) = -3,2$.",
+          correct: ["-2.25", "-2,25"],
+          type: "single",
+        },
+        {
+          id: 8, // 1136 (подібне)
+          q: "Розв'яжіть рівняння $\\frac{x + 0,4}{8} = \\frac{0,7 - x}{3}$.",
+          correct: ["0.4", "0,4"],
+          type: "single",
+        },
+        {
+          id: 9, // 1140 (подібне)
+          q: "При якому значенні $a$ рівняння $2ax = 20$ має корінь, що дорівнює 5?",
+          correct: ["2"],
+          type: "single",
+        },
+        {
+          id: 10, // 1144 (подібне)
+          q: "При якому значенні $a$ рівняння $(a-2)x = 5$ не має коренів?",
+          correct: ["2"],
+          type: "single",
+        },
+        {
+          id: 11, // Логічне
+          q: "Скільки коренів має рівняння $0x = 10$? (Впишіть слово: немає, безліч або один)",
+          correct: ["немає", "Немає", "0"],
+          type: "single",
+        },
+        {
+          id: 12, // 1142 (подібне)
+          q: "Розв'яжіть рівняння $2(x - 1) = 3x - 5$.",
+          correct: ["3"],
+          type: "single",
+        },
+      ];
+
+      const form = document.getElementById("quiz-form");
+      let timerInterval;
+
+      // Рендеринг питань
+      questions.forEach((item, index) => {
+        const card = document.createElement("div");
+        card.className = "quiz-card";
+        card.id = `card-${index}`;
+
+        const number = document.createElement("div");
+        number.className = "question-number";
+        number.textContent = `Питання ${index + 1} з ${questions.length}`;
+
+        const text = document.createElement("div");
+        text.className = "question-text";
+        text.innerHTML = item.q;
+
+        card.appendChild(number);
+        card.appendChild(text);
+
+        if (item.type === "roots") {
+          const instr = document.createElement("div");
+          instr.className = "instruction-text";
+          instr.innerText =
+            "(якщо відповіді дві - х1; х2, якщо коренів немає - впишіть слово немає)";
+          card.appendChild(instr);
+        }
+
+        const input = document.createElement("input");
+        input.type = "text";
+        input.className = "text-answer";
+        input.placeholder = "Ваша відповідь...";
+        input.id = `input-${index}`;
+        input.setAttribute("autocomplete", "off");
+        card.appendChild(input);
+
+        const feedbackDiv = document.createElement("div");
+        feedbackDiv.id = `feedback-${index}`;
+        feedbackDiv.className = "correct-answer-text";
+        card.appendChild(feedbackDiv);
+
+        form.appendChild(card);
+      });
+
+      // Таймер
+      let seconds = 0;
+      timerInterval = setInterval(() => {
+        seconds++;
+        const mins = Math.floor(seconds / 60)
+          .toString()
+          .padStart(2, "0");
+        const secs = (seconds % 60).toString().padStart(2, "0");
+        document.getElementById("timer").textContent = `${mins}:${secs}`;
+      }, 1000);
+
+      // KaTeX Render
+      document.addEventListener("DOMContentLoaded", function () {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false },
+          ],
+        });
+      });
+
+      // Перевірка тесту
+      function finishTest() {
+        if (!confirm("Ви впевнені, що хочете завершити тест?")) return;
+        clearInterval(timerInterval);
+        document.getElementById("submit-btn").disabled = true;
+
+        let correctAnswers = 0;
+        const total = questions.length;
+        const scale = 12;
+
+        questions.forEach((item, index) => {
+          const input = document.getElementById(`input-${index}`);
+          const feedback = document.getElementById(`feedback-${index}`);
+          const card = document.getElementById(`card-${index}`);
+
+          let val = input.value.trim();
+          // Уніфікація: кома -> крапка
+          val = val.replace(",", ".");
+
+          input.disabled = true;
+
+          // Перевірка відповіді
+          if (item.correct.includes(val)) {
+            input.classList.add("status-correct");
+            card.classList.add("checked-correct");
+            correctAnswers++;
+          } else {
+            input.classList.add("status-wrong");
+            card.classList.add("checked-wrong");
+            feedback.textContent = `Правильна відповідь: ${item.correct[0]}`;
+          }
+        });
+
+        const finalScore = Math.round((correctAnswers / total) * scale);
+
+        document.getElementById("final-score").textContent = finalScore;
+        document.getElementById("correct-count").textContent = correctAnswers;
+        document.getElementById("total-count").textContent = total;
+
+        const msgDiv = document.getElementById("feedback-msg");
+        if (finalScore >= 10) {
+          msgDiv.textContent = "Чудовий результат! Ти профі! 🏆";
+          msgDiv.style.color = "var(--success)";
+        } else if (finalScore >= 7) {
+          msgDiv.textContent = "Добре! Але є над чим працювати. 👍";
+          msgDiv.style.color = "#d97706";
+        } else {
+          msgDiv.textContent = "Варто повторити тему ще раз. 📚";
+          msgDiv.style.color = "var(--error)";
+        }
+
+        document.getElementById("result-modal").style.display = "flex";
+      }
+
+      function closeModalReview() {
+        document.getElementById("result-modal").style.display = "none";
+        const tasksSection = document.getElementById("tasks-section");
+        tasksSection.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    </script>
+  </body>
+</html>
