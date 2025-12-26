@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ДЗ: Рівняння (Диференційовані бали)</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
+    />
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"
+    ></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    ></script>
+
+    <style>
+      :root {
+        --primary: #4f46e5;
+        --primary-hover: #4338ca;
+        --success: #16a34a;
+        --error: #dc2626;
+        --bg: #f1f5f9;
+        --card: #ffffff;
+        --text: #0f172a;
+        --border: #e2e8f0;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      header {
+        background: var(--card);
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      }
+
+      .header-title {
+        font-weight: 800;
+        font-size: 1.2rem;
+        color: var(--primary);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .mode-badge {
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .mode-student {
+        background: #eff6ff;
+        color: #2563eb;
+        border: 1px solid #bfdbfe;
+      }
+      .mode-teacher {
+        background: #fef2f2;
+        color: #dc2626;
+        border: 1px solid #fecaca;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 30px auto;
+        padding: 0 20px;
+        flex: 1;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      /* Картка завдання */
+      .task-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 24px;
+        margin-bottom: 24px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        transition: transform 0.2s;
+        position: relative;
+        overflow: hidden;
+      }
+      .task-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      }
+
+      /* Бейдж балів */
+      .points-badge {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding: 6px 12px;
+        border-bottom-left-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 800;
+        color: white;
+      }
+      .pts-1 {
+        background: #10b981;
+      } /* Зелений - легко */
+      .pts-2 {
+        background: #f59e0b;
+      } /* Жовтий - середньо */
+      .pts-3 {
+        background: #ef4444;
+      } /* Червоний - складно */
+
+      .task-meta {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 15px;
+        border-bottom: 1px solid #f1f5f9;
+        padding-bottom: 10px;
+      }
+      .task-number {
+        font-weight: 800;
+        color: #94a3b8;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+      }
+      .task-source {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #64748b;
+        background: #f8fafc;
+        padding: 4px 10px;
+        border-radius: 6px;
+      }
+
+      .task-q {
+        font-size: 1.2rem;
+        margin-bottom: 20px;
+        line-height: 1.5;
+        font-weight: 500;
+      }
+
+      .hw-input {
+        padding: 14px 16px;
+        border: 2px solid var(--border);
+        border-radius: 10px;
+        font-size: 1.05rem;
+        width: 100%;
+        box-sizing: border-box;
+        transition: 0.2s;
+        background: #fcfcfc;
+      }
+      .hw-input:focus {
+        border-color: var(--primary);
+        background: #fff;
+        outline: none;
+        box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+      }
+
+      /* Стилі для вчителя */
+      .teacher-feedback {
+        margin-top: 15px;
+        padding: 12px 16px;
+        border-radius: 10px;
+        font-size: 1rem;
+        display: none;
+        animation: fadeIn 0.3s ease;
+      }
+      .hw-input.t-correct {
+        border-color: var(--success);
+        background: #f0fdf4;
+        color: #14532d;
+        font-weight: 600;
+      }
+      .hw-input.t-wrong {
+        border-color: var(--error);
+        background: #fef2f2;
+        color: #7f1d1d;
+      }
+      .teacher-feedback.show-correct {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #166534;
+        background: #dcfce7;
+        border: 1px solid #bbf7d0;
+      }
+      .teacher-feedback.show-wrong {
+        display: block;
+        color: #991b1b;
+        background: #fee2e2;
+        border: 1px solid #fecaca;
+      }
+
+      .btn-submit {
+        display: block;
+        width: 100%;
+        padding: 18px;
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 14px;
+        font-size: 1.2rem;
+        font-weight: 800;
+        cursor: pointer;
+        margin-bottom: 60px;
+        transition: 0.2s;
+        box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.3);
+      }
+      .btn-submit:hover {
+        background: var(--primary-hover);
+        transform: translateY(-2px);
+      }
+
+      /* Модальне вікно */
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(15, 23, 42, 0.7);
+        backdrop-filter: blur(8px);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+      }
+      .modal-card {
+        background: white;
+        padding: 40px;
+        border-radius: 24px;
+        text-align: center;
+        max-width: 500px;
+        width: 90%;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        animation: scaleUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      }
+      .result-link-box {
+        background: #f1f5f9;
+        padding: 15px;
+        border-radius: 12px;
+        word-break: break-all;
+        font-family: "Courier New", monospace;
+        font-size: 0.85rem;
+        margin: 20px 0;
+        border: 2px dashed #94a3b8;
+        max-height: 120px;
+        overflow-y: auto;
+        color: #334155;
+      }
+      .btn-copy {
+        background: #1e293b;
+        color: white;
+        border: none;
+        padding: 14px 30px;
+        border-radius: 12px;
+        font-size: 1.1rem;
+        cursor: pointer;
+        font-weight: 700;
+        transition: 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .btn-copy:hover {
+        background: #0f172a;
+        transform: scale(1.02);
+      }
+
+      /* Панель Вчителя */
+      .teacher-score-panel {
+        display: none;
+        background: #fff;
+        border: 2px solid var(--primary);
+        border-radius: 20px;
+        padding: 30px;
+        margin-bottom: 30px;
+        text-align: center;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+      }
+      .score-circle {
+        width: 130px;
+        height: 130px;
+        background: linear-gradient(135deg, var(--primary) 0%, #3730a3 100%);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 2.5rem;
+        font-weight: 900;
+        margin: 0 auto 15px;
+        box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.4);
+        flex-direction: column;
+        line-height: 1;
+      }
+      .score-sub {
+        font-size: 0.9rem;
+        font-weight: 400;
+        opacity: 0.8;
+        margin-top: 5px;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes scaleUp {
+        from {
+          transform: scale(0.8);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="header-title">📚 Велика Домашка (20 завдань)</div>
+      <div id="mode-badge" class="mode-badge mode-student">Учень</div>
+    </header>
+
+    <div class="container">
+      <div id="teacher-panel" class="teacher-score-panel">
+        <h2 style="margin-top: 0; color: #1e293b; font-size: 1.8rem">
+          Результат учня
+        </h2>
+        <div class="score-circle">
+          <span id="final-score">0</span>
+          <span class="score-sub">/ <span id="max-score-display">0</span></span>
+        </div>
+        <p style="color: #64748b; margin-bottom: 0; font-size: 1.1rem">
+          набрано балів (зважених)
+        </p>
+      </div>
+
+      <div id="tasks-container"></div>
+
+      <button id="finish-btn" class="btn-submit" onclick="finishTest()">
+        Здати роботу на перевірку 📤
+      </button>
+    </div>
+
+    <div id="share-modal" class="modal-overlay">
+      <div class="modal-card">
+        <div style="font-size: 4rem; margin-bottom: 15px">🎉</div>
+        <h2 style="margin: 0 0 10px 0; font-size: 1.8rem; color: var(--text)">
+          Роботу виконано!
+        </h2>
+        <p style="color: #64748b; line-height: 1.6; font-size: 1.1rem">
+          Результати зашифровано. <br />Скопіюй посилання та надішли вчителю:
+        </p>
+
+        <div class="result-link-box" id="result-link">...</div>
+
+        <button class="btn-copy" onclick="copyLink()">
+          <span>📋</span> Скопіювати посилання
+        </button>
+      </div>
+    </div>
+
+    <script>
+      /* --- 20 ЗАВДАНЬ З БАЛАМИ (1, 2, 3) --- */
+      const tasks = [
+        // 1 БАЛ (Прості)
+        {
+          id: 1,
+          pts: 1,
+          src: "Усно",
+          q: "Знайдіть значення виразу $40 + x$, якщо $x = 60$.",
+          a: ["100"],
+        },
+        {
+          id: 2,
+          pts: 1,
+          src: "Усно",
+          q: "Знайдіть значення виразу $5y$, якщо $y = 12$.",
+          a: ["60"],
+        },
+        {
+          id: 3,
+          pts: 1,
+          src: "№291",
+          q: "Чи є число 3 коренем рівняння $5x - 5 = 10$? (так/ні)",
+          a: ["так", "Так"],
+        },
+        {
+          id: 4,
+          pts: 1,
+          src: "№291",
+          q: "Чи є число 2 коренем рівняння $x + 15 = 20$? (так/ні)",
+          a: ["ні", "Ні"],
+        },
+        {
+          id: 5,
+          pts: 1,
+          src: "№293",
+          q: "Розв'яжіть рівняння: $x + 230 = 500$.",
+          a: ["270"],
+        },
+        {
+          id: 6,
+          pts: 1,
+          src: "№293",
+          q: "Знайдіть корінь: $750 - y = 300$.",
+          a: ["450"],
+        },
+
+        // 2 БАЛИ (Середні)
+        {
+          id: 7,
+          pts: 2,
+          src: "№295",
+          q: "Розв'яжіть: $(x + 50) - 20 = 100$.",
+          a: ["70"],
+        },
+        {
+          id: 8,
+          pts: 2,
+          src: "№295",
+          q: "Знайдіть корінь: $300 - (x - 40) = 150$.",
+          a: ["190"],
+        },
+        {
+          id: 11,
+          pts: 2,
+          src: "№1126",
+          q: "Розв'яжіть рівняння: $8x = 24 + 2x$.",
+          a: ["4"],
+        },
+        {
+          id: 12,
+          pts: 2,
+          src: "№1126",
+          q: "Знайдіть корінь: $12x - 5 = 11x$.",
+          a: ["5"],
+        },
+        {
+          id: 13,
+          pts: 2,
+          src: "№1126",
+          q: "Розв'яжіть: $-3 + 4x = 2x + 7$.",
+          a: ["5"],
+        },
+        {
+          id: 14,
+          pts: 2,
+          src: "№1126",
+          q: "Знайдіть корінь: $30 - 5x = x + 6$.",
+          a: ["4"],
+        },
+        {
+          id: 15,
+          pts: 2,
+          src: "№1128",
+          q: "Розв'яжіть: $5(x + 2) = 25$.",
+          a: ["3"],
+        },
+        {
+          id: 16,
+          pts: 2,
+          src: "№1128",
+          q: "Знайдіть корінь: $2(4x - 1) = 6x + 4$.",
+          a: ["3"],
+        },
+        {
+          id: 17,
+          pts: 2,
+          src: "№1128",
+          q: "Розв'яжіть: $-4(x - 2) = 12$.",
+          a: ["-1"],
+        },
+
+        // 3 БАЛИ (Складні: параметри та дроби)
+        {
+          id: 9,
+          pts: 3,
+          src: "№299",
+          q: "При якому значенні $a$ коренем рівняння $(x + a) - 7 = 20$ є число 10?",
+          a: ["17"],
+        },
+        {
+          id: 10,
+          pts: 3,
+          src: "№299",
+          q: "Знайдіть $a$, якщо коренем рівняння $(a - x) + 10 = 30$ є число 5.",
+          a: ["25"],
+        },
+        {
+          id: 18,
+          pts: 3,
+          src: "№1130",
+          q: "Знайдіть корінь: $0,5x + 3 = 5,5$.",
+          a: ["5"],
+        },
+        {
+          id: 19,
+          pts: 3,
+          src: "№1130",
+          q: "Розв'яжіть: $0,3(2x + 4) = 3$.",
+          a: ["3"],
+        },
+        {
+          id: 20,
+          pts: 3,
+          src: "№1130",
+          q: "Знайдіть корінь: $1,2x - 5 = 0,2x + 5$.",
+          a: ["10"],
+        },
+      ];
+
+      // Підрахунок максимального балу
+      const maxTotalScore = tasks.reduce((sum, task) => sum + task.pts, 0);
+
+      const container = document.getElementById("tasks-container");
+
+      document.addEventListener("DOMContentLoaded", () => {
+        // Рендеримо завдання
+        tasks.forEach((task, index) => {
+          let badgeClass = "pts-1";
+          let ptsLabel = "1 бал";
+          if (task.pts === 2) {
+            badgeClass = "pts-2";
+            ptsLabel = "2 бали";
+          }
+          if (task.pts === 3) {
+            badgeClass = "pts-3";
+            ptsLabel = "3 бали";
+          }
+
+          const card = document.createElement("div");
+          card.className = "task-card";
+          card.innerHTML = `
+            <div class="points-badge ${badgeClass}">${ptsLabel}</div>
+            <div class="task-meta">
+              <span class="task-number">Завдання ${index + 1}</span>
+              <span class="task-source">${task.src}</span>
+            </div>
+            <div class="task-q">${task.q}</div>
+            <div>
+              <input type="text" class="hw-input" id="inp-${index}" placeholder="Введіть відповідь..." autocomplete="off">
+              <div class="teacher-feedback" id="feed-${index}"></div>
+            </div>
+          `;
+          container.appendChild(card);
+        });
+
+        if (window.renderMathInElement) {
+          renderMathInElement(document.body, {
+            delimiters: [{ left: "$", right: "$", display: false }],
+          });
+        }
+
+        checkMode();
+      });
+
+      // --- ЛОГІКА УЧНЯ ---
+      function finishTest() {
+        const answers = [];
+        let filledCount = 0;
+
+        tasks.forEach((_, i) => {
+          const val = document.getElementById(`inp-${i}`).value.trim();
+          answers.push(val);
+          if (val) filledCount++;
+        });
+
+        if (filledCount < tasks.length) {
+          if (
+            !confirm(
+              `Ви заповнили лише ${filledCount} з 20 відповідей. Все одно здати роботу?`
+            )
+          )
+            return;
+        }
+
+        const data = {
+          ts: Date.now(),
+          ans: answers,
+        };
+
+        // Base64 кодування
+        const encoded = btoa(
+          unescape(encodeURIComponent(JSON.stringify(data)))
+        );
+        const fullLink = window.location.href.split("?")[0] + "?d=" + encoded;
+
+        document.getElementById("result-link").innerText = fullLink;
+        document.getElementById("share-modal").style.display = "flex";
+      }
+
+      function copyLink() {
+        const text = document.getElementById("result-link").innerText;
+        navigator.clipboard.writeText(text).then(() => {
+          alert("Посилання скопійовано! ✅");
+        });
+      }
+
+      // --- ЛОГІКА ВЧИТЕЛЯ ---
+      function checkMode() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const dataParam = urlParams.get("d");
+        if (dataParam) enableTeacherMode(dataParam);
+      }
+
+      function enableTeacherMode(encoded) {
+        try {
+          const jsonStr = decodeURIComponent(escape(atob(encoded)));
+          const data = JSON.parse(jsonStr);
+          const userAns = data.ans;
+
+          // Інтерфейс вчителя
+          document.getElementById("mode-badge").className =
+            "mode-badge mode-teacher";
+          document.getElementById("mode-badge").innerText = "Режим Вчителя";
+          document.getElementById("finish-btn").style.display = "none";
+          document.getElementById("teacher-panel").style.display = "block";
+          document.getElementById("max-score-display").innerText =
+            maxTotalScore;
+
+          let score = 0;
+
+          tasks.forEach((task, i) => {
+            const inp = document.getElementById(`inp-${i}`);
+            const feed = document.getElementById(`feed-${i}`);
+
+            const val = userAns[i] || "";
+            inp.value = val;
+            inp.disabled = true;
+
+            // Заміна коми на крапку
+            const checkVal = val.replace(",", ".");
+
+            if (task.a.includes(checkVal)) {
+              score += task.pts; // Додаємо бали згідно ваги
+              inp.classList.add("t-correct");
+              feed.className = "teacher-feedback show-correct";
+              feed.innerHTML = `✅ Вірно (+${task.pts})`;
+            } else {
+              inp.classList.add("t-wrong");
+              feed.className = "teacher-feedback show-wrong";
+              feed.innerHTML = `❌ Помилка. Правильно: <strong>${task.a[0]}</strong>`;
+            }
+          });
+
+          // Анімація рахунку
+          const scoreEl = document.getElementById("final-score");
+          let currentScore = 0;
+          const timer = setInterval(() => {
+            if (currentScore >= score) {
+              clearInterval(timer);
+              scoreEl.innerText = score;
+            } else {
+              currentScore++;
+              scoreEl.innerText = currentScore;
+            }
+          }, 40);
+        } catch (e) {
+          console.error(e);
+          alert("Помилка читання даних. Посилання пошкоджено.");
+        }
+      }
+    </script>
+  </body>
+</html>
