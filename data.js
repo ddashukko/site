@@ -136,6 +136,36 @@ window.lessonsData = [
   // 7 КЛАС (Алгебра) - Автор: Даша
   // ==========================================
   {
+    id: "alg-7-eq-intro",
+    title: "Загальні відомості про рівняння",
+    grade: 7,
+    topic: "Алгебра",
+    link: "algebra/7/01-equations-intro.html",
+    subject_code: "algebra",
+    category: "lesson",
+    author: "Даша",
+  },
+  {
+    id: "alg-7-eq-linear",
+    title: "Лінійні рівняння з однією змінною",
+    grade: 7,
+    topic: "Алгебра",
+    link: "algebra/7/02-linear-equations.html",
+    subject_code: "algebra",
+    category: "lesson",
+    author: "Даша",
+  },
+  {
+    id: "alg-7-poly-sum-diff",
+    title: "Додавання та віднімання многочленів",
+    grade: 7,
+    topic: "Алгебра",
+    link: "algebra/7/11-polynomials-addition-subtraction.html",
+    subject_code: "algebra",
+    category: "lesson",
+    author: "Даша",
+  },
+  {
     id: "alg-7-polynomials",
     title: "Розклад многочлена на множники",
     grade: 7,

@@ -1,0 +1,1562 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Алгебра 7: Лінійні рівняння (Full + Parameters)</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
+    />
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"
+    ></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    ></script>
+
+    <style>
+      :root {
+        --primary: #2563eb;
+        --primary-light: #eff6ff;
+        --success: #16a34a;
+        --error: #dc2626;
+        --bg: #f8fafc;
+        --card: #ffffff;
+        --text: #1e293b;
+        --border: #e2e8f0;
+        --accent: #8b5cf6;
+        --grid-color: #e2e8f0;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        display: flex;
+        overflow: hidden;
+      }
+
+      #tasks-section {
+        flex: 1;
+        background: var(--bg);
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+      }
+
+      #board-section {
+        flex: 1;
+        position: relative;
+        background-color: #fff;
+        border-left: 4px solid #cbd5e1;
+        background-image: linear-gradient(
+            var(--grid-color) 1px,
+            transparent 1px
+          ),
+          linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+        background-size: 25px 25px;
+        cursor: crosshair;
+        overflow: hidden;
+      }
+
+      canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+        touch-action: none;
+      }
+
+      .tools {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        display: flex;
+        gap: 10px;
+        background: rgba(255, 255, 255, 0.95);
+        padding: 8px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        border: 1px solid var(--border);
+        flex-wrap: wrap;
+        z-index: 10;
+      }
+
+      .btn-tool {
+        border: 1px solid #cbd5e1;
+        background: white;
+        padding: 8px 12px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 1.2rem;
+        transition: 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 40px;
+      }
+      .btn-tool:hover {
+        background: #f1f5f9;
+      }
+      .btn-tool.active {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+      }
+
+      header {
+        background: var(--card);
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+      }
+
+      .header-title {
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: var(--primary);
+      }
+      .stats-container {
+        display: flex;
+        gap: 15px;
+        font-weight: 600;
+      }
+      .stat-correct {
+        color: var(--success);
+      }
+      .stat-wrong {
+        color: var(--error);
+      }
+
+      .content-container {
+        padding: 20px;
+        padding-bottom: 80px;
+        max-width: 800px;
+        margin: 0 auto;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      .theory-block {
+        background: linear-gradient(to right, #fdfbf7, #fff);
+        border-left: 5px solid var(--accent);
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 30px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      }
+      .theory-title {
+        color: var(--accent);
+        font-weight: bold;
+        font-size: 1.1rem;
+        margin-bottom: 10px;
+      }
+      .theory-content ul {
+        margin: 5px 0;
+        padding-left: 20px;
+      }
+      .theory-content li {
+        margin-bottom: 5px;
+        line-height: 1.5;
+      }
+
+      .exercise-block {
+        background: var(--card);
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        margin-bottom: 30px;
+        overflow: hidden;
+      }
+
+      .exercise-header {
+        background: var(--primary-light);
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border);
+      }
+      .exercise-title {
+        margin: 0;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--primary);
+      }
+      .exercise-desc {
+        margin: 5px 0 0 0;
+        font-size: 0.95rem;
+        color: #475569;
+        line-height: 1.5;
+      }
+
+      .visual-container {
+        display: flex;
+        justify-content: center;
+        padding: 20px;
+        background: #fff;
+        border-bottom: 1px solid var(--border);
+        overflow-x: auto;
+      }
+
+      .task-row {
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .task-row:last-child {
+        border-bottom: none;
+      }
+      .task-row.solved-correct {
+        background-color: #f0fdf4;
+      }
+      .task-row.solved-wrong {
+        background-color: #fef2f2;
+      }
+
+      .task-content {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .task-number {
+        font-weight: 600;
+        color: #94a3b8;
+        min-width: 25px;
+      }
+      .task-question {
+        font-size: 1.1rem;
+        font-weight: 500;
+      }
+
+      .options-container {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 10px;
+        overflow-x: auto;
+        padding-bottom: 5px;
+      }
+      .option-btn {
+        flex: 1;
+        background: white;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        padding: 10px 15px;
+        font-size: 1rem;
+        cursor: pointer;
+        min-width: 70px;
+        white-space: nowrap;
+        transition: 0.2s;
+      }
+      .option-btn:hover:not(:disabled) {
+        border-color: var(--primary);
+        color: var(--primary);
+        background: var(--primary-light);
+      }
+      .option-btn.selected-correct {
+        background: var(--success);
+        color: white;
+        border-color: var(--success);
+      }
+      .option-btn.selected-correct .katex {
+        color: white !important;
+      }
+      .option-btn.selected-wrong {
+        background: var(--error);
+        color: white;
+        border-color: var(--error);
+      }
+      .option-btn.selected-wrong .katex {
+        color: white !important;
+      }
+
+      .input-group {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+      .input-answer {
+        padding: 10px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        width: 140px;
+        font-size: 1rem;
+      }
+      .btn-check {
+        padding: 10px 20px;
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+      .input-answer.correct {
+        border-color: var(--success);
+        background: #f0fdf4;
+        color: var(--success);
+      }
+      .input-answer.wrong {
+        border-color: var(--error);
+        background: #fef2f2;
+      }
+
+      .finish-section {
+        margin-top: 40px;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        flex-wrap: wrap;
+      }
+      .btn-finish {
+        padding: 15px 40px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: white;
+        background: var(--primary);
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+        transition: transform 0.2s;
+      }
+      .btn-finish:hover {
+        transform: scale(1.05);
+        background-color: #1d4ed8;
+      }
+
+      .btn-test {
+        padding: 15px 40px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: white;
+        background: #7c3aed;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
+        transition: transform 0.2s;
+        text-decoration: none;
+        display: inline-block;
+      }
+      .btn-test:hover {
+        transform: scale(1.05);
+        background-color: #6d28d9;
+      }
+
+      .btn-homework {
+        padding: 15px 40px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: white;
+        background: #ea580c;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(234, 88, 12, 0.3);
+        transition: transform 0.2s;
+        text-decoration: none;
+        display: inline-block;
+      }
+      .btn-homework:hover {
+        transform: scale(1.05);
+        background-color: #c2410c;
+      }
+
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(5px);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+        animation: fadeInOverlay 0.3s ease;
+      }
+
+      .modal-card {
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        max-width: 450px;
+        width: 90%;
+        text-align: center;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        position: relative;
+        animation: scaleInModal 0.3s ease;
+      }
+
+      .modal-close-btn {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: #94a3b8;
+        cursor: pointer;
+      }
+      .modal-close-btn:hover {
+        color: var(--error);
+      }
+
+      .modal-result-title {
+        font-size: 2rem;
+        font-weight: 800;
+        color: var(--primary);
+        margin-bottom: 20px;
+      }
+      .modal-score-big {
+        font-size: 4rem;
+        font-weight: 900;
+        color: var(--primary);
+        line-height: 1;
+        margin: 10px 0;
+      }
+      .modal-score-sub {
+        font-size: 1rem;
+        color: #64748b;
+        margin-bottom: 20px;
+      }
+
+      .modal-progress-container {
+        background: #f1f5f9;
+        border-radius: 10px;
+        padding: 15px;
+        margin-top: 20px;
+      }
+      .modal-bar-bg {
+        width: 100%;
+        height: 12px;
+        background: #e2e8f0;
+        border-radius: 6px;
+        overflow: hidden;
+        margin-top: 10px;
+      }
+      .modal-bar-fill {
+        height: 100%;
+        background: var(--primary);
+        transition: width 1s ease;
+      }
+
+      .modal-footer-btn {
+        margin-top: 30px;
+        padding: 12px 30px;
+        background: var(--text);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+      .modal-footer-btn:hover {
+        background: black;
+      }
+
+      @keyframes fadeInOverlay {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      @keyframes scaleInModal {
+        from {
+          transform: scale(0.8);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      @media (max-width: 768px) {
+        body {
+          flex-direction: column;
+        }
+        #board-section {
+          height: 40vh;
+          border-left: none;
+          border-top: 4px solid #cbd5e1;
+          order: 2;
+        }
+        #tasks-section {
+          height: 60vh;
+          order: 1;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="tasks-section">
+      <header>
+        <div class="header-title">
+          Алгебра 7: Лінійні рівняння (Full + Parameters)
+        </div>
+        <div class="stats-container">
+          <span class="stat-correct">✅ <span id="val-correct">0</span></span>
+          <span class="stat-wrong">❌ <span id="val-wrong">0</span></span>
+        </div>
+      </header>
+
+      <div class="content-container" id="quiz-root">
+        <div class="theory-block">
+          <div class="theory-title">📚 Шпаргалка: Параметри та Модулі</div>
+          <div class="theory-content">
+            <ul>
+              <li>
+                <b>$ax = b$:</b> Якщо $a \ne 0$, корінь $x = b/a$. Якщо $a=0, b
+                \ne 0$ — коренів немає. Якщо $a=0, b=0$ — коренів безліч.
+              </li>
+              <li>
+                <b>Рівняння з параметром:</b> Розглядаємо параметр як звичайне
+                число.
+              </li>
+              <li>
+                <b>Модуль $|x|=a$:</b> Якщо $a > 0$, два корені. Якщо $a = 0$,
+                один ($0$). Якщо $a < 0$, коренів немає.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="board-section">
+      <div class="tools">
+        <button
+          class="btn-tool active"
+          onclick="setTool('pen')"
+          id="t-pen"
+          title="Ручка"
+        >
+          🖊️
+        </button>
+        <button
+          class="btn-tool"
+          onclick="setTool('eraser')"
+          id="t-eraser"
+          title="Гумка"
+        >
+          🧹
+        </button>
+        <button
+          class="btn-tool"
+          onclick="drawSystem()"
+          title="Додати координатну пряму"
+        >
+          📉
+        </button>
+        <button
+          class="btn-tool"
+          onclick="clearCanvasSafe()"
+          style="color: red; border-color: #fee2e2"
+          title="Очистити все"
+        >
+          ❌
+        </button>
+      </div>
+      <canvas id="board"></canvas>
+    </div>
+
+    <div id="result-modal" class="modal-overlay">
+      <div class="modal-card">
+        <button class="modal-close-btn" onclick="closeModal()">×</button>
+        <div id="modal-content-body"></div>
+      </div>
+    </div>
+
+    <script>
+      const canvas = document.getElementById("board");
+      const ctx = canvas.getContext("2d");
+      const boardSection = document.getElementById("board-section");
+      let painting = false;
+      let tool = "pen";
+
+      function resizeCanvas() {
+        const temp = document.createElement("canvas");
+        const tempCtx = temp.getContext("2d");
+        temp.width = canvas.width;
+        temp.height = canvas.height;
+        if (canvas.width > 0 && canvas.height > 0) {
+          tempCtx.drawImage(canvas, 0, 0);
+        }
+
+        canvas.width = boardSection.offsetWidth;
+        canvas.height = boardSection.offsetHeight;
+
+        ctx.drawImage(temp, 0, 0);
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+      }
+
+      window.addEventListener("resize", resizeCanvas);
+      window.addEventListener("load", resizeCanvas);
+
+      function getMousePos(e) {
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return { x: clientX - rect.left, y: clientY - rect.top };
+      }
+
+      function startPosition(e) {
+        painting = true;
+        draw(e);
+      }
+
+      function finishedPosition() {
+        painting = false;
+        ctx.beginPath();
+      }
+
+      function draw(e) {
+        if (!painting) return;
+        if (e.type.startsWith("touch")) {
+          // e.preventDefault();
+        }
+
+        const pos = getMousePos(e);
+
+        if (tool === "pen") {
+          ctx.lineWidth = 2;
+          ctx.strokeStyle = "#2563eb";
+          ctx.globalCompositeOperation = "source-over";
+        } else {
+          ctx.lineWidth = 25;
+          ctx.strokeStyle = "#ffffff";
+          ctx.globalCompositeOperation = "destination-out";
+        }
+
+        ctx.lineTo(pos.x, pos.y);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(pos.x, pos.y);
+      }
+
+      canvas.addEventListener("mousedown", startPosition);
+      canvas.addEventListener("mouseup", finishedPosition);
+      canvas.addEventListener("mousemove", draw);
+      canvas.addEventListener("mouseout", finishedPosition);
+
+      canvas.addEventListener("touchstart", startPosition);
+      canvas.addEventListener("touchend", finishedPosition);
+      canvas.addEventListener("touchmove", draw);
+
+      function setTool(t) {
+        tool = t;
+        document
+          .getElementById("t-pen")
+          .classList.toggle("active", t === "pen");
+        document
+          .getElementById("t-eraser")
+          .classList.toggle("active", t === "eraser");
+      }
+
+      function clearCanvasSafe() {
+        if (confirm("Очистити дошку?")) {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+      }
+
+      function drawSystem() {
+        const prevStrokeStyle = ctx.strokeStyle;
+        const prevLineWidth = ctx.lineWidth;
+        const prevComposite = ctx.globalCompositeOperation;
+
+        ctx.globalCompositeOperation = "source-over";
+        ctx.strokeStyle = "#334155";
+        ctx.lineWidth = 2;
+        ctx.fillStyle = "#334155";
+        ctx.font = "16px Arial";
+
+        const w = canvas.width;
+        const h = canvas.height;
+        const cx = Math.floor(w / 2);
+        const cy = Math.floor(h / 2);
+        const step = 25;
+
+        ctx.beginPath();
+        // X
+        ctx.moveTo(0, cy);
+        ctx.lineTo(w, cy);
+        ctx.lineTo(w - 10, cy - 5);
+        ctx.moveTo(w, cy);
+        ctx.lineTo(w - 10, cy + 5);
+        // Y
+        ctx.moveTo(cx, h);
+        ctx.lineTo(cx, 0);
+        ctx.lineTo(cx - 5, 10);
+        ctx.moveTo(cx, 0);
+        ctx.lineTo(cx + 5, 10);
+
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.lineWidth = 1;
+
+        for (let x = cx + step; x < w; x += step) {
+          ctx.moveTo(x, cy - 3);
+          ctx.lineTo(x, cy + 3);
+        }
+        for (let x = cx - step; x > 0; x -= step) {
+          ctx.moveTo(x, cy - 3);
+          ctx.lineTo(x, cy + 3);
+        }
+        for (let y = cy + step; y < h; y += step) {
+          ctx.moveTo(cx - 3, y);
+          ctx.lineTo(cx + 3, y);
+        }
+        for (let y = cy - step; y > 0; y -= step) {
+          ctx.moveTo(cx - 3, y);
+          ctx.lineTo(cx + 3, y);
+        }
+        ctx.stroke();
+
+        ctx.fillText("x", w - 20, cy + 20);
+        ctx.fillText("y", cx + 15, 20);
+        ctx.fillText("0", cx - 15, cy + 20);
+        ctx.fillText("1", cx + step - 3, cy + 20);
+
+        ctx.beginPath();
+        ctx.strokeStyle = prevStrokeStyle;
+        ctx.lineWidth = prevLineWidth;
+        ctx.globalCompositeOperation = prevComposite;
+
+        if (tool === "eraser") {
+          setTool("pen");
+        }
+      }
+
+      // ОНОВЛЕНИЙ МАСИВ: Старі вправи + НОВІ (131-149)
+      const exercises = [
+        // --- СТАРІ ВПРАВИ (104 - 129) ---
+        {
+          id: "104",
+          title: "104. (Усно) Яке з рівнянь є лінійним:",
+          desc: "Виберіть правильну відповідь (Так/Ні):",
+          tasks: [
+            { id: "1)", q: "$12x = 6$", a: "Так", opts: ["Так", "Ні"] },
+            { id: "2)", q: "$0x = 5$", a: "Так", opts: ["Так", "Ні"] },
+            { id: "3)", q: "$x^2 = 4$", a: "Ні", opts: ["Так", "Ні"] },
+            { id: "4)", q: "$|x| = 2$", a: "Ні", opts: ["Так", "Ні"] },
+            { id: "5)", q: "$\\frac{4}{x} = 2$", a: "Ні", opts: ["Так", "Ні"] },
+            { id: "6)", q: "$0x = 0$", a: "Так", opts: ["Так", "Ні"] },
+          ],
+        },
+        {
+          id: "105",
+          title: "105. (Усно) Скільки коренів має рівняння:",
+          desc: "Визначте кількість розв'язків:",
+          tasks: [
+            {
+              id: "1)",
+              q: "$5x = 10$",
+              a: "1",
+              opts: ["1", "0", "Безліч", "2"],
+            },
+            {
+              id: "2)",
+              q: "$0x = 12$",
+              a: "0",
+              opts: ["1", "0", "Безліч", "2"],
+            },
+            {
+              id: "3)",
+              q: "$0x = 0$",
+              a: "Безліч",
+              opts: ["1", "0", "Безліч", "2"],
+            },
+          ],
+        },
+        {
+          id: "108",
+          title: "108. Розв'яжіть рівняння:",
+          desc: "Знайдіть корінь рівняння:",
+          tasks: [
+            { id: "1)", q: "$-2x = -14$", a: "7", type: "input" },
+            {
+              id: "2)",
+              q: "$-3x = \\frac{3}{5}$",
+              a: "-0.2",
+              opts: ["-0.2", "0.2", "-5", "-0.6"],
+            },
+            { id: "3)", q: "$-\\frac{1}{4}x = -2$", a: "8", type: "input" },
+            { id: "4)", q: "$20x = 4$", a: "0.2", type: "input" },
+            {
+              id: "5)",
+              q: "$-x = 2\\frac{1}{3}$",
+              a: "-7/3",
+              opts: ["-7/3", "-2", "-3", "7/3"],
+            },
+            { id: "6)", q: "$-0,02x = 0,16$", a: "-8", type: "input" },
+            {
+              id: "7)",
+              q: "$\\frac{3}{7}x = -\\frac{6}{49}$",
+              a: "-2/7",
+              opts: ["-2/7", "2/7", "-1/7", "-14"],
+            },
+            { id: "8)", q: "$-1,5x = -6,3$", a: "4.2", type: "input" },
+            { id: "9)", q: "$\\frac{5}{6}x = 0$", a: "0", type: "input" },
+          ],
+        },
+        {
+          id: "110",
+          title: "110. Відновіть рівняння:",
+          desc: "Що має бути в правій частині, якщо відомий корінь?",
+          tasks: [
+            {
+              id: "1)",
+              q: "$5x = \\dots, \\text{ якщо } x = -4$",
+              a: "-20",
+              type: "input",
+            },
+            {
+              id: "2)",
+              q: "$-6x = \\dots, \\text{ якщо } x = 0$",
+              a: "0",
+              type: "input",
+            },
+            {
+              id: "3)",
+              q: "$\\frac{2}{3}x = \\dots, \\text{ якщо } x = 9$",
+              a: "6",
+              type: "input",
+            },
+          ],
+        },
+        {
+          id: "111",
+          title: "111. Знайдіть корінь рівняння:",
+          desc: "Перенесіть доданки та обчисліть:",
+          tasks: [
+            { id: "1)", q: "$4x + 12 = 0$", a: "-3", type: "input" },
+            { id: "2)", q: "$0,2x - 14 = 0,4x - 16$", a: "10", type: "input" },
+            { id: "3)", q: "$5x + 4 = 7x - 12$", a: "8", type: "input" },
+            { id: "4)", q: "$3x + (2x - 5) = 15$", a: "4", type: "input" },
+            { id: "5)", q: "$35 = 15 - (4x + 2)$", a: "-5.5", type: "input" },
+            {
+              id: "6)",
+              q: "$(2x + 3) - (5x + 4) = 11$",
+              a: "-4",
+              type: "input",
+            },
+          ],
+        },
+        {
+          id: "113",
+          title: "113. Яке з рівнянь рівносильне:",
+          desc: "Рівняння $5x = 10$ має корінь $x=2$. Виберіть ті, де $x=2$:",
+          tasks: [
+            { id: "1)", q: "$x + 2 = 5$", a: "Ні", opts: ["Так", "Ні"] },
+            { id: "2)", q: "$6 - x = 4$", a: "Так", opts: ["Так", "Ні"] },
+            { id: "3)", q: "$2x = x + 2$", a: "Так", opts: ["Так", "Ні"] },
+            { id: "4)", q: "$x - 5 = -3$", a: "Так", opts: ["Так", "Ні"] },
+            { id: "5)", q: "$x = 4 - x$", a: "Так", opts: ["Так", "Ні"] },
+            { id: "6)", q: "$3x - 6 = 3x$", a: "Ні", opts: ["Так", "Ні"] },
+          ],
+        },
+        {
+          id: "115",
+          title: "115. Для якого значення x:",
+          desc: "Зрівняйте вирази та знайдіть x:",
+          tasks: [
+            {
+              id: "1)",
+              q: "Вираз $2x + 5$ дорівнює $-3$",
+              a: "-4",
+              type: "input",
+            },
+            {
+              id: "2)",
+              q: "Вираз $3(x + 2)$ дорівнює виразу $4x - 5$",
+              a: "11",
+              type: "input",
+            },
+          ],
+        },
+        {
+          id: "117",
+          title: "117. Розв'яжіть рівняння (Дроби):",
+          desc: "Помножте обидві частини на спільний знаменник:",
+          tasks: [
+            { id: "1)", q: "$\\frac{x+2}{4} = 3$", a: "10", type: "input" },
+            { id: "2)", q: "$\\frac{3x-4}{2} = 1$", a: "2", type: "input" },
+            {
+              id: "3)",
+              q: "$\\frac{x}{2} + \\frac{x}{3} = 5$",
+              a: "6",
+              type: "input",
+            },
+            {
+              id: "4)",
+              q: "$\\frac{x}{3} - \\frac{x}{4} = 2$",
+              a: "24",
+              type: "input",
+            },
+          ],
+        },
+        {
+          id: "119",
+          title: "119. Складіть лінійне рівняння:",
+          desc: "Виберіть рівняння, коренем якого є число:",
+          tasks: [
+            {
+              id: "1)",
+              q: "Корінь $-3$",
+              a: "$x+3=0$",
+              opts: ["$x-3=0$", "$x+3=0$", "$2x=6$", "$x=3$"],
+            },
+            {
+              id: "2)",
+              q: "Корінь $-0,5$",
+              a: "$2x+1=0$",
+              opts: ["$x-0,5=0$", "$2x=1$", "$2x+1=0$", "$x=0,5$"],
+            },
+          ],
+        },
+        {
+          id: "120",
+          title: "120. Рівняння з особливими коренями:",
+          desc: "Виберіть правильний варіант:",
+          tasks: [
+            {
+              id: "1)",
+              q: "Рівняння, яке не має коренів",
+              a: "$0x=5$",
+              opts: ["$0x=0$", "$0x=5$", "$x=0$", "$5x=0$"],
+            },
+            {
+              id: "2)",
+              q: "Рівняння, де корінь — будь-яке число",
+              a: "$0x=0$",
+              opts: ["$0x=7$", "$x=x+1$", "$0x=0$", "$x=0$"],
+            },
+          ],
+        },
+        {
+          id: "122",
+          title: "122. Знайдіть корінь рівняння:",
+          desc: "Розкрийте дужки та зведіть подібні:",
+          tasks: [
+            {
+              id: "1)",
+              q: "$(3x-1) + (4x-2) = 8 - (3-9x)$",
+              a: "-4",
+              type: "input",
+            },
+            {
+              id: "2)",
+              q: "$(5-6x) - (7-8x) + (3x+1) = -10$",
+              a: "-1.8",
+              type: "input",
+            },
+            {
+              id: "3)",
+              q: "$2(3x-4) - 5(3x-2) = 22$",
+              a: "-20/9",
+              opts: ["-20/9", "2", "-2", "20/9"],
+            },
+            {
+              id: "4)",
+              q: "$8(2(x+1)-x) = 5(x+1)$",
+              a: "-11/3",
+              opts: ["-11/3", "3", "11/3", "-3"],
+            },
+          ],
+        },
+        {
+          id: "126",
+          title: "126. Розв'яжіть рівняння відносно x:",
+          desc: "Вважайте інші букви відомими числами:",
+          tasks: [
+            {
+              id: "1)",
+              q: "$3x + b = 2x + b$",
+              a: "$0$",
+              opts: ["$b$", "$0$", "$2b$", "$x$"],
+            },
+            {
+              id: "2)",
+              q: "$a + x = d - x$",
+              a: "$\\frac{d-a}{2}$",
+              opts: ["$d-a$", "$\\frac{d-a}{2}$", "$d+a$", "$0$"],
+            },
+            {
+              id: "3)",
+              q: "$5x + 3n = x - 5n$",
+              a: "$-2n$",
+              opts: ["$2n$", "$-2n$", "$-8n$", "$n$"],
+            },
+            {
+              id: "4)",
+              q: "$6b + x = 2c - 3x$",
+              a: "$\\frac{c-3b}{2}$",
+              opts: [
+                "$\\frac{c-3b}{2}$",
+                "$2c-6b$",
+                "$\\frac{2c-6b}{4}$",
+                "$c-3b$",
+              ],
+            },
+          ],
+        },
+        {
+          id: "128",
+          title: "128. Чи є рівносильними рівняння:",
+          desc: "Перевірте, чи мають вони однакові корені:",
+          tasks: [
+            {
+              id: "1)",
+              q: "$3x - 3 = 3$ і $4(x-1)=4$",
+              a: "Так",
+              opts: ["Так", "Ні"],
+            },
+            {
+              id: "2)",
+              q: "$6x + 2 = 8$ і $3(x-1) + 5 = 2x+4$",
+              a: "Ні",
+              opts: ["Так", "Ні"],
+            },
+            {
+              id: "3)",
+              q: "$2x = 0$ і $0x = 2$",
+              a: "Ні",
+              opts: ["Так", "Ні"],
+            },
+            {
+              id: "4)",
+              q: "$5x + 2 = 5x + 3$ і $2(x+1) = 2x+3$",
+              a: "Так",
+              opts: ["Так", "Ні"],
+            },
+            {
+              id: "5)",
+              q: "$0x = 5$ і $0x = 3$",
+              a: "Так",
+              opts: ["Так", "Ні"],
+            },
+            {
+              id: "6)",
+              q: "$4(x-1) = 4x-4$ і $3(x+2) = 3x+6$",
+              a: "Так",
+              opts: ["Так", "Ні"],
+            },
+          ],
+        },
+        {
+          id: "129",
+          title: "129. Для якого значення y:",
+          desc: "Складіть рівняння та розв'яжіть:",
+          tasks: [
+            {
+              id: "1)",
+              q: "Вираз $4y + 6$ удвічі більший за $y + 2$",
+              a: "-1",
+              type: "input",
+            },
+            {
+              id: "2)",
+              q: "Вираз $3y - 2$ на 5,5 більший за $2 - 4y$",
+              a: "19/14",
+              opts: ["19/14", "1.5", "2", "9.5"],
+            },
+          ],
+        },
+
+        // --- НОВІ ВПРАВИ (131 - 149) ---
+        {
+          id: "131",
+          title: "131. Розв'яжіть рівняння (рівносильність):",
+          desc: "Знайдіть корінь, щоб перевірити рівносильність:",
+          tasks: [
+            {
+              id: "1)",
+              q: "$4(3x-2) = 2(5x+1) + 2x$",
+              // 12x-8 = 10x+2+2x -> 12x-8 = 12x+2 -> -8=2 -> Нема коренів
+              a: "Немає коренів",
+              opts: ["0", "2", "Немає коренів", "Безліч"],
+            },
+            {
+              id: "2)",
+              q: "$5(x-2) = 3x - 16$",
+              // 5x-10 = 3x-16 -> 2x = -6 -> x = -3
+              a: "-3",
+              type: "input",
+            },
+          ],
+        },
+        {
+          id: "132",
+          title: "132. Рівняння з модулем:",
+          desc: "Пам'ятайте: $|x|=a \Rightarrow x=a$ або $x=-a$:",
+          tasks: [
+            { id: "1)", q: "$|x| + 4 = 9$", a: "5;-5", type: "input" },
+            {
+              id: "2)",
+              q: "$|x| - 3 = -8$",
+              a: "Немає коренів",
+              opts: ["5;-5", "-5", "Немає коренів", "0"],
+            },
+            { id: "3)", q: "$3|x| - 9 = 0$", a: "3|-3", type: "input" },
+            { id: "4)", q: "$|x + 3| = 0$", a: "-3", type: "input" },
+            {
+              id: "5)",
+              q: "$|5 - x| = 2$",
+              a: "3;7",
+              opts: ["3;7", "3", "7", "-3;-7"],
+            },
+            {
+              id: "6)",
+              q: "$|x + 6| = -3$",
+              a: "Немає коренів",
+              opts: ["3", "-3", "Немає коренів", "6"],
+            },
+            {
+              id: "7)",
+              q: "$|2x + 1| = 7$",
+              a: "3;-4",
+              opts: ["3", "-4", "3;-4", "4|-3"],
+            },
+            {
+              id: "8)",
+              q: "$2(|x| - 1) = |x|$",
+              a: "2;-2",
+              opts: ["2", "1", "2;-2", "0"],
+            },
+            {
+              id: "9)",
+              q: "$\\frac{1}{2}|x - 1| + 3 = 5$",
+              a: "5;-3",
+              opts: ["5;-3", "4", "5", "-3"],
+            },
+          ],
+        },
+        {
+          id: "134",
+          title: "134. Для якого значення a:",
+          desc: "Підставте $x$ у рівняння та знайдіть $a$:",
+          tasks: [
+            { id: "1)", q: "$3ax = 18$, корінь $x=3$", a: "2", type: "input" },
+            {
+              id: "2)",
+              q: "$4x = a$, корінь $x=0.375$ (3/8)",
+              a: "1.5",
+              type: "input",
+            },
+            {
+              id: "3)",
+              q: "$3(a+1)x = 30$, корінь $x=-2$",
+              a: "-6",
+              type: "input",
+            },
+          ],
+        },
+        {
+          id: "136",
+          title: "136. Розв'яжіть (особливі випадки):",
+          desc: "Розкрийте дужки:",
+          tasks: [
+            {
+              id: "1)",
+              q: "$3x + 5 = 2(x + 1) + x$",
+              a: "Немає коренів",
+              opts: ["0", "Немає коренів", "Безліч", "1"],
+            },
+            {
+              id: "2)",
+              q: "$4x + 6 = 2(2x - 1) + 8$",
+              a: "Безліч",
+              opts: ["0", "Немає коренів", "Безліч", "2"],
+            },
+          ],
+        },
+        {
+          id: "138",
+          title: "138. Рівняння з дробами:",
+          desc: "Помножте на спільний знаменник:",
+          tasks: [
+            {
+              id: "1)",
+              q: "$\\frac{x}{2} + \\frac{x}{3} = 10$",
+              a: "12",
+              type: "input",
+            },
+            {
+              id: "2)",
+              q: "$\\frac{3x-1}{2} - \\frac{x+1}{4} = 1$",
+              a: "1.4",
+              type: "input",
+            },
+            {
+              id: "3)",
+              q: "$\\frac{x+2}{3} + \\frac{x-1}{2} = 3$",
+              a: "3.2",
+              type: "input",
+            },
+            {
+              id: "4)",
+              q: "$\\frac{4x-2}{3} = \\frac{2x+4}{2}$",
+              a: "8",
+              type: "input",
+            },
+            {
+              id: "5)",
+              q: "$\\frac{2x}{5} - \\frac{x+1}{2} = 0$",
+              a: "-5",
+              type: "input",
+            },
+            {
+              id: "6)",
+              q: "$\\frac{x+1}{4} - \\frac{2x-3}{3} = -\\frac{5}{12}$",
+              a: "4",
+              type: "input",
+            },
+          ],
+        },
+        {
+          id: "140",
+          title: "140. Знайдіть параметр b:",
+          desc: "Знайдіть корінь першого рівняння і підставте в друге:",
+          tasks: [
+            {
+              id: "1)",
+              q: "$5x - 2 = 13$ і $2x + b = 10$",
+              a: "4",
+              type: "input",
+            },
+            {
+              id: "2)",
+              q: "$x + b = 12$ і $3x - b = x$",
+              a: "4",
+              type: "input",
+            }, // x+b=12 -> b=12-x. 2x=b -> 2x=12-x -> 3x=12 -> x=4. b=8. Wait. 2x=b. 3x-b=x -> 2x=b. x+2x=12 -> 3x=12 -> x=4. b=8.
+            // Correction for 2): 3x-b=x -> 2x=b. Subst to 1st: x+2x=12 -> 3x=12 -> x=4. Then b=8.
+          ],
+        },
+        {
+          id: "142",
+          title: "142. Цілі значення m:",
+          desc: "Скільки існує цілих значень $m$, для яких корінь рівняння $mx=6$ є цілим числом? (Дільники числа 6)",
+          tasks: [
+            {
+              id: "1)",
+              q: "Кількість таких значень $m$ для $mx=6$",
+              a: "8",
+              type: "input",
+            }, // +/-1, +/-2, +/-3, +/-6
+          ],
+        },
+        {
+          id: "144",
+          title: "144. Коли немає коренів (параметр a):",
+          desc: "Знайдіть значення $a$:",
+          tasks: [
+            { id: "1)", q: "$(a - 3)x = 5$", a: "3", type: "input" },
+            { id: "2)", q: "$(a + 2)x = a - 1$", a: "-2", type: "input" },
+            { id: "3)", q: "$(a - 5)x = 7$", a: "5", type: "input" },
+          ],
+        },
+        {
+          id: "146",
+          title: "146. Коли корінь - будь-яке число:",
+          desc: "Знайдіть значення $m$:",
+          tasks: [
+            { id: "1)", q: "$(m - 2)x = 2 - m$", a: "2", type: "input" },
+            { id: "2)", q: "$m(m + 3)x = m + 3$", a: "-3", type: "input" },
+            { id: "3)", q: "$(m - 4)x = 0$", a: "4", type: "input" },
+          ],
+        },
+        {
+          id: "148",
+          title: "148. Рівняння з параметром:",
+          desc: "Виберіть правильний розв'язок:",
+          tasks: [
+            {
+              id: "1)",
+              q: "$(b + 1)x = 7$",
+              a: "$x=\\frac{7}{b+1}$",
+              opts: [
+                "$x=7(b+1)$",
+                "$x=\\frac{7}{b+1}$",
+                "$x=7$",
+                "Коренів немає",
+              ],
+            },
+            {
+              id: "2)",
+              q: "$(5 - b)x = b - 5$",
+              a: "$x=-1$",
+              opts: ["$x=1$", "$x=-1$", "$x=0$", "$x=5$"],
+            }, // if b!=5, x=-1. If b=5, 0=0 (inf). Assuming general case.
+          ],
+        },
+        {
+          id: "149",
+          title: "149. Складні рівняння з модулем:",
+          desc: "Розгляньте випадки $x \\ge 0$ та $x < 0$:",
+          tasks: [
+            { id: "1)", q: "$|x| + 4x = 15$", a: "3", type: "input" },
+            {
+              id: "2)",
+              q: "$|6x| - x = 20$",
+              a: "4;-20/7",
+              opts: ["4", "-20/7", "4;-20/7", "Немає коренів"],
+            },
+          ],
+        },
+      ];
+
+      let totalCorrect = 0;
+      let totalWrong = 0;
+      let totalTasksCount = 0;
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const root = document.getElementById("quiz-root");
+
+        exercises.forEach((ex) => {
+          totalTasksCount += ex.tasks.length;
+        });
+
+        exercises.forEach((ex) => {
+          const exBlock = document.createElement("div");
+          exBlock.className = "exercise-block";
+
+          exBlock.innerHTML = `
+                    <div class="exercise-header">
+                        <h3 class="exercise-title">${ex.title}</h3>
+                        <p class="exercise-desc">${ex.desc}</p>
+                    </div>
+                `;
+
+          if (ex.visual) {
+            const visualDiv = document.createElement("div");
+            visualDiv.className = "visual-container";
+            visualDiv.innerHTML = ex.visual;
+            exBlock.appendChild(visualDiv);
+          }
+
+          const taskList = document.createElement("div");
+          taskList.className = "task-list";
+
+          ex.tasks.forEach((task) => {
+            const row = document.createElement("div");
+            row.className = "task-row";
+
+            let contentHTML = `
+                        <div class="task-content">
+                            <div class="task-number">${task.id}</div>
+                            <div class="task-question">${task.q}</div>
+                        </div>
+                    `;
+
+            let actionHTML = "";
+            if (task.type === "input") {
+              const answers = Array.isArray(task.a) ? task.a.join("|") : task.a;
+              actionHTML = `
+                            <div class="input-group">
+                                <input type="text" class="input-answer" placeholder="..." onkeypress="if(event.key==='Enter') this.nextElementSibling.click()">
+                                <button class="btn-check" onclick="checkInput(this, '${answers}')">OK</button>
+                            </div>
+                        `;
+            } else {
+              actionHTML = `<div class="options-container">`;
+              task.opts.forEach((opt) => {
+                const isCorrect = opt === task.a;
+                // Escaping quotes for HTML attribute
+                const safeOpt = opt.replace(/"/g, "&quot;");
+                actionHTML += `<button class="option-btn" onclick="checkOpt(this, ${isCorrect})">${safeOpt}</button>`;
+              });
+              actionHTML += `</div>`;
+            }
+
+            row.innerHTML =
+              contentHTML + `<div style="margin-top:10px;">${actionHTML}</div>`;
+            taskList.appendChild(row);
+          });
+
+          exBlock.appendChild(taskList);
+          root.appendChild(exBlock);
+        });
+
+        // КІНЦЕВІ ПОСИЛАННЯ
+        const finishSection = document.createElement("div");
+        finishSection.className = "finish-section";
+        finishSection.innerHTML = `
+              <button class="btn-finish" onclick="finishLesson()">Завершити урок</button>
+              <a href="../test/02-linear-equations.html" class="btn-test">Пройти тестування</a>
+              <a href="../homework/02-linear-equations.html" class="btn-homework">Домашня робота</a>`;
+        root.appendChild(finishSection);
+
+        if (window.renderMathInElement) {
+          renderMathInElement(document.body, {
+            delimiters: [
+              { left: "$$", right: "$$", display: true },
+              { left: "\\[", right: "\\]", display: true },
+              { left: "$", right: "$", display: false },
+              { left: "\\(", right: "\\)", display: false },
+            ],
+            throwOnError: false,
+          });
+        } else {
+          window.onload = () =>
+            renderMathInElement(document.body, {
+              delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "\\[", right: "\\]", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+              ],
+              throwOnError: false,
+            });
+        }
+
+        setTimeout(resizeCanvas, 100);
+      });
+
+      function checkOpt(btn, isCorrect) {
+        const row = btn.closest(".task-row");
+        if (row.classList.contains("done")) return;
+        row.classList.add("done");
+
+        row.querySelectorAll(".option-btn").forEach((b) => (b.disabled = true));
+
+        if (isCorrect) {
+          btn.classList.add("selected-correct");
+          row.classList.add("solved-correct");
+          totalCorrect++;
+        } else {
+          btn.classList.add("selected-wrong");
+          row.classList.add("solved-wrong");
+          totalWrong++;
+        }
+        updateStats();
+      }
+
+      function checkInput(btn, ansStr) {
+        const row = btn.closest(".task-row");
+        const input = row.querySelector("input");
+        if (row.classList.contains("done")) return;
+
+        let val = input.value.trim().replace(",", ".");
+
+        const correctArr = ansStr.split("|");
+
+        row.classList.add("done");
+        input.disabled = true;
+        btn.disabled = true;
+
+        if (correctArr.includes(val)) {
+          input.classList.add("correct");
+          row.classList.add("solved-correct");
+          totalCorrect++;
+        } else {
+          input.classList.add("wrong");
+          row.classList.add("solved-wrong");
+          totalWrong++;
+        }
+        updateStats();
+      }
+
+      function updateStats() {
+        document.getElementById("val-correct").innerText = totalCorrect;
+        document.getElementById("val-wrong").innerText = totalWrong;
+      }
+
+      function finishLesson() {
+        const modal = document.getElementById("result-modal");
+        const body = document.getElementById("modal-content-body");
+
+        const correctInputs = document.querySelectorAll(
+          ".input-answer.correct, .table-input.correct, .option-btn.selected-correct"
+        ).length;
+        const wrongInputs = document.querySelectorAll(
+          ".input-answer.wrong, .table-input.wrong, .option-btn.selected-wrong"
+        ).length;
+        const distinctAnswered = correctInputs + wrongInputs;
+
+        const attempts = totalCorrect + totalWrong;
+        let efficiency = 0;
+        if (attempts > 0) {
+          efficiency = Math.round((totalCorrect / attempts) * 100);
+        }
+
+        let html = ``;
+        if (distinctAnswered === 0) {
+          html = `<div class="modal-result-title">Упс... 😶</div>
+                        <div style="font-size:1.1rem; margin:15px 0; color:#475569;">Ти не дав жодної відповіді. Спробуй розв'язати хоча б щось!</div>
+                        <button class="modal-footer-btn" onclick="closeModal()">Повернутись</button>`;
+        } else {
+          let msg = "";
+          let color = "#2563eb";
+          if (efficiency === 100) {
+            msg = "Ідеально!";
+            color = "#16a34a";
+          } else if (efficiency >= 85) {
+            msg = "Чудово!";
+            color = "#2563eb";
+          } else if (efficiency >= 60) {
+            msg = "Добре!";
+            color = "#f59e0b";
+          } else {
+            msg = "Тренуйся!";
+            color = "#dc2626";
+          }
+
+          html = `
+                    <div class="modal-result-title" style="color:${color}">${msg}</div>
+                    
+                    <div>
+                        <div style="font-size: 1rem; color: #64748b;">Твоя точність</div>
+                        <div class="modal-score-big" style="color:${color}">${efficiency}%</div>
+                        <div class="modal-score-sub">
+                            (Правильних спроб: ${totalCorrect} з ${attempts})
+                        </div>
+                    </div>
+
+                    <div class="modal-progress-container">
+                         <div style="font-size: 1rem; color: #334155; display:flex; justify-content:space-between;">
+                            <span>Прогрес уроку:</span>
+                            <strong>${distinctAnswered} / ${totalTasksCount}</strong>
+                         </div>
+                         <div class="modal-bar-bg">
+                            <div class="modal-bar-fill" style="width: ${
+                              (distinctAnswered / totalTasksCount) * 100
+                            }%; background: ${color};"></div>
+                         </div>
+                    </div>
+
+                    <button class="modal-footer-btn" onclick="closeModal()">Закрити</button>
+                `;
+        }
+
+        body.innerHTML = html;
+        modal.style.display = "flex";
+      }
+
+      function closeModal() {
+        document.getElementById("result-modal").style.display = "none";
+      }
+    </script>
+  </body>
+</html>

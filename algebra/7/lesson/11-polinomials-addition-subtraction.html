@@ -1,0 +1,1661 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Алгебра 7: Додавання і віднімання многочленів (Fixed Layout)</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
+    />
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"
+    ></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    ></script>
+
+    <style>
+      :root {
+        --primary: #2563eb;
+        --primary-light: #eff6ff;
+        --success: #16a34a;
+        --error: #dc2626;
+        --bg: #f8fafc;
+        --card: #ffffff;
+        --text: #1e293b;
+        --border: #e2e8f0;
+        --accent: #8b5cf6;
+        --grid-color: #e2e8f0;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        display: flex;
+        overflow: hidden;
+      }
+
+      #tasks-section {
+        flex: 1;
+        background: var(--bg);
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+      }
+
+      #board-section {
+        flex: 1;
+        position: relative;
+        background-color: #fff;
+        border-left: 4px solid #cbd5e1;
+        background-image: linear-gradient(
+            var(--grid-color) 1px,
+            transparent 1px
+          ),
+          linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+        background-size: 25px 25px;
+        cursor: crosshair;
+        overflow: hidden;
+      }
+
+      canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+        touch-action: none;
+      }
+
+      .tools {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        display: flex;
+        gap: 10px;
+        background: rgba(255, 255, 255, 0.95);
+        padding: 8px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        border: 1px solid var(--border);
+        flex-wrap: wrap;
+        z-index: 10;
+      }
+
+      .btn-tool {
+        border: 1px solid #cbd5e1;
+        background: white;
+        padding: 8px 12px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 1.2rem;
+        transition: 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 40px;
+      }
+      .btn-tool:hover {
+        background: #f1f5f9;
+      }
+      .btn-tool.active {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+      }
+
+      header {
+        background: var(--card);
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+      }
+
+      .header-title {
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: var(--primary);
+      }
+      .stats-container {
+        display: flex;
+        gap: 15px;
+        font-weight: 600;
+      }
+      .stat-correct {
+        color: var(--success);
+      }
+      .stat-wrong {
+        color: var(--error);
+      }
+
+      .content-container {
+        padding: 20px;
+        padding-bottom: 80px;
+        max-width: 800px;
+        margin: 0 auto;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      .theory-block {
+        background: linear-gradient(to right, #fdfbf7, #fff);
+        border-left: 5px solid var(--accent);
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 30px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      }
+      .theory-title {
+        color: var(--accent);
+        font-weight: bold;
+        font-size: 1.1rem;
+        margin-bottom: 10px;
+      }
+      .theory-content ul {
+        margin: 5px 0;
+        padding-left: 20px;
+      }
+      .theory-content li {
+        margin-bottom: 5px;
+        line-height: 1.5;
+      }
+
+      .exercise-block {
+        background: var(--card);
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        margin-bottom: 30px;
+        overflow: hidden;
+      }
+
+      .exercise-header {
+        background: var(--primary-light);
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border);
+      }
+      .exercise-title {
+        margin: 0;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--primary);
+      }
+      .exercise-desc {
+        margin: 5px 0 0 0;
+        font-size: 0.95rem;
+        color: #475569;
+        line-height: 1.5;
+      }
+
+      .visual-container {
+        display: flex;
+        justify-content: center;
+        padding: 20px;
+        background: #fff;
+        border-bottom: 1px solid var(--border);
+        overflow-x: auto;
+      }
+
+      .task-row {
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .task-row:last-child {
+        border-bottom: none;
+      }
+      .task-row.solved-correct {
+        background-color: #f0fdf4;
+      }
+      .task-row.solved-wrong {
+        background-color: #fef2f2;
+      }
+
+      .task-content {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .task-number {
+        font-weight: 600;
+        color: #94a3b8;
+        min-width: 25px;
+      }
+      .task-question {
+        font-size: 1.1rem;
+        font-weight: 500;
+      }
+
+      /* ВИПРАВЛЕНИЙ CSS ДЛЯ КНОПОК */
+      .options-container {
+        display: flex;
+        flex-wrap: wrap; /* Дозволяє перенос на новий рядок */
+        gap: 10px;
+        padding-bottom: 5px;
+      }
+      .option-btn {
+        flex: 1 1 300px; /* Базова ширина 300px, розтягується або стискається */
+        background: white;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        padding: 12px 15px;
+        font-size: 1rem;
+        cursor: pointer;
+        min-width: fit-content;
+        transition: 0.2s;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      /* -------------------------- */
+
+      .option-btn:hover:not(:disabled) {
+        border-color: var(--primary);
+        color: var(--primary);
+        background: var(--primary-light);
+      }
+      .option-btn.selected-correct {
+        background: var(--success);
+        color: white;
+        border-color: var(--success);
+      }
+      .option-btn.selected-correct .katex {
+        color: white !important;
+      }
+      .option-btn.selected-wrong {
+        background: var(--error);
+        color: white;
+        border-color: var(--error);
+      }
+      .option-btn.selected-wrong .katex {
+        color: white !important;
+      }
+
+      .input-group {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+      .input-answer {
+        padding: 10px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        width: 140px;
+        font-size: 1rem;
+      }
+      .btn-check {
+        padding: 10px 20px;
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+      .input-answer.correct {
+        border-color: var(--success);
+        background: #f0fdf4;
+        color: var(--success);
+      }
+      .input-answer.wrong {
+        border-color: var(--error);
+        background: #fef2f2;
+      }
+
+      .finish-section {
+        margin-top: 40px;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        flex-wrap: wrap;
+      }
+      .btn-finish {
+        padding: 15px 40px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: white;
+        background: var(--primary);
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+        transition: transform 0.2s;
+      }
+      .btn-finish:hover {
+        transform: scale(1.05);
+        background-color: #1d4ed8;
+      }
+
+      .btn-test {
+        padding: 15px 40px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: white;
+        background: #7c3aed;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
+        transition: transform 0.2s;
+        text-decoration: none;
+        display: inline-block;
+      }
+      .btn-test:hover {
+        transform: scale(1.05);
+        background-color: #6d28d9;
+      }
+
+      .btn-homework {
+        padding: 15px 40px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: white;
+        background: #ea580c;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(234, 88, 12, 0.3);
+        transition: transform 0.2s;
+        text-decoration: none;
+        display: inline-block;
+      }
+      .btn-homework:hover {
+        transform: scale(1.05);
+        background-color: #c2410c;
+      }
+
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(5px);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+        animation: fadeInOverlay 0.3s ease;
+      }
+
+      .modal-card {
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        max-width: 450px;
+        width: 90%;
+        text-align: center;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        position: relative;
+        animation: scaleInModal 0.3s ease;
+      }
+
+      .modal-close-btn {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: #94a3b8;
+        cursor: pointer;
+      }
+      .modal-close-btn:hover {
+        color: var(--error);
+      }
+
+      .modal-result-title {
+        font-size: 2rem;
+        font-weight: 800;
+        color: var(--primary);
+        margin-bottom: 20px;
+      }
+      .modal-score-big {
+        font-size: 4rem;
+        font-weight: 900;
+        color: var(--primary);
+        line-height: 1;
+        margin: 10px 0;
+      }
+      .modal-score-sub {
+        font-size: 1rem;
+        color: #64748b;
+        margin-bottom: 20px;
+      }
+
+      .modal-progress-container {
+        background: #f1f5f9;
+        border-radius: 10px;
+        padding: 15px;
+        margin-top: 20px;
+      }
+      .modal-bar-bg {
+        width: 100%;
+        height: 12px;
+        background: #e2e8f0;
+        border-radius: 6px;
+        overflow: hidden;
+        margin-top: 10px;
+      }
+      .modal-bar-fill {
+        height: 100%;
+        background: var(--primary);
+        transition: width 1s ease;
+      }
+
+      .modal-footer-btn {
+        margin-top: 30px;
+        padding: 12px 30px;
+        background: var(--text);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+      .modal-footer-btn:hover {
+        background: black;
+      }
+
+      @keyframes fadeInOverlay {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      @keyframes scaleInModal {
+        from {
+          transform: scale(0.8);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      @media (max-width: 768px) {
+        body {
+          flex-direction: column;
+        }
+        #board-section {
+          height: 40vh;
+          border-left: none;
+          border-top: 4px solid #cbd5e1;
+          order: 2;
+        }
+        #tasks-section {
+          height: 60vh;
+          order: 1;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="tasks-section">
+      <header>
+        <div class="header-title">
+          Алгебра 7: Додавання і віднімання многочленів
+        </div>
+        <div class="stats-container">
+          <span class="stat-correct">✅ <span id="val-correct">0</span></span>
+          <span class="stat-wrong">❌ <span id="val-wrong">0</span></span>
+        </div>
+      </header>
+
+      <div class="content-container" id="quiz-root">
+        <div class="theory-block">
+          <div class="theory-title">📚 Шпаргалка: Многочлени</div>
+          <div class="theory-content">
+            <ul>
+              <li>
+                Якщо перед дужками стоїть знак <strong>«+»</strong>, то під час
+                розкриття дужок знаки доданків зберігаються.
+              </li>
+              <li>
+                Якщо перед дужками стоїть знак <strong>«-»</strong>, то під час
+                розкриття дужок знаки доданків змінюються на протилежні.
+              </li>
+              <li>Приклад: $-(x - 5) = -x + 5$.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="board-section">
+      <div class="tools">
+        <button
+          class="btn-tool active"
+          onclick="setTool('pen')"
+          id="t-pen"
+          title="Ручка"
+        >
+          🖊️
+        </button>
+        <button
+          class="btn-tool"
+          onclick="setTool('eraser')"
+          id="t-eraser"
+          title="Гумка"
+        >
+          🧹
+        </button>
+        <button
+          class="btn-tool"
+          onclick="drawSystem()"
+          title="Додати координатну пряму"
+        >
+          📉
+        </button>
+        <button
+          class="btn-tool"
+          onclick="clearCanvasSafe()"
+          style="color: red; border-color: #fee2e2"
+          title="Очистити все"
+        >
+          ❌
+        </button>
+      </div>
+      <canvas id="board"></canvas>
+    </div>
+
+    <div id="result-modal" class="modal-overlay">
+      <div class="modal-card">
+        <button class="modal-close-btn" onclick="closeModal()">×</button>
+        <div id="modal-content-body"></div>
+      </div>
+    </div>
+
+    <script>
+      const canvas = document.getElementById("board");
+      const ctx = canvas.getContext("2d");
+      const boardSection = document.getElementById("board-section");
+      let painting = false;
+      let tool = "pen";
+
+      function resizeCanvas() {
+        const temp = document.createElement("canvas");
+        const tempCtx = temp.getContext("2d");
+        temp.width = canvas.width;
+        temp.height = canvas.height;
+        if (canvas.width > 0 && canvas.height > 0) {
+          tempCtx.drawImage(canvas, 0, 0);
+        }
+
+        canvas.width = boardSection.offsetWidth;
+        canvas.height = boardSection.offsetHeight;
+
+        ctx.drawImage(temp, 0, 0);
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+      }
+
+      window.addEventListener("resize", resizeCanvas);
+      window.addEventListener("load", resizeCanvas);
+
+      function getMousePos(e) {
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return { x: clientX - rect.left, y: clientY - rect.top };
+      }
+
+      function startPosition(e) {
+        painting = true;
+        draw(e);
+      }
+
+      function finishedPosition() {
+        painting = false;
+        ctx.beginPath();
+      }
+
+      function draw(e) {
+        if (!painting) return;
+        if (e.type.startsWith("touch")) {
+          // e.preventDefault();
+        }
+
+        const pos = getMousePos(e);
+
+        if (tool === "pen") {
+          ctx.lineWidth = 2;
+          ctx.strokeStyle = "#2563eb";
+          ctx.globalCompositeOperation = "source-over";
+        } else {
+          ctx.lineWidth = 25;
+          ctx.strokeStyle = "#ffffff";
+          ctx.globalCompositeOperation = "destination-out";
+        }
+
+        ctx.lineTo(pos.x, pos.y);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(pos.x, pos.y);
+      }
+
+      canvas.addEventListener("mousedown", startPosition);
+      canvas.addEventListener("mouseup", finishedPosition);
+      canvas.addEventListener("mousemove", draw);
+      canvas.addEventListener("mouseout", finishedPosition);
+
+      canvas.addEventListener("touchstart", startPosition);
+      canvas.addEventListener("touchend", finishedPosition);
+      canvas.addEventListener("touchmove", draw);
+
+      function setTool(t) {
+        tool = t;
+        document
+          .getElementById("t-pen")
+          .classList.toggle("active", t === "pen");
+        document
+          .getElementById("t-eraser")
+          .classList.toggle("active", t === "eraser");
+      }
+
+      function clearCanvasSafe() {
+        if (confirm("Очистити дошку?")) {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+      }
+
+      function drawSystem() {
+        const prevStrokeStyle = ctx.strokeStyle;
+        const prevLineWidth = ctx.lineWidth;
+        const prevComposite = ctx.globalCompositeOperation;
+
+        ctx.globalCompositeOperation = "source-over";
+        ctx.strokeStyle = "#334155";
+        ctx.lineWidth = 2;
+        ctx.fillStyle = "#334155";
+        ctx.font = "16px Arial";
+
+        const w = canvas.width;
+        const h = canvas.height;
+        const cx = Math.floor(w / 2);
+        const cy = Math.floor(h / 2);
+        const step = 25;
+
+        ctx.beginPath();
+        // X
+        ctx.moveTo(0, cy);
+        ctx.lineTo(w, cy);
+        ctx.lineTo(w - 10, cy - 5);
+        ctx.moveTo(w, cy);
+        ctx.lineTo(w - 10, cy + 5);
+        // Y
+        ctx.moveTo(cx, h);
+        ctx.lineTo(cx, 0);
+        ctx.lineTo(cx - 5, 10);
+        ctx.moveTo(cx, 0);
+        ctx.lineTo(cx + 5, 10);
+
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.lineWidth = 1;
+
+        for (let x = cx + step; x < w; x += step) {
+          ctx.moveTo(x, cy - 3);
+          ctx.lineTo(x, cy + 3);
+        }
+        for (let x = cx - step; x > 0; x -= step) {
+          ctx.moveTo(x, cy - 3);
+          ctx.lineTo(x, cy + 3);
+        }
+        for (let y = cy + step; y < h; y += step) {
+          ctx.moveTo(cx - 3, y);
+          ctx.lineTo(cx + 3, y);
+        }
+        for (let y = cy - step; y > 0; y -= step) {
+          ctx.moveTo(cx - 3, y);
+          ctx.lineTo(cx + 3, y);
+        }
+        ctx.stroke();
+
+        ctx.fillText("x", w - 20, cy + 20);
+        ctx.fillText("y", cx + 15, 20);
+        ctx.fillText("0", cx - 15, cy + 20);
+        ctx.fillText("1", cx + step - 3, cy + 20);
+
+        ctx.beginPath();
+        ctx.strokeStyle = prevStrokeStyle;
+        ctx.lineWidth = prevLineWidth;
+        ctx.globalCompositeOperation = prevComposite;
+
+        if (tool === "eraser") {
+          setTool("pen");
+        }
+      }
+
+      // ПОВНИЙ МАСИВ ВПРАВ (Старі + Нові)
+      const exercises = [
+        // --- ПОПЕРЕДНІ ЗАВДАННЯ ---
+        {
+          id: "462",
+          title: "462. (Усно) Розкриття дужок",
+          desc: "Прочитайте многочлен, який одержимо після розкриття дужок:",
+          tasks: [
+            {
+              id: "1)",
+              q: "$x + (y - 3)$",
+              a: "$x + y - 3$",
+              opts: ["$x + y - 3$", "$x - y + 3$", "$x + y + 3$", "$xy - 3$"],
+            },
+            {
+              id: "2)",
+              q: "$a + (2 - b + c)$",
+              a: "$a + 2 - b + c$",
+              opts: [
+                "$a + 2 - b + c$",
+                "$a - 2 + b - c$",
+                "$a + 2 + b + c$",
+                "$2abc$",
+              ],
+            },
+            {
+              id: "3)",
+              q: "$m - (n - 2)$",
+              a: "$m - n + 2$",
+              opts: ["$m - n + 2$", "$m - n - 2$", "$m + n - 2$", "$m - 2n$"],
+            },
+            {
+              id: "4)",
+              q: "$d - (-c^2 + 4)$",
+              a: "$d + c^2 - 4$",
+              opts: [
+                "$d + c^2 - 4$",
+                "$d - c^2 - 4$",
+                "$d - c^2 + 4$",
+                "$d + c^2 + 4$",
+              ],
+            },
+          ],
+        },
+        {
+          id: "463",
+          title: "463. Знайдіть суму многочленів",
+          desc: "Додайте многочлени та зведіть подібні доданки:",
+          tasks: [
+            {
+              id: "1)",
+              q: "$3a^2 + 2a^3 - 1$ та $4a^3 + 2a^2 + 5$",
+              a: "$6a^3 + 5a^2 + 4$",
+              opts: [
+                "$6a^3 + 5a^2 + 4$",
+                "$7a^3 + 5a^2 + 4$",
+                "$6a^3 + 5a^2 - 4$",
+                "$8a^5 + 4$",
+              ],
+            },
+            {
+              id: "2)",
+              q: "$x^3 + 2x^2 + 1$, $3x^2 - 4$ та $5 - 4x^2$",
+              a: "$x^3 + x^2 + 2$",
+              opts: [
+                "$x^3 + x^2 + 2$",
+                "$x^3 + 5x^2 + 2$",
+                "$x^3 - x^2 + 1$",
+                "$x^3 + x^2 - 8$",
+              ],
+            },
+          ],
+        },
+        {
+          id: "465",
+          title: "465. Знайдіть різницю многочленів",
+          desc: "Відніміть другий многочлен від першого:",
+          tasks: [
+            {
+              id: "1)",
+              q: "$5x^3 + 6x^2 - x$ та $3x^2 + x$",
+              a: "$5x^3 + 3x^2 - 2x$",
+              opts: [
+                "$5x^3 + 3x^2 - 2x$",
+                "$5x^3 + 9x^2$",
+                "$5x^3 + 3x^2$",
+                "$2x^3 + 6x^2 - 2x$",
+              ],
+            },
+            {
+              id: "2)",
+              q: "$y^2 + 3y - 2$ та $y^3 + 3y - 2$",
+              a: "$-y^3 + y^2$",
+              opts: [
+                "$-y^3 + y^2$",
+                "$y^3 + y^2 + 6y - 4$",
+                "$y^3 - y^2$",
+                "$y^2$",
+              ],
+            },
+          ],
+        },
+        {
+          id: "467",
+          title: "467. Сума і різниця виразів",
+          desc: "Знайдіть результат додавання або віднімання:",
+          tasks: [
+            {
+              id: "1)",
+              q: "Сума: $a + b$ і $a - b$",
+              a: "$2a$",
+              opts: ["$2a$", "$2b$", "$a + b$", "$0$"],
+            },
+            {
+              id: "2)",
+              q: "Різниця: $m - n$ і $-m + n$",
+              a: "$2m - 2n$",
+              opts: ["$2m - 2n$", "$0$", "$-2n$", "$2m$"],
+            },
+            {
+              id: "3)",
+              q: "Сума: $-x - y$ і $y - x$",
+              a: "$-2x$",
+              opts: ["$-2x$", "$0$", "$-2y$", "$2y - 2x$"],
+            },
+            {
+              id: "4)",
+              q: "Різниця: $c - d$ і $d - c$",
+              a: "$2c - 2d$",
+              opts: ["$2c - 2d$", "$0$", "$2d - 2c$", "$c - d$"],
+            },
+          ],
+        },
+        {
+          id: "469",
+          title: "469. Стандартний вигляд",
+          desc: "Знайдіть суму або різницю та зведіть до стандартного вигляду:",
+          tasks: [
+            {
+              id: "1)",
+              q: "Сума: $4a^2 - 3a + 1$ і $4a^2 - 5$",
+              a: "$8a^2 - 3a - 4$",
+              opts: [
+                "$8a^2 - 3a - 4$",
+                "$8a^2 - 3a + 6$",
+                "$4a^2 - 3a - 4$",
+                "$16a^4 - 3a - 4$",
+              ],
+            },
+            {
+              id: "2)",
+              q: "Сума: $3x + 1$ і $-2x^2 - 3x - 1$",
+              a: "$-2x^2$",
+              opts: ["$-2x^2$", "$-2x^2 + 6x + 2$", "$0$", "$2x^2$"],
+            },
+            {
+              id: "3)",
+              q: "Сума: $m + 4n$ і $2m - 4n$",
+              a: "$3m$",
+              opts: ["$3m$", "$3m + 8n$", "$3m - 8n$", "$m$"],
+            },
+            {
+              id: "4)",
+              q: "Різниця: $x^2 - 2xy - y^2$ і $x^2 + y^2$",
+              a: "$-2xy - 2y^2$",
+              opts: [
+                "$-2xy - 2y^2$",
+                "$-2xy$",
+                "$2x^2 - 2xy$",
+                "$x^2 - 2xy - 2y^2$",
+              ],
+            },
+          ],
+        },
+        {
+          id: "471",
+          title: "471. Спростіть вираз",
+          desc: "Розкрийте дужки та спростіть:",
+          tasks: [
+            {
+              id: "1)",
+              q: "$(1 + 3a) + (a^2 - a)$",
+              a: "$a^2 + 2a + 1$",
+              opts: [
+                "$a^2 + 2a + 1$",
+                "$a^2 + 4a + 1$",
+                "$3a^2 + 1$",
+                "$a^2 + 2a$",
+              ],
+            },
+            {
+              id: "2)",
+              q: "$(4x^2 + x^3) - (-x + 4x^2)$",
+              a: "$x^3 + x$",
+              opts: [
+                "$x^3 + x$",
+                "$x^3 - x$",
+                "$8x^2 + x^3 - x$",
+                "$x^3 + x + 8x^2$",
+              ],
+            },
+            {
+              id: "3)",
+              q: "$(y^2 - 4y) + (4y - 12)$",
+              a: "$y^2 - 12$",
+              opts: ["$y^2 - 12$", "$y^2 - 8y - 12$", "$y^2 + 12$", "$y^2$"],
+            },
+            {
+              id: "4)",
+              q: "$(2m^3 - 4m^2) - (4 + 2m^3 - 3m^2)$",
+              a: "$-m^2 - 4$",
+              opts: [
+                "$-m^2 - 4$",
+                "$4m^3 - 7m^2 - 4$",
+                "$-7m^2 - 4$",
+                "$m^2 - 4$",
+              ],
+            },
+          ],
+        },
+        {
+          id: "472",
+          title: "472. Перетворення на многочлен",
+          desc: "Зведіть вираз до многочлена стандартного вигляду:",
+          tasks: [
+            {
+              id: "1)",
+              q: "$(4xy^2 - 11xy - 6x^2y) - (13xy + 7x^2y)$",
+              a: "$4xy^2 - 24xy - 13x^2y$",
+              opts: [
+                "$4xy^2 - 24xy - 13x^2y$",
+                "$4xy^2 + 2xy - 13x^2y$",
+                "$4xy^2 - 24xy + x^2y$",
+                "$11x^2y^2 - 24xy$",
+              ],
+            },
+            {
+              id: "2)",
+              q: "$(\\frac{2}{3}m^3n - \\frac{1}{2}mn) - (-\\frac{1}{3}mn + \\frac{1}{6}m^3n)$",
+              a: "$0,5m^3n - 0,16mn$",
+              opts: [
+                "$\\frac{1}{2}m^3n - \\frac{1}{6}mn$",
+                "$m^3n - mn$",
+                "$\\frac{5}{6}m^3n - \\frac{5}{6}mn$",
+                "$0$",
+              ],
+            },
+            {
+              id: "3)",
+              q: "$(a + b - c) - (-2a + 3b - c) - (-5b + 4c + a)$",
+              a: "$2a + 3b - 4c$",
+              opts: [
+                "$2a + 3b - 4c$",
+                "$2a - 3b + 4c$",
+                "$4a + 3b - 2c$",
+                "$a + b + c$",
+              ],
+            },
+            {
+              id: "4)",
+              q: "$(3x - 4y) - (5x - 4xy + 4y^2) - (6xy - 6y^2 - 4y)$",
+              a: "$-2x - 2xy + 2y^2$",
+              opts: [
+                "$-2x - 2xy + 2y^2$",
+                "$-2x + 2xy - 2y^2$",
+                "$8x + 2xy + 10y^2$",
+                "$2x + 2xy + 2y^2$",
+              ],
+            },
+          ],
+        },
+        {
+          id: "474",
+          title: "474. Розв'яжіть рівняння",
+          desc: "Знайдіть значення змінної:",
+          tasks: [
+            {
+              id: "1)",
+              q: "$4x + 3x^2 - (3x^2 - 12) = 24$",
+              a: "3",
+              type: "input",
+            },
+            {
+              id: "2)",
+              q: "$7 - y^3 - (3y + 9 - y^3) = -11$",
+              a: "3",
+              type: "input",
+            },
+          ],
+        },
+        {
+          id: "476",
+          title: "476. Подайте у вигляді суми",
+          desc: "Подайте многочлен як суму двох многочленів: один містить змінну $x$ (або $y$), інший - ні:",
+          tasks: [
+            {
+              id: "1)",
+              q: "$my + n - k - ny$ (змінна $y$)",
+              a: "$(my - ny) + (n - k)$",
+              opts: [
+                "$(my - ny) + (n - k)$",
+                "$(my + n) - (k + ny)$",
+                "$(my - k) + (n - ny)$",
+                "$y(m - n) - k$",
+              ],
+            },
+            {
+              id: "2)",
+              q: "$ya^2 - 15a + 6y + 12b$ (змінна $y$)",
+              a: "$(ya^2 + 6y) + (-15a + 12b)$",
+              opts: [
+                "$(ya^2 + 6y) + (-15a + 12b)$",
+                "$(ya^2 - 15a) + (6y + 12b)$",
+                "$y(a^2 + 6) + 3(4b - 5a)$",
+                "$(ya^2 + 12b) + (-15a + 6y)$",
+              ],
+            },
+          ],
+        },
+        {
+          id: "478",
+          title: "478. Для якого значення x:",
+          desc: "Складіть рівняння та розв'яжіть його:",
+          tasks: [
+            {
+              id: "1)",
+              q: "Різниця $6x$ і $4x - 6x^2 + 15$ дорівнює $8x + 6x^2 - 25$",
+              a: "1.66",
+              opts: ["5/3", "1.6", "2", "3.5"],
+            },
+            {
+              id: "2)",
+              q: "Різниця $(4x^3 + 2x^2 - x)$ і $(x^3 - 2x^2 + x)$ дорівнює $3x^3 + 4x^2 + 10$",
+              a: "-5",
+              type: "input",
+            },
+          ],
+        },
+        {
+          id: "480",
+          title: "480. Подайте у вигляді різниці",
+          desc: "Подайте як різницю двох многочленів (перший містить $y$, другий - ні):",
+          tasks: [
+            {
+              id: "1)",
+              q: "$-ya + yx + x - y - a + 1$",
+              a: "$(-ya + yx - y) - (-x + a - 1)$",
+              opts: [
+                "$(-ya + yx - y) - (-x + a - 1)$",
+                "$(-ya + yx) - (y - x + a - 1)$",
+                "$(yx - y) - (ya - x + a)$",
+                "$y(x - a - 1) - (1 - a - x)$",
+              ],
+            },
+            {
+              id: "2)",
+              q: "$-m^2 + y^2 + 2m - 8y - 1$",
+              a: "$(y^2 - 8y) - (m^2 - 2m + 1)$",
+              opts: [
+                "$(y^2 - 8y) - (m^2 - 2m + 1)$",
+                "$(y^2 - 8y) - (m^2 + 2m - 1)$",
+                "$(y^2 + y) - (m^2 + 2m + 9)$",
+                "$y(y - 8) - (m - 1)^2$",
+              ],
+            },
+          ],
+        },
+        {
+          id: "481",
+          title: "481. Заповніть пропуски",
+          desc: "Який многочлен треба записати замість (...), щоб одержати тотожність:",
+          tasks: [
+            {
+              id: "1)",
+              q: "$-(...) = 5x - y$",
+              a: "$y - 5x$",
+              opts: ["$y - 5x$", "$5x - y$", "$-5x - y$", "$y + 5x$"],
+            },
+            {
+              id: "2)",
+              q: "$-(...) = 3a^2 - b^2 + 4$",
+              a: "$b^2 - 3a^2 - 4$",
+              opts: [
+                "$b^2 - 3a^2 - 4$",
+                "$-3a^2 + b^2 - 4$",
+                "$3a^2 - b^2 + 4$",
+                "$b^2 + 3a^2 + 4$",
+              ],
+            },
+            {
+              id: "3)",
+              q: "(...) $+ 3x^2y - 4xy^2 = 6x^2 - 2xy^2$",
+              a: "$6x^2 + 2xy^2 - 3x^2y$",
+              opts: [
+                "$6x^2 + 2xy^2 - 3x^2y$",
+                "$6x^2 - 6xy^2 - 3x^2y$",
+                "$3x^2 + 2xy^2$",
+                "$6x^2 - 3x^2y$",
+              ],
+            },
+            {
+              id: "4)",
+              q: "$6m^2n + 8m^3 + (...) = 7m^2n$",
+              a: "$m^2n - 8m^3$",
+              opts: [
+                "$m^2n - 8m^3$",
+                "$m^2n + 8m^3$",
+                "$-m^2n - 8m^3$",
+                "$13m^2n + 8m^3$",
+              ],
+            },
+            {
+              id: "5)",
+              q: "$4 + 3x^2 - 4x + (...) = 8x^2 - 10$",
+              a: "$5x^2 + 4x - 14$",
+              opts: [
+                "$5x^2 + 4x - 14$",
+                "$5x^2 - 4x - 6$",
+                "$11x^2 - 4x - 6$",
+                "$5x^2 + 4x + 14$",
+              ],
+            },
+            {
+              id: "6)",
+              q: "(...) $- (3a^2 - 2ab) = 6 + 4a^2 - 2ab$",
+              a: "$7a^2 - 4ab + 6$",
+              opts: [
+                "$7a^2 - 4ab + 6$",
+                "$a^2 + 6$",
+                "$7a^2 + 6$",
+                "$a^2 - 4ab + 6$",
+              ],
+            },
+          ],
+        },
+        {
+          id: "485",
+          title: "485. Доведіть тотожність",
+          desc: "Спростіть вираз і оберіть правильний результат:",
+          tasks: [
+            {
+              id: "1)",
+              q: "$(a - b) + (b - c) - (a - c)$",
+              a: "$0$",
+              opts: ["$0$", "$2a - 2c$", "$2b - 2c$", "$a - c$"],
+            },
+            {
+              id: "2)",
+              q: "$(x^2 + y^2 - z^2) - (y^2 - x^2 - z^2) - (x^2 - y^2)$",
+              a: "$x^2 + y^2$",
+              opts: [
+                "$x^2 + y^2$",
+                "$3x^2 - y^2 - 2z^2$",
+                "$x^2 + 3y^2$",
+                "$0$",
+              ],
+            },
+          ],
+        },
+
+        // --- НОВІ ЗАВДАННЯ (487 - 501) ---
+        {
+          id: "487",
+          title: "487. Доведіть кратність",
+          desc: "Доведіть, що значення виразу $(15 - 7n) - (7 - 11n)$ кратне певному числу.",
+          tasks: [
+            {
+              id: "1)",
+              q: "Якому числу завжди кратне значення цього виразу?",
+              a: "4",
+              type: "input",
+            },
+          ],
+        },
+        {
+          id: "489",
+          title: "489. Незалежність від змінних",
+          desc: "Доведіть, що значення виразу не залежить від змінних, обчисливши його:",
+          visual:
+            "<div style='font-size:1.1rem;'>$\\left(\\frac{1}{8}a^2b + \\frac{3}{5}ab\\right) - \\left(\\frac{7}{10}ab - \\frac{3}{4}ba^2\\right) - \\left(\\frac{7}{8}a^2b - \\frac{1}{10}ab - 2\\right)$</div>",
+          tasks: [
+            {
+              id: "1)",
+              q: "Чому дорівнює значення цього виразу?",
+              a: "2",
+              type: "input",
+            },
+          ],
+        },
+        {
+          id: "491",
+          title: "491. Знайдіть значення виразу",
+          desc: "Спростіть вираз та підставте значення змінної:",
+          tasks: [
+            {
+              id: "1)",
+              q: "$(b^2 + 3b - 8) - (7b^2 - 5b + 7) + (5b^2 - 8b + 10)$, якщо $b = -2$",
+              a: "-9",
+              type: "input",
+            },
+            {
+              id: "2)",
+              q: "$17x^2 - (3x^2 - 2xy + 3y^2) - (14x^2 + 3xy - 4y^2)$, якщо $x = -0.1, y = 10$",
+              a: "101",
+              type: "input",
+            },
+          ],
+        },
+        {
+          id: "493",
+          title: "493. Подання у вигляді різниці",
+          desc: "Подайте многочлен $3m^2n - 5mn + 4n^2 - 9n - 7$ у вигляді різниці двох многочленів з додатними коефіцієнтами:",
+          tasks: [
+            {
+              id: "1)",
+              q: "Оберіть правильний варіант:",
+              a: "$(3m^2n + 4n^2) - (5mn + 9n + 7)$",
+              opts: [
+                "$(3m^2n + 4n^2) - (5mn + 9n + 7)$",
+                "$(3m^2n - 4n^2) - (5mn - 9n - 7)$",
+                "$(3m^2n + 7) - (5mn + 9n - 4n^2)$",
+                "$(3m^2n + 4n^2 + 9n) - (5mn + 7)$",
+              ],
+            },
+          ],
+        },
+        {
+          id: "494",
+          title: "494. Дії з многочленами",
+          desc: "Дано: $a = 7m^2 + 5mn - n^2$, $b = -6m^2 + 2mn + 3n^2$, $c = m^2 - 2n^2$.",
+          tasks: [
+            {
+              id: "1)",
+              q: "Знайдіть $a + b + c$:",
+              a: "$2m^2 + 7mn$",
+              opts: [
+                "$2m^2 + 7mn$",
+                "$2m^2 + 7mn - 2n^2$",
+                "$14m^2 + 3mn$",
+                "$0$",
+              ],
+            },
+            {
+              id: "2)",
+              q: "Знайдіть $a - b - c$:",
+              a: "$12m^2 + 3mn - 2n^2$",
+              opts: [
+                "$12m^2 + 3mn - 2n^2$",
+                "$2m^2 + 3mn + 2n^2$",
+                "$12m^2 - 3mn$",
+                "$7m^2 + 5mn$",
+              ],
+            },
+          ],
+        },
+        {
+          id: "495",
+          title: "495. Найменше значення",
+          desc: "Розгляньте різницю многочленів $(0,5x^4 + x^3 - 0,2x^2 - 5) - (0,3x^4 + x^3 - 0,7x^2 - 9)$.",
+          tasks: [
+            {
+              id: "1)",
+              q: "Якого найменшого значення набуває ця різниця?",
+              a: "4",
+              type: "input",
+            },
+            {
+              id: "2)",
+              q: "Для якого значення $x$ досягається цей мінімум?",
+              a: "0",
+              type: "input",
+            },
+          ],
+        },
+        {
+          id: "496",
+          title: "496. Властивості чисел",
+          desc: "Доведіть твердження:",
+          tasks: [
+            {
+              id: "1)",
+              q: "Сума трьох послідовних натуральних чисел завжди ділиться на:",
+              a: "3",
+              type: "input",
+            },
+            {
+              id: "2)",
+              q: "Яку остачу при діленні на 4 дає сума чотирьох послідовних натуральних чисел?",
+              a: "2",
+              type: "input",
+            },
+          ],
+        },
+        {
+          id: "497",
+          title: "497. Числа у вигляді букв",
+          desc: "Запис $\\overline{xy}$ означає $10x + y$.",
+          tasks: [
+            {
+              id: "1)",
+              q: "Якому числу кратна сума чисел $\\overline{xy}$ і $\\overline{yx}$?",
+              a: "11",
+              type: "input",
+            },
+            {
+              id: "2)",
+              q: "Якому числу кратна різниця чисел $\\overline{xy}$ і $\\overline{yx}$ (де $x > y$)?",
+              a: "9",
+              type: "input",
+            },
+          ],
+        },
+        {
+          id: "499",
+          title: "499. Обчисліть",
+          desc: "Обчисліть значення виразу:",
+          tasks: [
+            {
+              id: "1)",
+              q: "$(0,018 + 0,982) : (4 \\cdot 0,5 - 0,2)$",
+              a: "5/9",
+              opts: ["5/9", "1/2", "0.55", "1"],
+            },
+          ],
+        },
+        {
+          id: "500",
+          title: "500. Спростіть і обчисліть",
+          desc: "Спростіть вираз і знайдіть його значення:",
+          tasks: [
+            {
+              id: "1)",
+              q: "$-8x \\cdot 1,5y$, якщо $x = \\frac{4}{7}, y = -1\\frac{3}{4}$",
+              a: "12",
+              type: "input",
+            },
+            {
+              id: "2)",
+              q: "$-2a \\cdot (-3,5b) \\cdot 5c$, якщо $a = -1, b = -\\frac{2}{5}, c = \\frac{3}{7}$",
+              a: "6",
+              type: "input",
+            },
+          ],
+        },
+        {
+          id: "501",
+          title: "501. Степені",
+          desc: "Подайте вираз $2^{60}$ у вигляді степеня з іншою основою:",
+          tasks: [
+            {
+              id: "1)",
+              q: "З основою 4:",
+              a: "$4^{30}$",
+              opts: ["$4^{30}$", "$4^{20}$", "$4^{15}$", "$4^{60}$"],
+            },
+            {
+              id: "2)",
+              q: "З основою 8:",
+              a: "$8^{20}$",
+              opts: ["$8^{20}$", "$8^{15}$", "$8^{30}$", "$8^{10}$"],
+            },
+            {
+              id: "3)",
+              q: "З основою 16:",
+              a: "$16^{15}$",
+              opts: ["$16^{15}$", "$16^{20}$", "$16^{10}$", "$16^{30}$"],
+            },
+            {
+              id: "4)",
+              q: "З основою 32:",
+              a: "$32^{12}$",
+              opts: ["$32^{12}$", "$32^{10}$", "$32^{15}$", "$32^{6}$"],
+            },
+          ],
+        },
+      ];
+
+      let totalCorrect = 0;
+      let totalWrong = 0;
+      let totalTasksCount = 0;
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const root = document.getElementById("quiz-root");
+
+        exercises.forEach((ex) => {
+          totalTasksCount += ex.tasks.length;
+        });
+
+        exercises.forEach((ex) => {
+          const exBlock = document.createElement("div");
+          exBlock.className = "exercise-block";
+
+          exBlock.innerHTML = `
+                    <div class="exercise-header">
+                        <h3 class="exercise-title">${ex.title}</h3>
+                        <p class="exercise-desc">${ex.desc}</p>
+                    </div>
+                `;
+
+          if (ex.visual) {
+            const visualDiv = document.createElement("div");
+            visualDiv.className = "visual-container";
+            visualDiv.innerHTML = ex.visual;
+            exBlock.appendChild(visualDiv);
+          }
+
+          const taskList = document.createElement("div");
+          taskList.className = "task-list";
+
+          ex.tasks.forEach((task) => {
+            const row = document.createElement("div");
+            row.className = "task-row";
+
+            let contentHTML = `
+                        <div class="task-content">
+                            <div class="task-number">${task.id}</div>
+                            <div class="task-question">${task.q}</div>
+                        </div>
+                    `;
+
+            let actionHTML = "";
+            if (task.type === "input") {
+              const answers = Array.isArray(task.a) ? task.a.join("|") : task.a;
+              actionHTML = `
+                            <div class="input-group">
+                                <input type="text" class="input-answer" placeholder="..." onkeypress="if(event.key==='Enter') this.nextElementSibling.click()">
+                                <button class="btn-check" onclick="checkInput(this, '${answers}')">OK</button>
+                            </div>
+                        `;
+            } else {
+              actionHTML = `<div class="options-container">`;
+              task.opts.forEach((opt) => {
+                const isCorrect = opt === task.a;
+                // Escaping quotes for HTML attribute
+                const safeOpt = opt.replace(/"/g, "&quot;");
+                actionHTML += `<button class="option-btn" onclick="checkOpt(this, ${isCorrect})">${safeOpt}</button>`;
+              });
+              actionHTML += `</div>`;
+            }
+
+            row.innerHTML =
+              contentHTML + `<div style="margin-top:10px;">${actionHTML}</div>`;
+            taskList.appendChild(row);
+          });
+
+          exBlock.appendChild(taskList);
+          root.appendChild(exBlock);
+        });
+
+        // КІНЦЕВІ ПОСИЛАННЯ
+        const finishSection = document.createElement("div");
+        finishSection.className = "finish-section";
+        finishSection.innerHTML = `
+              <button class="btn-finish" onclick="finishLesson()">Завершити урок</button>
+              <a href="../test/7-polynomial-addition-full.html" class="btn-test">Пройти тестування</a>
+              <a href="../homework/7-polynomial-addition-full.html" class="btn-homework">Домашня робота</a>`;
+        root.appendChild(finishSection);
+
+        if (window.renderMathInElement) {
+          renderMathInElement(document.body, {
+            delimiters: [
+              { left: "$$", right: "$$", display: true },
+              { left: "\\[", right: "\\]", display: true },
+              { left: "$", right: "$", display: false },
+              { left: "\\(", right: "\\)", display: false },
+            ],
+            throwOnError: false,
+          });
+        } else {
+          window.onload = () =>
+            renderMathInElement(document.body, {
+              delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "\\[", right: "\\]", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+              ],
+              throwOnError: false,
+            });
+        }
+
+        setTimeout(resizeCanvas, 100);
+      });
+
+      function checkOpt(btn, isCorrect) {
+        const row = btn.closest(".task-row");
+        if (row.classList.contains("done")) return;
+        row.classList.add("done");
+
+        row.querySelectorAll(".option-btn").forEach((b) => (b.disabled = true));
+
+        if (isCorrect) {
+          btn.classList.add("selected-correct");
+          row.classList.add("solved-correct");
+          totalCorrect++;
+        } else {
+          btn.classList.add("selected-wrong");
+          row.classList.add("solved-wrong");
+          totalWrong++;
+        }
+        updateStats();
+      }
+
+      function checkInput(btn, ansStr) {
+        const row = btn.closest(".task-row");
+        const input = row.querySelector("input");
+        if (row.classList.contains("done")) return;
+
+        let val = input.value.trim().replace(",", ".");
+
+        const correctArr = ansStr.split("|");
+
+        row.classList.add("done");
+        input.disabled = true;
+        btn.disabled = true;
+
+        if (correctArr.includes(val)) {
+          input.classList.add("correct");
+          row.classList.add("solved-correct");
+          totalCorrect++;
+        } else {
+          input.classList.add("wrong");
+          row.classList.add("solved-wrong");
+          totalWrong++;
+        }
+        updateStats();
+      }
+
+      function updateStats() {
+        document.getElementById("val-correct").innerText = totalCorrect;
+        document.getElementById("val-wrong").innerText = totalWrong;
+      }
+
+      function finishLesson() {
+        const modal = document.getElementById("result-modal");
+        const body = document.getElementById("modal-content-body");
+
+        const correctInputs = document.querySelectorAll(
+          ".input-answer.correct, .table-input.correct, .option-btn.selected-correct"
+        ).length;
+        const wrongInputs = document.querySelectorAll(
+          ".input-answer.wrong, .table-input.wrong, .option-btn.selected-wrong"
+        ).length;
+        const distinctAnswered = correctInputs + wrongInputs;
+
+        const attempts = totalCorrect + totalWrong;
+        let efficiency = 0;
+        if (attempts > 0) {
+          efficiency = Math.round((totalCorrect / attempts) * 100);
+        }
+
+        let html = ``;
+        if (distinctAnswered === 0) {
+          html = `<div class="modal-result-title">Упс... 😶</div>
+                        <div style="font-size:1.1rem; margin:15px 0; color:#475569;">Ти не дав жодної відповіді. Спробуй розв'язати хоча б щось!</div>
+                        <button class="modal-footer-btn" onclick="closeModal()">Повернутись</button>`;
+        } else {
+          let msg = "";
+          let color = "#2563eb";
+          if (efficiency === 100) {
+            msg = "Ідеально!";
+            color = "#16a34a";
+          } else if (efficiency >= 85) {
+            msg = "Чудово!";
+            color = "#2563eb";
+          } else if (efficiency >= 60) {
+            msg = "Добре!";
+            color = "#f59e0b";
+          } else {
+            msg = "Тренуйся!";
+            color = "#dc2626";
+          }
+
+          html = `
+                    <div class="modal-result-title" style="color:${color}">${msg}</div>
+                    
+                    <div>
+                        <div style="font-size: 1rem; color: #64748b;">Твоя точність</div>
+                        <div class="modal-score-big" style="color:${color}">${efficiency}%</div>
+                        <div class="modal-score-sub">
+                            (Правильних спроб: ${totalCorrect} з ${attempts})
+                        </div>
+                    </div>
+
+                    <div class="modal-progress-container">
+                         <div style="font-size: 1rem; color: #334155; display:flex; justify-content:space-between;">
+                            <span>Прогрес уроку:</span>
+                            <strong>${distinctAnswered} / ${totalTasksCount}</strong>
+                         </div>
+                         <div class="modal-bar-bg">
+                            <div class="modal-bar-fill" style="width: ${
+                              (distinctAnswered / totalTasksCount) * 100
+                            }%; background: ${color};"></div>
+                         </div>
+                    </div>
+
+                    <button class="modal-footer-btn" onclick="closeModal()">Закрити</button>
+                `;
+        }
+
+        body.innerHTML = html;
+        modal.style.display = "flex";
+      }
+
+      function closeModal() {
+        document.getElementById("result-modal").style.display = "none";
+      }
+    </script>
+  </body>
+</html>
