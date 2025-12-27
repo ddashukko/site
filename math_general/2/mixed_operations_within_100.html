@@ -12,17 +12,21 @@
         margin: 0;
         padding: 20px;
         text-align: center;
+        overflow-x: hidden;
       }
 
       h1 {
         color: #f57f17;
         text-shadow: 2px 2px #fff;
         font-size: 2.5em;
+        margin-bottom: 10px;
       }
 
       .container {
         max-width: 800px;
         margin: 0 auto;
+        position: relative;
+        z-index: 1;
       }
 
       .section {
@@ -32,17 +36,19 @@
         padding: 20px;
         margin-bottom: 30px;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        position: relative;
       }
 
       h2 {
         color: #e65100;
         border-bottom: 2px dashed #fbc02d;
         padding-bottom: 10px;
+        margin-top: 0;
       }
 
       .task-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
         gap: 15px;
         margin-top: 15px;
       }
@@ -59,19 +65,21 @@
 
       input {
         width: 60px;
-        height: 30px;
-        font-size: 1em;
+        height: 35px;
+        font-size: 1.1em;
         text-align: center;
         border: 2px solid #ccc;
         border-radius: 8px;
         margin-left: 10px;
         margin-right: 10px;
         outline: none;
+        transition: all 0.3s;
       }
 
       input:focus {
         border-color: #f57f17;
         box-shadow: 0 0 5px #fbc02d;
+        background-color: #fff;
       }
 
       /* Стилі для перевірки */
@@ -86,17 +94,36 @@
         background-color: #ffcdd2;
         border-color: #c62828;
         color: #c62828;
+        animation: shake 0.3s;
+      }
+
+      @keyframes shake {
+        0% {
+          transform: translateX(0);
+        }
+        25% {
+          transform: translateX(-5px);
+        }
+        50% {
+          transform: translateX(5px);
+        }
+        75% {
+          transform: translateX(-5px);
+        }
+        100% {
+          transform: translateX(0);
+        }
       }
 
       button {
         background-color: #f57f17;
         color: white;
         border: none;
-        padding: 15px 30px;
-        font-size: 1.5em;
+        padding: 10px 25px;
+        font-size: 1.2em;
         border-radius: 50px;
         cursor: pointer;
-        box-shadow: 0 5px #e65100;
+        box-shadow: 0 4px #e65100;
         transition: transform 0.1s;
         margin-top: 20px;
         font-family: "Comic Sans MS", sans-serif;
@@ -107,50 +134,74 @@
         transform: translateY(3px);
       }
 
-      #result {
-        margin-top: 20px;
-        font-size: 1.5em;
-        font-weight: bold;
-        color: #e65100;
-        min-height: 50px;
+      button:hover {
+        background-color: #ff8f00;
       }
 
-      .ladybug {
-        font-size: 2em;
-        vertical-align: middle;
+      .result-msg {
+        margin-top: 15px;
+        font-size: 1.2em;
+        font-weight: bold;
+        min-height: 1.5em;
+      }
+
+      /* Анімація конфеті/сонечок */
+      .confetti {
+        position: fixed;
+        top: -50px;
+        z-index: 9999;
+        user-select: none;
+        pointer-events: none;
+        animation: fall linear forwards;
+      }
+
+      @keyframes fall {
+        0% {
+          transform: translateY(0) rotate(0deg);
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(110vh) rotate(720deg);
+          opacity: 0;
+        }
       }
     </style>
   </head>
   <body>
     <div class="container">
       <h1>🐞 Математичне Сонечко ☀️</h1>
-      <p>Привіт! Допоможи Сонечку розв'язати всі приклади!</p>
+      <p>
+        Виконуй завдання по черзі та натискай кнопку "Перевірити" у кожному
+        блоці!
+      </p>
 
-      <div class="section">
+      <div class="section" id="section1">
         <h2>1. Додавання (з переходом через 10)</h2>
         <div class="task-grid">
           <div class="task-item">
-            28 + 5 = <input type="number" data-answer="33" />
+            28 + 4 = <input type="number" data-answer="32" />
           </div>
           <div class="task-item">
-            47 + 6 = <input type="number" data-answer="53" />
+            46 + 5 = <input type="number" data-answer="51" />
           </div>
           <div class="task-item">
-            64 + 9 = <input type="number" data-answer="73" />
+            69 + 7 = <input type="number" data-answer="76" />
           </div>
           <div class="task-item">
-            35 + 8 = <input type="number" data-answer="43" />
+            35 + 9 = <input type="number" data-answer="44" />
           </div>
           <div class="task-item">
-            56 + 7 = <input type="number" data-answer="63" />
+            57 + 8 = <input type="number" data-answer="65" />
           </div>
           <div class="task-item">
-            83 + 9 = <input type="number" data-answer="92" />
+            84 + 9 = <input type="number" data-answer="93" />
           </div>
         </div>
+        <button onclick="checkSection(this)">Перевірити блок 1</button>
+        <div class="result-msg"></div>
       </div>
 
-      <div class="section">
+      <div class="section" id="section2">
         <h2>2. Віднімання (з переходом через 10)</h2>
         <div class="task-grid">
           <div class="task-item">
@@ -172,9 +223,11 @@
             92 - 7 = <input type="number" data-answer="85" />
           </div>
         </div>
+        <button onclick="checkSection(this)">Перевірити блок 2</button>
+        <div class="result-msg"></div>
       </div>
 
-      <div class="section">
+      <div class="section" id="section3">
         <h2>3. Рахуємо до 100 (без переходу)</h2>
         <div class="task-grid">
           <div class="task-item">
@@ -208,9 +261,11 @@
             58 - 37 = <input type="number" data-answer="21" />
           </div>
         </div>
+        <button onclick="checkSection(this)">Перевірити блок 3</button>
+        <div class="result-msg"></div>
       </div>
 
-      <div class="section">
+      <div class="section" id="section4">
         <h2>4. Знайди невідоме число (рівняння)</h2>
         <div class="task-grid">
           <div class="task-item">
@@ -229,15 +284,18 @@
             43 + <input type="number" data-answer="4" placeholder="x" /> = 47
           </div>
         </div>
+        <button onclick="checkSection(this)">Перевірити блок 4</button>
+        <div class="result-msg"></div>
       </div>
-
-      <button onclick="checkAnswers()">Перевірити відповіді!</button>
-      <div id="result"></div>
     </div>
 
     <script>
-      function checkAnswers() {
-        let inputs = document.querySelectorAll("input");
+      function checkSection(btnElement) {
+        // Знаходимо батьківський блок (section) для кнопки, яку натиснули
+        const section = btnElement.closest(".section");
+        const inputs = section.querySelectorAll("input");
+        const resultMsg = section.querySelector(".result-msg");
+
         let correctCount = 0;
         let totalCount = inputs.length;
 
@@ -253,18 +311,48 @@
           }
         });
 
-        let resultDiv = document.getElementById("result");
-
         if (correctCount === totalCount) {
-          resultDiv.innerHTML =
-            "🎉 Ура! Ти справжнє сонечко! Все правильно! 🐞";
-          resultDiv.style.color = "#2E7D32";
-        } else if (correctCount > totalCount / 2) {
-          resultDiv.innerHTML = `Непогано! Правильно: ${correctCount} з ${totalCount}. Спробуй виправити червоні клітинки.`;
-          resultDiv.style.color = "#E65100";
+          resultMsg.innerHTML = "Чудово! Все вірно! 🐞🎉";
+          resultMsg.style.color = "#2E7D32";
+          launchConfetti(); // Запускаємо салют
+        } else if (correctCount > 0) {
+          resultMsg.innerHTML = `Молодець! Але є помилки: ${
+            totalCount - correctCount
+          }. Спробуй ще!`;
+          resultMsg.style.color = "#E65100";
         } else {
-          resultDiv.innerHTML = `Ти тільки вчишся! Правильно: ${correctCount} з ${totalCount}. Спробуй ще раз!`;
-          resultDiv.style.color = "#C62828";
+          resultMsg.innerHTML = "Спробуй уважніше!";
+          resultMsg.style.color = "#C62828";
+        }
+      }
+
+      function launchConfetti() {
+        const emojis = ["🐞", "☀️", "🌸", "✨", "🍀"];
+        const container = document.body;
+
+        // Створюємо 50 елементів
+        for (let i = 0; i < 50; i++) {
+          const confetto = document.createElement("div");
+          confetto.classList.add("confetti");
+          confetto.innerText =
+            emojis[Math.floor(Math.random() * emojis.length)];
+
+          // Випадкова позиція по горизонталі
+          confetto.style.left = Math.random() * 100 + "vw";
+
+          // Випадковий розмір
+          confetto.style.fontSize = Math.random() * 20 + 20 + "px";
+
+          // Випадкова швидкість падіння (від 2 до 5 секунд)
+          const duration = Math.random() * 3 + 2;
+          confetto.style.animationDuration = duration + "s";
+
+          container.appendChild(confetto);
+
+          // Видаляємо елемент після завершення анімації
+          setTimeout(() => {
+            confetto.remove();
+          }, duration * 1000);
         }
       }
     </script>
