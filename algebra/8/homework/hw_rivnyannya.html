@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Домашнє завдання: Рівняння</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script
+      id="MathJax-script"
+      async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+    ></script>
+    <style>
+      :root {
+        --primary: #4a90e2;
+        --bg: #f5f7fa;
+        --card-bg: #ffffff;
+        --text: #333;
+        --border: #e1e4e8;
+      }
+      body {
+        font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
+        margin: 0;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .container {
+        max-width: 800px;
+        width: 100%;
+      }
+      .header {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+      .card {
+        background: var(--card-bg);
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        margin-bottom: 20px;
+        border: 1px solid var(--border);
+        overflow: hidden;
+      }
+      .card-header {
+        background-color: #f0f7ff;
+        padding: 15px 20px;
+        font-weight: bold;
+        color: var(--primary);
+        border-bottom: 1px solid var(--border);
+      }
+      .card-body {
+        padding: 20px;
+      }
+      .question-item {
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 1px dashed var(--border);
+      }
+      .question-item:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+      }
+      .input-group {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        margin-top: 10px;
+      }
+      input[type="text"],
+      input[type="number"] {
+        padding: 8px 12px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        width: 200px;
+        font-size: 16px;
+      }
+      .btn {
+        background-color: var(--primary);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: bold;
+        transition: background 0.2s;
+      }
+      .btn:hover {
+        background-color: #357abd;
+      }
+      .btn-ok {
+        padding: 8px 15px;
+      }
+      .options-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+        margin-top: 10px;
+      }
+      .option-btn {
+        background: white;
+        border: 1px solid #ccc;
+        padding: 10px;
+        border-radius: 4px;
+        cursor: pointer;
+        text-align: center;
+      }
+      .option-btn.selected {
+        background-color: var(--primary);
+        color: white;
+        border-color: var(--primary);
+      }
+      .hidden {
+        display: none !important;
+      }
+      #result-area,
+      #teacher-auth,
+      #teacher-dashboard {
+        text-align: center;
+        background: white;
+        padding: 40px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+      .praise-text {
+        font-size: 24px;
+        color: #2e7d32;
+        margin-bottom: 20px;
+      }
+      .link-box {
+        background: #f8f9fa;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        word-break: break-all;
+        margin: 15px 0;
+        font-family: monospace;
+        font-size: 12px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 12px;
+        text-align: left;
+      }
+      th {
+        background-color: #f0f7ff;
+      }
+      .correct {
+        color: green;
+        font-weight: bold;
+      }
+      .incorrect {
+        color: red;
+        font-weight: bold;
+      }
+      .footer-link {
+        margin-top: 50px;
+        font-size: 12px;
+        color: #ccc;
+        text-decoration: none;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container" id="student-view">
+      <div class="header">
+        <h1>Домашня робота: Рівняння та вирази</h1>
+        <p>Виконайте завдання та надішліть результат вчителю.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-header">1. Значення виразу</div>
+        <div class="card-body">
+          <p>Знайдіть значення виразу \( 65 + x \), якщо:</p>
+          <div class="question-item">
+            <p>1) \( x = 35 \)</p>
+            <div class="input-group">
+              <input type="number" id="q1_1" placeholder="..." />
+              <button class="btn btn-ok" onclick="dummyOk()">OK</button>
+            </div>
+          </div>
+          <div class="question-item">
+            <p>2) \( x = 15 \)</p>
+            <div class="input-group">
+              <input type="number" id="q1_2" placeholder="..." />
+              <button class="btn btn-ok" onclick="dummyOk()">OK</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">2. Знайдіть корінь (Тест)</div>
+        <div class="card-body">
+          <p>Яке з чисел 3, 6, 8 є коренем рівняння:</p>
+          <div class="question-item" data-id="q2_1">
+            <p>1) \( 4x - 5 = 19 \)</p>
+            <div class="options-grid">
+              <button class="option-btn" onclick="selectOption('q2_1', 3)">
+                3
+              </button>
+              <button class="option-btn" onclick="selectOption('q2_1', 6)">
+                6
+              </button>
+              <button class="option-btn" onclick="selectOption('q2_1', 8)">
+                8
+              </button>
+            </div>
+          </div>
+          <div class="question-item" data-id="q2_2">
+            <p>2) \( 15 + x = 23 \)</p>
+            <div class="options-grid">
+              <button class="option-btn" onclick="selectOption('q2_2', 3)">
+                3
+              </button>
+              <button class="option-btn" onclick="selectOption('q2_2', 6)">
+                6
+              </button>
+              <button class="option-btn" onclick="selectOption('q2_2', 8)">
+                8
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">3. Розв'яжіть прості рівняння</div>
+        <div class="card-body">
+          <p>Знайдіть невідоме:</p>
+          <div class="question-item">
+            <p>1) \( 230 + y = 500 \)</p>
+            <div class="input-group">
+              <input type="number" id="q3_1" placeholder="..." />
+              <button class="btn btn-ok" onclick="dummyOk()">OK</button>
+            </div>
+          </div>
+          <div class="question-item">
+            <p>2) \( a - 120 = 340 \)</p>
+            <div class="input-group">
+              <input type="number" id="q3_2" placeholder="..." />
+              <button class="btn btn-ok" onclick="dummyOk()">OK</button>
+            </div>
+          </div>
+          <div class="question-item">
+            <p>3) \( 900 - x = 250 \)</p>
+            <div class="input-group">
+              <input type="number" id="q3_3" placeholder="..." />
+              <button class="btn btn-ok" onclick="dummyOk()">OK</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">4. Рівняння з дужками</div>
+        <div class="card-body">
+          <p>Розв'яжіть рівняння:</p>
+          <div class="question-item">
+            <p>1) \( (x + 150) - 200 = 100 \)</p>
+            <div class="input-group">
+              <input type="number" id="q4_1" placeholder="..." />
+              <button class="btn btn-ok" onclick="dummyOk()">OK</button>
+            </div>
+          </div>
+          <div class="question-item">
+            <p>2) \( 600 - (y - 100) = 400 \)</p>
+            <div class="input-group">
+              <input type="number" id="q4_2" placeholder="..." />
+              <button class="btn btn-ok" onclick="dummyOk()">OK</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">5. Змінна в обох частинах</div>
+        <div class="card-body">
+          <p>Розв'яжіть рівняння:</p>
+          <div class="question-item">
+            <p>1) \( 7x = -18 + 4x \)</p>
+            <div class="input-group">
+              <input type="number" id="q5_1" placeholder="..." />
+              <button class="btn btn-ok" onclick="dummyOk()">OK</button>
+            </div>
+          </div>
+          <div class="question-item">
+            <p>2) \( 10x + 4 = 12x \)</p>
+            <div class="input-group">
+              <input type="number" id="q5_2" placeholder="..." />
+              <button class="btn btn-ok" onclick="dummyOk()">OK</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align: center; margin-bottom: 50px">
+        <button
+          class="btn"
+          style="padding: 15px 40px; font-size: 18px"
+          onclick="finishTest()"
+        >
+          Завершити виконання
+        </button>
+      </div>
+    </div>
+
+    <div class="container hidden" id="result-area">
+      <div class="praise-text">Ти молодець! Чудова робота!</div>
+      <p>
+        Твої відповіді збережено. Надішли це посилання вчителю для перевірки:
+      </p>
+      <div id="link-container" class="link-box"></div>
+      <button class="btn" onclick="copyLink()">Скопіювати посилання</button>
+      <p style="margin-top: 15px; font-size: 14px; color: #666">
+        (Натисни кнопку, щоб скопіювати, і встав у повідомлення вчителю)
+      </p>
+    </div>
+
+    <div class="container hidden" id="teacher-auth">
+      <h2>Вхід для вчителя</h2>
+      <p>Введіть пароль для перегляду результатів учня</p>
+      <input type="password" id="teacher-pass" placeholder="Пароль" />
+      <button class="btn" onclick="checkTeacher()">Увійти</button>
+      <p id="auth-error" style="color: red; display: none; margin-top: 10px">
+        Невірний пароль
+      </p>
+    </div>
+
+    <div class="container hidden" id="teacher-dashboard">
+      <h2>Результати учня</h2>
+      <div
+        id="score-display"
+        style="font-size: 20px; font-weight: bold; margin-bottom: 20px"
+      ></div>
+      <table id="results-table">
+        <thead>
+          <tr>
+            <th>Завдання</th>
+            <th>Відповідь учня</th>
+            <th>Правильна відповідь</th>
+            <th>Статус</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <div style="margin-top: 30px">
+        <a href="?" class="btn">Повернутися на головну</a>
+      </div>
+    </div>
+
+    <div class="footer-link" onclick="openTeacherLogin()">Вчитель</div>
+
+    <script>
+      const correctAnswers = {
+        q1_1: 100,
+        q1_2: 80,
+        q2_1: 6,
+        q2_2: 8,
+        q3_1: 270,
+        q3_2: 460,
+        q3_3: 650,
+        q4_1: 150,
+        q4_2: 300,
+        q5_1: -6,
+        q5_2: 2,
+      };
+
+      const taskNames = {
+        q1_1: "1.1 Значення (x=35)",
+        q1_2: "1.2 Значення (x=15)",
+        q2_1: "2.1 Корінь (4x-5=19)",
+        q2_2: "2.2 Корінь (15+x=23)",
+        q3_1: "3.1 Рівняння (сума)",
+        q3_2: "3.2 Рівняння (різниця a)",
+        q3_3: "3.3 Рівняння (різниця x)",
+        q4_1: "4.1 Дужки (сума)",
+        q4_2: "4.2 Дужки (віднімання)",
+        q5_1: "5.1 Змінна (-18)",
+        q5_2: "5.2 Змінна (10x)",
+      };
+
+      let selectedOptions = {};
+
+      function dummyOk() {}
+
+      function selectOption(qId, val) {
+        selectedOptions[qId] = val;
+        const container = document.querySelector(`[data-id="${qId}"]`);
+        container
+          .querySelectorAll(".option-btn")
+          .forEach((btn) => btn.classList.remove("selected"));
+        event.target.classList.add("selected");
+      }
+
+      function finishTest() {
+        let studentAnswers = {};
+
+        for (let key in correctAnswers) {
+          if (key.startsWith("q2_")) {
+            studentAnswers[key] = selectedOptions[key] || "";
+          } else {
+            let el = document.getElementById(key);
+            studentAnswers[key] = el ? el.value.trim() : "";
+          }
+        }
+
+        const jsonStr = JSON.stringify(studentAnswers);
+        const encoded = btoa(jsonStr);
+        const finalLink =
+          window.location.protocol +
+          "//" +
+          window.location.host +
+          window.location.pathname +
+          "?data=" +
+          encoded;
+
+        document.getElementById("student-view").classList.add("hidden");
+        document.getElementById("result-area").classList.remove("hidden");
+        document.getElementById("link-container").innerText = finalLink;
+        window.scrollTo(0, 0);
+      }
+
+      function copyLink() {
+        const linkText = document.getElementById("link-container").innerText;
+        navigator.clipboard.writeText(linkText).then(() => {
+          alert("Посилання скопійовано!");
+        });
+      }
+
+      function getUrlParameter(name) {
+        name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+        var regex = new RegExp("[\\?&]" + name + "=([^&#]*)");
+        var results = regex.exec(location.search);
+        return results === null
+          ? ""
+          : decodeURIComponent(results[1].replace(/\+/g, " "));
+      }
+
+      function openTeacherLogin() {
+        document.getElementById("student-view").classList.add("hidden");
+        document.getElementById("teacher-auth").classList.remove("hidden");
+      }
+
+      function checkTeacher() {
+        const pass = document.getElementById("teacher-pass").value;
+        if (pass === "янчук") {
+          showTeacherDashboard();
+        } else {
+          document.getElementById("auth-error").style.display = "block";
+        }
+      }
+
+      function showTeacherDashboard() {
+        document.getElementById("teacher-auth").classList.add("hidden");
+        document.getElementById("teacher-dashboard").classList.remove("hidden");
+
+        const dataParam = getUrlParameter("data");
+        if (!dataParam) {
+          document.getElementById("score-display").innerText =
+            "Немає даних для відображення.";
+          return;
+        }
+
+        try {
+          const jsonStr = atob(dataParam);
+          const answers = JSON.parse(jsonStr);
+          const tbody = document.querySelector("#results-table tbody");
+          tbody.innerHTML = "";
+
+          let correctCount = 0;
+          let total = 0;
+
+          for (let key in correctAnswers) {
+            total++;
+            const tr = document.createElement("tr");
+            const isCorrect = parseInt(answers[key]) === correctAnswers[key];
+            if (isCorrect) correctCount++;
+
+            tr.innerHTML = `
+                        <td>${taskNames[key]}</td>
+                        <td>${answers[key] || "-"}</td>
+                        <td>${correctAnswers[key]}</td>
+                        <td class="${isCorrect ? "correct" : "incorrect"}">${
+              isCorrect ? "Правильно" : "Помилка"
+            }</td>
+                    `;
+            tbody.appendChild(tr);
+          }
+
+          document.getElementById(
+            "score-display"
+          ).innerText = `Результат: ${correctCount} з ${total}`;
+        } catch (e) {
+          alert("Помилка читання даних.");
+        }
+      }
+
+      window.onload = function () {
+        if (getUrlParameter("data")) {
+          openTeacherLogin();
+        }
+      };
+    </script>
+  </body>
+</html>
