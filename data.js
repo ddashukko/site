@@ -47,6 +47,17 @@ window.lessonsData = [
     author: "Даша",
   },
   {
+    id: "math-2-mix-ops-100",
+    title:
+      "Додавання та віднімання в межах 100 (з переходом та без) + рівняння",
+    grade: 2,
+    topic: "Арифметика",
+    link: "math_general/2/mixed_operations_within_100.html",
+    subject_code: "math_general",
+    category: "test",
+    author: "Даша",
+  },
+  {
     id: "math-2-hw-01",
     title: "Домашня1",
     grade: 2,

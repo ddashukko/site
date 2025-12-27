@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Математичне Сонечко</title>
+    <style>
+      body {
+        font-family: "Comic Sans MS", "Verdana", sans-serif;
+        background-color: #fff9c4; /* Світло-жовтий */
+        color: #333;
+        margin: 0;
+        padding: 20px;
+        text-align: center;
+      }
+
+      h1 {
+        color: #f57f17;
+        text-shadow: 2px 2px #fff;
+        font-size: 2.5em;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+      }
+
+      .section {
+        background-color: #ffffff;
+        border: 4px solid #fbc02d;
+        border-radius: 20px;
+        padding: 20px;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      h2 {
+        color: #e65100;
+        border-bottom: 2px dashed #fbc02d;
+        padding-bottom: 10px;
+      }
+
+      .task-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-top: 15px;
+      }
+
+      .task-item {
+        font-size: 1.2em;
+        background-color: #fffde7;
+        padding: 10px;
+        border-radius: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      input {
+        width: 60px;
+        height: 30px;
+        font-size: 1em;
+        text-align: center;
+        border: 2px solid #ccc;
+        border-radius: 8px;
+        margin-left: 10px;
+        margin-right: 10px;
+        outline: none;
+      }
+
+      input:focus {
+        border-color: #f57f17;
+        box-shadow: 0 0 5px #fbc02d;
+      }
+
+      /* Стилі для перевірки */
+      input.correct {
+        background-color: #c8e6c9;
+        border-color: #2e7d32;
+        color: #2e7d32;
+        font-weight: bold;
+      }
+
+      input.wrong {
+        background-color: #ffcdd2;
+        border-color: #c62828;
+        color: #c62828;
+      }
+
+      button {
+        background-color: #f57f17;
+        color: white;
+        border: none;
+        padding: 15px 30px;
+        font-size: 1.5em;
+        border-radius: 50px;
+        cursor: pointer;
+        box-shadow: 0 5px #e65100;
+        transition: transform 0.1s;
+        margin-top: 20px;
+        font-family: "Comic Sans MS", sans-serif;
+      }
+
+      button:active {
+        box-shadow: 0 2px #e65100;
+        transform: translateY(3px);
+      }
+
+      #result {
+        margin-top: 20px;
+        font-size: 1.5em;
+        font-weight: bold;
+        color: #e65100;
+        min-height: 50px;
+      }
+
+      .ladybug {
+        font-size: 2em;
+        vertical-align: middle;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>🐞 Математичне Сонечко ☀️</h1>
+      <p>Привіт! Допоможи Сонечку розв'язати всі приклади!</p>
+
+      <div class="section">
+        <h2>1. Додавання (з переходом через 10)</h2>
+        <div class="task-grid">
+          <div class="task-item">
+            28 + 5 = <input type="number" data-answer="33" />
+          </div>
+          <div class="task-item">
+            47 + 6 = <input type="number" data-answer="53" />
+          </div>
+          <div class="task-item">
+            64 + 9 = <input type="number" data-answer="73" />
+          </div>
+          <div class="task-item">
+            35 + 8 = <input type="number" data-answer="43" />
+          </div>
+          <div class="task-item">
+            56 + 7 = <input type="number" data-answer="63" />
+          </div>
+          <div class="task-item">
+            83 + 9 = <input type="number" data-answer="92" />
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>2. Віднімання (з переходом через 10)</h2>
+        <div class="task-grid">
+          <div class="task-item">
+            32 - 5 = <input type="number" data-answer="27" />
+          </div>
+          <div class="task-item">
+            54 - 8 = <input type="number" data-answer="46" />
+          </div>
+          <div class="task-item">
+            71 - 4 = <input type="number" data-answer="67" />
+          </div>
+          <div class="task-item">
+            26 - 9 = <input type="number" data-answer="17" />
+          </div>
+          <div class="task-item">
+            43 - 6 = <input type="number" data-answer="37" />
+          </div>
+          <div class="task-item">
+            92 - 7 = <input type="number" data-answer="85" />
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>3. Рахуємо до 100 (без переходу)</h2>
+        <div class="task-grid">
+          <div class="task-item">
+            45 + 23 = <input type="number" data-answer="68" />
+          </div>
+          <div class="task-item">
+            78 - 34 = <input type="number" data-answer="44" />
+          </div>
+          <div class="task-item">
+            52 + 16 = <input type="number" data-answer="68" />
+          </div>
+          <div class="task-item">
+            67 - 25 = <input type="number" data-answer="42" />
+          </div>
+          <div class="task-item">
+            31 + 48 = <input type="number" data-answer="79" />
+          </div>
+          <div class="task-item">
+            89 - 56 = <input type="number" data-answer="33" />
+          </div>
+          <div class="task-item">
+            24 + 65 = <input type="number" data-answer="89" />
+          </div>
+          <div class="task-item">
+            96 - 12 = <input type="number" data-answer="84" />
+          </div>
+          <div class="task-item">
+            73 + 21 = <input type="number" data-answer="94" />
+          </div>
+          <div class="task-item">
+            58 - 37 = <input type="number" data-answer="21" />
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>4. Знайди невідоме число (рівняння)</h2>
+        <div class="task-grid">
+          <div class="task-item">
+            20 + <input type="number" data-answer="8" placeholder="x" /> = 28
+          </div>
+          <div class="task-item">
+            <input type="number" data-answer="30" placeholder="x" /> + 15 = 45
+          </div>
+          <div class="task-item">
+            54 + <input type="number" data-answer="5" placeholder="x" /> = 59
+          </div>
+          <div class="task-item">
+            <input type="number" data-answer="26" placeholder="x" /> + 12 = 38
+          </div>
+          <div class="task-item">
+            43 + <input type="number" data-answer="4" placeholder="x" /> = 47
+          </div>
+        </div>
+      </div>
+
+      <button onclick="checkAnswers()">Перевірити відповіді!</button>
+      <div id="result"></div>
+    </div>
+
+    <script>
+      function checkAnswers() {
+        let inputs = document.querySelectorAll("input");
+        let correctCount = 0;
+        let totalCount = inputs.length;
+
+        inputs.forEach((input) => {
+          let userAnswer = parseInt(input.value);
+          let correctAnswer = parseInt(input.getAttribute("data-answer"));
+
+          if (userAnswer === correctAnswer) {
+            input.className = "correct";
+            correctCount++;
+          } else {
+            input.className = "wrong";
+          }
+        });
+
+        let resultDiv = document.getElementById("result");
+
+        if (correctCount === totalCount) {
+          resultDiv.innerHTML =
+            "🎉 Ура! Ти справжнє сонечко! Все правильно! 🐞";
+          resultDiv.style.color = "#2E7D32";
+        } else if (correctCount > totalCount / 2) {
+          resultDiv.innerHTML = `Непогано! Правильно: ${correctCount} з ${totalCount}. Спробуй виправити червоні клітинки.`;
+          resultDiv.style.color = "#E65100";
+        } else {
+          resultDiv.innerHTML = `Ти тільки вчишся! Правильно: ${correctCount} з ${totalCount}. Спробуй ще раз!`;
+          resultDiv.style.color = "#C62828";
+        }
+      }
+    </script>
+  </body>
+</html>
