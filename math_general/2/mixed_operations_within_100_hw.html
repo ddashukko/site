@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Домашнє завдання: Математичне Сонечко</title>
+    <style>
+      body {
+        font-family: "Comic Sans MS", "Verdana", sans-serif;
+        background-color: #fff9c4;
+        color: #333;
+        margin: 0;
+        padding: 20px;
+        text-align: center;
+      }
+
+      h1 {
+        color: #f57f17;
+        text-shadow: 2px 2px #fff;
+        font-size: 2.2em;
+        margin-bottom: 10px;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        position: relative;
+      }
+
+      .section {
+        background-color: #ffffff;
+        border: 4px solid #fbc02d;
+        border-radius: 20px;
+        padding: 20px;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      h2 {
+        color: #e65100;
+        border-bottom: 2px dashed #fbc02d;
+        padding-bottom: 10px;
+        margin-top: 0;
+      }
+
+      .task-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-top: 15px;
+      }
+
+      .task-item {
+        font-size: 1.2em;
+        background-color: #fffde7;
+        padding: 10px;
+        border-radius: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      input {
+        width: 60px;
+        height: 35px;
+        font-size: 1.1em;
+        text-align: center;
+        border: 2px solid #ccc;
+        border-radius: 8px;
+        margin: 0 10px;
+        outline: none;
+        background-color: #fafafa;
+      }
+
+      input:focus {
+        border-color: #f57f17;
+        box-shadow: 0 0 5px #fbc02d;
+      }
+
+      /* Стилі для вчителя */
+      input.correct {
+        background-color: #c8e6c9;
+        border-color: #2e7d32;
+        color: #2e7d32;
+        font-weight: bold;
+      }
+      input.wrong {
+        background-color: #ffcdd2;
+        border-color: #c62828;
+        color: #c62828;
+        font-weight: bold;
+      }
+
+      .btn-main {
+        background-color: #f57f17;
+        color: white;
+        border: none;
+        padding: 15px 40px;
+        font-size: 1.5em;
+        border-radius: 50px;
+        cursor: pointer;
+        box-shadow: 0 5px #e65100;
+        font-family: "Comic Sans MS", sans-serif;
+        margin-bottom: 50px;
+      }
+      .btn-main:active {
+        transform: translateY(3px);
+        box-shadow: 0 2px #e65100;
+      }
+
+      /* Модальне вікно результату */
+      #shareSection {
+        display: none;
+        background: #fff;
+        border: 4px solid #e65100;
+        padding: 20px;
+        border-radius: 15px;
+        margin-top: 20px;
+      }
+      #resultLink {
+        width: 90%;
+        padding: 10px;
+        font-size: 1em;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin: 10px 0;
+        background: #eee;
+        color: #555;
+      }
+
+      /* Вікно паролю вчителя */
+      #teacherLogin {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 249, 196, 0.95);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+      }
+      #teacherLogin h2 {
+        border: none;
+        font-size: 2em;
+      }
+      #passwordInput {
+        font-size: 1.5em;
+        padding: 10px;
+        width: 200px;
+        margin-bottom: 20px;
+      }
+
+      /* Конфеті */
+      .confetti {
+        position: fixed;
+        top: -50px;
+        z-index: 9999;
+        pointer-events: none;
+        animation: fall linear forwards;
+      }
+      @keyframes fall {
+        0% {
+          transform: translateY(0) rotate(0deg);
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(110vh) rotate(720deg);
+          opacity: 0;
+        }
+      }
+
+      #finalScore {
+        font-size: 2em;
+        font-weight: bold;
+        margin-top: 20px;
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="teacherLogin">
+      <h2>🔐 Вхід для вчителя</h2>
+      <p>Введіть пароль, щоб перевірити роботу:</p>
+      <input type="password" id="passwordInput" placeholder="Пароль" />
+      <button class="btn-main" onclick="checkPassword()">Увійти</button>
+      <p id="loginError" style="color: red; display: none">Невірний пароль!</p>
+    </div>
+
+    <div class="container" id="mainContent">
+      <h1>🏠 Домашнє завдання ☀️</h1>
+      <p id="instruction">
+        Розв'яжи приклади. Коли закінчиш — натисни кнопку внизу!
+      </p>
+
+      <div class="section">
+        <h2>1. Додавання (з переходом)</h2>
+        <div class="task-grid">
+          <div class="task-item">
+            38 + 4 = <input type="number" data-answer="42" />
+          </div>
+          <div class="task-item">
+            57 + 5 = <input type="number" data-answer="62" />
+          </div>
+          <div class="task-item">
+            69 + 3 = <input type="number" data-answer="72" />
+          </div>
+          <div class="task-item">
+            46 + 8 = <input type="number" data-answer="54" />
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>2. Віднімання (з переходом)</h2>
+        <div class="task-grid">
+          <div class="task-item">
+            42 - 5 = <input type="number" data-answer="37" />
+          </div>
+          <div class="task-item">
+            63 - 8 = <input type="number" data-answer="55" />
+          </div>
+          <div class="task-item">
+            51 - 4 = <input type="number" data-answer="47" />
+          </div>
+          <div class="task-item">
+            85 - 7 = <input type="number" data-answer="78" />
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>3. Рахуємо до 100</h2>
+        <div class="task-grid">
+          <div class="task-item">
+            23 + 45 = <input type="number" data-answer="68" />
+          </div>
+          <div class="task-item">
+            76 - 34 = <input type="number" data-answer="42" />
+          </div>
+          <div class="task-item">
+            54 + 32 = <input type="number" data-answer="86" />
+          </div>
+          <div class="task-item">
+            89 - 41 = <input type="number" data-answer="48" />
+          </div>
+          <div class="task-item">
+            12 + 67 = <input type="number" data-answer="79" />
+          </div>
+          <div class="task-item">
+            98 - 25 = <input type="number" data-answer="73" />
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>4. Рівняння</h2>
+        <div class="task-grid">
+          <div class="task-item">
+            <input type="number" data-answer="28" placeholder="x" /> + 7 = 35
+          </div>
+          <div class="task-item">
+            24 + <input type="number" data-answer="5" placeholder="x" /> = 29
+          </div>
+          <div class="task-item">
+            <input type="number" data-answer="33" placeholder="x" /> + 13 = 46
+          </div>
+        </div>
+      </div>
+
+      <button id="finishBtn" class="btn-main" onclick="finishHomework()">
+        Здати роботу! 📩
+      </button>
+
+      <div id="shareSection">
+        <h3>🎉 Молодець! Ти впорався!</h3>
+        <p>Тепер скопіюй це посилання та надішли вчителю:</p>
+        <input type="text" id="resultLink" readonly />
+        <button
+          class="btn-main"
+          onclick="copyLink()"
+          style="font-size: 1em; padding: 10px 20px"
+        >
+          Копіювати
+        </button>
+      </div>
+
+      <div id="finalScore"></div>
+    </div>
+
+    <script>
+      // Перевіряємо, чи ми в режимі вчителя (чи є дані в посиланні)
+      window.onload = function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const data = urlParams.get("answers");
+
+        if (data) {
+          // Якщо є дані - це вчитель
+          document.getElementById("finishBtn").style.display = "none";
+          document.getElementById("instruction").innerText =
+            "Режим перевірки вчителя";
+
+          // Заповнюємо відповіді учня
+          try {
+            const studentAnswers = JSON.parse(atob(data)); // Розкодовуємо
+            const inputs = document.querySelectorAll('input[type="number"]');
+
+            inputs.forEach((input, index) => {
+              if (studentAnswers[index] !== undefined) {
+                input.value = studentAnswers[index];
+              }
+              input.disabled = true; // Блокуємо редагування
+            });
+
+            // Показуємо вікно паролю
+            document.getElementById("teacherLogin").style.display = "flex";
+          } catch (e) {
+            alert("Помилка читання даних.");
+          }
+        }
+      };
+
+      function finishHomework() {
+        const inputs = document.querySelectorAll('input[type="number"]');
+        let answers = [];
+        let allFilled = true;
+
+        inputs.forEach((input) => {
+          if (input.value === "") allFilled = false;
+          answers.push(input.value);
+        });
+
+        if (!allFilled) {
+          if (!confirm("Не всі поля заповнені. Все одно здати?")) return;
+        }
+
+        // Кодуємо відповіді в Base64, щоб дитина не прочитала їх прямо в URL
+        const encoded = btoa(JSON.stringify(answers));
+
+        // Формуємо посилання
+        // Важливо: працює коректно, якщо сайт на хостингу (GitHub Pages)
+        const fullLink =
+          window.location.href.split("?")[0] + "?answers=" + encoded;
+
+        document.getElementById("shareSection").style.display = "block";
+        document.getElementById("finishBtn").style.display = "none";
+        document.getElementById("resultLink").value = fullLink;
+
+        // Прокрутка вниз
+        document
+          .getElementById("shareSection")
+          .scrollIntoView({ behavior: "smooth" });
+      }
+
+      function copyLink() {
+        const copyText = document.getElementById("resultLink");
+        copyText.select();
+        copyText.setSelectionRange(0, 99999);
+        navigator.clipboard.writeText(copyText.value);
+        alert("Посилання скопійовано! Надішли його вчителю.");
+      }
+
+      function checkPassword() {
+        const pass = document.getElementById("passwordInput").value;
+        // ПАРОЛЬ ТУТ
+        if (pass.toLowerCase() === "янчук") {
+          document.getElementById("teacherLogin").style.display = "none";
+          gradeHomework();
+        } else {
+          document.getElementById("loginError").style.display = "block";
+        }
+      }
+
+      function gradeHomework() {
+        const inputs = document.querySelectorAll('input[type="number"]');
+        let correctCount = 0;
+
+        inputs.forEach((input) => {
+          let val = parseInt(input.value);
+          let ans = parseInt(input.getAttribute("data-answer"));
+
+          if (val === ans) {
+            input.classList.add("correct");
+            correctCount++;
+          } else {
+            input.classList.add("wrong");
+          }
+        });
+
+        const scoreDiv = document.getElementById("finalScore");
+        scoreDiv.style.display = "block";
+        scoreDiv.innerHTML = `Результат: ${correctCount} з ${inputs.length}`;
+
+        if (correctCount === inputs.length) {
+          scoreDiv.style.color = "#2E7D32";
+          scoreDiv.innerHTML += "<br>🎉 Ідеально! 🎉";
+          launchConfetti();
+        } else {
+          scoreDiv.style.color = "#E65100";
+        }
+      }
+
+      function launchConfetti() {
+        const emojis = ["🐞", "☀️", "🌸", "✨", "5️⃣"];
+        for (let i = 0; i < 50; i++) {
+          const confetto = document.createElement("div");
+          confetto.classList.add("confetti");
+          confetto.innerText =
+            emojis[Math.floor(Math.random() * emojis.length)];
+          confetto.style.left = Math.random() * 100 + "vw";
+          confetto.style.fontSize = Math.random() * 20 + 20 + "px";
+          confetto.style.animationDuration = Math.random() * 3 + 2 + "s";
+          document.body.appendChild(confetto);
+          setTimeout(() => confetto.remove(), 5000);
+        }
+      }
+    </script>
+  </body>
+</html>

@@ -64,7 +64,17 @@ window.lessonsData = [
     topic: "Математика",
     link: "math_general/2/HW_factoring_numbers_addition.html",
     subject_code: "math_general",
-    category: "lesson",
+    category: "homework",
+    author: "Даша",
+  },
+  {
+    id: "math-2-hw-02",
+    title: "Домашня1",
+    grade: 2,
+    topic: "Математика",
+    link: "math_general/2/mixed_operations_within_100_hw.html",
+    subject_code: "math_general",
+    category: "homework",
     author: "Даша",
   },
 
@@ -221,6 +231,16 @@ window.lessonsData = [
   // ==========================================
   // 8 КЛАС (Алгебра - ТЕСТИ) - Автор: Даша
   // ==========================================
+  {
+    id: "alg-8-base",
+    title: "Пробний урок Низького рівня до 1 семестру",
+    grade: 8,
+    topic: "Алгебра",
+    link: "algebra/8/lesson_base.html",
+    subject_code: "algebra",
+    category: "test",
+    author: "Даша",
+  },
   {
     id: "alg-8-test-09",
     title: "Тест: §9. Степінь із цілим показником",
