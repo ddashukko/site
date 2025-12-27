@@ -69,7 +69,7 @@ window.lessonsData = [
   },
   {
     id: "math-2-hw-02",
-    title: "Домашня1",
+    title: "Домашня2",
     grade: 2,
     topic: "Математика",
     link: "math_general/2/mixed_operations_within_100_hw.html",
