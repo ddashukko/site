@@ -122,6 +122,17 @@ window.lessonsData = [
     author: "Даша",
   },
   {
+    id: "math-5-control-sim2",
+    title:
+      "Контрольна з теми: додавання віднімання ділення та множення в стовбчик. Варіант Б",
+    grade: 5,
+    topic: "Математика",
+    link: "math_general/5/test_simulator1.html",
+    subject_code: "math_general",
+    category: "lesson",
+    author: "Даша",
+  },
+  {
     id: "math-5-column-mult",
     title: "Множення чисел у стовпчик",
     grade: 5,
