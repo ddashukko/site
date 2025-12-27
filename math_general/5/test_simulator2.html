@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Klassenarbeit: Natürliche Zahlen (Gruppe B)</title>
+    <style>
+      :root {
+        --paper-color: #fdfbf7;
+        --teacher-red: #c0392b;
+        --correct-green: #27ae60;
+        --bg-correct: #eafaf1;
+        --bg-wrong: #fadbd8;
+      }
+      body {
+        font-family: "Times New Roman", serif;
+        background-color: #555;
+        margin: 0;
+        padding: 20px;
+        display: flex;
+        justify-content: center;
+      }
+      .sheet {
+        background-color: var(--paper-color);
+        width: 210mm;
+        min-height: 297mm;
+        padding: 20mm;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+        position: relative;
+        box-sizing: border-box;
+        margin-bottom: 20px;
+      }
+      h1,
+      h2,
+      h3 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #000;
+      }
+      .header-info {
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 2px solid black;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+        font-weight: bold;
+        font-family: Arial, sans-serif;
+      }
+      .correct-field {
+        border: 2px solid var(--correct-green) !important;
+        background-color: var(--bg-correct) !important;
+        color: var(--correct-green) !important;
+      }
+      .wrong-field {
+        border: 2px solid var(--teacher-red) !important;
+        background-color: var(--bg-wrong) !important;
+        color: var(--teacher-red) !important;
+      }
+      .row-correct {
+        background-color: var(--bg-correct) !important;
+      }
+      .row-wrong {
+        background-color: var(--bg-wrong) !important;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+        background: white;
+        font-family: Arial, sans-serif;
+      }
+      th,
+      td {
+        border: 1px solid black;
+        padding: 8px 4px;
+        text-align: center;
+        vertical-align: middle;
+      }
+      th {
+        background-color: #f0f0f0;
+      }
+      td.question-text {
+        text-align: left;
+        padding-left: 10px;
+        width: 35%;
+        font-weight: bold;
+      }
+      .letter-input {
+        width: 30px;
+        height: 30px;
+        font-size: 1.2rem;
+        text-align: center;
+        text-transform: uppercase;
+        border: 2px solid #2980b9;
+        border-radius: 4px;
+        font-family: "Courier New", monospace;
+        font-weight: bold;
+      }
+
+      /* New Task Block Style without Canvas */
+      .task-block {
+        margin-bottom: 25px;
+        padding: 15px;
+        border: 1px solid #999;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 5px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .notebook-warning {
+        color: var(--teacher-red);
+        font-weight: bold;
+        font-style: italic;
+        font-size: 0.9rem;
+        margin: 0;
+        text-align: center;
+        padding: 0 10px;
+      }
+
+      .task-input {
+        font-family: "Courier New", monospace;
+        font-size: 1.2rem;
+        padding: 5px;
+        width: 120px;
+        border: none;
+        border-bottom: 2px solid #2c3e50;
+        background: transparent;
+        text-align: right;
+        font-weight: bold;
+      }
+      .nav-buttons {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 40px;
+      }
+      button.nav-btn {
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        background-color: #2c3e50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        margin-left: 10px;
+      }
+      button.nav-btn:hover {
+        background-color: #34495e;
+      }
+      button.check-btn {
+        background-color: #27ae60;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      /* MODAL STYLES */
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.9);
+        justify-content: center;
+        align-items: center;
+        z-index: 2000;
+      }
+      .modal-box {
+        background: white;
+        padding: 30px;
+        border-radius: 8px;
+        width: 500px;
+        text-align: center;
+        font-family: sans-serif;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+      }
+      .grade-mark {
+        font-size: 4rem;
+        color: var(--teacher-red);
+        font-family: "Brush Script MT", cursive;
+        margin: 20px 0;
+      }
+      .link-area {
+        width: 100%;
+        height: 100px;
+        margin-top: 10px;
+        font-family: monospace;
+        font-size: 0.9rem;
+        padding: 5px;
+      }
+      .teacher-login-container {
+        text-align: center;
+        margin-top: 20%;
+        color: white;
+        font-family: sans-serif;
+      }
+      .teacher-input {
+        padding: 10px;
+        font-size: 1.2rem;
+        border-radius: 4px;
+        border: none;
+        margin-bottom: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="teacherLoginScreen"
+      class="modal-overlay"
+      style="display: none; background: #333"
+    >
+      <div class="modal-box">
+        <h2>Lehrer-Zugang</h2>
+        <p>Bitte Passwort eingeben, um die Arbeit zu korrigieren:</p>
+        <input
+          type="password"
+          id="teacherPass"
+          class="teacher-input"
+          placeholder="Passwort..."
+        />
+        <br />
+        <button class="nav-btn" onclick="verifyTeacher()">Einloggen</button>
+        <p id="loginError" style="color: red; display: none; margin-top: 10px">
+          Falsches Passwort!
+        </p>
+      </div>
+    </div>
+
+    <div id="studentFinishScreen" class="modal-overlay">
+      <div class="modal-box">
+        <h2>Arbeit beendet!</h2>
+        <p>Deine Antworten wurden gespeichert.</p>
+        <p><strong>Kopiere diesen Link und sende ihn deinem Lehrer:</strong></p>
+        <textarea id="resultLink" class="link-area" readonly></textarea>
+        <button class="nav-btn" onclick="copyLink()">Link kopieren</button>
+      </div>
+    </div>
+
+    <div id="gradingOverlay" class="modal-overlay">
+      <div class="result-box">
+        <h2>Ergebnis (Gruppe B)</h2>
+        <p>Erreichte Punkte: <span id="totalPoints">0</span> / 50</p>
+        <div class="grade-mark" id="finalGrade">Note: ?</div>
+        <div style="text-align: left; margin-top: 20px; font-size: 0.9rem">
+          <p>Seite 1: <span id="scoreP1">0</span> / 10</p>
+          <p>Seite 2: <span id="scoreP2">0</span> / 18</p>
+          <p>Seite 3: <span id="scoreP3">0</span> / 22</p>
+        </div>
+        <button
+          class="nav-btn"
+          onclick="document.getElementById('gradingOverlay').style.display='none'"
+          style="margin-top: 20px"
+        >
+          Blatt ansehen
+        </button>
+      </div>
+    </div>
+
+    <div id="mainContent">
+      <div class="sheet" id="page1">
+        <div class="header-info">
+          <span>Klassenarbeit: Natürliche Zahlen (Gruppe B)</span>
+          <span
+            >Datum:
+            <input
+              type="text"
+              id="dateInput"
+              style="border: none; background: transparent; font-weight: bold"
+          /></span>
+          <span
+            >Name:
+            <input
+              type="text"
+              id="nameInput"
+              style="border: none; background: transparent; font-weight: bold"
+          /></span>
+        </div>
+
+        <h3>1. Aufgabe: Wähle die richtige Lösung. (10 Punkte)</h3>
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 35%">Aufgabe</th>
+              <th style="width: 10%">A</th>
+              <th style="width: 10%">B</th>
+              <th style="width: 10%">C</th>
+              <th style="width: 10%">D</th>
+              <th style="width: 15%; color: #c0392b">Lösung</th>
+            </tr>
+          </thead>
+          <tbody id="table-p1"></tbody>
+        </table>
+        <div class="nav-buttons" style="justify-content: flex-end">
+          <button class="nav-btn" onclick="showPage('page2')">
+            Nächste Seite &rarr;
+          </button>
+        </div>
+      </div>
+
+      <div class="sheet hidden" id="page2">
+        <div class="header-info"><span>Seite 2 (Gruppe B)</span></div>
+        <h3>Schriftliche Rechenverfahren</h3>
+        <p
+          style="
+            text-align: center;
+            color: var(--teacher-red);
+            font-weight: bold;
+            margin-bottom: 20px;
+            border: 2px solid var(--teacher-red);
+            padding: 10px;
+          "
+        >
+          ⚠ ACHTUNG: Bitte alle Rechenwege ordentlich im Heft notieren und ein
+          Foto an den Lehrer senden!
+        </p>
+        <p>Trage hier nur das <strong>Endergebnis</strong> ein.</p>
+
+        <div class="task-block">
+          <label><strong>2. Aufgabe:</strong><br />6.429 + 13.851</label>
+          <p class="notebook-warning">Im Heft rechnen! ➜</p>
+          <div>
+            Ergebnis: <input type="number" id="p2_q1" class="task-input" />
+          </div>
+        </div>
+        <div class="task-block">
+          <label><strong>3. Aufgabe:</strong><br />43.102 - 5.618</label>
+          <p class="notebook-warning">Im Heft rechnen! ➜</p>
+          <div>
+            Ergebnis: <input type="number" id="p2_q2" class="task-input" />
+          </div>
+        </div>
+        <div class="task-block">
+          <label><strong>4. Aufgabe:</strong><br />28.512 : 12</label>
+          <p class="notebook-warning">Im Heft rechnen! ➜</p>
+          <div>
+            Ergebnis: <input type="number" id="p2_q3" class="task-input" />
+          </div>
+        </div>
+        <div class="task-block">
+          <label><strong>5. Aufgabe:</strong><br />2.805 · 143</label>
+          <p class="notebook-warning">Im Heft rechnen! ➜</p>
+          <div>
+            Ergebnis: <input type="number" id="p2_q4" class="task-input" />
+          </div>
+        </div>
+
+        <div class="nav-buttons">
+          <button class="nav-btn" onclick="showPage('page1')">
+            &larr; Zurück
+          </button>
+          <button class="nav-btn" onclick="showPage('page3')">
+            Nächste Seite &rarr;
+          </button>
+        </div>
+      </div>
+
+      <div class="sheet hidden" id="page3">
+        <div class="header-info"><span>Seite 3 (Gruppe B)</span></div>
+        <h3>6. Aufgabe: Statistische Kennwerte (10 Punkte)</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Aussage</th>
+              <th>Durchschnitt</th>
+              <th>Zentralwert</th>
+              <th>Spannweite</th>
+            </tr>
+          </thead>
+          <tbody id="logicTableBody">
+            <tr id="logicRow1">
+              <td class="question-text">
+                „Ich addiere alle Noten und teile durch die Anzahl.“
+              </td>
+              <td><input type="radio" name="logic1" value="correct" /></td>
+              <td><input type="radio" name="logic1" value="wrong" /></td>
+              <td><input type="radio" name="logic1" value="wrong" /></td>
+            </tr>
+            <tr id="logicRow2">
+              <td class="question-text">
+                „Ich sortiere die Zahlen und suche die Mitte.“
+              </td>
+              <td><input type="radio" name="logic2" value="wrong" /></td>
+              <td><input type="radio" name="logic2" value="correct" /></td>
+              <td><input type="radio" name="logic2" value="wrong" /></td>
+            </tr>
+            <tr id="logicRow3">
+              <td class="question-text">
+                „Die Differenz zwischen Maximum und Minimum.“
+              </td>
+              <td><input type="radio" name="logic3" value="wrong" /></td>
+              <td><input type="radio" name="logic3" value="wrong" /></td>
+              <td><input type="radio" name="logic3" value="correct" /></td>
+            </tr>
+            <tr id="logicRow4">
+              <td class="question-text">
+                „Ein einzelner Ausreißer verändert diesen Wert stark.“
+              </td>
+              <td><input type="radio" name="logic4" value="correct" /></td>
+              <td><input type="radio" name="logic4" value="wrong" /></td>
+              <td><input type="radio" name="logic4" value="wrong" /></td>
+            </tr>
+          </tbody>
+        </table>
+        <hr />
+        <h3>7. Aufgabe: Sachaufgabe (12 Punkte)</h3>
+        <p>85 Schüler, 5 Lehrer. Buskapazität: 45 Personen. Wie viele Busse?</p>
+        <p style="color: var(--teacher-red); font-style: italic">
+          (Lösungsweg im Heft notieren!)
+        </p>
+
+        <div class="task-block" style="justify-content: flex-end">
+          <p class="notebook-warning" style="margin-right: 20px">
+            Antwort eingeben ➜
+          </p>
+          <p>
+            Man braucht
+            <input
+              type="number"
+              id="p3_wordproblem"
+              class="task-input"
+              style="width: 50px"
+            />
+            Busse.
+          </p>
+        </div>
+
+        <div class="nav-buttons">
+          <button class="nav-btn" onclick="showPage('page2')">
+            &larr; Zurück
+          </button>
+          <button
+            class="nav-btn"
+            id="finishBtn"
+            onclick="generateTeacherLink()"
+            style="background-color: var(--teacher-red)"
+          >
+            Arbeit abgeben (Link erstellen)
+          </button>
+
+          <div id="teacherControls" style="display: none; gap: 10px">
+            <button class="nav-btn check-btn" onclick="gradeTest()">
+              ✔ Jetzt korrigieren
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // --- ДАНІ ---
+      const p1_data = [
+        { q: "8 · 12 =", opts: ["96", "86", "106", "94"], ans: 0 },
+        { q: "15 + 3 + 7 + 25 =", opts: ["45", "55", "50", "60"], ans: 2 },
+        { q: "428 : 2 =", opts: ["224", "214", "124", "414"], ans: 1 },
+        {
+          q: "Runde auf Tausender: 2.501 ≈",
+          opts: ["2000", "2500", "3000", "2600"],
+          ans: 2,
+        },
+        {
+          q: "Runde auf Zehner: 844 ≈",
+          opts: ["840", "850", "800", "900"],
+          ans: 0,
+        },
+        {
+          q: "Runde auf Hunderter: 12.099 ≈",
+          opts: ["12000", "12100", "12090", "12200"],
+          ans: 1,
+        },
+        {
+          q: "1 € - 25 Cent =",
+          opts: ["85 ct", "65 ct", "75 ct", "55 ct"],
+          ans: 2,
+        },
+        {
+          q: "Der Durchschnitt von 2, 4, 6 ist...",
+          opts: ["3", "4", "5", "6"],
+          ans: 1,
+        },
+        {
+          q: "Zentralwert von 10, 1, 5 ist...",
+          opts: ["1", "5", "10", "6"],
+          ans: 1,
+        },
+        {
+          q: "Spannweite von 2 bis 12 ist...",
+          opts: ["10", "12", "14", "6"],
+          ans: 0,
+        },
+      ];
+      const letters = ["A", "B", "C", "D"];
+
+      // INITIALIZATION
+      const tbody = document.getElementById("table-p1");
+      p1_data.forEach((item, index) => {
+        let row = `<tr><td class="question-text">${item.q}</td>`;
+        item.opts.forEach((opt) => (row += `<td>${opt}</td>`));
+        row += `<td><input type="text" maxlength="1" id="p1_input_${index}" class="letter-input"></td></tr>`;
+        tbody.innerHTML += row;
+      });
+
+      function showPage(pageId) {
+        document
+          .querySelectorAll(".sheet")
+          .forEach((el) => el.classList.add("hidden"));
+        document.getElementById(pageId).classList.remove("hidden");
+        window.scrollTo(0, 0);
+      }
+
+      // --- 1. ЛОГІКА ДЛЯ УЧНЯ: ЗБІР ДАНИХ І ГЕНЕРАЦІЯ ЛІНКУ ---
+      function generateTeacherLink() {
+        const data = {
+          name: document.getElementById("nameInput").value,
+          date: document.getElementById("dateInput").value,
+          p1: [],
+          p2: [],
+          p3_radio: {},
+          p3_word: document.getElementById("p3_wordproblem").value,
+        };
+
+        // Collect P1
+        p1_data.forEach((item, index) => {
+          data.p1.push(document.getElementById(`p1_input_${index}`).value);
+        });
+        // Collect P2
+        data.p2.push(document.getElementById("p2_q1").value);
+        data.p2.push(document.getElementById("p2_q2").value);
+        data.p2.push(document.getElementById("p2_q3").value);
+        data.p2.push(document.getElementById("p2_q4").value);
+        // Collect P3 Radios
+        ["logic1", "logic2", "logic3", "logic4"].forEach((name) => {
+          const el = document.querySelector(`input[name="${name}"]:checked`);
+          if (el) data.p3_radio[name] = el.value;
+        });
+
+        // Encode to Base64 to make URL safe
+        const jsonString = JSON.stringify(data);
+        const encoded = btoa(encodeURIComponent(jsonString));
+
+        // Build URL
+        const baseUrl = window.location.href.split("?")[0];
+        const finalLink = `${baseUrl}?data=${encoded}`;
+
+        // Show Modal
+        document.getElementById("resultLink").value = finalLink;
+        document.getElementById("studentFinishScreen").style.display = "flex";
+      }
+
+      function copyLink() {
+        const linkText = document.getElementById("resultLink");
+        linkText.select();
+        document.execCommand("copy");
+        alert("Link kopiert! Sende ihn jetzt an deinen Lehrer.");
+      }
+
+      // --- 2. ЛОГІКА ДЛЯ ВЧИТЕЛЯ: ЗАВАНТАЖЕННЯ І ПЕРЕВІРКА ---
+
+      // Check on load if we have data
+      window.onload = function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has("data")) {
+          // Teacher mode detected
+          document.getElementById("mainContent").style.display = "none"; // Hide test initially
+          document.getElementById("teacherLoginScreen").style.display = "flex"; // Show login
+        }
+      };
+
+      function verifyTeacher() {
+        const pass = document.getElementById("teacherPass").value;
+        if (pass === "янчук") {
+          loadStudentData();
+        } else {
+          document.getElementById("loginError").style.display = "block";
+        }
+      }
+
+      function loadStudentData() {
+        try {
+          const urlParams = new URLSearchParams(window.location.search);
+          const encoded = urlParams.get("data");
+          const jsonString = decodeURIComponent(atob(encoded));
+          const data = JSON.parse(jsonString);
+
+          // Hide login, Show test
+          document.getElementById("teacherLoginScreen").style.display = "none";
+          document.getElementById("mainContent").style.display = "block";
+
+          // Switch controls
+          document.getElementById("finishBtn").style.display = "none";
+          document.getElementById("teacherControls").style.display = "flex";
+
+          // Fill Data
+          document.getElementById("nameInput").value =
+            data.name + " (Schülerantwort)";
+          document.getElementById("dateInput").value = data.date;
+
+          // Fill P1
+          data.p1.forEach((val, idx) => {
+            const el = document.getElementById(`p1_input_${idx}`);
+            el.value = val;
+            el.readOnly = true;
+          });
+          // Fill P2
+          document.getElementById("p2_q1").value = data.p2[0];
+          document.getElementById("p2_q2").value = data.p2[1];
+          document.getElementById("p2_q3").value = data.p2[2];
+          document.getElementById("p2_q4").value = data.p2[3];
+          // Fill P3
+          for (const [key, val] of Object.entries(data.p3_radio)) {
+            const radio = document.querySelector(
+              `input[name="${key}"][value="${val}"]`
+            );
+            if (radio) radio.checked = true;
+          }
+          document.getElementById("p3_wordproblem").value = data.p3_word;
+
+          // Lock inputs
+          document
+            .querySelectorAll("input")
+            .forEach((i) => (i.readOnly = true));
+          alert("Schülerdaten geladen. Klicken Sie auf 'Jetzt korrigieren'.");
+        } catch (e) {
+          alert("Fehler beim Laden der Daten. Link beschädigt?");
+          console.error(e);
+        }
+      }
+
+      // --- 3. ФУНКЦІЯ ПЕРЕВІРКИ (GRUPPE B) ---
+      function gradeTest() {
+        // P1
+        p1_data.forEach((item, index) => {
+          const el = document.getElementById(`p1_input_${index}`);
+          const val = el.value.toUpperCase().trim();
+          el.classList.remove("correct-field", "wrong-field");
+          if (val === letters[item.ans]) el.classList.add("correct-field");
+          else if (val !== "") el.classList.add("wrong-field");
+        });
+
+        // P2 Correct Answers (Gruppe B)
+        checkNumberField("p2_q1", 20280);
+        checkNumberField("p2_q2", 37484);
+        checkNumberField("p2_q3", 2376);
+        checkNumberField("p2_q4", 401115);
+
+        ["logic1", "logic2", "logic3", "logic4"].forEach((name) =>
+          checkLogicRow(name, `logicRow${name.slice(-1)}`)
+        );
+        checkNumberField("p3_wordproblem", 2);
+
+        // Calculate Points
+        let points = 0;
+        let p1_points = 0;
+        p1_data.forEach((item, index) => {
+          if (
+            document
+              .getElementById(`p1_input_${index}`)
+              .value.toUpperCase()
+              .trim() === letters[item.ans]
+          )
+            p1_points++;
+        });
+        points += p1_points;
+
+        let p2_points = 0;
+        if (parseInt(document.getElementById("p2_q1").value) === 20280)
+          p2_points += 3;
+        if (parseInt(document.getElementById("p2_q2").value) === 37484)
+          p2_points += 3;
+        if (parseInt(document.getElementById("p2_q3").value) === 2376)
+          p2_points += 6;
+        if (parseInt(document.getElementById("p2_q4").value) === 401115)
+          p2_points += 6;
+        points += p2_points;
+
+        let p3_points = 0;
+        ["logic1", "logic2", "logic3", "logic4"].forEach((name) => {
+          const el = document.querySelector(`input[name="${name}"]:checked`);
+          if (el && el.value === "correct") p3_points += 2.5;
+        });
+        if (parseInt(document.getElementById("p3_wordproblem").value) === 2)
+          p3_points += 12;
+        points += p3_points;
+
+        // Display Grade
+        document.getElementById("totalPoints").innerText = points;
+        document.getElementById("scoreP1").innerText = p1_points;
+        document.getElementById("scoreP2").innerText = p2_points;
+        document.getElementById("scoreP3").innerText = p3_points;
+
+        let grade = 6;
+        if (points >= 45) grade = 1;
+        else if (points >= 38) grade = 2;
+        else if (points >= 30) grade = 3;
+        else if (points >= 20) grade = 4;
+        else if (points >= 10) grade = 5;
+        document.getElementById("finalGrade").innerText = "Note: " + grade;
+
+        document.getElementById("gradingOverlay").style.display = "flex";
+      }
+
+      function checkNumberField(id, correctVal) {
+        const el = document.getElementById(id);
+        el.classList.remove("correct-field", "wrong-field");
+        if (parseInt(el.value) === correctVal)
+          el.classList.add("correct-field");
+        else if (el.value !== "") el.classList.add("wrong-field");
+      }
+      function checkLogicRow(radioName, rowId) {
+        const row = document.getElementById(rowId);
+        const selected = document.querySelector(
+          `input[name="${radioName}"]:checked`
+        );
+        row.classList.remove("row-correct", "row-wrong");
+        if (selected) {
+          if (selected.value === "correct") row.classList.add("row-correct");
+          else row.classList.add("row-wrong");
+        }
+      }
+    </script>
+  </body>
+</html>
