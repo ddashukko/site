@@ -97,7 +97,6 @@
         font-weight: bold;
       }
 
-      /* New Task Block Style without Canvas */
       .task-block {
         margin-bottom: 25px;
         padding: 15px;
@@ -407,7 +406,7 @@
         </table>
         <hr />
         <h3>7. Aufgabe: Sachaufgabe (12 Punkte)</h3>
-        <p>85 Schüler, 5 Lehrer. Buskapazität: 45 Personen. Wie viele Busse?</p>
+        <p>85 Schüler, 4 Lehrer. Buskapazität: 6 Personen. Wie viele Busse?</p>
         <p style="color: var(--teacher-red); font-style: italic">
           (Lösungsweg im Heft notieren!)
         </p>
@@ -511,7 +510,7 @@
         window.scrollTo(0, 0);
       }
 
-      // --- 1. ЛОГІКА ДЛЯ УЧНЯ: ЗБІР ДАНИХ І ГЕНЕРАЦІЯ ЛІНКУ ---
+      // --- 1. ЛОГІКА ДЛЯ УЧНЯ ---
       function generateTeacherLink() {
         const data = {
           name: document.getElementById("nameInput").value,
@@ -521,31 +520,21 @@
           p3_radio: {},
           p3_word: document.getElementById("p3_wordproblem").value,
         };
-
-        // Collect P1
         p1_data.forEach((item, index) => {
           data.p1.push(document.getElementById(`p1_input_${index}`).value);
         });
-        // Collect P2
         data.p2.push(document.getElementById("p2_q1").value);
         data.p2.push(document.getElementById("p2_q2").value);
         data.p2.push(document.getElementById("p2_q3").value);
         data.p2.push(document.getElementById("p2_q4").value);
-        // Collect P3 Radios
         ["logic1", "logic2", "logic3", "logic4"].forEach((name) => {
           const el = document.querySelector(`input[name="${name}"]:checked`);
           if (el) data.p3_radio[name] = el.value;
         });
-
-        // Encode to Base64 to make URL safe
         const jsonString = JSON.stringify(data);
         const encoded = btoa(encodeURIComponent(jsonString));
-
-        // Build URL
         const baseUrl = window.location.href.split("?")[0];
         const finalLink = `${baseUrl}?data=${encoded}`;
-
-        // Show Modal
         document.getElementById("resultLink").value = finalLink;
         document.getElementById("studentFinishScreen").style.display = "flex";
       }
@@ -557,15 +546,12 @@
         alert("Link kopiert! Sende ihn jetzt an deinen Lehrer.");
       }
 
-      // --- 2. ЛОГІКА ДЛЯ ВЧИТЕЛЯ: ЗАВАНТАЖЕННЯ І ПЕРЕВІРКА ---
-
-      // Check on load if we have data
+      // --- 2. ЛОГІКА ДЛЯ ВЧИТЕЛЯ ---
       window.onload = function () {
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.has("data")) {
-          // Teacher mode detected
-          document.getElementById("mainContent").style.display = "none"; // Hide test initially
-          document.getElementById("teacherLoginScreen").style.display = "flex"; // Show login
+          document.getElementById("mainContent").style.display = "none";
+          document.getElementById("teacherLoginScreen").style.display = "flex";
         }
       };
 
@@ -585,31 +571,24 @@
           const jsonString = decodeURIComponent(atob(encoded));
           const data = JSON.parse(jsonString);
 
-          // Hide login, Show test
           document.getElementById("teacherLoginScreen").style.display = "none";
           document.getElementById("mainContent").style.display = "block";
-
-          // Switch controls
           document.getElementById("finishBtn").style.display = "none";
           document.getElementById("teacherControls").style.display = "flex";
 
-          // Fill Data
           document.getElementById("nameInput").value =
             data.name + " (Schülerantwort)";
           document.getElementById("dateInput").value = data.date;
 
-          // Fill P1
           data.p1.forEach((val, idx) => {
             const el = document.getElementById(`p1_input_${idx}`);
             el.value = val;
             el.readOnly = true;
           });
-          // Fill P2
           document.getElementById("p2_q1").value = data.p2[0];
           document.getElementById("p2_q2").value = data.p2[1];
           document.getElementById("p2_q3").value = data.p2[2];
           document.getElementById("p2_q4").value = data.p2[3];
-          // Fill P3
           for (const [key, val] of Object.entries(data.p3_radio)) {
             const radio = document.querySelector(
               `input[name="${key}"][value="${val}"]`
@@ -617,21 +596,18 @@
             if (radio) radio.checked = true;
           }
           document.getElementById("p3_wordproblem").value = data.p3_word;
-
-          // Lock inputs
           document
             .querySelectorAll("input")
             .forEach((i) => (i.readOnly = true));
           alert("Schülerdaten geladen. Klicken Sie auf 'Jetzt korrigieren'.");
         } catch (e) {
-          alert("Fehler beim Laden der Daten. Link beschädigt?");
+          alert("Fehler beim Laden der Daten.");
           console.error(e);
         }
       }
 
-      // --- 3. ФУНКЦІЯ ПЕРЕВІРКИ (GRUPPE B) ---
+      // --- 3. ФУНКЦІЯ ПЕРЕВІРКИ ---
       function gradeTest() {
-        // P1
         p1_data.forEach((item, index) => {
           const el = document.getElementById(`p1_input_${index}`);
           const val = el.value.toUpperCase().trim();
@@ -640,7 +616,6 @@
           else if (val !== "") el.classList.add("wrong-field");
         });
 
-        // P2 Correct Answers (Gruppe B)
         checkNumberField("p2_q1", 20280);
         checkNumberField("p2_q2", 37484);
         checkNumberField("p2_q3", 2376);
@@ -649,9 +624,10 @@
         ["logic1", "logic2", "logic3", "logic4"].forEach((name) =>
           checkLogicRow(name, `logicRow${name.slice(-1)}`)
         );
-        checkNumberField("p3_wordproblem", 2);
 
-        // Calculate Points
+        // НОВА ПРАВИЛЬНА ВІДПОВІДЬ: (85+4)/6 = 14.83 -> 15 Busse
+        checkNumberField("p3_wordproblem", 15);
+
         let points = 0;
         let p1_points = 0;
         p1_data.forEach((item, index) => {
@@ -681,11 +657,10 @@
           const el = document.querySelector(`input[name="${name}"]:checked`);
           if (el && el.value === "correct") p3_points += 2.5;
         });
-        if (parseInt(document.getElementById("p3_wordproblem").value) === 2)
+        if (parseInt(document.getElementById("p3_wordproblem").value) === 15)
           p3_points += 12;
         points += p3_points;
 
-        // Display Grade
         document.getElementById("totalPoints").innerText = points;
         document.getElementById("scoreP1").innerText = p1_points;
         document.getElementById("scoreP2").innerText = p2_points;
