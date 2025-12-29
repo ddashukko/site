@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Космічна Місія: Математика</title>
+    <style>
+      body {
+        font-family: "Verdana", sans-serif;
+        background: linear-gradient(135deg, #0d1b2a, #1b263b, #415a77);
+        color: #fff;
+        margin: 0;
+        padding: 20px;
+        text-align: center;
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      h1 {
+        color: #00e676;
+        text-shadow: 0 0 10px #00e676;
+        font-size: 2.5em;
+        margin-bottom: 10px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+      }
+
+      p.intro {
+        font-size: 1.2em;
+        color: #b0bec5;
+        margin-bottom: 30px;
+      }
+
+      .container {
+        max-width: 900px; /* Трохи ширше */
+        margin: 0 auto;
+        position: relative;
+        z-index: 10;
+      }
+
+      .section {
+        background-color: rgba(255, 255, 255, 0.1);
+        border: 2px solid #00b0ff;
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 30px;
+        box-shadow: 0 0 15px rgba(0, 176, 255, 0.3);
+        backdrop-filter: blur(5px);
+      }
+
+      h2 {
+        color: #ffea00;
+        border-bottom: 1px solid #ffea00;
+        padding-bottom: 10px;
+        margin-top: 0;
+        text-shadow: 0 0 5px #ffea00;
+      }
+
+      .task-grid {
+        display: grid;
+        /* Збільшив мінімальну ширину з 220px до 280px, щоб все влізло */
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 15px;
+        margin-top: 20px;
+      }
+
+      .task-item {
+        font-size: 1.3em;
+        background-color: rgba(0, 0, 0, 0.3);
+        padding: 10px 5px; /* Менші відступи з боків */
+        border-radius: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: 1px solid #415a77;
+
+        /* ГОЛОВНЕ ВИПРАВЛЕННЯ: заборона переносу */
+        white-space: nowrap;
+        flex-wrap: nowrap;
+      }
+
+      input {
+        width: 70px;
+        height: 35px;
+        font-size: 1em;
+        text-align: center;
+        border: 2px solid #00b0ff;
+        border-radius: 5px;
+        margin-left: 8px;
+        margin-right: 8px;
+        outline: none;
+        background-color: #e3f2fd;
+        color: #0d1b2a;
+        font-weight: bold;
+        transition: all 0.3s;
+      }
+
+      input:focus {
+        border-color: #ffea00;
+        box-shadow: 0 0 10px #ffea00;
+      }
+
+      /* Стилі перевірки */
+      input.correct {
+        background-color: #00e676;
+        border-color: #00c853;
+        color: #003300;
+      }
+
+      input.wrong {
+        background-color: #ff1744;
+        border-color: #d50000;
+        color: #ffffff;
+        animation: shake 0.4s;
+      }
+
+      @keyframes shake {
+        0% {
+          transform: translateX(0);
+        }
+        25% {
+          transform: translateX(-5px);
+        }
+        50% {
+          transform: translateX(5px);
+        }
+        75% {
+          transform: translateX(-5px);
+        }
+        100% {
+          transform: translateX(0);
+        }
+      }
+
+      button {
+        background: linear-gradient(45deg, #2979ff, #00b0ff);
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        font-size: 1.2em;
+        border-radius: 30px;
+        cursor: pointer;
+        box-shadow: 0 5px 15px rgba(0, 176, 255, 0.4);
+        transition: transform 0.2s, box-shadow 0.2s;
+        margin-top: 20px;
+        text-transform: uppercase;
+        font-weight: bold;
+        letter-spacing: 1px;
+      }
+
+      button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0, 176, 255, 0.6);
+      }
+
+      button:active {
+        transform: translateY(1px);
+      }
+
+      .result-msg {
+        margin-top: 15px;
+        font-size: 1.2em;
+        font-weight: bold;
+        min-height: 1.5em;
+      }
+
+      .rocket {
+        position: fixed;
+        bottom: -50px;
+        z-index: 9999;
+        user-select: none;
+        pointer-events: none;
+        animation: flyUp linear forwards;
+      }
+
+      @keyframes flyUp {
+        0% {
+          transform: translateY(0) scale(0.5);
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(-120vh) scale(1.5);
+          opacity: 0;
+        }
+      }
+
+      .stars {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        background-image: radial-gradient(
+          white,
+          rgba(255, 255, 255, 0.2) 2px,
+          transparent 3px
+        );
+        background-size: 550px 550px;
+        background-position: 0 0, 40px 60px, 130px 270px, 70px 100px;
+        opacity: 0.3;
+      }
+
+      /* Адаптивність для мобільних */
+      @media (max-width: 600px) {
+        h1 {
+          font-size: 1.8em;
+        }
+        .task-item {
+          font-size: 1.1em;
+          padding: 10px;
+        }
+        input {
+          width: 60px;
+          height: 30px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="stars"></div>
+
+    <div class="container">
+      <h1>🚀 Космічна Місія 🪐</h1>
+      <p class="intro">
+        Капітане! Запусти двигуни ракети, розв'язавши приклади!
+      </p>
+
+      <div class="section">
+        <h2>1. Старт двигунів (Додавання 10+)</h2>
+        <div class="task-grid">
+          <div class="task-item">
+            38 + 5 = <input type="number" data-answer="43" />
+          </div>
+          <div class="task-item">
+            47 + 4 = <input type="number" data-answer="51" />
+          </div>
+          <div class="task-item">
+            69 + 6 = <input type="number" data-answer="75" />
+          </div>
+          <div class="task-item">
+            25 + 8 = <input type="number" data-answer="33" />
+          </div>
+          <div class="task-item">
+            56 + 9 = <input type="number" data-answer="65" />
+          </div>
+          <div class="task-item">
+            74 + 7 = <input type="number" data-answer="81" />
+          </div>
+        </div>
+        <button onclick="checkSection(this)">Запустити блок 1</button>
+        <div class="result-msg"></div>
+      </div>
+
+      <div class="section">
+        <h2>2. Вихід на орбіту (Віднімання 10+)</h2>
+        <div class="task-grid">
+          <div class="task-item">
+            42 - 5 = <input type="number" data-answer="37" />
+          </div>
+          <div class="task-item">
+            63 - 8 = <input type="number" data-answer="55" />
+          </div>
+          <div class="task-item">
+            51 - 6 = <input type="number" data-answer="45" />
+          </div>
+          <div class="task-item">
+            34 - 9 = <input type="number" data-answer="25" />
+          </div>
+          <div class="task-item">
+            72 - 4 = <input type="number" data-answer="68" />
+          </div>
+          <div class="task-item">
+            85 - 7 = <input type="number" data-answer="78" />
+          </div>
+        </div>
+        <button onclick="checkSection(this)">Запустити блок 2</button>
+        <div class="result-msg"></div>
+      </div>
+
+      <div class="section">
+        <h2>3. Політ у невагомості (Рахунок до 100)</h2>
+        <div class="task-grid">
+          <div class="task-item">
+            34 + 52 = <input type="number" data-answer="86" />
+          </div>
+          <div class="task-item">
+            87 - 45 = <input type="number" data-answer="42" />
+          </div>
+          <div class="task-item">
+            21 + 68 = <input type="number" data-answer="89" />
+          </div>
+          <div class="task-item">
+            96 - 32 = <input type="number" data-answer="64" />
+          </div>
+          <div class="task-item">
+            43 + 24 = <input type="number" data-answer="67" />
+          </div>
+          <div class="task-item">
+            75 - 51 = <input type="number" data-answer="24" />
+          </div>
+          <div class="task-item">
+            12 + 86 = <input type="number" data-answer="98" />
+          </div>
+          <div class="task-item">
+            69 - 27 = <input type="number" data-answer="42" />
+          </div>
+          <div class="task-item">
+            55 + 44 = <input type="number" data-answer="99" />
+          </div>
+          <div class="task-item">
+            48 - 15 = <input type="number" data-answer="33" />
+          </div>
+        </div>
+        <button onclick="checkSection(this)">Запустити блок 3</button>
+        <div class="result-msg"></div>
+      </div>
+
+      <div class="section">
+        <h2>4. Коди навігації (Рівняння)</h2>
+        <div class="task-grid">
+          <div class="task-item">
+            30 + <input type="number" data-answer="6" placeholder="x" /> = 36
+          </div>
+          <div class="task-item">
+            62 + <input type="number" data-answer="7" placeholder="x" /> = 69
+          </div>
+          <div class="task-item">
+            44 + <input type="number" data-answer="12" placeholder="x" /> = 56
+          </div>
+          <div class="task-item">
+            <input type="number" data-answer="21" placeholder="x" /> + 25 = 46
+          </div>
+          <div class="task-item">
+            <input type="number" data-answer="44" placeholder="x" /> + 8 = 52
+          </div>
+        </div>
+        <button onclick="checkSection(this)">Запустити блок 4</button>
+        <div class="result-msg"></div>
+      </div>
+    </div>
+
+    <script>
+      function checkSection(btnElement) {
+        const section = btnElement.closest(".section");
+        const inputs = section.querySelectorAll("input");
+        const resultMsg = section.querySelector(".result-msg");
+
+        let correctCount = 0;
+        let totalCount = inputs.length;
+
+        inputs.forEach((input) => {
+          let userAnswer = parseInt(input.value);
+          let correctAnswer = parseInt(input.getAttribute("data-answer"));
+
+          if (userAnswer === correctAnswer) {
+            input.className = "correct";
+            correctCount++;
+          } else {
+            input.className = "wrong";
+          }
+        });
+
+        if (correctCount === totalCount) {
+          resultMsg.innerHTML = "Місія успішна! Політ нормальний! 🚀⭐";
+          resultMsg.style.color = "#00e676";
+          launchSpaceConfetti();
+        } else if (correctCount > 0) {
+          resultMsg.innerHTML = `Є пошкодження! Правильно: ${correctCount}. Полагодити! 🔧`;
+          resultMsg.style.color = "#ffea00";
+        } else {
+          resultMsg.innerHTML = "Двигуни не завелися. Спробуй ще!";
+          resultMsg.style.color = "#ff1744";
+        }
+      }
+
+      function launchSpaceConfetti() {
+        const emojis = ["🚀", "🛸", "⭐", "🪐", "☄️", "🌑"];
+        const container = document.body;
+
+        for (let i = 0; i < 40; i++) {
+          const item = document.createElement("div");
+          item.classList.add("rocket");
+          item.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+
+          // Випадкова позиція
+          item.style.left = Math.random() * 100 + "vw";
+          item.style.fontSize = Math.random() * 30 + 20 + "px";
+
+          // Різна швидкість польоту вгору
+          const duration = Math.random() * 2 + 2;
+          item.style.animationDuration = duration + "s";
+
+          container.appendChild(item);
+
+          setTimeout(() => {
+            item.remove();
+          }, duration * 1000);
+        }
+      }
+    </script>
+  </body>
+</html>

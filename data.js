@@ -58,6 +58,16 @@ window.lessonsData = [
     author: "Даша",
   },
   {
+    id: "math-2-space-mission",
+    title: "Космічна Місія: Арифметика в межах 100",
+    grade: 2,
+    topic: "Арифметика",
+    link: "math_general/2/math_space_mission.html",
+    subject_code: "math_general",
+    category: "test",
+    author: "Даша",
+  },
+  {
     id: "math-2-hw-01",
     title: "Домашня1",
     grade: 2,
