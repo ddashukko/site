@@ -175,6 +175,16 @@ window.lessonsData = [
     author: "Даша",
   },
   {
+    id: "alg-6-rat-op",
+    title: "Додавання, віднімання, множення та ділення раціональних чисел",
+    grade: 6,
+    topic: "Алгебра",
+    link: "math_general/6/lesson/rational-numbers-operations.html",
+    subject_code: "algebra",
+    category: "lesson",
+    author: "Даша",
+  },
+  {
     id: "alg-6-eq-intro",
     title: "10. Рівняння",
     grade: 6,

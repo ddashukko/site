@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Математика 6: Раціональні числа (Повний курс)</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
+    />
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"
+    ></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    ></script>
+
+    <style>
+      :root {
+        --primary: #2563eb;
+        --primary-light: #eff6ff;
+        --success: #16a34a;
+        --error: #dc2626;
+        --bg: #f8fafc;
+        --card: #ffffff;
+        --text: #1e293b;
+        --border: #e2e8f0;
+        --accent: #8b5cf6;
+        --grid-color: #e2e8f0;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        display: flex;
+        overflow: hidden;
+      }
+
+      #tasks-section {
+        flex: 1;
+        background: var(--bg);
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+      }
+
+      #board-section {
+        flex: 1;
+        position: relative;
+        background-color: #fff;
+        border-left: 4px solid #cbd5e1;
+        background-image: linear-gradient(
+            var(--grid-color) 1px,
+            transparent 1px
+          ),
+          linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+        background-size: 25px 25px;
+        cursor: crosshair;
+        overflow: hidden;
+      }
+
+      canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+        touch-action: none;
+      }
+
+      .tools {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        display: flex;
+        gap: 10px;
+        background: rgba(255, 255, 255, 0.95);
+        padding: 8px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        border: 1px solid var(--border);
+        flex-wrap: wrap;
+        z-index: 10;
+      }
+
+      .btn-tool {
+        border: 1px solid #cbd5e1;
+        background: white;
+        padding: 8px 12px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 1.2rem;
+        transition: 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 40px;
+      }
+      .btn-tool:hover {
+        background: #f1f5f9;
+      }
+      .btn-tool.active {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+      }
+
+      header {
+        background: var(--card);
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+      }
+
+      .header-title {
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: var(--primary);
+      }
+      .stats-container {
+        display: flex;
+        gap: 15px;
+        font-weight: 600;
+      }
+      .stat-correct {
+        color: var(--success);
+      }
+      .stat-wrong {
+        color: var(--error);
+      }
+
+      .content-container {
+        padding: 20px;
+        padding-bottom: 80px;
+        max-width: 800px;
+        margin: 0 auto;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      .theory-block {
+        background: linear-gradient(to right, #fdfbf7, #fff);
+        border-left: 5px solid var(--accent);
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 30px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      }
+      .theory-title {
+        color: var(--accent);
+        font-weight: bold;
+        font-size: 1.1rem;
+        margin-bottom: 10px;
+      }
+      .theory-content ul {
+        margin: 5px 0;
+        padding-left: 20px;
+      }
+      .theory-content li {
+        margin-bottom: 5px;
+        line-height: 1.5;
+      }
+
+      .exercise-block {
+        background: var(--card);
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        margin-bottom: 30px;
+        overflow: hidden;
+      }
+
+      .exercise-header {
+        background: var(--primary-light);
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border);
+      }
+      .exercise-title {
+        margin: 0;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--primary);
+      }
+      .exercise-desc {
+        margin: 5px 0 0 0;
+        font-size: 0.95rem;
+        color: #475569;
+        line-height: 1.5;
+      }
+
+      .task-row {
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .task-row:last-child {
+        border-bottom: none;
+      }
+      .task-row.solved-correct {
+        background-color: #f0fdf4;
+      }
+      .task-row.solved-wrong {
+        background-color: #fef2f2;
+      }
+
+      .task-content {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .task-number {
+        font-weight: 600;
+        color: #94a3b8;
+        min-width: 25px;
+      }
+      .task-question {
+        font-size: 1.1rem;
+        font-weight: 500;
+      }
+
+      .input-group {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+      .input-answer {
+        padding: 10px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        width: 140px;
+        font-size: 1rem;
+      }
+      .btn-check {
+        padding: 10px 20px;
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+      .input-answer.correct {
+        border-color: var(--success);
+        background: #f0fdf4;
+        color: var(--success);
+      }
+      .input-answer.wrong {
+        border-color: var(--error);
+        background: #fef2f2;
+      }
+
+      .test-trigger-container {
+        text-align: center;
+        margin: 40px 0;
+        padding: 30px;
+        background: #f3e8ff;
+        border-radius: 15px;
+        border: 2px dashed var(--accent);
+      }
+      .btn-start-test {
+        padding: 15px 40px;
+        font-size: 1.3rem;
+        font-weight: bold;
+        color: white;
+        background: var(--accent);
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+        transition: transform 0.2s;
+        text-decoration: none;
+        display: inline-block;
+      }
+      .btn-start-test:hover {
+        transform: scale(1.05);
+        background-color: #7c3aed;
+      }
+
+      .test-modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #f8fafc;
+        z-index: 2000;
+        overflow-y: auto;
+      }
+      .test-container {
+        max-width: 700px;
+        margin: 40px auto;
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      }
+      .test-header {
+        text-align: center;
+        margin-bottom: 30px;
+        border-bottom: 2px solid var(--accent);
+        padding-bottom: 20px;
+      }
+      .test-item {
+        margin-bottom: 20px;
+        padding: 15px;
+        background: #f8fafc;
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .test-q {
+        font-weight: bold;
+        font-size: 1.1rem;
+      }
+      .test-result-header {
+        font-size: 3rem;
+        font-weight: 900;
+        color: var(--accent);
+        text-align: center;
+      }
+      .btn-finish {
+        padding: 15px 40px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: white;
+        background: var(--primary);
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+      }
+
+      @media (max-width: 768px) {
+        body {
+          flex-direction: column;
+        }
+        #board-section {
+          height: 40vh;
+          border-left: none;
+          border-top: 4px solid #cbd5e1;
+          order: 2;
+        }
+        #tasks-section {
+          height: 60vh;
+          order: 1;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="tasks-section">
+      <header>
+        <div class="header-title">Раціональні числа</div>
+        <div class="stats-container">
+          <span class="stat-correct">✅ <span id="val-correct">0</span></span>
+          <span class="stat-wrong">❌ <span id="val-wrong">0</span></span>
+        </div>
+      </header>
+
+      <div class="content-container" id="quiz-root">
+        <div class="theory-block">
+          <div class="theory-title">📚 Шпаргалка: Правила знаків</div>
+          <div class="theory-content">
+            <p><strong>1. Додавання та віднімання:</strong></p>
+            <ul>
+              <li>
+                Однакові знаки $\rightarrow$ Додаємо, знак спільний ($-2-3 =
+                -5$).
+              </li>
+              <li>
+                Різні знаки $\rightarrow$ Віднімаємо від більшого менше ($-5+3 =
+                -2$).
+              </li>
+              <li>Два мінуси $\rightarrow$ Плюс ($5 - (-3) = 8$).</li>
+            </ul>
+            <p><strong>2. Множення та ділення:</strong></p>
+            <ul>
+              <li>
+                $(-) \cdot (-) = (+)$ | $(-) : (-) = (+)$ (Мінус на мінус дає
+                плюс)
+              </li>
+              <li>
+                $(-) \cdot (+) = (-)$ | $(-) : (+) = (-)$ (Різні знаки дають
+                мінус)
+              </li>
+              <li><strong>Увага:</strong> На нуль ділити не можна!</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="board-section">
+      <div class="tools">
+        <button
+          class="btn-tool active"
+          onclick="setTool('pen')"
+          id="t-pen"
+          title="Ручка"
+        >
+          🖊️
+        </button>
+        <button
+          class="btn-tool"
+          onclick="setTool('eraser')"
+          id="t-eraser"
+          title="Гумка"
+        >
+          🧹
+        </button>
+        <button
+          class="btn-tool"
+          onclick="drawSystem()"
+          title="Додати координатну пряму"
+        >
+          📉
+        </button>
+        <button
+          class="btn-tool"
+          onclick="clearCanvasSafe()"
+          style="color: red; border-color: #fee2e2"
+          title="Очистити все"
+        >
+          ❌
+        </button>
+      </div>
+      <canvas id="board"></canvas>
+    </div>
+
+    <div id="test-screen" class="test-modal-overlay">
+      <div class="test-container">
+        <div class="test-header">
+          <h2 id="test-title" style="color: var(--text)">Тестування</h2>
+          <p>12 питань. Оцінка за 12-бальною шкалою.</p>
+        </div>
+        <div id="test-questions-body"></div>
+        <div
+          style="
+            text-align: center;
+            margin-top: 30px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+          "
+        >
+          <button
+            class="btn-start-test"
+            onclick="submitTest()"
+            id="btn-submit-test"
+          >
+            Завершити тест
+          </button>
+          <button
+            class="btn-finish"
+            style="background: #94a3b8"
+            onclick="closeTest()"
+          >
+            Закрити
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="result-modal"
+      class="modal-overlay"
+      style="
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 3000;
+        justify-content: center;
+        align-items: center;
+      "
+    >
+      <div class="modal-card">
+        <button class="modal-close-btn" onclick="closeModal()">×</button>
+        <div id="modal-content-body"></div>
+      </div>
+    </div>
+
+    <script>
+      // === CANVAS LOGIC ===
+      const canvas = document.getElementById("board");
+      const ctx = canvas.getContext("2d");
+      const boardSection = document.getElementById("board-section");
+      let painting = false;
+      let tool = "pen";
+
+      function resizeCanvas() {
+        const temp = document.createElement("canvas");
+        const tempCtx = temp.getContext("2d");
+        temp.width = canvas.width;
+        temp.height = canvas.height;
+        if (canvas.width > 0 && canvas.height > 0)
+          tempCtx.drawImage(canvas, 0, 0);
+        canvas.width = boardSection.offsetWidth;
+        canvas.height = boardSection.offsetHeight;
+        ctx.drawImage(temp, 0, 0);
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+      }
+      window.addEventListener("resize", resizeCanvas);
+      window.addEventListener("load", resizeCanvas);
+
+      function getMousePos(e) {
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return { x: clientX - rect.left, y: clientY - rect.top };
+      }
+      function startPosition(e) {
+        painting = true;
+        draw(e);
+      }
+      function finishedPosition() {
+        painting = false;
+        ctx.beginPath();
+      }
+      function draw(e) {
+        if (!painting) return;
+        const pos = getMousePos(e);
+        if (tool === "pen") {
+          ctx.lineWidth = 2;
+          ctx.strokeStyle = "#2563eb";
+          ctx.globalCompositeOperation = "source-over";
+        } else {
+          ctx.lineWidth = 25;
+          ctx.strokeStyle = "#ffffff";
+          ctx.globalCompositeOperation = "destination-out";
+        }
+        ctx.lineTo(pos.x, pos.y);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(pos.x, pos.y);
+      }
+      canvas.addEventListener("mousedown", startPosition);
+      canvas.addEventListener("mouseup", finishedPosition);
+      canvas.addEventListener("mousemove", draw);
+      canvas.addEventListener("touchstart", startPosition);
+      canvas.addEventListener("touchend", finishedPosition);
+      canvas.addEventListener("touchmove", draw);
+
+      function setTool(t) {
+        tool = t;
+        document
+          .getElementById("t-pen")
+          .classList.toggle("active", t === "pen");
+        document
+          .getElementById("t-eraser")
+          .classList.toggle("active", t === "eraser");
+      }
+      function clearCanvasSafe() {
+        if (confirm("Очистити дошку?"))
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+      function drawSystem() {
+        const prevStrokeStyle = ctx.strokeStyle;
+        const prevLineWidth = ctx.lineWidth;
+        const prevComposite = ctx.globalCompositeOperation;
+        ctx.globalCompositeOperation = "source-over";
+        ctx.strokeStyle = "#334155";
+        ctx.lineWidth = 2;
+        ctx.fillStyle = "#334155";
+        ctx.font = "16px Arial";
+        const w = canvas.width;
+        const h = canvas.height;
+        const cx = Math.floor(w / 2);
+        const cy = Math.floor(h / 2);
+        const step = 40;
+        ctx.beginPath();
+        ctx.moveTo(0, cy);
+        ctx.lineTo(w, cy);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.lineWidth = 1;
+        for (let x = cx; x < w; x += step) {
+          ctx.moveTo(x, cy - 5);
+          ctx.lineTo(x, cy + 5);
+        }
+        for (let x = cx; x > 0; x -= step) {
+          ctx.moveTo(x, cy - 5);
+          ctx.lineTo(x, cy + 5);
+        }
+        ctx.stroke();
+        ctx.fillText("0", cx - 5, cy + 20);
+        ctx.fillText("1", cx + step - 5, cy + 20);
+        ctx.fillText("-1", cx - step - 10, cy + 20);
+        ctx.strokeStyle = prevStrokeStyle;
+        ctx.lineWidth = prevLineWidth;
+        ctx.globalCompositeOperation = prevComposite;
+      }
+
+      // === ДАНІ УРОКУ (ВПРАВИ) ===
+      const exercises = [
+        // --- Вправи 1-10 (Додавання/Віднімання) ---
+        {
+          id: "1",
+          title: "Вправа 1. Розігрів",
+          desc: "Цілі числа з однаковими знаками.",
+          tasks: [
+            { id: "1)", q: "$-5+(-3)$", a: "-8" },
+            { id: "2)", q: "$-12-8$", a: "-20" },
+            { id: "3)", q: "$-25+(-40)$", a: "-65" },
+            { id: "4)", q: "$-100-35$", a: "-135" },
+            { id: "5)", q: "$-1+(-99)$", a: "-100" },
+          ],
+        },
+        {
+          id: "2",
+          title: "Вправа 2. Різні знаки",
+          desc: "Більший модуль мінус менший.",
+          tasks: [
+            { id: "1)", q: "$-10+15$", a: "5" },
+            { id: "2)", q: "$7-12$", a: "-5" },
+            { id: "3)", q: "$-20+8$", a: "-12" },
+            { id: "4)", q: "$45-60$", a: "-15" },
+            { id: "5)", q: "$-3+3$", a: "0" },
+          ],
+        },
+        {
+          id: "3",
+          title: "Вправа 3. Десяткові дроби",
+          desc: "Уважність до коми.",
+          tasks: [
+            { id: "1)", q: "$-2,5-1,5$", a: "-4|-4.0" },
+            { id: "2)", q: "$-0,4+0,9$", a: "0.5|0,5" },
+            { id: "3)", q: "$3,6-5,2$", a: "-1.6|-1,6" },
+            { id: "4)", q: "$-7,1+(-2,9)$", a: "-10" },
+            { id: "5)", q: "$0-8,45$", a: "-8.45|-8,45" },
+          ],
+        },
+        {
+          id: "4",
+          title: "Вправа 4. Розкриття дужок",
+          desc: "Мінус на мінус = плюс.",
+          tasks: [
+            { id: "1)", q: "$5-(-3)$", a: "8" },
+            { id: "2)", q: "$-10-(-10)$", a: "0" },
+            { id: "3)", q: "$0-(-7,2)$", a: "7.2|7,2" },
+            { id: "4)", q: "$-15-(-5)$", a: "-10" },
+            { id: "5)", q: "$4,5-(-2,5)$", a: "7" },
+          ],
+        },
+        {
+          id: "5",
+          title: "Вправа 5. Дроби (однакові)",
+          desc: "Дії з чисельниками.",
+          tasks: [
+            { id: "1)", q: "$-\\frac{3}{7}+(-\\frac{2}{7})$", a: "-5/7" },
+            { id: "2)", q: "$\\frac{5}{9}-\\frac{8}{9}$", a: "-3/9|-1/3" },
+            { id: "3)", q: "$-\\frac{1}{5}+\\frac{4}{5}$", a: "3/5|0.6" },
+            { id: "4)", q: "$-\\frac{10}{13}-(-\\frac{3}{13})$", a: "-7/13" },
+            { id: "5)", q: "$-\\frac{11}{20}-\\frac{9}{20}$", a: "-1" },
+          ],
+        },
+        {
+          id: "6",
+          title: "Вправа 6. Дроби (різні)",
+          desc: "Спільний знаменник.",
+          tasks: [
+            { id: "1)", q: "$-\\frac{1}{2}+\\frac{1}{3}$", a: "-1/6" },
+            { id: "2)", q: "$-\\frac{2}{5}-\\frac{3}{10}$", a: "-0.7|-7/10" },
+            { id: "3)", q: "$\\frac{1}{4}-\\frac{5}{6}$", a: "-7/12" },
+            {
+              id: "4)",
+              q: "$-\\frac{7}{8}+(-\\frac{1}{2})$",
+              a: "-1.375|-11/8",
+            },
+            { id: "5)", q: "$-\\frac{5}{12}-(-\\frac{3}{4})$", a: "1/3" },
+          ],
+        },
+        {
+          id: "7",
+          title: "Вправа 7. Мішані числа",
+          desc: "Дробова і ціла частина.",
+          tasks: [
+            {
+              id: "1)",
+              q: "$-2\\frac{1}{3}-1\\frac{1}{3}$",
+              a: "-3 2/3|-11/3",
+            },
+            { id: "2)", q: "$-1\\frac{1}{2}+3\\frac{1}{2}$", a: "2" },
+            { id: "3)", q: "$5\\frac{2}{5}-6\\frac{4}{5}$", a: "-1.4|-1 2/5" },
+            { id: "4)", q: "$-4\\frac{1}{6}+2\\frac{5}{6}$", a: "-1 1/3|-4/3" },
+            {
+              id: "5)",
+              q: "$-3\\frac{3}{8}-(-1\\frac{1}{8})$",
+              a: "-2.25|-2 1/4",
+            },
+          ],
+        },
+        {
+          id: "8",
+          title: "Вправа 8. Мікс",
+          desc: "Різні формати.",
+          tasks: [
+            { id: "1)", q: "$-0,5+\\frac{1}{2}$", a: "0" },
+            { id: "2)", q: "$-\\frac{1}{4}-0,75$", a: "-1" },
+            { id: "3)", q: "$1,2-\\frac{3}{5}$", a: "0.6" },
+            { id: "4)", q: "$-2\\frac{1}{2}+0,5$", a: "-2" },
+            { id: "5)", q: "$-0,2+(-\\frac{1}{5})$", a: "-0.4" },
+          ],
+        },
+        {
+          id: "9",
+          title: "Вправа 9. Ланцюжки",
+          desc: "Групування.",
+          tasks: [
+            { id: "1)", q: "$-5+12-7$", a: "0" },
+            { id: "2)", q: "$14-25+6-5$", a: "-10" },
+            { id: "3)", q: "$-3,5+2,1-4,5$", a: "-5.9" },
+            {
+              id: "4)",
+              q: "$\\frac{1}{3}-\\frac{1}{2}+\\frac{2}{3}$",
+              a: "0.5",
+            },
+            { id: "5)", q: "$-10-(-5)+(-8)-2$", a: "-15" },
+          ],
+        },
+        {
+          id: "10",
+          title: "Вправа 10. Hard",
+          desc: "Дужки та модулі.",
+          tasks: [
+            {
+              id: "1)",
+              q: "$-2\\frac{1}{6}+(-3\\frac{1}{4}+2\\frac{5}{12})$",
+              a: "-3",
+            },
+            { id: "2)", q: "$(5,6-7,2)-(-2,3+4,1)$", a: "-3.4" },
+            {
+              id: "3)",
+              q: "$-(\\frac{3}{8}-\\frac{5}{6})+(-2)$",
+              a: "-37/24|-1 13/24",
+            },
+            { id: "4)", q: "$|-5,4+2,4|-5$", a: "-2" },
+            { id: "5)", q: "$-3,8-(-4\\frac{1}{2}+0,7)$", a: "0" },
+          ],
+        },
+
+        // --- Вправи 11-15 (Множення ТА Ділення) ---
+        {
+          id: "11",
+          title: "Вправа 11. Цілі числа (Множення і Ділення)",
+          desc: "Правила знаків однакові: мінус на мінус = плюс.",
+          tasks: [
+            { id: "1)", q: "$-6 \\cdot 8$", a: "-48" },
+            { id: "2)", q: "$-24 : (-6)$", a: "4" },
+            { id: "3)", q: "$50 : (-2)$", a: "-25" },
+            { id: "4)", q: "$-1 \\cdot (-100)$", a: "100" },
+            { id: "5)", q: "$0 : (-5)$", a: "0" },
+          ],
+        },
+        {
+          id: "12",
+          title: "Вправа 12. Десяткові дроби (Множення і Ділення)",
+          desc: "Слідкуємо за комою.",
+          tasks: [
+            { id: "1)", q: "$-0,2 \\cdot 5$", a: "-1" },
+            { id: "2)", q: "$-0,6 : (-0,2)$", a: "3" },
+            { id: "3)", q: "$2,4 : (-6)$", a: "-0.4|-0,4" },
+            { id: "4)", q: "$-0,1 \\cdot (-10)$", a: "1" },
+            { id: "5)", q: "$-4,5 : 0,9$", a: "-5" },
+          ],
+        },
+        {
+          id: "13",
+          title: "Вправа 13. Звичайні дроби",
+          desc: "Ділення — це множення на обернений дріб.",
+          tasks: [
+            { id: "1)", q: "$-\\frac{1}{2} \\cdot \\frac{2}{3}$", a: "-1/3" },
+            { id: "2)", q: "$-\\frac{3}{4} : (-\\frac{3}{4})$", a: "1" },
+            { id: "3)", q: "$\\frac{5}{6} : (-\\frac{5}{12})$", a: "-2" },
+            { id: "4)", q: "$-\\frac{7}{8} : 1$", a: "-7/8" },
+            { id: "5)", q: "$(-\\frac{1}{2})^2$", a: "0.25|1/4" },
+          ],
+        },
+        {
+          id: "14",
+          title: "Вправа 14. Мішані числа",
+          desc: "Спочатку перетвори в неправильний дріб.",
+          tasks: [
+            { id: "1)", q: "$-1\\frac{1}{2} \\cdot 2$", a: "-3" },
+            { id: "2)", q: "$-2\\frac{1}{3} : (-\\frac{7}{3})$", a: "1" },
+            { id: "3)", q: "$1\\frac{2}{5} : (-\\frac{7}{5})$", a: "-1" },
+            { id: "4)", q: "$-3\\frac{1}{3} \\cdot 0,3$", a: "-1" },
+            { id: "5)", q: "$-5\\frac{1}{2} : 11$", a: "-0.5|-1/2" },
+          ],
+        },
+        {
+          id: "15",
+          title: "Вправа 15. Ланцюжки дій",
+          desc: "Послідовність виконання.",
+          tasks: [
+            { id: "1)", q: "$-5 \\cdot (-2) : (-5)$", a: "-2" },
+            { id: "2)", q: "$(-2)^3 : 4$", a: "-2" },
+            { id: "3)", q: "$-100 : (-10) : (-1)$", a: "-10" },
+            { id: "4)", q: "$0 : (-5) \\cdot 100$", a: "0" },
+            { id: "5)", q: "$-3 \\cdot 4 : (-6)$", a: "2" },
+          ],
+        },
+      ];
+
+      // === ДАНІ ТЕСТІВ ===
+
+      const testAddSubData = [
+        { q: "$-8 + (-4)$", a: "-12" },
+        { q: "$-15 + 20$", a: "5" },
+        { q: "$7 - 10$", a: "-3" },
+        { q: "$-5 - (-5)$", a: "0" },
+        { q: "$-20 - 30$", a: "-50" },
+        { q: "$12 + (-18)$", a: "-6" },
+        { q: "$-1,5 - 2,5$", a: "-4" },
+        { q: "$4,2 - (-1,8)$", a: "6" },
+        { q: "$-9 + 9$", a: "0" },
+        { q: "$-3 + (-2) - 5$", a: "-10" },
+        { q: "$-\\frac{1}{2} - \\frac{1}{2}$", a: "-1" },
+        { q: "$10 - (-2) + (-5)$", a: "7" },
+      ];
+
+      // Тест 2: Множення ТА Ділення
+      const testMultDivData = [
+        { q: "$-4 \\cdot 9$", a: "-36" },
+        { q: "$-42 : (-7)$", a: "6" },
+        { q: "$64 : (-8)$", a: "-8" },
+        { q: "$-5 \\cdot (-12)$", a: "60" },
+        { q: "$0 : (-15)$", a: "0" },
+        { q: "$-1,5 : 0,3$", a: "-5" },
+        { q: "$-0,2 \\cdot (-0,2)$", a: "0.04|0,04" },
+        { q: "$-3 : 6$", a: "-0.5|-0,5" },
+        { q: "$-\\frac{2}{3} \\cdot 9$", a: "-6" },
+        { q: "$-\\frac{4}{5} : (-\\frac{2}{5})$", a: "2" },
+        { q: "$-12 : (-2) : (-3)$", a: "-2" },
+        { q: "$(-2)^3 : (-4)$", a: "2" },
+      ];
+
+      let currentTest = [];
+      let totalCorrect = 0;
+      let totalWrong = 0;
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const root = document.getElementById("quiz-root");
+
+        exercises.forEach((ex, index) => {
+          const exBlock = document.createElement("div");
+          exBlock.className = "exercise-block";
+          exBlock.innerHTML = `<div class="exercise-header"><h3 class="exercise-title">${ex.title}</h3><p class="exercise-desc">${ex.desc}</p></div>`;
+
+          const taskList = document.createElement("div");
+          ex.tasks.forEach((task) => {
+            const row = document.createElement("div");
+            row.className = "task-row";
+            const actionHTML = `
+              <div class="input-group">
+                <input type="text" class="input-answer" placeholder="..." onkeypress="if(event.key==='Enter') this.nextElementSibling.click()">
+                <button class="btn-check" onclick="checkInput(this, '${task.a}')">OK</button>
+              </div>`;
+            row.innerHTML = `<div class="task-content"><div class="task-number">${task.id}</div><div class="task-question">${task.q}</div></div><div style="margin-top:10px;">${actionHTML}</div>`;
+            taskList.appendChild(row);
+          });
+          exBlock.appendChild(taskList);
+          root.appendChild(exBlock);
+
+          // Вставка кнопки Тесту №1 (після 10 вправи)
+          if (index === 9) {
+            const btnContainer = document.createElement("div");
+            btnContainer.className = "test-trigger-container";
+            btnContainer.innerHTML = `
+                <h3 style="color:var(--accent); margin-top:0;">Проміжний контроль</h3>
+                <p>Тест: Додавання та віднімання (12 питань)</p>
+                <button class="btn-start-test" onclick="startTest(1)">Пройти ТЕСТ №1</button>
+            `;
+            root.appendChild(btnContainer);
+          }
+
+          // Вставка кнопки Тесту №2 (після 15 вправи)
+          if (index === 14) {
+            const btnContainer = document.createElement("div");
+            btnContainer.className = "test-trigger-container";
+            btnContainer.innerHTML = `
+                <h3 style="color:var(--accent); margin-top:0;">Підсумковий контроль</h3>
+                <p>Тест: Множення та ділення (12 питань)</p>
+                <button class="btn-start-test" onclick="startTest(2)">Пройти ТЕСТ №2</button>
+            `;
+            root.appendChild(btnContainer);
+          }
+        });
+
+        if (window.renderMathInElement) {
+          renderMathInElement(document.body, {
+            delimiters: [
+              { left: "$$", right: "$$", display: true },
+              { left: "$", right: "$", display: false },
+            ],
+            throwOnError: false,
+          });
+        }
+        setTimeout(resizeCanvas, 100);
+      });
+
+      // --- ЛОГІКА УРОКУ ---
+      function checkInput(btn, ansStr) {
+        const row = btn.closest(".task-row");
+        const input = row.querySelector("input");
+        if (row.classList.contains("done")) return;
+        let val = input.value
+          .trim()
+          .replace(",", ".")
+          .replace(/\s*\/\s*/g, "/");
+        const correctArr = ansStr.split("|");
+        row.classList.add("done");
+        input.disabled = true;
+        btn.disabled = true;
+        if (correctArr.includes(val)) {
+          input.classList.add("correct");
+          row.classList.add("solved-correct");
+          totalCorrect++;
+        } else {
+          input.classList.add("wrong");
+          row.classList.add("solved-wrong");
+          totalWrong++;
+        }
+        updateStats();
+      }
+      function updateStats() {
+        document.getElementById("val-correct").innerText = totalCorrect;
+        document.getElementById("val-wrong").innerText = totalWrong;
+      }
+      function closeModal() {
+        document.getElementById("result-modal").style.display = "none";
+      }
+
+      // --- ЛОГІКА ТЕСТІВ ---
+      function startTest(testId) {
+        const modal = document.getElementById("test-screen");
+        const title = document.getElementById("test-title");
+        const body = document.getElementById("test-questions-body");
+        const btnSubmit = document.getElementById("btn-submit-test");
+
+        modal.style.display = "block";
+        btnSubmit.style.display = "inline-block";
+        body.innerHTML = "";
+
+        if (testId === 1) {
+          title.innerText = "Тест 1: Додавання та віднімання";
+          currentTest = testAddSubData;
+        } else {
+          title.innerText = "Тест 2: Множення та ділення";
+          currentTest = testMultDivData;
+        }
+
+        currentTest.forEach((item, i) => {
+          const div = document.createElement("div");
+          div.className = "test-item";
+          div.innerHTML = `
+                <div class="test-q">${i + 1}. ${item.q}</div>
+                <input type="text" class="input-answer test-input" data-answers="${
+                  item.a
+                }" placeholder="Відповідь">
+            `;
+          body.appendChild(div);
+        });
+
+        renderMathInElement(body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false },
+          ],
+          throwOnError: false,
+        });
+      }
+
+      function submitTest() {
+        const inputs = document.querySelectorAll(".test-input");
+        let score = 0;
+        let total = inputs.length;
+
+        inputs.forEach((input) => {
+          let val = input.value
+            .trim()
+            .replace(",", ".")
+            .replace(/\s*\/\s*/g, "/");
+          const correctArr = input.dataset.answers.split("|");
+
+          input.disabled = true;
+          if (correctArr.includes(val)) {
+            score++;
+            input.style.borderColor = "var(--success)";
+            input.style.backgroundColor = "#f0fdf4";
+            input.value += " ✅";
+          } else {
+            input.style.borderColor = "var(--error)";
+            input.style.backgroundColor = "#fef2f2";
+            input.value += ` ❌ (Правильно: ${correctArr[0]})`;
+          }
+        });
+
+        const body = document.getElementById("test-questions-body");
+        const resultDiv = document.createElement("div");
+        const finalGrade = score;
+
+        resultDiv.innerHTML = `
+            <div style="margin-bottom: 30px; border-bottom: 2px solid #ddd; padding-bottom: 20px;">
+                <div style="text-align:center; font-size:1.2rem; color:#64748b;">Ваша оцінка:</div>
+                <div class="test-result-header">${finalGrade} / 12</div>
+                <div style="text-align:center; color:#64748b;">(Правильно: ${score} з ${total})</div>
+            </div>
+        `;
+        body.prepend(resultDiv);
+        document.getElementById("btn-submit-test").style.display = "none";
+        document
+          .querySelector(".test-container")
+          .scrollIntoView({ behavior: "smooth" });
+      }
+
+      function closeTest() {
+        document.getElementById("test-screen").style.display = "none";
+      }
+    </script>
+  </body>
+</html>
