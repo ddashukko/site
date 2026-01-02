@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Домашня робота: Раціональні числа</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" />
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+    <style>
+      :root {
+        --primary: #2563eb;
+        --bg: #f8fafc;
+        --card: #ffffff;
+        --text: #1e293b;
+        --border: #e2e8f0;
+        --accent: #8b5cf6;
+      }
+      body {
+        font-family: -apple-system, sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
+        margin: 0;
+        padding: 20px;
+      }
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+      }
+      header {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+      .exercise-block {
+        background: var(--card);
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        margin-bottom: 20px;
+        padding: 20px;
+      }
+      .exercise-title {
+        color: var(--primary);
+        margin-top: 0;
+      }
+      .task-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: 1px solid #f1f5f9;
+      }
+      .input-answer {
+        padding: 8px;
+        border: 1px solid #cbd5e1;
+        border-radius: 6px;
+        width: 120px;
+      }
+      .footer-actions {
+        text-align: center;
+        margin-top: 40px;
+        padding-bottom: 50px;
+      }
+      .btn-send {
+        background: var(--accent);
+        color: white;
+        padding: 15px 30px;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+      .btn-send:hover {
+        opacity: 0.9;
+        transform: translateY(-2px);
+      }
+      #link-display {
+        margin-top: 20px;
+        padding: 15px;
+        background: #ede9fe;
+        border-radius: 8px;
+        word-break: break-all;
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>Домашня робота</h1>
+        <p>Тема: Раціональні числа (Вправи 1-8)</p>
+      </header>
+
+      <div id="homework-body"></div>
+
+      <div class="footer-actions">
+        <button class="btn-send" onclick="generateLink()">Надіслати вчителю</button>
+        <div id="link-display"></div>
+      </div>
+    </div>
+
+    <script>
+      const hwData = [
+        {
+          title: "Вправа 1. Однакові знаки",
+          tasks: [
+            { q: "$-7 + (-9)$", id: "1_1" },
+            { q: "$-15 - 12$", id: "1_2" },
+            { q: "$-33 + (-27)$", id: "1_3" },
+            { q: "$-200 - 50$", id: "1_4" },
+            { q: "$-4 + (-96)$", id: "1_5" }
+          ]
+        },
+        {
+          title: "Вправа 2. Різні знаки",
+          tasks: [
+            { q: "$-12 + 20$", id: "2_1" },
+            { q: "$8 - 15$", id: "2_2" },
+            { q: "$-30 + 12$", id: "2_3" },
+            { q: "$55 - 70$", id: "2_4" },
+            { q: "$-6 + 6$", id: "2_5" }
+          ]
+        },
+        {
+          title: "Вправа 3. Десяткові дроби",
+          tasks: [
+            { q: "$-3,5 - 2,5$", id: "3_1" },
+            { q: "$-0,7 + 1,2$", id: "3_2" },
+            { q: "$4,8 - 6,1$", id: "3_3" },
+            { q: "$-5,4 + (-4,6)$", id: "3_4" },
+            { q: "$0 - 9,12$", id: "3_5" }
+          ]
+        },
+        {
+          title: "Вправа 4. Розкриття дужок",
+          tasks: [
+            { q: "$12 - (-5)$", id: "4_1" },
+            { q: "$-8 - (-8)$", id: "4_2" },
+            { q: "$0 - (-4,9)$", id: "4_3" },
+            { q: "$-20 - (-7)$", id: "4_4" },
+            { q: "$3,1 - (-2,9)$", id: "4_5" }
+          ]
+        },
+        {
+          title: "Вправа 5. Дроби (однакові)",
+          tasks: [
+            { q: "$-\\frac{2}{9} + (-\\frac{5}{9})$", id: "5_1" },
+            { q: "$\\frac{4}{11} - \\frac{7}{11}$", id: "5_2" },
+            { q: "$-\\frac{2}{6} + \\frac{5}{6}$", id: "5_3" },
+            { q: "$-\\frac{8}{15} - (-\\frac{2}{15})$", id: "5_4" },
+            { q: "$-\\frac{13}{25} - \\frac{12}{25}$", id: "5_5" }
+          ]
+        },
+        {
+          title: "Вправа 6. Дроби (різні)",
+          tasks: [
+            { q: "$-\\frac{1}{4} + \\frac{1}{2}$", id: "6_1" },
+            { q: "$-\\frac{3}{4} - \\frac{1}{8}$", id: "6_2" },
+            { q: "$\\frac{1}{3} - \\frac{4}{9}$", id: "6_3" },
+            { q: "$-\\frac{5}{6} + (-\\frac{1}{3})$", id: "6_4" },
+            { q: "$-\\frac{3}{10} - (-\\frac{1}{5})$", id: "6_5" }
+          ]
+        },
+        {
+          title: "Вправа 7. Мішані числа",
+          tasks: [
+            { q: "$-3\\frac{1}{4} - 2\\frac{1}{4}$", id: "7_1" },
+            { q: "$-2\\frac{1}{3} + 4\\frac{1}{3}$", id: "7_2" },
+            { q: "$6\\frac{1}{7} - 7\\frac{3}{7}$", id: "7_3" },
+            { q: "$-5\\frac{2}{9} + 3\\frac{5}{9}$", id: "7_4" },
+            { q: "$-1\\frac{4}{5} - (-2\\frac{1}{5})$", id: "7_5" }
+          ]
+        },
+        {
+          title: "Вправа 8. Мікс",
+          tasks: [
+            { q: "$-0,75 + \\frac{3}{4}$", id: "8_1" },
+            { q: "$-\\frac{1}{2} - 0,5$", id: "8_2" },
+            { q: "$2,4 - \\frac{2}{5}$", id: "8_3" },
+            { q: "$-3\\frac{1}{2} + 1,5$", id: "8_4" },
+            { q: "$-0,8 + (-\\frac{1}{5})$", id: "8_5" }
+          ]
+        }
+      ];
+
+      function init() {
+        const container = document.getElementById('homework-body');
+        hwData.forEach(ex => {
+          const block = document.createElement('div');
+          block.className = 'exercise-block';
+          block.innerHTML = `<h3 class="exercise-title">${ex.title}</h3>`;
+          ex.tasks.forEach(t => {
+            const row = document.createElement('div');
+            row.className = 'task-row';
+            row.innerHTML = `<span>${t.q}</span><input type="text" class="input-answer" data-id="${t.id}" placeholder="?">`;
+            block.appendChild(row);
+          });
+          container.appendChild(block);
+        });
+
+        renderMathInElement(document.body, {
+          delimiters: [{ left: "$", right: "$", display: false }],
+          throwOnError: false
+        });
+      }
+
+      function generateLink() {
+        const inputs = document.querySelectorAll('.input-answer');
+        let answers = {};
+        inputs.forEach(input => {
+          answers[input.dataset.id] = input.value || "порожньо";
+        });
+
+        const teacherCode = "янчук";
+        const payload = btoa(unescape(encodeURIComponent(JSON.stringify({
+          code: teacherCode,
+          ans: answers,
+          date: new Date().toLocaleDateString()
+        }))));
+
+        const baseUrl = window.location.href.split('?')[0];
+        const finalUrl = `${baseUrl}?homework=${payload}`;
+        
+        const display = document.getElementById('link-display');
+        display.style.display = 'block';
+        display.innerHTML = `<strong>Посилання для вчителя:</strong><br><small>${finalUrl}</small>`;
+        
+        alert("Посилання сформовано! Скопіюйте його з нижньої частини сторінки.");
+      }
+
+      window.onload = init;
+    </script>
+  </body>
+</html>
