@@ -69,7 +69,7 @@ window.lessonsData = [
   },
   {
     id: "math-2-investigation",
-    title: "Космічна Місія: Арифметика в межах 100",
+    title: "Гра у детектива: Задачі з обчисленням у межах 100",
     grade: 2,
     topic: "Арифметика",
     link: "math_general/2/investigation_lesson.html",
