@@ -75,7 +75,7 @@ window.lessonsData = [
     link: "math_general/2/investigation_lesson.html",
     subject_code: "math_general",
     category: "lesson",
-    author: "Даша", 
+    author: "Даша",
   },
   {
     id: "math-2-hw-01",
@@ -585,7 +585,7 @@ window.lessonsData = [
   },
   {
     id: "geom-8-test-09",
-    title: "§0. Повторення: кути та трикутники",
+    title: "§9. Середня лінія трикутника",
     grade: 8,
     topic: "Геометрія",
     link: "geometry/8/test/9-triangle-midline.html",
@@ -609,7 +609,7 @@ window.lessonsData = [
   },
   {
     id: "geom-8-lesson-09",
-    title: "§0. Повторення: кути та трикутники",
+    title: "§9. Середня лінія трикутника",
     grade: 8,
     topic: "Геометрія",
     link: "geometry/8/lesson/9-triangle-midline.html",
@@ -632,7 +632,7 @@ window.lessonsData = [
   },
   {
     id: "geom-8-homework-09",
-    title: "ДЗ: §0. Повторення: кути та трикутники",
+    title: "ДЗ: §9. Середня лінія трикутника",
     grade: 8,
     topic: "Геометрія",
     link: "geometry/8/homework/9-triangle-midline.html",
