@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Домашня Місія: Математика</title>
+    <style>
+        body {
+            font-family: 'Verdana', sans-serif;
+            background: linear-gradient(135deg, #0d1b2a, #1b263b, #415a77);
+            color: #fff;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        h1 {
+            color: #00e676;
+            text-shadow: 0 0 10px #00e676;
+            font-size: 2.2em;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        p.intro {
+            font-size: 1.2em;
+            color: #b0bec5;
+            margin-bottom: 30px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+        }
+
+        .section {
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 2px solid #00b0ff;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 0 15px rgba(0, 176, 255, 0.3);
+            backdrop-filter: blur(5px);
+        }
+
+        h2 {
+            color: #ffea00;
+            border-bottom: 1px solid #ffea00;
+            padding-bottom: 10px;
+            margin-top: 0;
+            text-shadow: 0 0 5px #ffea00;
+        }
+
+        .task-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .task-item {
+            font-size: 1.3em;
+            background-color: rgba(0, 0, 0, 0.3);
+            padding: 10px 5px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid #415a77;
+            white-space: nowrap; 
+        }
+
+        input {
+            width: 70px;
+            height: 35px;
+            font-size: 1em;
+            text-align: center;
+            border: 2px solid #00b0ff;
+            border-radius: 5px;
+            margin-left: 8px;
+            margin-right: 8px;
+            outline: none;
+            background-color: #e3f2fd;
+            color: #0d1b2a;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            border-color: #ffea00;
+            box-shadow: 0 0 10px #ffea00;
+        }
+
+        /* Стилі перевірки (для вчителя) */
+        input.correct {
+            background-color: #00e676;
+            border-color: #00c853;
+            color: #003300;
+        }
+
+        input.wrong {
+            background-color: #ff1744;
+            border-color: #d50000;
+            color: #ffffff;
+        }
+
+        /* Кнопка */
+        .btn-main {
+            background: linear-gradient(45deg, #ff6d00, #ffab00);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.4em;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(255, 109, 0, 0.5);
+            transition: transform 0.2s;
+            margin-top: 20px;
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 1px;
+            margin-bottom: 50px;
+        }
+
+        .btn-main:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 109, 0, 0.7);
+        }
+
+        /* Модальні вікна та посилання */
+        #shareSection {
+            display: none;
+            background: rgba(13, 27, 42, 0.95);
+            border: 2px solid #00e676;
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+
+        #resultLink {
+            width: 90%;
+            padding: 10px;
+            font-size: 1em;
+            border: 1px solid #00b0ff;
+            border-radius: 5px;
+            margin: 10px 0;
+            background: #1b263b;
+            color: #fff;
+        }
+
+        #teacherLogin {
+            display: none;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(13, 27, 42, 0.98);
+            z-index: 2000;
+            justify-content: center; align-items: center; flex-direction: column;
+        }
+        
+        #passwordInput {
+            font-size: 1.5em; padding: 10px; width: 200px; margin-bottom: 20px;
+            border: 2px solid #00e676; background: #fff; color: #000;
+        }
+
+        #finalScore {
+            font-size: 2em; font-weight: bold; margin-top: 20px; display: none;
+            text-shadow: 0 0 10px currentColor;
+        }
+
+        /* Анімація фону */
+        .stars {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 0;
+            background-image: radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 3px);
+            background-size: 550px 550px;
+            background-position: 0 0, 40px 60px, 130px 270px, 70px 100px;
+            opacity: 0.3;
+        }
+
+        /* Анімація ракет */
+        .rocket {
+            position: fixed;
+            bottom: -50px;
+            z-index: 9999;
+            pointer-events: none;
+            animation: flyUp linear forwards;
+        }
+
+        @keyframes flyUp {
+            0% { transform: translateY(0) scale(0.5); opacity: 1; }
+            100% { transform: translateY(-120vh) scale(1.5); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="stars"></div>
+
+    <div id="teacherLogin">
+        <h2 style="color: #00e676; border: none;">🔐 Доступ до Центру Керування</h2>
+        <p>Введіть код доступу:</p>
+        <input type="password" id="passwordInput" placeholder="Пароль">
+        <button class="btn-main" onclick="checkPassword()" style="font-size: 1em; padding: 10px 30px;">Увійти</button>
+        <p id="loginError" style="color: #ff1744; display: none; font-weight: bold;">Невірний код!</p>
+    </div>
+
+    <div class="container">
+        <h1>🏠 Домашня Місія 🪐</h1>
+        <p class="intro" id="instruction">Кадете! Виконай завдання та надішли звіт на базу.</p>
+
+        <div class="section">
+            <h2>1. Додавання (з переходом)</h2>
+            <div class="task-grid">
+                <div class="task-item">28 + 5 = <input type="number" data-answer="33"></div>
+                <div class="task-item">47 + 6 = <input type="number" data-answer="53"></div>
+                <div class="task-item">65 + 8 = <input type="number" data-answer="73"></div>
+                <div class="task-item">36 + 7 = <input type="number" data-answer="43"></div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>2. Віднімання (з переходом)</h2>
+            <div class="task-grid">
+                <div class="task-item">33 - 5 = <input type="number" data-answer="28"></div>
+                <div class="task-item">52 - 8 = <input type="number" data-answer="44"></div>
+                <div class="task-item">71 - 4 = <input type="number" data-answer="67"></div>
+                <div class="task-item">45 - 9 = <input type="number" data-answer="36"></div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>3. Політ до 100 (без переходу)</h2>
+            <div class="task-grid">
+                <div class="task-item">23 + 45 = <input type="number" data-answer="68"></div>
+                <div class="task-item">76 - 32 = <input type="number" data-answer="44"></div>
+                <div class="task-item">54 + 23 = <input type="number" data-answer="77"></div>
+                <div class="task-item">89 - 41 = <input type="number" data-answer="48"></div>
+                <div class="task-item">12 + 67 = <input type="number" data-answer="79"></div>
+                <div class="task-item">98 - 25 = <input type="number" data-answer="73"></div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>4. Коди навігації (Рівняння)</h2>
+            <div class="task-grid">
+                <div class="task-item"><input type="number" data-answer="28" placeholder="x"> + 7 = 35</div>
+                <div class="task-item">44 + <input type="number" data-answer="12" placeholder="x"> = 56</div>
+                <div class="task-item"><input type="number" data-answer="27" placeholder="x"> + 15 = 42</div>
+            </div>
+        </div>
+
+        <button id="finishBtn" class="btn-main" onclick="finishHomework()">Надіслати звіт Капітану 🚀</button>
+
+        <div id="shareSection">
+            <h3 style="color: #00e676;">✅ Звіт сформовано!</h3>
+            <p>Скопіюй цей секретний код (посилання) і надішли вчителю:</p>
+            <input type="text" id="resultLink" readonly>
+            <button class="btn-main" onclick="copyLink()" style="font-size: 1em; padding: 10px 20px; background: #00b0ff;">Копіювати</button>
+        </div>
+
+        <div id="finalScore"></div>
+    </div>
+
+    <script>
+        // Перевірка режиму вчителя
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const data = urlParams.get('answers');
+
+            if (data) {
+                // Режим вчителя
+                document.getElementById('finishBtn').style.display = 'none';
+                document.getElementById('instruction').innerText = "РЕЖИМ ПЕРЕВІРКИ ПОЛЬОТУ";
+                document.getElementById('instruction').style.color = "#ffea00";
+                
+                try {
+                    const studentAnswers = JSON.parse(atob(data));
+                    const inputs = document.querySelectorAll('input[type="number"]');
+                    
+                    inputs.forEach((input, index) => {
+                        if (studentAnswers[index] !== undefined) {
+                            input.value = studentAnswers[index];
+                        }
+                        input.disabled = true; // Блокуємо зміни
+                    });
+
+                    // Показати вікно входу
+                    document.getElementById('teacherLogin').style.display = 'flex';
+                } catch (e) {
+                    alert("Помилка даних. Посилання пошкоджено.");
+                }
+            }
+        };
+
+        function finishHomework() {
+            const inputs = document.querySelectorAll('input[type="number"]');
+            let answers = [];
+            let allFilled = true;
+
+            inputs.forEach(input => {
+                if (input.value === '') allFilled = false;
+                answers.push(input.value);
+            });
+
+            if (!allFilled) {
+                if(!confirm("Увага! Не всі поля заповнені. Все одно відправити?")) return;
+            }
+
+            // Кодування результатів
+            const encoded = btoa(JSON.stringify(answers));
+            const fullLink = window.location.href.split('?')[0] + '?answers=' + encoded;
+
+            document.getElementById('shareSection').style.display = 'block';
+            document.getElementById('finishBtn').style.display = 'none';
+            document.getElementById('resultLink').value = fullLink;
+            
+            document.getElementById('shareSection').scrollIntoView({behavior: "smooth"});
+        }
+
+        function copyLink() {
+            const copyText = document.getElementById("resultLink");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999); 
+            navigator.clipboard.writeText(copyText.value);
+            alert("Посилання скопійовано! Надішли його капітану.");
+        }
+
+        function checkPassword() {
+            const pass = document.getElementById('passwordInput').value;
+            // ПАРОЛЬ: янчук
+            if (pass.toLowerCase() === 'янчук') {
+                document.getElementById('teacherLogin').style.display = 'none';
+                gradeHomework();
+            } else {
+                document.getElementById('loginError').style.display = 'block';
+            }
+        }
+
+        function gradeHomework() {
+            const inputs = document.querySelectorAll('input[type="number"]');
+            let correctCount = 0;
+            
+            inputs.forEach(input => {
+                let val = parseInt(input.value);
+                let ans = parseInt(input.getAttribute('data-answer'));
+                
+                if (val === ans) {
+                    input.classList.add('correct');
+                    correctCount++;
+                } else {
+                    input.classList.add('wrong');
+                }
+            });
+
+            const scoreDiv = document.getElementById('finalScore');
+            scoreDiv.style.display = 'block';
+            scoreDiv.innerHTML = `Результат місії: ${correctCount} з ${inputs.length}`;
+            
+            if (correctCount === inputs.length) {
+                scoreDiv.style.color = '#00e676';
+                scoreDiv.innerHTML += "<br>🚀 Місія виконана ідеально! 🪐";
+                launchSpaceConfetti();
+            } else {
+                scoreDiv.style.color = '#ffea00';
+            }
+        }
+
+        function launchSpaceConfetti() {
+            const emojis = ['🚀', '🛸', '⭐', '🪐', '☄️', '🌑'];
+            const container = document.body;
+            
+            for (let i = 0; i < 50; i++) {
+                const item = document.createElement('div');
+                item.classList.add('rocket');
+                item.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+                item.style.left = Math.random() * 100 + 'vw';
+                item.style.fontSize = (Math.random() * 30 + 20) + 'px';
+                item.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                container.appendChild(item);
+                setTimeout(() => item.remove(), 4000);
+            }
+        }
+    </script>
+</body>
+</html>

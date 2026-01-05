@@ -54,7 +54,7 @@ window.lessonsData = [
     topic: "Арифметика",
     link: "math_general/2/mixed_operations_within_100.html",
     subject_code: "math_general",
-    category: "test",
+    category: "lesson",
     author: "Даша",
   },
   {
@@ -64,8 +64,18 @@ window.lessonsData = [
     topic: "Арифметика",
     link: "math_general/2/math_space_mission.html",
     subject_code: "math_general",
-    category: "test",
+    category: "lesson",
     author: "Даша",
+  },
+  {
+    id: "math-2-investigation",
+    title: "Гра у детектива: Задачі з обчисленням у межах 100",
+    grade: 2,
+    topic: "Арифметика",
+    link: "math_general/2/investigation_lesson.html",
+    subject_code: "math_general",
+    category: "lesson",
+    author: "Даша", 
   },
   {
     id: "math-2-hw-01",

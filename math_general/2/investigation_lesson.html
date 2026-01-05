@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Математичний Детектив: Повний Курс</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap');
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #f0f8ff;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 700px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            overflow: hidden;
+            border: 4px solid #8FD6E8;
+        }
+
+        .header {
+            background-color: #8FD6E8;
+            padding: 20px;
+            text-align: center;
+            color: #005f73;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 1.8rem;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: #e0e0e0;
+            width: 100%;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #FF9F1C;
+            width: 0%;
+            transition: width 0.5s;
+        }
+
+        .scene {
+            padding: 30px;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            animation: fadeIn 0.5s;
+        }
+
+        .scene.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .image-area {
+            font-size: 80px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .story-text {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 5px solid #ffc107;
+            width: 100%;
+        }
+
+        .interactive-area {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .btn-choice {
+            padding: 15px 20px;
+            font-size: 1.1rem;
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+            position: relative;
+        }
+
+        .btn-choice:hover {
+            background-color: #f1f1f1;
+            transform: translateY(-2px);
+        }
+
+        .btn-choice.correct {
+            background-color: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .btn-choice.wrong {
+            background-color: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .input-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        input[type="number"] {
+            width: 80px;
+            padding: 10px;
+            font-size: 1.5rem;
+            text-align: center;
+            border: 2px solid #8FD6E8;
+            border-radius: 10px;
+        }
+
+        .equation-box {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            flex-wrap: wrap;
+        }
+
+        .feedback {
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            min-height: 1.5em;
+            text-align: center;
+        }
+
+        .nav-btn {
+            margin-top: 20px;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            background-color: #2EC4B6;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            display: none; 
+        }
+        
+        .nav-btn:hover {
+            background-color: #25a296;
+        }
+
+        .section-title {
+            color: #005f73;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>🕵️‍♀️ Математичний Детектив</h1>
+    </div>
+    <div class="progress-bar">
+        <div class="progress-fill" id="progress"></div>
+    </div>
+
+    <div class="scene active" id="scene-0">
+        <div class="image-area">👋</div>
+        <h2>Привіт, Детективе!</h2>
+        <p class="story-text">У лісі трапилася плутанина. Звірята не можуть порахувати свої запаси. Їм потрібна твоя допомога, щоб зрозуміти умови задач і вирішити їх.</p>
+        <button class="nav-btn" style="display:inline-block" onclick="nextScene()">Почати розслідування</button>
+    </div>
+
+    <div class="scene" id="scene-1">
+        <h3 class="section-title">Справа №1: Білочка</h3>
+        <div class="image-area">🐿️🌰</div>
+        <p class="story-text">У Білочки було <strong>42 горішки</strong>. Вона знайшла ще <strong>5 горішків</strong>.</p>
+        
+        <h3>Крок 1: Що сталося з кількістю?</h3>
+        <div class="interactive-area" id="options-1">
+            <button class="btn-choice" onclick="checkLogic(1, 'add', this)">Їх стало більше (+)</button>
+            <button class="btn-choice" onclick="checkLogic(1, 'sub', this)">Їх стало менше (-)</button>
+        </div>
+
+        <div id="step-1-part2" style="display:none; width: 100%; text-align: center;">
+            <h3>Крок 2: Обчисли</h3>
+            <div class="input-group">
+                <span>42 + 5 = </span>
+                <input type="number" id="ans-1">
+                <button onclick="checkMath(1, 47)">ОК</button>
+            </div>
+        </div>
+        <div class="feedback" id="feed-1"></div>
+        <button class="nav-btn" id="next-1" onclick="nextScene()">Далі</button>
+    </div>
+
+    <div class="scene" id="scene-2">
+        <h3 class="section-title">Справа №2: Зайчик</h3>
+        <div class="image-area">🐰🥕</div>
+        <p class="story-text">У Зайчика було <strong>28 морквин</strong>. На обід він з'їв <strong>3 морквини</strong>.</p>
+        
+        <h3>Крок 1: Що сталося з кількістю?</h3>
+        <div class="interactive-area" id="options-2">
+            <button class="btn-choice" onclick="checkLogic(2, 'wrong', this)">Їх стало більше (+)</button>
+            <button class="btn-choice" onclick="checkLogic(2, 'sub', this)">Їх стало менше (-)</button>
+        </div>
+
+        <div id="step-2-part2" style="display:none; width: 100%; text-align: center;">
+            <h3>Крок 2: Обчисли</h3>
+            <div class="input-group">
+                <span>28 - 3 = </span>
+                <input type="number" id="ans-2">
+                <button onclick="checkMath(2, 25)">ОК</button>
+            </div>
+        </div>
+        <div class="feedback" id="feed-2"></div>
+        <button class="nav-btn" id="next-2" onclick="nextScene()">Далі</button>
+    </div>
+
+    <div class="scene" id="scene-3">
+        <h3 class="section-title">Справа №3: Жабки</h3>
+        <div class="image-area">🐸🌊</div>
+        <p class="story-text">У ставку сиділо <strong>12 жабок</strong>. До них пристрибало ще <strong>6 жабок</strong>.</p>
+        
+        <h3>Крок 1: Що треба зробити?</h3>
+        <div class="interactive-area" id="options-3">
+            <button class="btn-choice" onclick="checkLogic(3, 'add', this)">Додати тих, що прийшли (+)</button>
+            <button class="btn-choice" onclick="checkLogic(3, 'sub', this)">Відняти тих, що прийшли (-)</button>
+        </div>
+
+        <div id="step-3-part2" style="display:none; width: 100%; text-align: center;">
+            <h3>Крок 2: Обчисли</h3>
+            <div class="input-group">
+                <span>12 + 6 = </span>
+                <input type="number" id="ans-3">
+                <button onclick="checkMath(3, 18)">ОК</button>
+            </div>
+        </div>
+        <div class="feedback" id="feed-3"></div>
+        <button class="nav-btn" id="next-3" onclick="nextScene()">Далі</button>
+    </div>
+
+    <div class="scene" id="scene-4">
+        <h3 class="section-title">Справа №4: Їжачок</h3>
+        <div class="image-area">📦🍄</div>
+        <p class="story-text">У Їжачка були грибочки (ми не знаємо скільки). Він поклав ще <strong>12</strong>. Тепер їх <strong>34</strong>.</p>
+        
+        <h3>Крок 1: Склади рівняння</h3>
+        <div class="interactive-area" id="options-4">
+            <button class="btn-choice" onclick="checkLogic(4, 'correct', this)">Х (було) + 12 = 34</button>
+            <button class="btn-choice" onclick="checkLogic(4, 'wrong', this)">34 + 12 = Х</button>
+        </div>
+
+        <div id="step-4-part2" style="display:none; width: 100%; text-align: center;">
+            <h3>Крок 2: Знайди Х (від суми відніми доданок)</h3>
+            <div class="input-group">
+                <span>Х = 34 - 12 = </span>
+                <input type="number" id="ans-4">
+                <button onclick="checkMath(4, 22)">ОК</button>
+            </div>
+        </div>
+        <div class="feedback" id="feed-4"></div>
+        <button class="nav-btn" id="next-4" onclick="nextScene()">Далі</button>
+    </div>
+
+    <div class="scene" id="scene-5">
+        <h3 class="section-title">Справа №5: Скарбничка</h3>
+        <div class="image-area">🐷💰</div>
+        <p class="story-text">У скарбничці були гроші (Х). Оленка поклала туди ще <strong>10 монет</strong>. Тепер там <strong>40 монет</strong>.</p>
+        
+        <h3>Крок 1: Яка схема правильна?</h3>
+        <div class="interactive-area" id="options-5">
+            <button class="btn-choice" onclick="checkLogic(5, 'correct', this)">Х (було) + 10 (поклала) = 40 (стало)</button>
+            <button class="btn-choice" onclick="checkLogic(5, 'wrong', this)">40 (стало) + 10 (поклала) = Х (було)</button>
+        </div>
+
+        <div id="step-5-part2" style="display:none; width: 100%; text-align: center;">
+            <h3>Крок 2: Знайди Х</h3>
+            <div class="input-group">
+                <span>Х = 40 - 10 = </span>
+                <input type="number" id="ans-5">
+                <button onclick="checkMath(5, 30)">ОК</button>
+            </div>
+        </div>
+        <div class="feedback" id="feed-5"></div>
+        <button class="nav-btn" id="next-5" onclick="nextScene()">Далі</button>
+    </div>
+
+    <div class="scene" id="scene-6">
+        <h3 class="section-title">Справа №6: Бібліотека</h3>
+        <div class="image-area">📚🤓</div>
+        <p class="story-text">На полиці були книги. Поставили ще <strong>4 книги</strong>, і їх стало <strong>26</strong>.</p>
+        
+        <h3>Крок 1: Склади рівняння</h3>
+        <div class="interactive-area" id="options-6">
+            <button class="btn-choice" onclick="checkLogic(6, 'wrong', this)">26 + 4 = Х</button>
+            <button class="btn-choice" onclick="checkLogic(6, 'correct', this)">Х + 4 = 26</button>
+        </div>
+
+        <div id="step-6-part2" style="display:none; width: 100%; text-align: center;">
+            <h3>Крок 2: Скільки книг було спочатку?</h3>
+            <div class="input-group">
+                <span>Х = 26 - 4 = </span>
+                <input type="number" id="ans-6">
+                <button onclick="checkMath(6, 22)">ОК</button>
+            </div>
+        </div>
+        <div class="feedback" id="feed-6"></div>
+        <button class="nav-btn" id="next-6" onclick="nextScene()">Далі</button>
+    </div>
+
+    <div class="scene" id="scene-7">
+        <h3 class="section-title">Справа №7: Сова-поштарка</h3>
+        <div class="image-area">🦉✉️</div>
+        <p class="story-text">Сова рознесла <strong>25 листів</strong> зранку і <strong>43 листи</strong> ввечері.</p>
+        
+        <h3>Крок 1: Обери питання для дії додавання (+)</h3>
+        <div class="interactive-area" id="options-7">
+            <button class="btn-choice" onclick="checkLogic(7, 'correct', this)">Скільки всього листів рознесла Сова?</button>
+            <button class="btn-choice" onclick="checkLogic(7, 'wrong', this)">На скільки більше листів вона рознесла ввечері?</button>
+        </div>
+
+        <div id="step-7-part2" style="display:none; width: 100%; text-align: center;">
+            <h3>Крок 2: Запиши та обчисли</h3>
+            <div class="input-group">
+                <input type="number" id="n1-7" placeholder=".."> + 
+                <input type="number" id="n2-7" placeholder=".."> =
+                <input type="number" id="ans-7" placeholder="?">
+                <button onclick="checkFullMath(7, 25, 43)">Перевірити</button>
+            </div>
+        </div>
+        <div class="feedback" id="feed-7"></div>
+        <button class="nav-btn" id="next-7" onclick="nextScene()">Далі</button>
+    </div>
+
+    <div class="scene" id="scene-8">
+        <h3 class="section-title">Справа №8: Пекарня</h3>
+        <div class="image-area">🍞🥐</div>
+        <p class="story-text">Пекар спік <strong>30 булочок з маком</strong> і <strong>20 з корицею</strong>.</p>
+        
+        <h3>Крок 1: Яке питання треба поставити, щоб розв'язком було (30 + 20)?</h3>
+        <div class="interactive-area" id="options-8">
+            <button class="btn-choice" onclick="checkLogic(8, 'correct', this)">Скільки всього булочок спік пекар?</button>
+            <button class="btn-choice" onclick="checkLogic(8, 'wrong', this)">На скільки більше булочок з маком?</button>
+        </div>
+
+        <div id="step-8-part2" style="display:none; width: 100%; text-align: center;">
+            <h3>Крок 2: Обчисли</h3>
+            <div class="input-group">
+                <input type="number" id="n1-8" placeholder=".."> + 
+                <input type="number" id="n2-8" placeholder=".."> =
+                <input type="number" id="ans-8">
+                <button onclick="checkFullMath(8, 30, 20)">Перевірити</button>
+            </div>
+        </div>
+        <div class="feedback" id="feed-8"></div>
+        <button class="nav-btn" id="next-8" onclick="nextScene()">Далі</button>
+    </div>
+
+    <div class="scene" id="scene-9">
+        <h3 class="section-title">Справа №9: Кишенькові гроші</h3>
+        <div class="image-area">👧💵👦</div>
+        <p class="story-text">У Максима є <strong>45 грн</strong>, а у Софії — <strong>32 грн</strong>.</p>
+        
+        <h3>Крок 1: Обери питання для дії додавання (+)</h3>
+        <div class="interactive-area" id="options-9">
+            <button class="btn-choice" onclick="checkLogic(9, 'wrong', this)">У кого грошей більше?</button>
+            <button class="btn-choice" onclick="checkLogic(9, 'correct', this)">Скільки грошей у дітей разом?</button>
+        </div>
+
+        <div id="step-9-part2" style="display:none; width: 100%; text-align: center;">
+            <h3>Крок 2: Скільки разом?</h3>
+            <div class="input-group">
+                <input type="number" id="n1-9" placeholder=".."> + 
+                <input type="number" id="n2-9" placeholder=".."> =
+                <input type="number" id="ans-9">
+                <button onclick="checkFullMath(9, 45, 32)">Перевірити</button>
+            </div>
+        </div>
+        <div class="feedback" id="feed-9"></div>
+        <button class="nav-btn" id="next-9" onclick="nextScene()">Далі</button>
+    </div>
+
+    <div class="scene" id="scene-10">
+        <h3 class="section-title">Справа №10: Лисичка</h3>
+        <div class="image-area">🦊🍎</div>
+        <p class="story-text">У Лисички було <strong>14 яблук</strong>. Друзі подарували їй ще кілька, і тепер у неї <strong>26 яблук</strong>.</p>
+        
+        <h3>Крок 1: Заповни пропуски у схемі</h3>
+        <div class="equation-box">
+            <span>Було: 14</span> &nbsp;|&nbsp; 
+            <span>Подарували: </span> 
+            <select id="sel-10" style="font-size: 1.2rem; padding: 5px;">
+                <option value="?">?</option>
+                <option value="X">Невідомо (Х)</option>
+                <option value="26">26</option>
+            </select>
+             &nbsp;|&nbsp;
+            <span>Стало: 26</span>
+        </div>
+        <button id="btn-check-10" onclick="checkSelect(10)">Перевірити схему</button>
+
+        <div id="step-10-part2" style="display:none; width: 100%; text-align: center;">
+            <h3>Крок 2: Розв'яжи: 14 + Х = 26</h3>
+            <div class="input-group">
+                <span>Х = 26 - 14 = </span>
+                <input type="number" id="ans-10">
+                <button onclick="checkMath(10, 12)">ОК</button>
+            </div>
+        </div>
+        <div class="feedback" id="feed-10"></div>
+        <button class="nav-btn" id="next-10" onclick="nextScene()">Далі</button>
+    </div>
+
+    <div class="scene" id="scene-11">
+        <h3 class="section-title">Справа №11: Вареники</h3>
+        <div class="image-area">🥟🍽️</div>
+        <p class="story-text">Мама зліпила <strong>22 вареники</strong>. Потім ще декілька, і стало <strong>29</strong>.</p>
+        
+        <h3>Крок 1: Доповни рівняння</h3>
+        <div class="equation-box">
+            <span>22</span> + 
+            <select id="sel-11" style="font-size: 1.2rem; padding: 5px;">
+                <option value="?">?</option>
+                <option value="X">Х (ще декілька)</option>
+                <option value="29">29</option>
+            </select>
+            = 29
+        </div>
+        <button id="btn-check-11" onclick="checkSelect(11)">Перевірити</button>
+
+        <div id="step-11-part2" style="display:none; width: 100%; text-align: center;">
+            <h3>Крок 2: Скільки вареників доліпила мама?</h3>
+            <div class="input-group">
+                <span>Х = </span>
+                <input type="number" id="ans-11">
+                <button onclick="checkMath(11, 7)">ОК</button>
+            </div>
+        </div>
+        <div class="feedback" id="feed-11"></div>
+        <button class="nav-btn" id="next-11" onclick="nextScene()">Далі</button>
+    </div>
+
+    <div class="scene" id="scene-12">
+        <h3 class="section-title">Справа №12: Розмальовка</h3>
+        <div class="image-area">🎨🖌️</div>
+        <p class="story-text">Було розмальовано <strong>15 сторінок</strong>. Мишко розмалював ще (Х), і стало <strong>18</strong>.</p>
+        
+        <h3>Крок 1: Обери правильне рівняння</h3>
+        <div class="interactive-area" id="options-12">
+            <button class="btn-choice" onclick="checkLogic(12, 'correct', this)">15 + Х = 18</button>
+            <button class="btn-choice" onclick="checkLogic(12, 'wrong', this)">18 + Х = 15</button>
+        </div>
+
+        <div id="step-12-part2" style="display:none; width: 100%; text-align: center;">
+            <h3>Крок 2: Скільки сторінок розмалював Мишко?</h3>
+            <div class="input-group">
+                <span>Х = </span>
+                <input type="number" id="ans-12">
+                <button onclick="checkMath(12, 3)">ОК</button>
+            </div>
+        </div>
+        <div class="feedback" id="feed-12"></div>
+        <button class="nav-btn" id="next-12" onclick="nextScene()">Далі</button>
+    </div>
+
+    <div class="scene final-screen" id="scene-13">
+        <div class="image-area">🏆🎉</div>
+        <h2>Чудова робота!</h2>
+        <p class="story-text">Ти справжній майстер розв'язування задач! Ти розплутав усі 12 справ.</p>
+        <button class="nav-btn" style="display:inline-block" onclick="location.reload()">Зіграти ще раз</button>
+    </div>
+
+</div>
+
+<script>
+    let currentScene = 0;
+    const totalScenes = 14; // 0 to 13
+
+    function nextScene() {
+        document.getElementById(`scene-${currentScene}`).classList.remove('active');
+        currentScene++;
+        if (document.getElementById(`scene-${currentScene}`)) {
+            document.getElementById(`scene-${currentScene}`).classList.add('active');
+            updateProgress();
+        }
+    }
+
+    function updateProgress() {
+        const percent = (currentScene / (totalScenes - 1)) * 100;
+        document.querySelector('.progress-fill').style.width = percent + '%';
+    }
+
+    function showFeedback(id, message, isGood) {
+        const el = document.getElementById(`feed-${id}`);
+        el.textContent = message;
+        el.style.color = isGood ? '#28a745' : '#dc3545';
+    }
+
+    // Logic Checks
+    function checkLogic(level, answer, btnElement) {
+        const parent = document.getElementById(`options-${level}`);
+        const buttons = parent.getElementsByClassName('btn-choice');
+        
+        // Reset styles
+        for(let btn of buttons) btn.classList.remove('correct', 'wrong');
+
+        // Define correct answers for each level
+        let isCorrect = false;
+
+        if (level === 1 && answer === 'add') isCorrect = true;
+        if (level === 2 && answer === 'sub') isCorrect = true;
+        if (level === 3 && answer === 'add') isCorrect = true;
+        if (level === 4 && answer === 'correct') isCorrect = true;
+        if (level === 5 && answer === 'correct') isCorrect = true;
+        if (level === 6 && answer === 'correct') isCorrect = true;
+        if (level === 7 && answer === 'correct') isCorrect = true;
+        if (level === 8 && answer === 'correct') isCorrect = true;
+        if (level === 9 && answer === 'correct') isCorrect = true;
+        if (level === 12 && answer === 'correct') isCorrect = true;
+
+        if (isCorrect) {
+            btnElement.classList.add('correct');
+            showFeedback(level, "Правильно! Ти зрозумів умову!", true);
+            document.getElementById(`step-${level}-part2`).style.display = 'block';
+        } else {
+            btnElement.classList.add('wrong');
+            showFeedback(level, "Спробуй подумати ще раз. Прочитай уважно.", false);
+        }
+    }
+
+    function checkSelect(level) {
+        const sel = document.getElementById(`sel-${level}`);
+        if(sel.value === 'X') {
+            sel.style.border = "2px solid green";
+            showFeedback(level, "Супер! Це і є наше невідоме число (Х).", true);
+            document.getElementById(`step-${level}-part2`).style.display = 'block';
+            document.getElementById(`btn-check-${level}`).style.display = 'none';
+        } else {
+            sel.style.border = "2px solid red";
+            showFeedback(level, "Ні, це число нам відоме. Шукай те, що ми не знаємо.", false);
+        }
+    }
+
+    // Math Checks
+    function checkMath(level, correctAnswer) {
+        const input = document.getElementById(`ans-${level}`);
+        const val = parseInt(input.value);
+        
+        if (val === correctAnswer) {
+            input.style.borderColor = "green";
+            showFeedback(level, "Молодець! Правильна відповідь.", true);
+            document.getElementById(`next-${level}`).style.display = 'inline-block';
+        } else {
+            input.style.borderColor = "red";
+            showFeedback(level, "Щось не сходиться. Перерахуй уважно.", false);
+        }
+    }
+
+    function checkFullMath(level, num1, num2) {
+        const i1 = parseInt(document.getElementById(`n1-${level}`).value);
+        const i2 = parseInt(document.getElementById(`n2-${level}`).value);
+        const ans = parseInt(document.getElementById(`ans-${level}`).value);
+
+        // Allow both orders: 25+43 or 43+25
+        const isStructureCorrect = (i1 === num1 && i2 === num2) || (i1 === num2 && i2 === num1);
+        const isSumCorrect = ans === (num1 + num2);
+
+        if (isStructureCorrect && isSumCorrect) {
+            showFeedback(level, "Чудово! Ти записав вираз і обчислив його!", true);
+            document.getElementById(`next-${level}`).style.display = 'inline-block';
+        } else if (!isStructureCorrect) {
+            showFeedback(level, "Перевір числа, які ти записав у приклад. Дивись в умову.", false);
+        } else {
+            showFeedback(level, "Приклад записано вірно, але відповідь помилкова.", false);
+        }
+    }
+</script>
+
+</body>
+</html>
