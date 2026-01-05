@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Геометрія 8: Середня лінія трикутника</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
+    />
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"
+    ></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    ></script>
+
+    <style>
+      :root {
+        --primary: #2563eb;
+        --primary-light: #eff6ff;
+        --success: #16a34a;
+        --error: #dc2626;
+        --bg: #f8fafc;
+        --card: #ffffff;
+        --text: #1e293b;
+        --border: #e2e8f0;
+        --accent: #8b5cf6;
+        --grid-color: #e2e8f0;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        display: flex;
+        overflow: hidden;
+      }
+
+      #tasks-section {
+        flex: 1;
+        background: var(--bg);
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+      }
+
+      #board-section {
+        flex: 1;
+        position: relative;
+        background-color: #fff;
+        border-left: 4px solid #cbd5e1;
+        background-image: linear-gradient(
+            var(--grid-color) 1px,
+            transparent 1px
+          ),
+          linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+        background-size: 25px 25px;
+        cursor: crosshair;
+        overflow: hidden;
+      }
+
+      canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+        touch-action: none;
+      }
+
+      .tools {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        display: flex;
+        gap: 10px;
+        background: rgba(255, 255, 255, 0.95);
+        padding: 8px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        border: 1px solid var(--border);
+        flex-wrap: wrap;
+        z-index: 10;
+      }
+
+      .btn-tool {
+        border: 1px solid #cbd5e1;
+        background: white;
+        padding: 8px 12px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 1.2rem;
+        transition: 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 40px;
+      }
+      .btn-tool:hover {
+        background: #f1f5f9;
+      }
+      .btn-tool.active {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+      }
+
+      header {
+        background: var(--card);
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+      }
+
+      .header-title {
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: var(--primary);
+      }
+      .stats-container {
+        display: flex;
+        gap: 15px;
+        font-weight: 600;
+      }
+      .stat-correct {
+        color: var(--success);
+      }
+      .stat-wrong {
+        color: var(--error);
+      }
+
+      .content-container {
+        padding: 20px;
+        padding-bottom: 80px;
+        max-width: 800px;
+        margin: 0 auto;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      .theory-block {
+        background: linear-gradient(to right, #fdfbf7, #fff);
+        border-left: 5px solid var(--accent);
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 30px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      }
+      .theory-title {
+        color: var(--accent);
+        font-weight: bold;
+        font-size: 1.1rem;
+        margin-bottom: 10px;
+      }
+      .theory-content ul {
+        margin: 5px 0;
+        padding-left: 20px;
+      }
+      .theory-content li {
+        margin-bottom: 5px;
+        line-height: 1.5;
+      }
+
+      .exercise-block {
+        background: var(--card);
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        margin-bottom: 30px;
+        overflow: hidden;
+      }
+
+      .exercise-header {
+        background: var(--primary-light);
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border);
+      }
+      .exercise-title {
+        margin: 0;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--primary);
+      }
+      .exercise-desc {
+        margin: 5px 0 0 0;
+        font-size: 0.95rem;
+        color: #475569;
+        line-height: 1.5;
+      }
+
+      .visual-container {
+        display: flex;
+        justify-content: center;
+        padding: 20px;
+        background: #fff;
+        border-bottom: 1px solid var(--border);
+        overflow-x: auto;
+      }
+
+      .task-row {
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .task-row:last-child {
+        border-bottom: none;
+      }
+      .task-row.solved-correct {
+        background-color: #f0fdf4;
+      }
+      .task-row.solved-wrong {
+        background-color: #fef2f2;
+      }
+
+      .task-content {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .task-number {
+        font-weight: 600;
+        color: #94a3b8;
+        min-width: 25px;
+      }
+      .task-question {
+        font-size: 1.1rem;
+        font-weight: 500;
+      }
+
+      .options-container {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 10px;
+        overflow-x: auto;
+        padding-bottom: 5px;
+      }
+      .option-btn {
+        flex: 1;
+        background: white;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        padding: 10px 15px;
+        font-size: 1rem;
+        cursor: pointer;
+        min-width: 70px;
+        white-space: normal;
+        transition: 0.2s;
+        text-align: left;
+      }
+      .option-btn:hover:not(:disabled) {
+        border-color: var(--primary);
+        color: var(--primary);
+        background: var(--primary-light);
+      }
+      .option-btn.selected-correct {
+        background: var(--success);
+        color: white;
+        border-color: var(--success);
+      }
+      .option-btn.selected-correct .katex {
+        color: white !important;
+      }
+      .option-btn.selected-wrong {
+        background: var(--error);
+        color: white;
+        border-color: var(--error);
+      }
+      .option-btn.selected-wrong .katex {
+        color: white !important;
+      }
+
+      .input-group {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+      .input-answer {
+        padding: 10px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        width: 140px;
+        font-size: 1rem;
+      }
+      .btn-check {
+        padding: 10px 20px;
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+      .input-answer.correct {
+        border-color: var(--success);
+        background: #f0fdf4;
+        color: var(--success);
+      }
+      .input-answer.wrong {
+        border-color: var(--error);
+        background: #fef2f2;
+      }
+
+      .finish-section {
+        margin-top: 40px;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        flex-wrap: wrap;
+      }
+      .btn-finish {
+        padding: 15px 40px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: white;
+        background: var(--primary);
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+        transition: transform 0.2s;
+      }
+      .btn-finish:hover {
+        transform: scale(1.05);
+        background-color: #1d4ed8;
+      }
+
+      .btn-test {
+        padding: 15px 40px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: white;
+        background: #7c3aed;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
+        transition: transform 0.2s;
+        text-decoration: none;
+        display: inline-block;
+      }
+      .btn-test:hover {
+        transform: scale(1.05);
+        background-color: #6d28d9;
+      }
+
+      .btn-homework {
+        padding: 15px 40px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: white;
+        background: #ea580c;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(234, 88, 12, 0.3);
+        transition: transform 0.2s;
+        text-decoration: none;
+        display: inline-block;
+      }
+      .btn-homework:hover {
+        transform: scale(1.05);
+        background-color: #c2410c;
+      }
+
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(5px);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+        animation: fadeInOverlay 0.3s ease;
+      }
+
+      .modal-card {
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        max-width: 450px;
+        width: 90%;
+        text-align: center;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        position: relative;
+        animation: scaleInModal 0.3s ease;
+      }
+
+      .modal-close-btn {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: #94a3b8;
+        cursor: pointer;
+      }
+      .modal-close-btn:hover {
+        color: var(--error);
+      }
+
+      .modal-result-title {
+        font-size: 2rem;
+        font-weight: 800;
+        color: var(--primary);
+        margin-bottom: 20px;
+      }
+      .modal-score-big {
+        font-size: 4rem;
+        font-weight: 900;
+        color: var(--primary);
+        line-height: 1;
+        margin: 10px 0;
+      }
+      .modal-score-sub {
+        font-size: 1rem;
+        color: #64748b;
+        margin-bottom: 20px;
+      }
+
+      .modal-progress-container {
+        background: #f1f5f9;
+        border-radius: 10px;
+        padding: 15px;
+        margin-top: 20px;
+      }
+      .modal-bar-bg {
+        width: 100%;
+        height: 12px;
+        background: #e2e8f0;
+        border-radius: 6px;
+        overflow: hidden;
+        margin-top: 10px;
+      }
+      .modal-bar-fill {
+        height: 100%;
+        background: var(--primary);
+        transition: width 1s ease;
+      }
+
+      .modal-footer-btn {
+        margin-top: 30px;
+        padding: 12px 30px;
+        background: var(--text);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+      .modal-footer-btn:hover {
+        background: black;
+      }
+
+      @keyframes fadeInOverlay {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      @keyframes scaleInModal {
+        from {
+          transform: scale(0.8);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      @media (max-width: 768px) {
+        body {
+          flex-direction: column;
+        }
+        #board-section {
+          height: 40vh;
+          border-left: none;
+          border-top: 4px solid #cbd5e1;
+          order: 2;
+        }
+        #tasks-section {
+          height: 60vh;
+          order: 1;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="tasks-section">
+      <header>
+        <div class="header-title">Геометрія 8: Середня лінія трикутника</div>
+        <div class="stats-container">
+          <span class="stat-correct">✅ <span id="val-correct">0</span></span>
+          <span class="stat-wrong">❌ <span id="val-wrong">0</span></span>
+        </div>
+      </header>
+
+      <div class="content-container" id="quiz-root">
+        <div class="theory-block">
+          <div class="theory-title">📚 Шпаргалка: Середня лінія</div>
+          <div class="theory-content">
+            <ul>
+              <li>
+                <b>Середня лінія трикутника</b> — це відрізок, який сполучає
+                середини двох його сторін.
+              </li>
+              <li>
+                <b>Теорема 1:</b> Середня лінія трикутника паралельна третій
+                стороні та дорівнює її половині ($KL || AC$, $KL =
+                \frac{1}{2}AC$).
+              </li>
+              <li>
+                <b>Периметр:</b> Периметр трикутника, утвореного середніми
+                лініями, дорівнює половині периметра початкового трикутника.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="board-section">
+      <div class="tools">
+        <button
+          class="btn-tool active"
+          onclick="setTool('pen')"
+          id="t-pen"
+          title="Ручка"
+        >
+          🖊️
+        </button>
+        <button
+          class="btn-tool"
+          onclick="setTool('eraser')"
+          id="t-eraser"
+          title="Гумка"
+        >
+          🧹
+        </button>
+        <button
+          class="btn-tool"
+          onclick="drawTriangle()"
+          title="Намалювати трикутник"
+        >
+          📐
+        </button>
+        <button
+          class="btn-tool"
+          onclick="clearCanvasSafe()"
+          style="color: red; border-color: #fee2e2"
+          title="Очистити все"
+        >
+          ❌
+        </button>
+      </div>
+      <canvas id="board"></canvas>
+    </div>
+
+    <div id="result-modal" class="modal-overlay">
+      <div class="modal-card">
+        <button class="modal-close-btn" onclick="closeModal()">×</button>
+        <div id="modal-content-body"></div>
+      </div>
+    </div>
+
+    <script>
+      const canvas = document.getElementById("board");
+      const ctx = canvas.getContext("2d");
+      const boardSection = document.getElementById("board-section");
+      let painting = false;
+      let tool = "pen";
+
+      function resizeCanvas() {
+        const temp = document.createElement("canvas");
+        const tempCtx = temp.getContext("2d");
+        temp.width = canvas.width;
+        temp.height = canvas.height;
+        if (canvas.width > 0 && canvas.height > 0) {
+          tempCtx.drawImage(canvas, 0, 0);
+        }
+
+        canvas.width = boardSection.offsetWidth;
+        canvas.height = boardSection.offsetHeight;
+
+        ctx.drawImage(temp, 0, 0);
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+      }
+
+      window.addEventListener("resize", resizeCanvas);
+      window.addEventListener("load", resizeCanvas);
+
+      function getMousePos(e) {
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return { x: clientX - rect.left, y: clientY - rect.top };
+      }
+
+      function startPosition(e) {
+        painting = true;
+        draw(e);
+      }
+
+      function finishedPosition() {
+        painting = false;
+        ctx.beginPath();
+      }
+
+      function draw(e) {
+        if (!painting) return;
+        if (e.type.startsWith("touch")) {
+          // e.preventDefault();
+        }
+
+        const pos = getMousePos(e);
+
+        if (tool === "pen") {
+          ctx.lineWidth = 2;
+          ctx.strokeStyle = "#2563eb";
+          ctx.globalCompositeOperation = "source-over";
+        } else {
+          ctx.lineWidth = 25;
+          ctx.strokeStyle = "#ffffff";
+          ctx.globalCompositeOperation = "destination-out";
+        }
+
+        ctx.lineTo(pos.x, pos.y);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(pos.x, pos.y);
+      }
+
+      canvas.addEventListener("mousedown", startPosition);
+      canvas.addEventListener("mouseup", finishedPosition);
+      canvas.addEventListener("mousemove", draw);
+      canvas.addEventListener("mouseout", finishedPosition);
+
+      canvas.addEventListener("touchstart", startPosition);
+      canvas.addEventListener("touchend", finishedPosition);
+      canvas.addEventListener("touchmove", draw);
+
+      function setTool(t) {
+        tool = t;
+        document
+          .getElementById("t-pen")
+          .classList.toggle("active", t === "pen");
+        document
+          .getElementById("t-eraser")
+          .classList.toggle("active", t === "eraser");
+      }
+
+      function clearCanvasSafe() {
+        if (confirm("Очистити дошку?")) {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+      }
+
+      function drawTriangle() {
+        const prevStrokeStyle = ctx.strokeStyle;
+        const prevLineWidth = ctx.lineWidth;
+        const prevComposite = ctx.globalCompositeOperation;
+
+        ctx.globalCompositeOperation = "source-over";
+        ctx.strokeStyle = "#334155";
+        ctx.lineWidth = 2;
+
+        const w = canvas.width;
+        const h = canvas.height;
+
+        ctx.beginPath();
+        ctx.moveTo(w * 0.5, h * 0.2); // B
+        ctx.lineTo(w * 0.8, h * 0.7); // C
+        ctx.lineTo(w * 0.2, h * 0.7); // A
+        ctx.closePath();
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.strokeStyle = "#2563eb";
+        ctx.setLineDash([5, 5]);
+        ctx.moveTo(w * 0.35, h * 0.45); // Середина AB
+        ctx.lineTo(w * 0.65, h * 0.45); // Середина BC
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        ctx.fillStyle = "#334155";
+        ctx.font = "16px Arial";
+        ctx.fillText("B", w * 0.5, h * 0.18);
+        ctx.fillText("C", w * 0.81, h * 0.72);
+        ctx.fillText("A", w * 0.18, h * 0.72);
+
+        ctx.beginPath();
+        ctx.strokeStyle = prevStrokeStyle;
+        ctx.lineWidth = prevLineWidth;
+        ctx.globalCompositeOperation = prevComposite;
+
+        if (tool === "eraser") {
+          setTool("pen");
+        }
+      }
+
+      // --- МАСИВ ЗАВДАНЬ (ВКЛЮЧАЮЧИ НОВІ ЗМІНЕНІ) ---
+      const exercises = [
+        {
+          id: "9.2",
+          title: "9.2. Практичне завдання",
+          desc: "Виконайте побудову.",
+          tasks: [
+            {
+              id: "1)",
+              q: "Накресліть довільний тупокутний трикутник $MNK$ і його найбільшу середню лінію. (Завдання на побудову)",
+              a: "Так",
+              opts: ["Виконано", "Не виконано"],
+            },
+          ],
+        },
+        {
+          id: "9.4",
+          title: "9.4. Середня лінія та основа",
+          desc: "$KL$ — середня лінія трикутника $ABC$ (мал. 9.2).",
+          tasks: [
+            {
+              id: "1)",
+              q: "$AB = 28$ см. Знайдіть $KL$.",
+              a: "14",
+              type: "input",
+            },
+            {
+              id: "2)",
+              q: "$KL = 9$ дм. Знайдіть $AB$.",
+              a: "18",
+              type: "input",
+            },
+          ],
+        },
+        {
+          id: "9.6",
+          title: "9.6. Рівнобедрений трикутник",
+          desc: "Обчисліть:",
+          tasks: [
+            {
+              id: "1)",
+              q: "Відрізок, що сполучає середини бічних сторін рівнобедреного трикутника, дорівнює $11$ см. Знайдіть основу трикутника.",
+              a: "22",
+              type: "input",
+            },
+          ],
+        },
+        {
+          id: "9.8",
+          title: "9.8. Периметр за середніми лініями",
+          desc: "Обчисліть:",
+          tasks: [
+            {
+              id: "1)",
+              q: "Знайдіть периметр трикутника, якщо його середні лінії дорівнюють $5$ см, $6$ см і $8$ см.",
+              a: "38",
+              type: "input",
+            },
+          ],
+        },
+        {
+          id: "9.10",
+          title: "9.10. Доведення (теорія)",
+          desc: "Перевірка розуміння:",
+          tasks: [
+            {
+              id: "1)",
+              q: "Дано: $ED$ — середня лінія трикутника $ABC$, $E \\in AC$, $D \\in BC$. Довести: $\\angle CED = \\angle CAB$. (Який тип кутів?)",
+              a: "Відповідні",
+              opts: ["Відповідні", "Різносторонні", "Вертикальні", "Суміжні"],
+            },
+          ],
+        },
+        {
+          id: "9.11",
+          title: "9.11. (Усно)",
+          desc: "Визначте вид трикутника, якщо:",
+          tasks: [
+            {
+              id: "1)",
+              q: "дві його середні лінії рівні між собою;",
+              a: "Рівнобедрений",
+              opts: ["Рівнобедрений", "Рівносторонній", "Різносторонній"],
+            },
+            {
+              id: "2)",
+              q: "три його середні лінії рівні між собою.",
+              a: "Рівносторонній",
+              opts: ["Рівносторонній", "Рівнобедрений", "Прямокутний"],
+            },
+          ],
+        },
+        {
+          id: "9.12",
+          title: "9.12. Периметр серединного трикутника",
+          desc: "Обчисліть:",
+          tasks: [
+            {
+              id: "1)",
+              q: "Дано трикутник, периметр якого дорівнює $42$ см. Знайдіть периметр трикутника, вершини якого є серединами сторін цього трикутника.",
+              a: "21",
+              type: "input",
+            },
+          ],
+        },
+        {
+          id: "9.14",
+          title: "9.14. Співвідношення сторін",
+          desc: "Розв'яжіть задачу:",
+          tasks: [
+            {
+              id: "1)",
+              q: "Сторони трикутника відносяться як $5 : 3 : 4$. Знайдіть його сторони, якщо периметр трикутника, утвореного середніми лініями заданого трикутника, дорівнює $48$ см. (Введіть меншу сторону)",
+              a: "24",
+              type: "input",
+            },
+            {
+              id: "2)",
+              q: "(Введіть середню за величиною сторону)",
+              a: "32",
+              type: "input",
+            },
+            {
+              id: "3)",
+              q: "(Введіть більшу сторону)",
+              a: "40",
+              type: "input",
+            },
+          ],
+        },
+        {
+          id: "9.16",
+          title: "9.16. Кілька випадків",
+          desc: "Розгляньте можливі варіанти:",
+          tasks: [
+            {
+              id: "1)",
+              q: "Сторона трикутника дорівнює $16$ см, а одна із середніх ліній — $5$ см. Знайдіть дві інші сторони трикутника, якщо одна з них у $2$ рази більша за другу. (Вкажіть можливі варіанти)",
+              a: "10 см і 20 см або 10 см і 8 см",
+              opts: [
+                "10 см і 20 см або 10 см і 8 см",
+                "Тільки 10 см і 20 см",
+                "10 см і 5 см",
+                "8 см і 16 см",
+              ],
+            },
+          ],
+        },
+        {
+          id: "9.17",
+          title: "9.17. Чотирикутник Варіньона",
+          desc: "Обчисліть периметр:",
+          tasks: [
+            {
+              id: "1)",
+              q: "$E, F, G, H$ – середини сторін $AB, BC, CD$ і $DA$ опуклого чотирикутника $ABCD$. Знайдіть периметр чотирикутника $EFGH$, якщо $AC = 24$ см, $BD = 18$ см.",
+              a: "42",
+              type: "input",
+            },
+          ],
+        },
+        // --- НОВІ ЗАДАЧІ ---
+        {
+          id: "9.19",
+          title: "9.19. Ромб і середня лінія",
+          desc: "Властивості діагоналей:",
+          tasks: [
+            {
+              id: "1)",
+              q: "$O$ — точка перетину діагоналей ромба $ABCD$. Точки $M$ і $K$ — середини сторін $AD$ і $DC$ відповідно. Яким є взаємне розміщення прямих $MK$ і $OD$?",
+              a: "Перпендикулярні",
+              opts: [
+                "Перпендикулярні",
+                "Паралельні",
+                "Мимобіжні",
+                "Збігаються",
+              ],
+            },
+          ],
+        },
+        {
+          id: "9.21",
+          title: "9.21. Рівність трикутників",
+          desc: "Логічне доведення:",
+          tasks: [
+            {
+              id: "1)",
+              q: "Доведіть, що коли два трикутники рівні, то рівні й трикутники, вершинами яких є середини сторін цих трикутників. Чи правильне це твердження?",
+              a: "Так",
+              opts: [
+                "Так",
+                "Ні",
+                "Тільки для прямокутних",
+                "Неможливо визначити",
+              ],
+            },
+          ],
+        },
+        {
+          id: "9.22",
+          title: "9.22. Прямокутний трикутник",
+          desc: "Знайдіть гіпотенузу:",
+          tasks: [
+            {
+              id: "1)",
+              q: "Точка $M$ — середина катета $AC$ рівнобедреного прямокутного трикутника $ABC$ ($\angle C = 90^\circ$). Відстань від точки $M$ до гіпотенузи дорівнює $7$ см. Знайдіть гіпотенузу.",
+              a: "28", // MH = 7. AC = MH / sin45 * 2 = 7*sqrt2 * 2 = 14sqrt2. Hyp = AC*sqrt2 = 14*2 = 28. (Формула Hyp = 4*dist)
+              type: "input",
+            },
+          ],
+        },
+        {
+          id: "9.24",
+          title: "9.24. Вписана фігура",
+          desc: "Властивості ромба:",
+          tasks: [
+            {
+              id: "1)",
+              q: "Доведіть, що середини сторін ромба є вершинами певної фігури. Яка це фігура?",
+              a: "Прямокутник",
+              opts: ["Прямокутник", "Квадрат", "Ромб", "Трапеція"],
+            },
+          ],
+        },
+        {
+          id: "9.25",
+          title: "9.25. Точка перетину медіан",
+          desc: "Рівнобедрений трикутник:",
+          tasks: [
+            {
+              id: "1)",
+              q: "У рівнобедреному трикутнику $ABC$ ($AB = AC$) $M$ — точка перетину медіан. Відомо, що $AM = 18$ см. Знайдіть відстань від середини бічної сторони до основи трикутника.",
+              a: "13.5", // AM=18 => H_total = 27. Midline dist = H/2 = 13.5
+              type: "input",
+            },
+          ],
+        },
+      ];
+
+      let totalCorrect = 0;
+      let totalWrong = 0;
+      let totalTasksCount = 0;
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const root = document.getElementById("quiz-root");
+
+        exercises.forEach((ex) => {
+          totalTasksCount += ex.tasks.length;
+        });
+
+        exercises.forEach((ex) => {
+          const exBlock = document.createElement("div");
+          exBlock.className = "exercise-block";
+
+          exBlock.innerHTML = `
+                <div class="exercise-header">
+                    <h3 class="exercise-title">${ex.title}</h3>
+                    <p class="exercise-desc">${ex.desc}</p>
+                </div>
+                `;
+
+          const taskList = document.createElement("div");
+          taskList.className = "task-list";
+
+          ex.tasks.forEach((task) => {
+            const row = document.createElement("div");
+            row.className = "task-row";
+
+            let contentHTML = `
+                        <div class="task-content">
+                            <div class="task-number">${task.id}</div>
+                            <div class="task-question">${task.q}</div>
+                        </div>
+                    `;
+
+            let actionHTML = "";
+            if (task.type === "input") {
+              const answers = Array.isArray(task.a) ? task.a.join("|") : task.a;
+              actionHTML = `
+                            <div class="input-group">
+                                <input type="text" class="input-answer" placeholder="..." onkeypress="if(event.key==='Enter') this.nextElementSibling.click()">
+                                <button class="btn-check" onclick="checkInput(this, '${answers}')">OK</button>
+                            </div>
+                        `;
+            } else {
+              actionHTML = `<div class="options-container">`;
+              task.opts.forEach((opt) => {
+                const isCorrect = opt === task.a;
+                const safeOpt = opt.replace(/"/g, "&quot;");
+                actionHTML += `<button class="option-btn" onclick="checkOpt(this, ${isCorrect})">${safeOpt}</button>`;
+              });
+              actionHTML += `</div>`;
+            }
+
+            row.innerHTML =
+              contentHTML + `<div style="margin-top:10px;">${actionHTML}</div>`;
+            taskList.appendChild(row);
+          });
+
+          exBlock.appendChild(taskList);
+          root.appendChild(exBlock);
+        });
+
+        const finishSection = document.createElement("div");
+        finishSection.className = "finish-section";
+        finishSection.innerHTML = `
+              <button class="btn-finish" onclick="finishLesson()">Завершити урок</button>
+              <a href="../test/9-triangle-midline.html" class="btn-test">📝 Тестування</a>
+              <a href="../homework/9-triangle-midline.html" class="btn-homework">🏠 Домашня робота</a>`;
+        root.appendChild(finishSection);
+
+        if (window.renderMathInElement) {
+          renderMathInElement(document.body, {
+            delimiters: [
+              { left: "$$", right: "$$", display: true },
+              { left: "\\[", right: "\\]", display: true },
+              { left: "$", right: "$", display: false },
+              { left: "\\(", right: "\\)", display: false },
+            ],
+            throwOnError: false,
+          });
+        } else {
+          window.onload = () =>
+            renderMathInElement(document.body, {
+              delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "\\[", right: "\\]", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+              ],
+              throwOnError: false,
+            });
+        }
+
+        setTimeout(resizeCanvas, 100);
+      });
+
+      function checkOpt(btn, isCorrect) {
+        const row = btn.closest(".task-row");
+        if (row.classList.contains("done")) return;
+        row.classList.add("done");
+
+        row.querySelectorAll(".option-btn").forEach((b) => (b.disabled = true));
+
+        if (isCorrect) {
+          btn.classList.add("selected-correct");
+          row.classList.add("solved-correct");
+          totalCorrect++;
+        } else {
+          btn.classList.add("selected-wrong");
+          row.classList.add("solved-wrong");
+          totalWrong++;
+        }
+        updateStats();
+      }
+
+      function checkInput(btn, ansStr) {
+        const row = btn.closest(".task-row");
+        const input = row.querySelector("input");
+        if (row.classList.contains("done")) return;
+
+        let val = input.value.trim().replace(",", ".");
+        const correctArr = ansStr.split("|");
+
+        row.classList.add("done");
+        input.disabled = true;
+        btn.disabled = true;
+
+        if (correctArr.includes(val)) {
+          input.classList.add("correct");
+          row.classList.add("solved-correct");
+          totalCorrect++;
+        } else {
+          input.classList.add("wrong");
+          row.classList.add("solved-wrong");
+          totalWrong++;
+        }
+        updateStats();
+      }
+
+      function updateStats() {
+        document.getElementById("val-correct").innerText = totalCorrect;
+        document.getElementById("val-wrong").innerText = totalWrong;
+      }
+
+      function finishLesson() {
+        const modal = document.getElementById("result-modal");
+        const body = document.getElementById("modal-content-body");
+
+        const correctInputs = document.querySelectorAll(
+          ".input-answer.correct, .option-btn.selected-correct"
+        ).length;
+        const wrongInputs = document.querySelectorAll(
+          ".input-answer.wrong, .option-btn.selected-wrong"
+        ).length;
+        const distinctAnswered = correctInputs + wrongInputs;
+
+        const attempts = totalCorrect + totalWrong;
+        let efficiency = 0;
+        if (attempts > 0) {
+          efficiency = Math.round((totalCorrect / attempts) * 100);
+        }
+
+        let html = ``;
+        if (distinctAnswered === 0) {
+          html = `<div class="modal-result-title">Упс... 😶</div>
+                        <div style="font-size:1.1rem; margin:15px 0; color:#475569;">Ти не дав жодної відповіді. Спробуй розв'язати хоча б щось!</div>
+                        <button class="modal-footer-btn" onclick="closeModal()">Повернутись</button>`;
+        } else {
+          let msg = "";
+          let color = "#2563eb";
+          if (efficiency === 100) {
+            msg = "Ідеально!";
+            color = "#16a34a";
+          } else if (efficiency >= 85) {
+            msg = "Чудово!";
+            color = "#2563eb";
+          } else if (efficiency >= 60) {
+            msg = "Добре!";
+            color = "#f59e0b";
+          } else {
+            msg = "Тренуйся!";
+            color = "#dc2626";
+          }
+
+          html = `
+                    <div class="modal-result-title" style="color:${color}">${msg}</div>
+                    
+                    <div>
+                        <div style="font-size: 1rem; color: #64748b;">Твоя точність</div>
+                        <div class="modal-score-big" style="color:${color}">${efficiency}%</div>
+                        <div class="modal-score-sub">
+                            (Правильних спроб: ${totalCorrect} з ${attempts})
+                        </div>
+                    </div>
+
+                    <div class="modal-progress-container">
+                         <div style="font-size: 1rem; color: #334155; display:flex; justify-content:space-between;">
+                            <span>Прогрес уроку:</span>
+                            <strong>${distinctAnswered} / ${totalTasksCount}</strong>
+                         </div>
+                         <div class="modal-bar-bg">
+                            <div class="modal-bar-fill" style="width: ${
+                              (distinctAnswered / totalTasksCount) * 100
+                            }%; background: ${color};"></div>
+                         </div>
+                    </div>
+
+                    <button class="modal-footer-btn" onclick="closeModal()">Закрити</button>
+                `;
+        }
+
+        body.innerHTML = html;
+        modal.style.display = "flex";
+      }
+
+      function closeModal() {
+        document.getElementById("result-modal").style.display = "none";
+      }
+    </script>
+  </body>
+</html>

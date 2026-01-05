@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ДЗ: Геометрія (7 клас)</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
+    />
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"
+    ></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    ></script>
+
+    <style>
+      :root {
+        --primary: #7c3aed;
+        --primary-light: #f5f3ff;
+        --success: #16a34a;
+        --error: #dc2626;
+        --bg: #f8fafc;
+        --card: #ffffff;
+        --text: #1e293b;
+        --border: #e2e8f0;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      header {
+        background: var(--card);
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+      }
+
+      @media (min-width: 600px) {
+        header {
+          flex-direction: row;
+          justify-content: space-between;
+        }
+      }
+
+      .header-title {
+        font-weight: 700;
+        font-size: 1.2rem;
+        color: var(--primary);
+      }
+
+      .student-name-input {
+        padding: 10px 15px;
+        border: 2px solid var(--border);
+        border-radius: 8px;
+        font-size: 0.95rem;
+        width: 100%;
+        max-width: 300px;
+      }
+      .student-name-input:focus {
+        outline: none;
+        border-color: var(--primary);
+      }
+
+      .content-container {
+        padding: 20px;
+        padding-bottom: 80px;
+        max-width: 800px;
+        margin: 0 auto;
+        width: 100%;
+        box-sizing: border-box;
+        flex: 1;
+      }
+
+      .exercise-block {
+        background: var(--card);
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        margin-bottom: 30px;
+        overflow: hidden;
+      }
+
+      .exercise-header {
+        background: var(--primary-light);
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .exercise-title {
+        margin: 0;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--primary);
+      }
+
+      .exercise-desc {
+        margin: 8px 0 0 0;
+        font-size: 0.95rem;
+        color: #475569;
+        line-height: 1.5;
+      }
+
+      .exercise-image {
+        display: block;
+        max-width: 100%;
+        max-height: 250px;
+        height: auto;
+        margin: 15px auto 0;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+      }
+
+      .task-row {
+        padding: 20px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+      .task-row:last-child {
+        border-bottom: none;
+      }
+
+      .task-content {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+      }
+      .task-number {
+        font-weight: 700;
+        color: #94a3b8;
+        min-width: 25px;
+        margin-top: 2px;
+      }
+      .task-question {
+        font-size: 1.05rem;
+        font-weight: 500;
+        line-height: 1.5;
+      }
+
+      .input-group {
+        display: flex;
+        align-items: center;
+        width: 100%;
+      }
+      .input-answer {
+        padding: 12px 15px;
+        border: 2px solid #cbd5e1;
+        border-radius: 8px;
+        width: 100%;
+        max-width: 250px;
+        font-size: 1rem;
+        background: #fff;
+      }
+      .input-answer:focus {
+        outline: none;
+        border-color: var(--primary);
+      }
+
+      .options-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .option-btn {
+        flex: 1;
+        min-width: 120px;
+        background: white;
+        border: 2px solid #cbd5e1;
+        border-radius: 8px;
+        padding: 12px 15px;
+        font-size: 1rem;
+        cursor: pointer;
+        text-align: left;
+        color: var(--text);
+      }
+      .option-btn.selected {
+        background: var(--text);
+        color: white;
+        border-color: var(--text);
+      }
+      .option-btn.selected .katex {
+        color: white !important;
+      }
+
+      .finish-section {
+        margin-top: 40px;
+        text-align: center;
+        padding-bottom: 60px;
+      }
+      .btn-finish {
+        padding: 18px 60px;
+        font-size: 1.3rem;
+        font-weight: 800;
+        color: white;
+        background: var(--primary);
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        box-shadow: 0 4px 20px rgba(124, 58, 237, 0.4);
+        transition: transform 0.2s;
+      }
+      .btn-finish:hover {
+        transform: translateY(-2px);
+      }
+
+      /* МОДАЛЬНЕ ВІКНО */
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.98);
+        z-index: 2000;
+        justify-content: center;
+        align-items: center;
+        overflow-y: auto;
+        padding: 20px;
+        box-sizing: border-box;
+      }
+      .modal-card {
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        max-width: 800px;
+        width: 100%;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        position: relative;
+        text-align: center;
+        border: 1px solid var(--border);
+      }
+      .modal-icon {
+        font-size: 4rem;
+        margin-bottom: 20px;
+      }
+      .modal-title {
+        font-size: 2rem;
+        font-weight: 800;
+        color: var(--text);
+        margin-bottom: 10px;
+      }
+      .modal-subtitle {
+        color: #64748b;
+        font-size: 1.1rem;
+        margin-bottom: 30px;
+        line-height: 1.6;
+      }
+
+      .btn-copy-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        padding: 15px;
+        background: #2563eb;
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 1.1rem;
+        font-weight: bold;
+        cursor: pointer;
+        margin-top: 10px;
+        gap: 10px;
+      }
+      .btn-copy-link:hover {
+        background: #1d4ed8;
+      }
+
+      .link-box {
+        background: #f1f5f9;
+        padding: 15px;
+        border-radius: 8px;
+        word-break: break-all;
+        font-family: monospace;
+        font-size: 0.9rem;
+        margin-bottom: 15px;
+        border: 1px solid #cbd5e1;
+        color: #475569;
+      }
+
+      /* Секція вчителя (звіт) */
+      #teacher-login-area {
+        margin-top: 20px;
+      }
+      .password-input {
+        padding: 12px;
+        border: 2px solid #cbd5e1;
+        border-radius: 8px;
+        font-size: 1rem;
+        width: 150px;
+      }
+      .btn-login {
+        padding: 12px 20px;
+        background: #334155;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      .report-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        font-size: 0.95rem;
+      }
+      .report-table th {
+        text-align: left;
+        background: #f8fafc;
+        padding: 15px;
+        border-bottom: 2px solid #cbd5e1;
+        color: #64748b;
+      }
+      .report-table td {
+        padding: 15px;
+        border-bottom: 1px solid #e2e8f0;
+      }
+
+      .row-correct {
+        background-color: #f0fdf4;
+      }
+      .row-wrong {
+        background-color: #fef2f2;
+      }
+      .row-wrong td:nth-child(2) {
+        text-decoration: line-through;
+        color: var(--error);
+      }
+      .score-badge {
+        font-size: 2rem;
+        font-weight: 900;
+        color: var(--primary);
+        margin: 20px 0;
+        padding: 15px;
+        background: #f3e8ff;
+        border-radius: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="header-title">📝 ДЗ: Геометрія (7 клас)</div>
+      <input
+        type="text"
+        id="studentName"
+        class="student-name-input"
+        placeholder="Прізвище та Ім'я"
+      />
+    </header>
+
+    <div class="content-container" id="quiz-root"></div>
+
+    <div id="result-modal" class="modal-overlay">
+      <div class="modal-card">
+        <div id="view-student-finish" style="display: none">
+          <div class="modal-icon">🎉</div>
+          <div class="modal-title">Готово!</div>
+          <div class="modal-subtitle">
+            Роботу збережено. Скопіюй це посилання та надішли вчителю для
+            перевірки:
+          </div>
+
+          <div id="generated-link-box" class="link-box">...</div>
+
+          <button class="btn-copy-link" onclick="copyLinkToClipboard()">
+            🔗 Скопіювати посилання
+          </button>
+          <div style="margin-top: 10px; font-size: 0.9rem; color: #64748b">
+            (Надішли це в Viber/Telegram)
+          </div>
+        </div>
+
+        <div id="view-teacher-login" style="display: none">
+          <div class="modal-title">Перевірка роботи</div>
+          <div class="modal-subtitle">
+            Введіть пароль вчителя, щоб побачити результати.
+          </div>
+          <div>
+            <input
+              type="password"
+              id="teacher-pass"
+              class="password-input"
+              placeholder="Пароль"
+            />
+            <button class="btn-login" onclick="checkPassword()">Увійти</button>
+          </div>
+          <div id="login-error" style="color: red; margin-top: 10px"></div>
+        </div>
+
+        <div id="view-teacher-report" style="display: none">
+          <div class="modal-title">Результат</div>
+          <div class="modal-subtitle" id="report-student-name"></div>
+          <div id="report-score" class="score-badge"></div>
+
+          <table class="report-table">
+            <thead>
+              <tr>
+                <th width="40%">Завдання</th>
+                <th width="30%">Відповідь учня</th>
+                <th width="30%">Правильно</th>
+              </tr>
+            </thead>
+            <tbody id="report-body"></tbody>
+          </table>
+
+          <button
+            class="btn-copy-link"
+            onclick="window.location.href = window.location.pathname"
+            style="background: #334155; margin-top: 30px"
+          >
+            🏠 На головну (Нова робота)
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // --- ВПРАВИ (17 шт, нові числа) ---
+      const exercises = [
+        {
+          id: "5",
+          title: "5. Паралельні прямі",
+          desc: "$m \\parallel n$, $a$ — січна (див. мал. 2). Відомо, що $\\angle 1 = 130^\\circ$.",
+          img: "mal2.png",
+          tasks: [
+            { id: "1)", q: "Знайдіть $\\angle 2$.", a: "50", type: "input" },
+            { id: "2)", q: "Знайдіть $\\angle 3$.", a: "130", type: "input" },
+          ],
+        },
+        {
+          id: "7",
+          title: "7. Відрізки",
+          desc: "Точка $M$ належить відрізку $AB$.",
+          tasks: [
+            {
+              id: "1)",
+              q: "Знайдіть $AM$, якщо $AB = 15$ см, $MB = 20$ мм (у см).",
+              a: "13",
+              type: "input",
+            }, // 15 - 2 = 13
+            {
+              id: "2)",
+              q: "Знайдіть $AB$, якщо $AM = 3$ дм, $MB = 2$ дм 4 см (у см).",
+              a: "54",
+              type: "input",
+            }, // 30 + 24
+          ],
+        },
+        {
+          id: "9",
+          title: "9. Промінь і кути",
+          desc: "Промінь $OK$ проходить між сторонами кута $AOD$.",
+          tasks: [
+            {
+              id: "1)",
+              q: "Знайдіть $\\angle AOD$, якщо $\\angle AOK = 40^\\circ$, $\\angle KOD = 35^\\circ$.",
+              a: "75",
+              type: "input",
+            },
+          ],
+        },
+        {
+          id: "13",
+          title: "13. Кути при перетині паралельних",
+          desc: "Один з кутів дорівнює $125^\\circ$.",
+          tasks: [
+            {
+              id: "1)",
+              q: "Знайдіть величину гострого кута.",
+              a: "55",
+              type: "input",
+            },
+            {
+              id: "2)",
+              q: "Знайдіть величину тупого кута.",
+              a: "125",
+              type: "input",
+            },
+          ],
+        },
+        {
+          id: "15",
+          title: "15. Суміжні кути",
+          desc: "Знайдіть суміжні кути, якщо:",
+          tasks: [
+            {
+              id: "1)",
+              q: "Один з них у 5 разів більший за інший. (Менший кут)",
+              a: "30",
+              type: "input",
+            },
+            {
+              id: "2)",
+              q: "Один становить $\\frac{1}{3}$ від іншого. (Більший кут)",
+              a: "135",
+              type: "input",
+            },
+          ],
+        },
+        {
+          id: "18",
+          title: "18. Перпендикулярність",
+          desc: "Прямі перетинаються в точці $O$, $MN \\perp KL$ (див. мал. 4). $\\angle NOA = 150^\\circ$.",
+          img: "mal4.png",
+          tasks: [
+            { id: "1)", q: "Знайдіть $\\angle KOB$.", a: "30", type: "input" }, // Vertically opp to AOM. AOM = 180-150=30.
+          ],
+        },
+        {
+          id: "20",
+          title: "20. Внутрішні односторонні",
+          desc: "Сума $180^\\circ$. Знайдіть кути, якщо:",
+          tasks: [
+            {
+              id: "1)",
+              q: "Їх різниця дорівнює $50^\\circ$. (Більший кут)",
+              a: "115",
+              type: "input",
+            },
+            {
+              id: "2)",
+              q: "Вони відносяться як $3 : 7$. (Менший кут)",
+              a: "54",
+              type: "input",
+            },
+          ],
+        },
+        {
+          id: "25",
+          title: "25. Периметр рівнобедреного",
+          desc: "Бічна сторона = 20 см, основа на 8 см менша від бічної.",
+          tasks: [
+            { id: "1)", q: "Знайдіть периметр.", a: "52", type: "input" }, // 20+20+12
+          ],
+        },
+        {
+          id: "27",
+          title: "27. Бісектриса",
+          desc: "$CM$ — бісектриса $\\triangle ABC$, $\\angle ACB = 120^\\circ$.",
+          tasks: [
+            { id: "1)", q: "Знайдіть $\\angle ACM$.", a: "60", type: "input" },
+          ],
+        },
+        {
+          id: "29",
+          title: "29. Ознаки рівності",
+          desc: "Доведіть рівність $\\triangle ACK = \\triangle BCK$ (див. мал. 6), якщо $CK \\perp AB$ і $CK$ спільна, кути рівні.",
+          img: "mal6.png",
+          tasks: [
+            {
+              id: "1)",
+              q: "За якою ознакою рівні?",
+              a: "За стороною і двома кутами",
+              opts: [
+                "За стороною і двома кутами",
+                "За трьома сторонами",
+                "За двома сторонами і кутом",
+              ],
+            },
+          ],
+        },
+        {
+          id: "31",
+          title: "31. Кути рівнобедреного",
+          desc: "Кут при вершині дорівнює $140^\\circ$.",
+          tasks: [
+            { id: "1)", q: "Знайдіть кут при основі.", a: "20", type: "input" },
+          ],
+        },
+        {
+          id: "33",
+          title: "33. Зовнішній кут",
+          desc: "Зовнішній кут $130^\\circ$. Один з внутрішніх несуміжних = $90^\\circ$.",
+          tasks: [
+            {
+              id: "1)",
+              q: "Знайдіть інший внутрішній несуміжний кут.",
+              a: "40",
+              type: "input",
+            },
+          ],
+        },
+        {
+          id: "35",
+          title: "35. Прямокутний трикутник (30 градусів)",
+          desc: "$\\angle A = 30^\\circ$.",
+          tasks: [
+            {
+              id: "1)",
+              q: "Знайдіть гіпотенузу, якщо катет проти кута $30^\\circ$ дорівнює 10 см.",
+              a: "20",
+              type: "input",
+            },
+            {
+              id: "2)",
+              q: "Знайдіть катет проти кута $30^\\circ$, якщо гіпотенуза дорівнює 36 см.",
+              a: "18",
+              type: "input",
+            },
+          ],
+        },
+        {
+          id: "37",
+          title: "37. Нерівність трикутника",
+          desc: "Сторони 6,1 см і 2,5 см.",
+          tasks: [
+            {
+              id: "1)",
+              q: "Якому НАЙБІЛЬШОМУ цілому числу може дорівнювати третя сторона?",
+              a: "8",
+              type: "input",
+            },
+          ],
+        },
+        {
+          id: "42",
+          title: "42. Співвідношення кутів",
+          desc: "Кути: $x$, $x+30$, $2x$. Сума $180^\\circ$.",
+          tasks: [
+            {
+              id: "1)",
+              q: "Знайдіть найменший кут ($x$).",
+              a: "37.5",
+              type: "input",
+            },
+          ],
+        },
+        {
+          id: "44",
+          title: "44. Гострі кути прямокутного",
+          desc: "Сума гострих = $90^\\circ$.",
+          tasks: [
+            {
+              id: "1)",
+              q: "Один у 8 разів більший за інший. (Менший кут)",
+              a: "10",
+              type: "input",
+            },
+            {
+              id: "2)",
+              q: "Відносяться як $1 : 5$. (Більший кут)",
+              a: "75",
+              type: "input",
+            },
+          ],
+        },
+        {
+          id: "46",
+          title: "46. Периметри",
+          desc: "$P_{ABC} = 60$ см, медіана $AM = 15$ см. Трикутник рівнобедрений.",
+          tasks: [
+            {
+              id: "1)",
+              q: "Знайдіть периметр трикутника $ABM$.",
+              a: "45",
+              type: "input",
+            }, // 30+15=45
+          ],
+        },
+      ];
+
+      // Fix decimal precision display issues if any
+      exercises[14].tasks[0].a = "37.5";
+
+      let userAnswers = {};
+      let decodedData = null; // Для режиму вчителя
+
+      document.addEventListener("DOMContentLoaded", () => {
+        // 1. Перевіряємо, чи це посилання з даними (режим вчителя)
+        const params = new URLSearchParams(window.location.search);
+        if (params.has("d")) {
+          try {
+            // Декодуємо дані з URL
+            const jsonStr = decodeURIComponent(atob(params.get("d")));
+            decodedData = JSON.parse(jsonStr);
+
+            // Ховаємо завдання, показуємо вхід
+            document.getElementById("quiz-root").style.display = "none";
+            document.querySelector("header").style.display = "none";
+            document.getElementById("result-modal").style.display = "flex";
+            document.getElementById("view-teacher-login").style.display =
+              "block";
+            return; // Зупиняємо рендер завдань
+          } catch (e) {
+            console.error("Link error", e);
+            alert("Помилка посилання. Попросіть учня надіслати нове.");
+          }
+        }
+
+        // 2. Рендеримо завдання (режим учня)
+        renderExercises();
+      });
+
+      function renderExercises() {
+        const root = document.getElementById("quiz-root");
+
+        exercises.forEach((ex) => {
+          const exBlock = document.createElement("div");
+          exBlock.className = "exercise-block";
+
+          let imgHTML = "";
+          if (ex.img) {
+            imgHTML = `<img src="${ex.img}" alt="Малюнок" class="exercise-image" onerror="this.style.display='none'">`;
+          }
+
+          exBlock.innerHTML = `
+                <div class="exercise-header">
+                    <h3 class="exercise-title">${ex.title}</h3>
+                    <p class="exercise-desc">${ex.desc}</p>
+                    ${imgHTML}
+                </div>
+                `;
+
+          const taskList = document.createElement("div");
+          taskList.className = "task-list";
+
+          ex.tasks.forEach((task) => {
+            const row = document.createElement("div");
+            row.className = "task-row";
+            const uniqueId = `${ex.id}-${task.id}`;
+
+            let contentHTML = `
+                        <div class="task-content">
+                            <div class="task-number">${task.id}</div>
+                            <div class="task-question">${task.q}</div>
+                        </div>
+                    `;
+
+            let actionHTML = "";
+            if (task.type === "input") {
+              actionHTML = `
+                <div class="input-group">
+                    <input type="text" class="input-answer" placeholder="Відповідь..." onchange="saveAnswer('${uniqueId}', this.value)">
+                </div>
+              `;
+            } else {
+              actionHTML = `<div class="options-container" id="opts-${uniqueId}">`;
+              task.opts.forEach((opt) => {
+                const safeOpt = opt.replace(/"/g, "&quot;");
+                actionHTML += `<button class="option-btn" onclick="selectOpt('${uniqueId}', '${safeOpt}', this)">${safeOpt}</button>`;
+              });
+              actionHTML += `</div>`;
+            }
+
+            row.innerHTML =
+              contentHTML + `<div style="margin-top:5px;">${actionHTML}</div>`;
+            taskList.appendChild(row);
+          });
+
+          exBlock.appendChild(taskList);
+          root.appendChild(exBlock);
+        });
+
+        // Кнопка завершення
+        const finishSection = document.createElement("div");
+        finishSection.className = "finish-section";
+        finishSection.innerHTML = `<button class="btn-finish" onclick="finishHomework()">Завершити роботу</button>`;
+        root.appendChild(finishSection);
+
+        if (window.renderMathInElement) {
+          renderMathInElement(document.body, {
+            delimiters: [{ left: "$", right: "$", display: false }],
+            throwOnError: false,
+          });
+        }
+      }
+
+      function saveAnswer(uid, val) {
+        userAnswers[uid] = val.trim().replace(",", ".");
+      }
+
+      function selectOpt(uid, val, btn) {
+        userAnswers[uid] = val;
+        const container = document.getElementById(`opts-${uid}`);
+        container
+          .querySelectorAll(".option-btn")
+          .forEach((b) => b.classList.remove("selected"));
+        btn.classList.add("selected");
+      }
+
+      function finishHomework() {
+        const studentName = document.getElementById("studentName").value.trim();
+        if (!studentName) {
+          alert("Введіть своє ім'я зверху!");
+          window.scrollTo(0, 0);
+          return;
+        }
+        if (!confirm("Завершити роботу і створити посилання?")) return;
+
+        // Формуємо об'єкт даних
+        const payload = {
+          n: studentName,
+          a: userAnswers,
+          t: Date.now(),
+        };
+
+        // Кодуємо в Base64 для URL
+        const jsonStr = JSON.stringify(payload);
+        const encoded = btoa(encodeURIComponent(jsonStr)); // encodeURIComponent handles Cyrillic
+
+        // Генеруємо посилання
+        const currentUrl = window.location.href.split("?")[0];
+        const resultLink = `${currentUrl}?d=${encoded}`;
+
+        // Показуємо результат учню
+        document.getElementById("generated-link-box").innerText = resultLink;
+        document.getElementById("result-modal").style.display = "flex";
+        document.getElementById("view-student-finish").style.display = "block";
+      }
+
+      function copyLinkToClipboard() {
+        const link = document.getElementById("generated-link-box").innerText;
+        navigator.clipboard.writeText(link).then(() => {
+          alert("Посилання скопійовано!");
+        });
+      }
+
+      // --- ЛОГІКА ВЧИТЕЛЯ ---
+
+      function checkPassword() {
+        const pass = document.getElementById("teacher-pass").value;
+        if (pass.toLowerCase() === "янчук") {
+          showReport();
+        } else {
+          document.getElementById("login-error").innerText = "Невірний пароль";
+        }
+      }
+
+      function showReport() {
+        const data = decodedData;
+        const answers = data.a;
+
+        let correctCount = 0;
+        let totalCount = 0;
+        const tbody = document.getElementById("report-body");
+        tbody.innerHTML = "";
+
+        exercises.forEach((ex) => {
+          ex.tasks.forEach((task) => {
+            totalCount++;
+            const uid = `${ex.id}-${task.id}`;
+            const userAns = answers[uid] || "—";
+
+            let isCorrect = false;
+            // Simple equality check (works for generated inputs)
+            // For input types allow small diff if numeric?
+            // Let's stick to strict string match or simple numeric match
+            if (task.type === "input") {
+              if (userAns == task.a) isCorrect = true;
+            } else {
+              if (userAns === task.a) isCorrect = true;
+            }
+
+            if (isCorrect) correctCount++;
+
+            const tr = document.createElement("tr");
+            tr.className = isCorrect ? "row-correct" : "row-wrong";
+            tr.innerHTML = `
+                    <td><b>${ex.id} ${task.id}</b><br><small>${task.q}</small></td>
+                    <td>${userAns}</td>
+                    <td>${task.a}</td>
+                `;
+            tbody.appendChild(tr);
+          });
+        });
+
+        const percent = Math.round((correctCount / totalCount) * 100);
+
+        document.getElementById(
+          "report-student-name"
+        ).innerText = `Учень: ${data.n}`;
+        document.getElementById(
+          "report-score"
+        ).innerText = `Оцінка: ${percent}% (${correctCount}/${totalCount})`;
+
+        document.getElementById("view-teacher-login").style.display = "none";
+        document.getElementById("view-teacher-report").style.display = "block";
+
+        if (window.renderMathInElement) {
+          renderMathInElement(document.getElementById("report-body"), {
+            delimiters: [{ left: "$", right: "$", display: false }],
+          });
+        }
+      }
+    </script>
+  </body>
+</html>

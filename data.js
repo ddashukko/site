@@ -560,6 +560,78 @@ window.lessonsData = [
   },
 
   // ==========================================
+  // 8 КЛАС (Геометрія - Тести) - Автор: Даша
+  // ==========================================
+
+  {
+    id: "geom-8-test-001",
+    title: "§0. Повторення: кути та трикутники",
+    grade: 8,
+    topic: "Геометрія",
+    link: "geometry/8/test/001-angles-triangles.html",
+    subject_code: "geometry",
+    category: "test",
+    author: "Даша",
+  },
+  {
+    id: "geom-8-test-09",
+    title: "§0. Повторення: кути та трикутники",
+    grade: 8,
+    topic: "Геометрія",
+    link: "geometry/8/test/9-triangle-midline.html",
+    subject_code: "geometry",
+    category: "test",
+    author: "Даша",
+  },
+
+  // ==========================================
+  // 8 КЛАС (Геометрія - Уроки) - Автор: Даша
+  // ==========================================
+  {
+    id: "geom-8-lesson-001",
+    title: "§0. Повторення: кути та трикутники",
+    grade: 8,
+    topic: "Геометрія",
+    link: "geometry/8/lesson/001-angles-triangles.html",
+    subject_code: "geometry",
+    category: "lesson",
+    author: "Даша",
+  },
+  {
+    id: "geom-8-lesson-09",
+    title: "§0. Повторення: кути та трикутники",
+    grade: 8,
+    topic: "Геометрія",
+    link: "geometry/8/lesson/9-triangle-midline.html",
+    subject_code: "geometry",
+    category: "lesson",
+    author: "Даша",
+  },
+  // ==========================================
+  // 8 КЛАС (Геометрія - Домашні) - Автор: Даша
+  // ==========================================
+  {
+    id: "geom-8-homework-001",
+    title: "ДЗ: §0. Повторення: кути та трикутники",
+    grade: 8,
+    topic: "Геометрія",
+    link: "geometry/8/homework/001-angles-triangles.html",
+    subject_code: "geometry",
+    category: "homework",
+    author: "Даша",
+  },
+  {
+    id: "geom-8-homework-09",
+    title: "ДЗ: §0. Повторення: кути та трикутники",
+    grade: 8,
+    topic: "Геометрія",
+    link: "geometry/8/homework/9-triangle-midline.html",
+    subject_code: "geometry",
+    category: "homework",
+    author: "Даша",
+  },
+
+  // ==========================================
   // 8 КЛАС (Геометрія) - Автор: Даша
   // ==========================================
   {

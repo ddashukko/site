@@ -1,0 +1,1483 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Геометрія: Повторення (7 клас)</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
+    />
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"
+    ></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    ></script>
+
+    <style>
+      :root {
+        --primary: #2563eb;
+        --primary-light: #eff6ff;
+        --success: #16a34a;
+        --error: #dc2626;
+        --bg: #f8fafc;
+        --card: #ffffff;
+        --text: #1e293b;
+        --border: #e2e8f0;
+        --accent: #8b5cf6;
+        --grid-color: #e2e8f0;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        display: flex;
+        overflow: hidden;
+      }
+
+      #tasks-section {
+        flex: 1;
+        background: var(--bg);
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+      }
+
+      #board-section {
+        flex: 1;
+        position: relative;
+        background-color: #fff;
+        border-left: 4px solid #cbd5e1;
+        background-image: linear-gradient(
+            var(--grid-color) 1px,
+            transparent 1px
+          ),
+          linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+        background-size: 25px 25px;
+        cursor: crosshair;
+        overflow: hidden;
+      }
+
+      canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+        touch-action: none;
+      }
+
+      .tools {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        display: flex;
+        gap: 10px;
+        background: rgba(255, 255, 255, 0.95);
+        padding: 8px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        border: 1px solid var(--border);
+        flex-wrap: wrap;
+        z-index: 10;
+      }
+
+      .btn-tool {
+        border: 1px solid #cbd5e1;
+        background: white;
+        padding: 8px 12px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 1.2rem;
+        transition: 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 40px;
+      }
+      .btn-tool:hover {
+        background: #f1f5f9;
+      }
+      .btn-tool.active {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+      }
+
+      header {
+        background: var(--card);
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+      }
+
+      .header-title {
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: var(--primary);
+      }
+      .stats-container {
+        display: flex;
+        gap: 15px;
+        font-weight: 600;
+      }
+      .stat-correct {
+        color: var(--success);
+      }
+      .stat-wrong {
+        color: var(--error);
+      }
+
+      .content-container {
+        padding: 20px;
+        padding-bottom: 80px;
+        max-width: 800px;
+        margin: 0 auto;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      .theory-block {
+        background: linear-gradient(to right, #fdfbf7, #fff);
+        border-left: 5px solid var(--accent);
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 30px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      }
+      .theory-title {
+        color: var(--accent);
+        font-weight: bold;
+        font-size: 1.1rem;
+        margin-bottom: 10px;
+      }
+      .theory-content ul {
+        margin: 5px 0;
+        padding-left: 20px;
+      }
+      .theory-content li {
+        margin-bottom: 5px;
+        line-height: 1.5;
+      }
+
+      .exercise-block {
+        background: var(--card);
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        margin-bottom: 30px;
+        overflow: hidden;
+      }
+
+      .exercise-header {
+        background: var(--primary-light);
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border);
+      }
+      .exercise-title {
+        margin: 0;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--primary);
+      }
+      .exercise-desc {
+        margin: 5px 0 0 0;
+        font-size: 0.95rem;
+        color: #475569;
+        line-height: 1.5;
+      }
+
+      /* Стиль для зображень у завданнях */
+      .exercise-image {
+        display: block;
+        max-width: 100%;
+        height: auto;
+        margin: 15px auto;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      }
+
+      .task-row {
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .task-row:last-child {
+        border-bottom: none;
+      }
+      .task-row.solved-correct {
+        background-color: #f0fdf4;
+      }
+      .task-row.solved-wrong {
+        background-color: #fef2f2;
+      }
+
+      .task-content {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .task-number {
+        font-weight: 600;
+        color: #94a3b8;
+        min-width: 25px;
+      }
+      .task-question {
+        font-size: 1.1rem;
+        font-weight: 500;
+      }
+
+      .options-container {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 10px;
+        overflow-x: auto;
+        padding-bottom: 5px;
+      }
+      .option-btn {
+        flex: 1;
+        background: white;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        padding: 10px 15px;
+        font-size: 1rem;
+        cursor: pointer;
+        min-width: 70px;
+        white-space: normal;
+        transition: 0.2s;
+        text-align: left;
+      }
+      .option-btn:hover:not(:disabled) {
+        border-color: var(--primary);
+        color: var(--primary);
+        background: var(--primary-light);
+      }
+      .option-btn.selected-correct {
+        background: var(--success);
+        color: white;
+        border-color: var(--success);
+      }
+      .option-btn.selected-correct .katex {
+        color: white !important;
+      }
+      .option-btn.selected-wrong {
+        background: var(--error);
+        color: white;
+        border-color: var(--error);
+      }
+      .option-btn.selected-wrong .katex {
+        color: white !important;
+      }
+
+      .input-group {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+      .input-answer {
+        padding: 10px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        width: 140px;
+        font-size: 1rem;
+      }
+      .btn-check {
+        padding: 10px 20px;
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+      .input-answer.correct {
+        border-color: var(--success);
+        background: #f0fdf4;
+        color: var(--success);
+      }
+      .input-answer.wrong {
+        border-color: var(--error);
+        background: #fef2f2;
+      }
+
+      .finish-section {
+        margin-top: 40px;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        flex-wrap: wrap;
+      }
+      .btn-finish {
+        padding: 15px 40px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: white;
+        background: var(--primary);
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+        transition: transform 0.2s;
+      }
+      .btn-finish:hover {
+        transform: scale(1.05);
+        background-color: #1d4ed8;
+      }
+
+      .btn-test {
+        padding: 15px 40px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: white;
+        background: #7c3aed;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
+        transition: transform 0.2s;
+        text-decoration: none;
+        display: inline-block;
+      }
+      .btn-test:hover {
+        transform: scale(1.05);
+        background-color: #6d28d9;
+      }
+
+      .btn-homework {
+        padding: 15px 40px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: white;
+        background: #ea580c;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(234, 88, 12, 0.3);
+        transition: transform 0.2s;
+        text-decoration: none;
+        display: inline-block;
+      }
+      .btn-homework:hover {
+        transform: scale(1.05);
+        background-color: #c2410c;
+      }
+
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(5px);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+        animation: fadeInOverlay 0.3s ease;
+      }
+
+      .modal-card {
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        max-width: 450px;
+        width: 90%;
+        text-align: center;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        position: relative;
+        animation: scaleInModal 0.3s ease;
+      }
+
+      .modal-close-btn {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: #94a3b8;
+        cursor: pointer;
+      }
+      .modal-close-btn:hover {
+        color: var(--error);
+      }
+
+      .modal-result-title {
+        font-size: 2rem;
+        font-weight: 800;
+        color: var(--primary);
+        margin-bottom: 20px;
+      }
+      .modal-score-big {
+        font-size: 4rem;
+        font-weight: 900;
+        color: var(--primary);
+        line-height: 1;
+        margin: 10px 0;
+      }
+      .modal-score-sub {
+        font-size: 1rem;
+        color: #64748b;
+        margin-bottom: 20px;
+      }
+
+      .modal-progress-container {
+        background: #f1f5f9;
+        border-radius: 10px;
+        padding: 15px;
+        margin-top: 20px;
+      }
+      .modal-bar-bg {
+        width: 100%;
+        height: 12px;
+        background: #e2e8f0;
+        border-radius: 6px;
+        overflow: hidden;
+        margin-top: 10px;
+      }
+      .modal-bar-fill {
+        height: 100%;
+        background: var(--primary);
+        transition: width 1s ease;
+      }
+
+      .modal-footer-btn {
+        margin-top: 30px;
+        padding: 12px 30px;
+        background: var(--text);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+      .modal-footer-btn:hover {
+        background: black;
+      }
+
+      @keyframes fadeInOverlay {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      @keyframes scaleInModal {
+        from {
+          transform: scale(0.8);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      @media (max-width: 768px) {
+        body {
+          flex-direction: column;
+        }
+        #board-section {
+          height: 40vh;
+          border-left: none;
+          border-top: 4px solid #cbd5e1;
+          order: 2;
+        }
+        #tasks-section {
+          height: 60vh;
+          order: 1;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="tasks-section">
+      <header>
+        <div class="header-title">Геометрія: Повторення (7 клас)</div>
+        <div class="stats-container">
+          <span class="stat-correct">✅ <span id="val-correct">0</span></span>
+          <span class="stat-wrong">❌ <span id="val-wrong">0</span></span>
+        </div>
+      </header>
+
+      <div class="content-container" id="quiz-root">
+        <div class="theory-block">
+          <div class="theory-title">📚 Шпаргалка: Основні поняття</div>
+          <div class="theory-content">
+            <ul>
+              <li>
+                <b>Суміжні кути:</b> Сума суміжних кутів дорівнює $180^\circ$.
+              </li>
+              <li><b>Вертикальні кути:</b> Рівні між собою.</li>
+              <li>
+                <b>Паралельні прямі:</b> При перетині січною внутрішні
+                різносторонні кути рівні, а сума внутрішніх односторонніх
+                дорівнює $180^\circ$.
+              </li>
+              <li><b>Сума кутів трикутника:</b> Дорівнює $180^\circ$.</li>
+              <li><b>Рівнобедрений трикутник:</b> Кути при основі рівні.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="board-section">
+      <div class="tools">
+        <button
+          class="btn-tool active"
+          onclick="setTool('pen')"
+          id="t-pen"
+          title="Ручка"
+        >
+          🖊️
+        </button>
+        <button
+          class="btn-tool"
+          onclick="setTool('eraser')"
+          id="t-eraser"
+          title="Гумка"
+        >
+          🧹
+        </button>
+        <button
+          class="btn-tool"
+          onclick="clearCanvasSafe()"
+          style="color: red; border-color: #fee2e2"
+          title="Очистити все"
+        >
+          ❌
+        </button>
+      </div>
+      <canvas id="board"></canvas>
+    </div>
+
+    <div id="result-modal" class="modal-overlay">
+      <div class="modal-card">
+        <button class="modal-close-btn" onclick="closeModal()">×</button>
+        <div id="modal-content-body"></div>
+      </div>
+    </div>
+
+    <script>
+      const canvas = document.getElementById("board");
+      const ctx = canvas.getContext("2d");
+      const boardSection = document.getElementById("board-section");
+      let painting = false;
+      let tool = "pen";
+
+      function resizeCanvas() {
+        const temp = document.createElement("canvas");
+        const tempCtx = temp.getContext("2d");
+        temp.width = canvas.width;
+        temp.height = canvas.height;
+        if (canvas.width > 0 && canvas.height > 0) {
+          tempCtx.drawImage(canvas, 0, 0);
+        }
+
+        canvas.width = boardSection.offsetWidth;
+        canvas.height = boardSection.offsetHeight;
+
+        ctx.drawImage(temp, 0, 0);
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+      }
+
+      window.addEventListener("resize", resizeCanvas);
+      window.addEventListener("load", resizeCanvas);
+
+      function getMousePos(e) {
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return { x: clientX - rect.left, y: clientY - rect.top };
+      }
+
+      function startPosition(e) {
+        painting = true;
+        draw(e);
+      }
+
+      function finishedPosition() {
+        painting = false;
+        ctx.beginPath();
+      }
+
+      function draw(e) {
+        if (!painting) return;
+        if (e.type.startsWith("touch")) {
+          // e.preventDefault();
+        }
+
+        const pos = getMousePos(e);
+
+        if (tool === "pen") {
+          ctx.lineWidth = 2;
+          ctx.strokeStyle = "#2563eb";
+          ctx.globalCompositeOperation = "source-over";
+        } else {
+          ctx.lineWidth = 25;
+          ctx.strokeStyle = "#ffffff";
+          ctx.globalCompositeOperation = "destination-out";
+        }
+
+        ctx.lineTo(pos.x, pos.y);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(pos.x, pos.y);
+      }
+
+      canvas.addEventListener("mousedown", startPosition);
+      canvas.addEventListener("mouseup", finishedPosition);
+      canvas.addEventListener("mousemove", draw);
+      canvas.addEventListener("mouseout", finishedPosition);
+
+      canvas.addEventListener("touchstart", startPosition);
+      canvas.addEventListener("touchend", finishedPosition);
+      canvas.addEventListener("touchmove", draw);
+
+      function setTool(t) {
+        tool = t;
+        document
+          .getElementById("t-pen")
+          .classList.toggle("active", t === "pen");
+        document
+          .getElementById("t-eraser")
+          .classList.toggle("active", t === "eraser");
+      }
+
+      function clearCanvasSafe() {
+        if (confirm("Очистити дошку?")) {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+      }
+
+      // --- МАСИВ ЗАВДАНЬ (ТЕКСТ 1:1, ЦИФРИ ЗМІНЕНО) ---
+      const exercises = [
+        {
+          id: "1",
+          title: "1. Який із поданих кутів гострий, тупий, прямий, розгорнутий",
+          desc: "",
+          tasks: [
+            {
+              id: "1)",
+              q: "$\\angle A = 35^\\circ$",
+              a: "Гострий",
+              opts: ["Гострий", "Прямий", "Тупий", "Розгорнутий"],
+            },
+            {
+              id: "2)",
+              q: "$\\angle B = 90^\\circ$",
+              a: "Прямий",
+              opts: ["Гострий", "Прямий", "Тупий", "Розгорнутий"],
+            },
+            {
+              id: "3)",
+              q: "$\\angle C = 145^\\circ$",
+              a: "Тупий",
+              opts: ["Гострий", "Прямий", "Тупий", "Розгорнутий"],
+            },
+            {
+              id: "4)",
+              q: "$\\angle D = 62^\\circ 30'$",
+              a: "Гострий",
+              opts: ["Гострий", "Прямий", "Тупий", "Розгорнутий"],
+            },
+            {
+              id: "5)",
+              q: "$\\angle K = 180^\\circ$",
+              a: "Розгорнутий",
+              opts: ["Гострий", "Прямий", "Тупий", "Розгорнутий"],
+            },
+            {
+              id: "6)",
+              q: "$\\angle N = 110^\\circ$",
+              a: "Тупий",
+              opts: ["Гострий", "Прямий", "Тупий", "Розгорнутий"],
+            },
+            {
+              id: "7)",
+              q: "$\\angle L = 89^\\circ$",
+              a: "Гострий",
+              opts: ["Гострий", "Прямий", "Тупий", "Розгорнутий"],
+            },
+            {
+              id: "8)",
+              q: "$\\angle M = 115^\\circ 20'$",
+              a: "Тупий",
+              opts: ["Гострий", "Прямий", "Тупий", "Розгорнутий"],
+            },
+          ],
+        },
+        {
+          id: "2",
+          title: "2. Знайдіть кут, суміжний з кутом",
+          desc: "",
+          tasks: [
+            { id: "1)", q: "$22^\\circ$", a: "158", type: "input" },
+            { id: "2)", q: "$90^\\circ$", a: "90", type: "input" },
+            { id: "3)", q: "$118^\\circ$", a: "62", type: "input" },
+          ],
+        },
+        {
+          id: "3",
+          title: "3. Знайдіть кут, суміжний з кутом",
+          desc: "",
+          tasks: [
+            { id: "1)", q: "$135^\\circ$", a: "45", type: "input" },
+            { id: "2)", q: "$75^\\circ$", a: "105", type: "input" },
+          ],
+        },
+        {
+          id: "4",
+          title: "4. Паралельні прямі",
+          desc: "$a \\parallel b$, $c$ — січна (див. мал. 1). (Нехай один з кутів $110^\\circ$)",
+          img: "../mal/01/mal1.png",
+          tasks: [
+            {
+              id: "1)",
+              q: "$\\angle 1$",
+              a: "110",
+              type: "input",
+            },
+            {
+              id: "2)",
+              q: "$\\angle 2$",
+              a: "110",
+              type: "input",
+            },
+            {
+              id: "3)",
+              q: "$\\angle 3$",
+              a: "70",
+              type: "input",
+            },
+          ],
+        },
+        {
+          id: "6",
+          title: "6. Точка K належить відрізку CD. Знайдіть",
+          desc: "",
+          tasks: [
+            {
+              id: "1)",
+              q: "$CD$, якщо $CK = 35$ мм, $KD = 3$ см",
+              a: "65",
+              type: "input",
+            },
+            {
+              id: "2)",
+              q: "$KD$, якщо $CD = 8$ дм, $CK = 3$ дм 5 см",
+              a: "45",
+              type: "input",
+            },
+          ],
+        },
+        {
+          id: "8",
+          title: "8. Промінь OM проходить між сторонами кута BOC",
+          desc: "Знайдіть градусну міру кута $BOM$, якщо $\\angle BOC = 125^\\circ$, $\\angle MOC = 85^\\circ$.",
+          tasks: [
+            {
+              id: "1)",
+              q: "$\\angle BOM$",
+              a: "40",
+              type: "input",
+            },
+          ],
+        },
+        {
+          id: "10",
+          title:
+            "10. Один з кутів, що утворилися при перетині двох прямих, дорівнює...",
+          desc: "$125^\\circ$. Знайдіть інші кути та кут між прямими.",
+          tasks: [
+            {
+              id: "1)",
+              q: "Кут між прямими",
+              a: "55",
+              type: "input",
+            },
+          ],
+        },
+        {
+          id: "11",
+          title: "11. Накресліть відрізки KL і AB та промінь CD так...",
+          desc: "щоб відрізок $KL$ був паралельний променю $CD$ і перпендикулярний до відрізка $AB$.",
+          tasks: [
+            {
+              id: "1)",
+              q: "Як розміщений промінь $CD$ відносно відрізка $AB$?",
+              a: "Перпендикулярно",
+              opts: [
+                "Перпендикулярно",
+                "Паралельно",
+                "Під кутом 45",
+                "Збігається",
+              ],
+            },
+          ],
+        },
+        {
+          id: "12",
+          title: "12. Градусна міра одного з кутів...",
+          desc: "що утворилися при перетині двох паралельних прямих січною, дорівнює $65^\\circ$. Знайдіть градусні міри решти семи кутів.",
+          tasks: [
+            {
+              id: "1)",
+              q: "Скільки всього кутів по $65^\\circ$ утворилося?",
+              a: "4",
+              type: "input",
+            },
+            {
+              id: "2)",
+              q: "Тупий кут дорівнює",
+              a: "115",
+              type: "input",
+            },
+          ],
+        },
+        {
+          id: "14",
+          title: "14. Знайдіть суміжні кути, якщо один із них",
+          desc: "",
+          tasks: [
+            {
+              id: "1)",
+              q: "на $30^\\circ$ менший від іншого",
+              a: "75",
+              type: "input",
+            },
+            {
+              id: "2)",
+              q: "становить 50% від іншого",
+              a: "60",
+              type: "input",
+            },
+          ],
+        },
+        {
+          id: "16",
+          title: "16. Розв’яжіть задачі (Таблиця)",
+          desc: "Точка $K$ належить відрізку $AB$ завдовжки 24 см. Знайдіть довжини відрізків $AK$ і $KB$, якщо:",
+          tasks: [
+            {
+              id: "1)",
+              q: "$AK$ утричі менший від $KB$",
+              a: "6",
+              type: "input",
+            },
+            {
+              id: "2)",
+              q: "$KB$ становить $\\frac{2}{3}$ від відрізка $AK$",
+              a: "14.4", // 24 / (1 + 2/3) = 24 / (5/3) = 72/5 = 14.4
+              type: "input",
+            },
+            {
+              id: "3)",
+              q: "$AK : KB = 1 : 5$",
+              a: "20",
+              type: "input",
+            },
+          ],
+        },
+        {
+          id: "17",
+          title: "17. Прямі AB, MN і CD перетинаються в точці O",
+          desc: "причому $AB \\perp MN$ (див. мал. 3). Знайдіть:",
+          img: "../mal/01/mal3.png",
+          tasks: [
+            {
+              id: "1)",
+              q: "$\\angle DOB$, якщо $\\angle CON = 50^\\circ$",
+              a: "40",
+              type: "input",
+            },
+            {
+              id: "2)",
+              q: "$\\angle AOC$, якщо $\\angle DON = 115^\\circ$",
+              a: "25",
+              type: "input",
+            },
+          ],
+        },
+        {
+          id: "19",
+          title:
+            "19. Знайдіть градусну міру кожного з двох внутрішніх односторонніх кутів",
+          desc: "що утворилися при перетині двох паралельних прямих січною, якщо:",
+          tasks: [
+            {
+              id: "1)",
+              q: "один із них утричі більший за другий",
+              a: "45",
+              type: "input",
+            },
+            {
+              id: "2)",
+              q: "один із них на 20% більший за другий",
+              a: "82", // Approx 81.8
+              type: "input",
+            },
+          ],
+        },
+        {
+          id: "21",
+          title: "21. Кут між прямими a і b дорівнює куту між прямими a і m",
+          desc: "",
+          tasks: [
+            {
+              id: "1)",
+              q: "Чи можна стверджувати, що прямі $b$ і $m$ паралельні?",
+              a: "Ні",
+              opts: ["Так", "Ні"],
+            },
+          ],
+        },
+        {
+          id: "22",
+          title: "22. Чи існує трикутник з кутами",
+          desc: "",
+          tasks: [
+            {
+              id: "1)",
+              q: "$70^\\circ, 70^\\circ, 41^\\circ$",
+              a: "Ні",
+              opts: ["Так", "Ні"],
+            },
+            {
+              id: "2)",
+              q: "$30^\\circ, 60^\\circ, 90^\\circ$",
+              a: "Так",
+              opts: ["Так", "Ні"],
+            },
+            {
+              id: "3)",
+              q: "$20^\\circ, 110^\\circ, 50^\\circ$",
+              a: "Так",
+              opts: ["Так", "Ні"],
+            },
+            {
+              id: "4)",
+              q: "$40^\\circ, 70^\\circ, 80^\\circ$",
+              a: "Ні",
+              opts: ["Так", "Ні"],
+            },
+          ],
+        },
+        {
+          id: "23",
+          title: "23. Чи існує трикутник зі сторонами",
+          desc: "",
+          tasks: [
+            {
+              id: "1)",
+              q: "5 см, 3 см, 9 см",
+              a: "Ні",
+              opts: ["Так", "Ні"],
+            },
+            {
+              id: "2)",
+              q: "10 см, 8 см, 6 см",
+              a: "Так",
+              opts: ["Так", "Ні"],
+            },
+            {
+              id: "3)",
+              q: "5 см, 5 см, 10 см",
+              a: "Ні",
+              opts: ["Так", "Ні"],
+            },
+            {
+              id: "4)",
+              q: "6 см, 6 см, 11 см",
+              a: "Так",
+              opts: ["Так", "Ні"],
+            },
+          ],
+        },
+        {
+          id: "24",
+          title: "24. Знайдіть периметр рівнобедреного трикутника",
+          desc: "основа якого дорівнює 6 см, а бічна сторона на 3 см більша за основу.",
+          tasks: [
+            {
+              id: "1)",
+              q: "Периметр",
+              a: "24",
+              type: "input",
+            },
+          ],
+        },
+        {
+          id: "26",
+          title: "26. У трикутнику ABC відрізок BK — медіана",
+          desc: "$AK = 6$ см. Знайдіть:",
+          tasks: [
+            {
+              id: "1)",
+              q: "$KC$",
+              a: "6",
+              type: "input",
+            },
+            {
+              id: "2)",
+              q: "$AC$",
+              a: "12",
+              type: "input",
+            },
+          ],
+        },
+        {
+          id: "28",
+          title: "28. Доведіть, що",
+          desc: "$\\triangle AKM = \\triangle BKM$ (див. мал. 5), якщо $AK = BK$ і $\\angle AKM = \\angle BKM$.",
+          img: "../mal/01/mal5.png",
+          tasks: [
+            {
+              id: "1)",
+              q: "Ознака рівності",
+              a: "За двома сторонами і кутом між ними",
+              opts: [
+                "За двома сторонами і кутом між ними",
+                "За стороною і двома кутами",
+                "За трьома сторонами",
+                "Не рівні",
+              ],
+            },
+          ],
+        },
+        {
+          id: "30",
+          title: "30. Кут при основі рівнобедреного трикутника дорівнює",
+          desc: "$50^\\circ$. Знайдіть кут при вершині цього трикутника.",
+          tasks: [
+            {
+              id: "1)",
+              q: "Кут при вершині",
+              a: "80",
+              type: "input",
+            },
+          ],
+        },
+        {
+          id: "32",
+          title: "32. Зовнішній кут при вершині C трикутника ABC дорівнює",
+          desc: "$120^\\circ$. Знайдіть кут $A$, якщо $\\angle B = 50^\\circ$.",
+          tasks: [
+            {
+              id: "1)",
+              q: "$\\angle A$",
+              a: "70",
+              type: "input",
+            },
+          ],
+        },
+        {
+          id: "34",
+          title: "34. У прямокутному трикутнику ABC",
+          desc: "($\\angle C = 90^\\circ$), $\\angle A = 60^\\circ$. Знайдіть:",
+          tasks: [
+            {
+              id: "1)",
+              q: "$AC$, якщо $AB = 14$ см",
+              a: "7",
+              type: "input",
+            },
+            {
+              id: "2)",
+              q: "$AB$, якщо $AC = 5$ дм",
+              a: "10",
+              type: "input",
+            },
+          ],
+        },
+        {
+          id: "36",
+          title: "36. Дві сторони трикутника дорівнюють",
+          desc: "3,1 см і 7,2 см. Якому найменшому цілому числу сантиметрів може дорівнювати третя сторона?",
+          tasks: [
+            {
+              id: "1)",
+              q: "Відповідь",
+              a: "5",
+              type: "input",
+            },
+          ],
+        },
+        {
+          id: "38",
+          title: "38. Одна зі сторін трикутника утричі менша від другої",
+          desc: "і на 5 см менша від третьої. Знайдіть сторони трикутника, якщо його периметр дорівнює 35 см.",
+          tasks: [
+            {
+              id: "1)",
+              q: "Найменша сторона",
+              a: "6",
+              type: "input",
+            },
+          ],
+        },
+        {
+          id: "39",
+          title: "39. Одна зі сторін трикутника на 2 см менша від другої",
+          desc: "і удвічі менша від третьої. Периметр трикутника дорівнює 34 см. Знайдіть сторони трикутника.",
+          tasks: [
+            {
+              id: "1)",
+              q: "Найменша сторона",
+              a: "8",
+              type: "input",
+            },
+          ],
+        },
+        {
+          id: "40",
+          title: "40. На малюнку 7",
+          desc: "$AB = BD$, $AC = CD$. Доведіть, що $BC$ — бісектриса кута $ABD$.",
+          img: "../mal/01/mal7.png",
+          tasks: [
+            {
+              id: "1)",
+              q: "Чим є $BC$?",
+              a: "Бісектрисою",
+              opts: ["Бісектрисою", "Медіаною", "Висотою", "Стороною"],
+            },
+          ],
+        },
+        {
+          id: "41",
+          title: "41. У трикутнику ABC: кут A = 60 градусів",
+          desc: "Визначте градусні міри кутів $B$ і $C$, якщо:",
+          tasks: [
+            {
+              id: "1)",
+              q: "кут $B$ на $30^\\circ$ менший від кута $C$",
+              a: "45",
+              type: "input",
+            },
+            {
+              id: "2)",
+              q: "кут $B$ удвічі більший за кут $C$",
+              a: "80",
+              type: "input",
+            },
+            {
+              id: "3)",
+              q: "$\\angle B : \\angle C = 1 : 3$",
+              a: "30",
+              type: "input",
+            },
+          ],
+        },
+        {
+          id: "43",
+          title: "43. Знайдіть гострі кути прямокутного трикутника, якщо:",
+          desc: "",
+          tasks: [
+            {
+              id: "1)",
+              q: "один із них на $20^\\circ$ більший за інший",
+              a: "35",
+              type: "input",
+            },
+            {
+              id: "2)",
+              q: "один із них становить 50% від іншого",
+              a: "30",
+              type: "input",
+            },
+          ],
+        },
+        {
+          id: "45",
+          title:
+            "45. У рівнобедреному трикутнику ABC з основою AB проведено висоту CK",
+          desc: "Знайдіть периметр трикутника $ABC$, якщо периметр трикутника $ACK$ дорівнює 24 см і $CK = 8$ см.",
+          tasks: [
+            {
+              id: "1)",
+              q: "Периметр $ABC$",
+              a: "32",
+              type: "input",
+            },
+          ],
+        },
+        {
+          id: "47",
+          title:
+            "47. Знайдіть кути рівнобедреного трикутника, якщо один із них",
+          desc: "на $30^\\circ$ більший за інший. Скільки випадків слід розглянути?",
+          tasks: [
+            {
+              id: "1)",
+              q: "Кількість випадків",
+              a: "2",
+              opts: ["1", "2", "3", "Жодного"],
+            },
+          ],
+        },
+        {
+          id: "48",
+          title: "48. Чи існує трикутник із периметром 24 см",
+          desc: "одна сторона якого на 4 см більша за другу і на 3 см менша від третьої?",
+          tasks: [
+            {
+              id: "1)",
+              q: "Відповідь",
+              a: "Так",
+              opts: ["Так", "Ні"],
+            },
+          ],
+        },
+      ];
+
+      let totalCorrect = 0;
+      let totalWrong = 0;
+      let totalTasksCount = 0;
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const root = document.getElementById("quiz-root");
+
+        exercises.forEach((ex) => {
+          totalTasksCount += ex.tasks.length;
+        });
+
+        exercises.forEach((ex) => {
+          const exBlock = document.createElement("div");
+          exBlock.className = "exercise-block";
+
+          let imgHTML = "";
+          if (ex.img) {
+            imgHTML = `<img src="${ex.img}" alt="Малюнок до задачі" class="exercise-image" onerror="this.style.display='none'">`;
+          }
+
+          exBlock.innerHTML = `
+                <div class="exercise-header">
+                    <h3 class="exercise-title">${ex.title}</h3>
+                    <p class="exercise-desc">${ex.desc}</p>
+                    ${imgHTML}
+                </div>
+                `;
+
+          const taskList = document.createElement("div");
+          taskList.className = "task-list";
+
+          ex.tasks.forEach((task) => {
+            const row = document.createElement("div");
+            row.className = "task-row";
+
+            let contentHTML = `
+                        <div class="task-content">
+                            <div class="task-number">${task.id}</div>
+                            <div class="task-question">${task.q}</div>
+                        </div>
+                    `;
+
+            let actionHTML = "";
+            if (task.type === "input") {
+              const answers = Array.isArray(task.a) ? task.a.join("|") : task.a;
+              actionHTML = `
+                            <div class="input-group">
+                                <input type="text" class="input-answer" placeholder="..." onkeypress="if(event.key==='Enter') this.nextElementSibling.click()">
+                                <button class="btn-check" onclick="checkInput(this, '${answers}')">OK</button>
+                            </div>
+                        `;
+            } else {
+              actionHTML = `<div class="options-container">`;
+              task.opts.forEach((opt) => {
+                const isCorrect = opt === task.a;
+                const safeOpt = opt.replace(/"/g, "&quot;");
+                actionHTML += `<button class="option-btn" onclick="checkOpt(this, ${isCorrect})">${safeOpt}</button>`;
+              });
+              actionHTML += `</div>`;
+            }
+
+            row.innerHTML =
+              contentHTML + `<div style="margin-top:10px;">${actionHTML}</div>`;
+            taskList.appendChild(row);
+          });
+
+          exBlock.appendChild(taskList);
+          root.appendChild(exBlock);
+        });
+
+        const finishSection = document.createElement("div");
+        finishSection.className = "finish-section";
+        finishSection.innerHTML = `
+              <button class="btn-finish" onclick="finishLesson()">Завершити урок</button>
+              <a href="../test/9-triangle-midline.html" class="btn-test">📝 Тестування</a>
+              <a href="../homework/9-triangle-midline.html" class="btn-homework">🏠 Домашня робота</a>`;
+        root.appendChild(finishSection);
+
+        if (window.renderMathInElement) {
+          renderMathInElement(document.body, {
+            delimiters: [
+              { left: "$$", right: "$$", display: true },
+              { left: "\\[", right: "\\]", display: true },
+              { left: "$", right: "$", display: false },
+              { left: "\\(", right: "\\)", display: false },
+            ],
+            throwOnError: false,
+          });
+        } else {
+          window.onload = () =>
+            renderMathInElement(document.body, {
+              delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "\\[", right: "\\]", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+              ],
+              throwOnError: false,
+            });
+        }
+
+        setTimeout(resizeCanvas, 100);
+      });
+
+      function checkOpt(btn, isCorrect) {
+        const row = btn.closest(".task-row");
+        if (row.classList.contains("done")) return;
+        row.classList.add("done");
+
+        row.querySelectorAll(".option-btn").forEach((b) => (b.disabled = true));
+
+        if (isCorrect) {
+          btn.classList.add("selected-correct");
+          row.classList.add("solved-correct");
+          totalCorrect++;
+        } else {
+          btn.classList.add("selected-wrong");
+          row.classList.add("solved-wrong");
+          totalWrong++;
+        }
+        updateStats();
+      }
+
+      function checkInput(btn, ansStr) {
+        const row = btn.closest(".task-row");
+        const input = row.querySelector("input");
+        if (row.classList.contains("done")) return;
+
+        let val = input.value.trim().replace(",", ".");
+        const correctArr = ansStr.split("|");
+
+        row.classList.add("done");
+        input.disabled = true;
+        btn.disabled = true;
+
+        if (correctArr.includes(val)) {
+          input.classList.add("correct");
+          row.classList.add("solved-correct");
+          totalCorrect++;
+        } else {
+          input.classList.add("wrong");
+          row.classList.add("solved-wrong");
+          totalWrong++;
+        }
+        updateStats();
+      }
+
+      function updateStats() {
+        document.getElementById("val-correct").innerText = totalCorrect;
+        document.getElementById("val-wrong").innerText = totalWrong;
+      }
+
+      function finishLesson() {
+        const modal = document.getElementById("result-modal");
+        const body = document.getElementById("modal-content-body");
+
+        const correctInputs = document.querySelectorAll(
+          ".input-answer.correct, .option-btn.selected-correct"
+        ).length;
+        const wrongInputs = document.querySelectorAll(
+          ".input-answer.wrong, .option-btn.selected-wrong"
+        ).length;
+        const distinctAnswered = correctInputs + wrongInputs;
+
+        const attempts = totalCorrect + totalWrong;
+        let efficiency = 0;
+        if (attempts > 0) {
+          efficiency = Math.round((totalCorrect / attempts) * 100);
+        }
+
+        let html = ``;
+        if (distinctAnswered === 0) {
+          html = `<div class="modal-result-title">Упс... 😶</div>
+                        <div style="font-size:1.1rem; margin:15px 0; color:#475569;">Ти не дав жодної відповіді. Спробуй розв'язати хоча б щось!</div>
+                        <button class="modal-footer-btn" onclick="closeModal()">Повернутись</button>`;
+        } else {
+          let msg = "";
+          let color = "#2563eb";
+          if (efficiency === 100) {
+            msg = "Ідеально!";
+            color = "#16a34a";
+          } else if (efficiency >= 85) {
+            msg = "Чудово!";
+            color = "#2563eb";
+          } else if (efficiency >= 60) {
+            msg = "Добре!";
+            color = "#f59e0b";
+          } else {
+            msg = "Тренуйся!";
+            color = "#dc2626";
+          }
+
+          html = `
+                    <div class="modal-result-title" style="color:${color}">${msg}</div>
+                    
+                    <div>
+                        <div style="font-size: 1rem; color: #64748b;">Твоя точність</div>
+                        <div class="modal-score-big" style="color:${color}">${efficiency}%</div>
+                        <div class="modal-score-sub">
+                            (Правильних спроб: ${totalCorrect} з ${attempts})
+                        </div>
+                    </div>
+
+                    <div class="modal-progress-container">
+                         <div style="font-size: 1rem; color: #334155; display:flex; justify-content:space-between;">
+                            <span>Прогрес уроку:</span>
+                            <strong>${distinctAnswered} / ${totalTasksCount}</strong>
+                         </div>
+                         <div class="modal-bar-bg">
+                            <div class="modal-bar-fill" style="width: ${
+                              (distinctAnswered / totalTasksCount) * 100
+                            }%; background: ${color};"></div>
+                         </div>
+                    </div>
+
+                    <button class="modal-footer-btn" onclick="closeModal()">Закрити</button>
+                `;
+        }
+
+        body.innerHTML = html;
+        modal.style.display = "flex";
+      }
+
+      function closeModal() {
+        document.getElementById("result-modal").style.display = "none";
+      }
+    </script>
+  </body>
+</html>
