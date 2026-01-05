@@ -569,6 +569,13 @@
         </button>
         <button
           class="btn-tool"
+          onclick="drawParallelogram()"
+          title="Намалювати паралелограм"
+        >
+          ▱
+        </button>
+        <button
+          class="btn-tool"
           onclick="clearCanvasSafe()"
           style="color: red; border-color: #fee2e2"
           title="Очистити все"
@@ -722,7 +729,55 @@
         }
       }
 
-      // --- МАСИВ ЗАВДАНЬ (ВКЛЮЧАЮЧИ НОВІ ЗМІНЕНІ) ---
+      // --- ADDED FUNCTION FOR PARALLELOGRAM ---
+      function drawParallelogram() {
+        const prevStrokeStyle = ctx.strokeStyle;
+        const prevLineWidth = ctx.lineWidth;
+        const prevComposite = ctx.globalCompositeOperation;
+
+        ctx.globalCompositeOperation = "source-over";
+        ctx.strokeStyle = "#334155";
+        ctx.lineWidth = 2;
+
+        const w = canvas.width;
+        const h = canvas.height;
+
+        // Coordinates for Parallelogram ABCD
+        const Ax = w * 0.2,
+          Ay = h * 0.7;
+        const Bx = w * 0.35,
+          By = h * 0.3;
+        const Cx = w * 0.8,
+          Cy = h * 0.3;
+        const Dx = w * 0.65,
+          Dy = h * 0.7;
+
+        ctx.beginPath();
+        ctx.moveTo(Ax, Ay); // A
+        ctx.lineTo(Bx, By); // B
+        ctx.lineTo(Cx, Cy); // C
+        ctx.lineTo(Dx, Dy); // D
+        ctx.closePath();
+        ctx.stroke();
+
+        ctx.fillStyle = "#334155";
+        ctx.font = "bold 16px Arial";
+        ctx.fillText("A", Ax - 15, Ay + 20);
+        ctx.fillText("B", Bx - 15, By - 10);
+        ctx.fillText("C", Cx + 5, Cy - 10);
+        ctx.fillText("D", Dx + 5, Dy + 20);
+
+        ctx.beginPath();
+        ctx.strokeStyle = prevStrokeStyle;
+        ctx.lineWidth = prevLineWidth;
+        ctx.globalCompositeOperation = prevComposite;
+
+        if (tool === "eraser") {
+          setTool("pen");
+        }
+      }
+      // ----------------------------------------
+
       const exercises = [
         {
           id: "9.2",
@@ -883,7 +938,6 @@
             },
           ],
         },
-        // --- НОВІ ЗАДАЧІ ---
         {
           id: "9.19",
           title: "9.19. Ромб і середня лінія",
@@ -928,7 +982,7 @@
             {
               id: "1)",
               q: "Точка $M$ — середина катета $AC$ рівнобедреного прямокутного трикутника $ABC$ ($\angle C = 90^\circ$). Відстань від точки $M$ до гіпотенузи дорівнює $7$ см. Знайдіть гіпотенузу.",
-              a: "28", // MH = 7. AC = MH / sin45 * 2 = 7*sqrt2 * 2 = 14sqrt2. Hyp = AC*sqrt2 = 14*2 = 28. (Формула Hyp = 4*dist)
+              a: "28",
               type: "input",
             },
           ],
@@ -954,7 +1008,7 @@
             {
               id: "1)",
               q: "У рівнобедреному трикутнику $ABC$ ($AB = AC$) $M$ — точка перетину медіан. Відомо, що $AM = 18$ см. Знайдіть відстань від середини бічної сторони до основи трикутника.",
-              a: "13.5", // AM=18 => H_total = 27. Midline dist = H/2 = 13.5
+              a: "13.5",
               type: "input",
             },
           ],
