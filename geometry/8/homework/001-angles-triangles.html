@@ -82,6 +82,29 @@
         border-color: var(--primary);
       }
 
+      /* Стилі для режиму вчителя (Header) */
+      .teacher-header-info {
+        display: none; /* Hidden by default */
+        width: 100%;
+        background: #f3e8ff;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        border: 1px solid #d8b4fe;
+        text-align: center;
+      }
+      .th-name {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #581c87;
+      }
+      .th-score {
+        font-size: 1.5rem;
+        font-weight: 900;
+        color: var(--primary);
+        margin-top: 5px;
+      }
+
       .content-container {
         padding: 20px;
         padding-bottom: 80px;
@@ -98,6 +121,7 @@
         border: 1px solid var(--border);
         margin-bottom: 30px;
         overflow: hidden;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
       }
 
       .exercise-header {
@@ -160,7 +184,9 @@
 
       .input-group {
         display: flex;
+        flex-wrap: wrap;
         align-items: center;
+        gap: 10px;
         width: 100%;
       }
       .input-answer {
@@ -170,11 +196,36 @@
         width: 100%;
         max-width: 250px;
         font-size: 1rem;
+        transition: all 0.2s;
         background: #fff;
       }
       .input-answer:focus {
         outline: none;
         border-color: var(--primary);
+      }
+
+      /* Стани валідації (для вчителя) */
+      .input-answer.val-correct {
+        border-color: var(--success);
+        background-color: #f0fdf4;
+        color: #14532d;
+        font-weight: bold;
+      }
+      .input-answer.val-wrong {
+        border-color: var(--error);
+        background-color: #fef2f2;
+        color: #7f1d1d;
+        text-decoration: line-through;
+      }
+      .teacher-correction {
+        font-size: 0.9rem;
+        color: var(--success);
+        background: #f0fdf4;
+        padding: 5px 10px;
+        border-radius: 6px;
+        border: 1px solid #bbf7d0;
+        font-weight: bold;
+        display: inline-block;
       }
 
       .options-container {
@@ -199,8 +250,21 @@
         color: white;
         border-color: var(--text);
       }
-      .option-btn.selected .katex {
+      /* Стани кнопок для вчителя */
+      .option-btn.val-correct-btn {
+        background: var(--success) !important;
+        border-color: var(--success) !important;
         color: white !important;
+      }
+      .option-btn.val-wrong-btn {
+        background: var(--error) !important;
+        border-color: var(--error) !important;
+        color: white !important;
+        opacity: 0.7;
+      }
+      .option-btn.val-missed-btn {
+        border: 2px dashed var(--success);
+        background: #f0fdf4;
       }
 
       .finish-section {
@@ -244,7 +308,7 @@
         background: white;
         padding: 40px;
         border-radius: 20px;
-        max-width: 800px;
+        max-width: 600px;
         width: 100%;
         box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
         position: relative;
@@ -300,10 +364,7 @@
         color: #475569;
       }
 
-      /* Секція вчителя (звіт) */
-      #teacher-login-area {
-        margin-top: 20px;
-      }
+      /* Секція входу */
       .password-input {
         padding: 12px;
         border: 2px solid #cbd5e1;
@@ -320,44 +381,6 @@
         font-weight: bold;
         cursor: pointer;
       }
-
-      .report-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 20px;
-        font-size: 0.95rem;
-      }
-      .report-table th {
-        text-align: left;
-        background: #f8fafc;
-        padding: 15px;
-        border-bottom: 2px solid #cbd5e1;
-        color: #64748b;
-      }
-      .report-table td {
-        padding: 15px;
-        border-bottom: 1px solid #e2e8f0;
-      }
-
-      .row-correct {
-        background-color: #f0fdf4;
-      }
-      .row-wrong {
-        background-color: #fef2f2;
-      }
-      .row-wrong td:nth-child(2) {
-        text-decoration: line-through;
-        color: var(--error);
-      }
-      .score-badge {
-        font-size: 2rem;
-        font-weight: 900;
-        color: var(--primary);
-        margin: 20px 0;
-        padding: 15px;
-        background: #f3e8ff;
-        border-radius: 12px;
-      }
     </style>
   </head>
   <body>
@@ -371,7 +394,20 @@
       />
     </header>
 
-    <div class="content-container" id="quiz-root"></div>
+    <div class="content-container">
+      <div id="teacherInfoPanel" class="teacher-header-info">
+        <div class="th-name" id="thName"></div>
+        <div class="th-score" id="thScore"></div>
+      </div>
+
+      <div id="quiz-root"></div>
+
+      <div class="finish-section" id="finishBtnContainer">
+        <button class="btn-finish" onclick="finishHomework()">
+          Завершити роботу
+        </button>
+      </div>
+    </div>
 
     <div id="result-modal" class="modal-overlay">
       <div class="modal-card">
@@ -409,45 +445,20 @@
           </div>
           <div id="login-error" style="color: red; margin-top: 10px"></div>
         </div>
-
-        <div id="view-teacher-report" style="display: none">
-          <div class="modal-title">Результат</div>
-          <div class="modal-subtitle" id="report-student-name"></div>
-          <div id="report-score" class="score-badge"></div>
-
-          <table class="report-table">
-            <thead>
-              <tr>
-                <th width="40%">Завдання</th>
-                <th width="30%">Відповідь учня</th>
-                <th width="30%">Правильно</th>
-              </tr>
-            </thead>
-            <tbody id="report-body"></tbody>
-          </table>
-
-          <button
-            class="btn-copy-link"
-            onclick="window.location.href = window.location.pathname"
-            style="background: #334155; margin-top: 30px"
-          >
-            🏠 На головну (Нова робота)
-          </button>
-        </div>
       </div>
     </div>
 
     <script>
-      // --- ВПРАВИ (17 шт, нові числа) ---
+      // --- ВПРАВИ ---
       const exercises = [
         {
           id: "5",
           title: "5. Паралельні прямі",
-          desc: "$m \\parallel n$, $a$ — січна (див. мал. 2). Відомо, що $\\angle 1 = 130^\\circ$.",
+          desc: "$m \\parallel n$, $a$ — січна (див. мал. 2). Кут, який на малюнку позначено як $115^\\circ$, для цієї задачі вважайте рівним $130^\\circ$.",
           img: "../mal/01/mal2.png",
           tasks: [
             { id: "1)", q: "Знайдіть $\\angle 2$.", a: "50", type: "input" },
-            { id: "2)", q: "Знайдіть $\\angle 3$.", a: "130", type: "input" },
+            { id: "2)", q: "Знайдіть $\\angle 3$.", a: "50", type: "input" },
           ],
         },
         {
@@ -460,13 +471,13 @@
               q: "Знайдіть $AM$, якщо $AB = 15$ см, $MB = 20$ мм (у см).",
               a: "13",
               type: "input",
-            }, // 15 - 2 = 13
+            },
             {
               id: "2)",
               q: "Знайдіть $AB$, якщо $AM = 3$ дм, $MB = 2$ дм 4 см (у см).",
               a: "54",
               type: "input",
-            }, // 30 + 24
+            },
           ],
         },
         {
@@ -526,7 +537,7 @@
           desc: "Прямі перетинаються в точці $O$, $MN \\perp KL$ (див. мал. 4). $\\angle NOA = 150^\\circ$.",
           img: "../mal/01/mal4.png",
           tasks: [
-            { id: "1)", q: "Знайдіть $\\angle KOB$.", a: "30", type: "input" }, // Vertically opp to AOM. AOM = 180-150=30.
+            { id: "1)", q: "Знайдіть $\\angle KOB$.", a: "30", type: "input" },
           ],
         },
         {
@@ -553,7 +564,7 @@
           title: "25. Периметр рівнобедреного",
           desc: "Бічна сторона = 20 см, основа на 8 см менша від бічної.",
           tasks: [
-            { id: "1)", q: "Знайдіть периметр.", a: "52", type: "input" }, // 20+20+12
+            { id: "1)", q: "Знайдіть периметр.", a: "52", type: "input" },
           ],
         },
         {
@@ -677,45 +688,55 @@
               q: "Знайдіть периметр трикутника $ABM$.",
               a: "45",
               type: "input",
-            }, // 30+15=45
+            },
           ],
         },
       ];
 
-      // Fix decimal precision display issues if any
+      // Fix decimal precision display
       exercises[14].tasks[0].a = "37.5";
 
       let userAnswers = {};
-      let decodedData = null; // Для режиму вчителя
+      let decodedData = null; // Дані з посилання
 
       document.addEventListener("DOMContentLoaded", () => {
-        // 1. Перевіряємо, чи це посилання з даними (режим вчителя)
         const params = new URLSearchParams(window.location.search);
+
+        // --- РЕЖИМ ВЧИТЕЛЯ (якщо є параметр d) ---
         if (params.has("d")) {
           try {
-            // Декодуємо дані з URL
             const jsonStr = decodeURIComponent(atob(params.get("d")));
             decodedData = JSON.parse(jsonStr);
 
-            // Ховаємо завдання, показуємо вхід
+            // Ховаємо інтерфейс учня, показуємо логін
             document.getElementById("quiz-root").style.display = "none";
             document.querySelector("header").style.display = "none";
+            document.getElementById("finishBtnContainer").style.display =
+              "none";
             document.getElementById("result-modal").style.display = "flex";
             document.getElementById("view-teacher-login").style.display =
               "block";
-            return; // Зупиняємо рендер завдань
           } catch (e) {
-            console.error("Link error", e);
-            alert("Помилка посилання. Попросіть учня надіслати нове.");
+            console.error(e);
+            alert("Помилка посилання.");
           }
         }
-
-        // 2. Рендеримо завдання (режим учня)
-        renderExercises();
+        // --- РЕЖИМ УЧНЯ ---
+        else {
+          renderExercises(false); // false = student mode
+        }
       });
 
-      function renderExercises() {
+      function renderExercises(isTeacherMode) {
         const root = document.getElementById("quiz-root");
+        root.innerHTML = ""; // Clear
+        root.style.display = "block"; // Ensure visible
+
+        let correctCount = 0;
+        let totalCount = 0;
+
+        // Визначаємо джерело відповідей
+        const answersSource = isTeacherMode ? decodedData.a : userAnswers;
 
         exercises.forEach((ex) => {
           const exBlock = document.createElement("div");
@@ -738,9 +759,34 @@
           taskList.className = "task-list";
 
           ex.tasks.forEach((task) => {
+            totalCount++;
             const row = document.createElement("div");
             row.className = "task-row";
             const uniqueId = `${ex.id}-${task.id}`;
+            const userVal = answersSource[uniqueId] || "";
+
+            // Логіка перевірки для вчителя
+            let isCorrect = false;
+            let correctionHTML = "";
+            let inputClass = "input-answer";
+
+            if (isTeacherMode) {
+              // Перевірка
+              if (task.type === "input") {
+                if (String(userVal).trim() === String(task.a).trim())
+                  isCorrect = true;
+              } else {
+                if (userVal === task.a) isCorrect = true;
+              }
+
+              if (isCorrect) {
+                correctCount++;
+                inputClass += " val-correct";
+              } else {
+                inputClass += " val-wrong";
+                correctionHTML = `<div style="margin-top:5px;"><span class="teacher-correction">Правильно: ${task.a}</span></div>`;
+              }
+            }
 
             let contentHTML = `
                         <div class="task-content">
@@ -750,23 +796,48 @@
                     `;
 
             let actionHTML = "";
+
             if (task.type === "input") {
+              const disabledAttr = isTeacherMode ? "disabled" : "";
               actionHTML = `
                 <div class="input-group">
-                    <input type="text" class="input-answer" placeholder="Відповідь..." onchange="saveAnswer('${uniqueId}', this.value)">
+                    <input type="text" class="${inputClass}" 
+                           value="${userVal}" 
+                           placeholder="Відповідь..." 
+                           ${disabledAttr}
+                           onchange="saveAnswer('${uniqueId}', this.value)">
+                    ${correctionHTML}
                 </div>
               `;
             } else {
               actionHTML = `<div class="options-container" id="opts-${uniqueId}">`;
               task.opts.forEach((opt) => {
+                let btnClass = "option-btn";
+                // Стилізація кнопок для вчителя
+                if (isTeacherMode) {
+                  if (opt === task.a) btnClass += " val-missed-btn"; // Це була правильна відповідь
+                  if (opt === userVal) {
+                    if (isCorrect)
+                      btnClass += " val-correct-btn"; // Вибрав правильно
+                    else btnClass += " val-wrong-btn"; // Вибрав неправильно
+                  }
+                } else {
+                  // Режим учня
+                  if (opt === userVal) btnClass += " selected";
+                }
+
                 const safeOpt = opt.replace(/"/g, "&quot;");
-                actionHTML += `<button class="option-btn" onclick="selectOpt('${uniqueId}', '${safeOpt}', this)">${safeOpt}</button>`;
+                const onclickAction = isTeacherMode
+                  ? ""
+                  : `onclick="selectOpt('${uniqueId}', '${safeOpt}', this)"`;
+
+                actionHTML += `<button class="${btnClass}" ${onclickAction}>${safeOpt}</button>`;
               });
               actionHTML += `</div>`;
             }
 
             row.innerHTML =
-              contentHTML + `<div style="margin-top:5px;">${actionHTML}</div>`;
+              contentHTML + `<div style="margin-top:10px;">${actionHTML}</div>`;
             taskList.appendChild(row);
           });
 
@@ -774,12 +845,22 @@
           root.appendChild(exBlock);
         });
 
-        // Кнопка завершення
-        const finishSection = document.createElement("div");
-        finishSection.className = "finish-section";
-        finishSection.innerHTML = `<button class="btn-finish" onclick="finishHomework()">Завершити роботу</button>`;
-        root.appendChild(finishSection);
+        // Якщо вчитель - оновлюємо шапку статистики
+        if (isTeacherMode) {
+          const percent = Math.round((correctCount / totalCount) * 100);
+          document.getElementById(
+            "thName"
+          ).innerText = `Учень: ${decodedData.n}`;
+          document.getElementById(
+            "thScore"
+          ).innerText = `Оцінка: ${percent}% (${correctCount} з ${totalCount})`;
+          document.getElementById("teacherInfoPanel").style.display = "block";
 
+          // Ховаємо кнопку завершення, вона вчителю не треба
+          document.getElementById("finishBtnContainer").style.display = "none";
+        }
+
+        // Рендер формул
         if (window.renderMathInElement) {
           renderMathInElement(document.body, {
             delimiters: [{ left: "$", right: "$", display: false }],
@@ -808,22 +889,22 @@
           window.scrollTo(0, 0);
           return;
         }
-        if (!confirm("Завершити роботу і створити посилання?")) return;
+        if (!confirm("Завершити роботу?")) return;
 
-        // Формуємо об'єкт даних
+        // Формуємо дані
         const payload = {
           n: studentName,
           a: userAnswers,
           t: Date.now(),
         };
 
-        // Кодуємо в Base64 для URL
         const jsonStr = JSON.stringify(payload);
-        const encoded = btoa(encodeURIComponent(jsonStr)); // encodeURIComponent handles Cyrillic
+        const encoded = btoa(encodeURIComponent(jsonStr));
 
         // Генеруємо посилання
-        const currentUrl = window.location.href.split("?")[0];
-        const resultLink = `${currentUrl}?d=${encoded}`;
+        const baseUrl =
+          "https://ddashukko.github.io/site/geometry/8/homework/001-angles-triangles.html";
+        const resultLink = `${baseUrl}?d=${encoded}`;
 
         // Показуємо результат учню
         document.getElementById("generated-link-box").innerText = resultLink;
@@ -843,66 +924,16 @@
       function checkPassword() {
         const pass = document.getElementById("teacher-pass").value;
         if (pass.toLowerCase() === "янчук") {
-          showReport();
+          // Успішний вхід
+          document.getElementById("result-modal").style.display = "none"; // Закриваємо модалку
+          document.querySelector("header").style.display = "flex"; // Показуємо хедер (хоча він не дуже треба, але хай буде)
+          document.getElementById("studentName").value = decodedData.n;
+          document.getElementById("studentName").disabled = true;
+
+          // Рендеримо сторінку в режимі вчителя
+          renderExercises(true);
         } else {
           document.getElementById("login-error").innerText = "Невірний пароль";
-        }
-      }
-
-      function showReport() {
-        const data = decodedData;
-        const answers = data.a;
-
-        let correctCount = 0;
-        let totalCount = 0;
-        const tbody = document.getElementById("report-body");
-        tbody.innerHTML = "";
-
-        exercises.forEach((ex) => {
-          ex.tasks.forEach((task) => {
-            totalCount++;
-            const uid = `${ex.id}-${task.id}`;
-            const userAns = answers[uid] || "—";
-
-            let isCorrect = false;
-            // Simple equality check (works for generated inputs)
-            // For input types allow small diff if numeric?
-            // Let's stick to strict string match or simple numeric match
-            if (task.type === "input") {
-              if (userAns == task.a) isCorrect = true;
-            } else {
-              if (userAns === task.a) isCorrect = true;
-            }
-
-            if (isCorrect) correctCount++;
-
-            const tr = document.createElement("tr");
-            tr.className = isCorrect ? "row-correct" : "row-wrong";
-            tr.innerHTML = `
-                    <td><b>${ex.id} ${task.id}</b><br><small>${task.q}</small></td>
-                    <td>${userAns}</td>
-                    <td>${task.a}</td>
-                `;
-            tbody.appendChild(tr);
-          });
-        });
-
-        const percent = Math.round((correctCount / totalCount) * 100);
-
-        document.getElementById(
-          "report-student-name"
-        ).innerText = `Учень: ${data.n}`;
-        document.getElementById(
-          "report-score"
-        ).innerText = `Оцінка: ${percent}% (${correctCount}/${totalCount})`;
-
-        document.getElementById("view-teacher-login").style.display = "none";
-        document.getElementById("view-teacher-report").style.display = "block";
-
-        if (window.renderMathInElement) {
-          renderMathInElement(document.getElementById("report-body"), {
-            delimiters: [{ left: "$", right: "$", display: false }],
-          });
         }
       }
     </script>
