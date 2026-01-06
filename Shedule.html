@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Вільні години</title>
+    <style>
+      :root {
+        --bg-color: #f8f9fa;
+        --card-bg: #ffffff;
+        --primary-blue: #4a90e2;
+        --free-bg: #d4edda;
+        --free-border: #c3e6cb;
+        --free-text: #155724;
+        --busy-bg: #e2e3e5;
+        --busy-text: #6c757d;
+      }
+
+      body {
+        font-family: "Segoe UI", sans-serif;
+        background-color: var(--bg-color);
+        margin: 0;
+        padding: 20px;
+        color: #333;
+      }
+
+      .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        background: var(--card-bg);
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      }
+
+      h1 {
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 1.5rem;
+      }
+
+      .legend {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin-bottom: 20px;
+        font-size: 0.9rem;
+      }
+
+      .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 5px;
+      }
+      .dot.free {
+        background-color: var(--free-text);
+      }
+      .dot.busy {
+        background-color: var(--busy-text);
+      }
+
+      /* СІТКА РОЗКЛАДУ */
+      .schedule-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr); /* 5 рівних колонок */
+        gap: 12px;
+      }
+
+      .day-column {
+        display: flex;
+        flex-direction: column;
+        gap: 8px; /* Відступ між годинами */
+      }
+
+      .day-header {
+        text-align: center;
+        font-weight: bold;
+        margin-bottom: 5px;
+        color: var(--primary-blue);
+        padding-bottom: 5px;
+        border-bottom: 2px solid #eee;
+      }
+
+      .time-slot {
+        height: 45px; /* ФІКСОВАНА ВИСОТА для однаковості */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        transition: all 0.2s;
+      }
+
+      /* Стилі для вільного часу */
+      .free {
+        background-color: var(--free-bg);
+        border: 1px solid var(--free-border);
+        color: var(--free-text);
+        cursor: pointer;
+      }
+      .free:hover {
+        transform: scale(1.03);
+        background-color: #c3e6cb;
+      }
+
+      /* Стилі для зайнятого часу */
+      .busy {
+        background-color: var(--busy-bg);
+        color: var(--busy-text);
+        border: 1px solid #d6d8db;
+        text-decoration: line-through;
+        opacity: 0.7;
+      }
+
+      /* Мобільна адаптація */
+      @media (max-width: 600px) {
+        .schedule-grid {
+          grid-template-columns: repeat(2, 1fr); /* 2 колонки на телефоні */
+        }
+        .day-column:last-child {
+          grid-column: span 2; /* П'ятниця на всю ширину */
+          width: 50%;
+          margin: 0 auto;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Графік занять (15:00 - 21:00)</h1>
+
+      <div class="legend">
+        <span><span class="dot free"></span>Вільний час</span>
+        <span><span class="dot busy"></span>Зайнято</span>
+      </div>
+
+      <div class="schedule-grid">
+        <div class="day-column">
+          <div class="day-header">Понеділок</div>
+          <div class="time-slot busy">15:00</div>
+          <div class="time-slot busy">16:00</div>
+          <div class="time-slot busy">17:00</div>
+          <div class="time-slot busy">18:00</div>
+          <div class="time-slot busy">19:00</div>
+          <div class="time-slot busy">20:00</div>
+          <div class="time-slot busy">21:00</div>
+        </div>
+
+        <div class="day-column">
+          <div class="day-header">Вівторок</div>
+          <div class="time-slot free">15:00</div>
+          <div class="time-slot free">16:00</div>
+          <div class="time-slot busy">17:00</div>
+          <div class="time-slot free">18:00</div>
+          <div class="time-slot busy">19:00</div>
+          <div class="time-slot busy">20:00</div>
+          <div class="time-slot busy">21:00</div>
+        </div>
+
+        <div class="day-column">
+          <div class="day-header">Середа</div>
+          <div class="time-slot free">15:00</div>
+          <div class="time-slot free">16:00</div>
+          <div class="time-slot free">17:00</div>
+          <div class="time-slot busy">18:00</div>
+          <div class="time-slot busy">19:00</div>
+          <div class="time-slot busy">20:00</div>
+          <div class="time-slot free">21:00</div>
+        </div>
+
+        <div class="day-column">
+          <div class="day-header">Четвер</div>
+          <div class="time-slot free">15:00</div>
+          <div class="time-slot busy">16:00</div>
+          <div class="time-slot busy">17:00</div>
+          <div class="time-slot busy">18:00</div>
+          <div class="time-slot busy">19:00</div>
+          <div class="time-slot busy">20:00</div>
+          <div class="time-slot free">21:00</div>
+        </div>
+
+        <div class="day-column">
+          <div class="day-header">П'ятниця</div>
+          <div class="time-slot busy">15:00</div>
+          <div class="time-slot free">16:00</div>
+          <div class="time-slot free">17:00</div>
+          <div class="time-slot busy">18:00</div>
+          <div class="time-slot busy">19:00</div>
+          <div class="time-slot free">20:00</div>
+          <div class="time-slot free">21:00</div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
