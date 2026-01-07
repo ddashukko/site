@@ -731,7 +731,7 @@ window.lessonsData = [
     category: "lesson",
     author: "Соня",
   },
-   {
+  {
     id: "math-6-droby",
     title: "Дроби Всеволод",
     grade: 6,
