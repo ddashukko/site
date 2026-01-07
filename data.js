@@ -691,6 +691,16 @@ window.lessonsData = [
     category: "lesson",
     author: "Соня",
   },
+   {
+    id: "math-6-sonya-droby",
+    title: "Дроби, Всеволод",
+    grade: 6,
+    topic: "Математика",
+    link: "math_general/6/Вадим/Всеволод.html",
+    subject_code: "math_general",
+    category: "lesson",
+    author: "Соня",
+  },
   {
     id: "math-6-vadim-01",
     title: "Вадим Урок1",
