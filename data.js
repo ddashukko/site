@@ -206,6 +206,16 @@ window.lessonsData = [
     author: "Даша",
   },
   {
+    id: "math-5-cyber-lesson",
+    title: "Cyber-Mathematik: Logik, Strukturen und Algorithmen",
+    grade: 5,
+    topic: "Математика",
+    link: "math_general/5/lesson1.html",
+    subject_code: "math_general",
+    category: "lesson",
+    author: "Даша",
+  },
+  {
     id: "alg-6-rat-op",
     title: "Додавання, віднімання, множення та ділення раціональних чисел",
     grade: 6,

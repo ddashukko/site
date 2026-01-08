@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CYBER MATH: TEST MODE</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Exo+2:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg-dark: #0f172a;
+        --panel-bg: #1e293b;
+        --primary: #0ea5e9; /* Sky Blue */
+        --accent: #f59e0b; /* Amber */
+        --purple: #d946ef; /* Magenta */
+        --text-main: #f1f5f9;
+        --success: #22c55e;
+        --error: #ef4444;
+        --border-radius: 16px;
+      }
+
+      body {
+        background-color: var(--bg-dark);
+        color: var(--text-main);
+        font-family: "Exo 2", sans-serif;
+        margin: 0;
+        padding: 0;
+        background-image: linear-gradient(
+            rgba(15, 23, 42, 0.9),
+            rgba(15, 23, 42, 0.95)
+          ),
+          url("https://www.transparenttextures.com/patterns/cubes.png");
+      }
+
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: rgba(15, 23, 42, 0.95);
+        border-bottom: 2px solid var(--primary);
+        box-shadow: 0 0 25px rgba(14, 165, 233, 0.3);
+        padding: 15px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        backdrop-filter: blur(10px);
+      }
+
+      .brand {
+        font-family: "Orbitron", sans-serif;
+        font-size: 1.4rem;
+        color: var(--primary);
+        text-shadow: 0 0 10px rgba(14, 165, 233, 0.6);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .stats {
+        display: flex;
+        gap: 15px;
+        font-family: "Orbitron", sans-serif;
+        font-size: 1rem;
+      }
+
+      .stat-box {
+        background: #000;
+        padding: 5px 12px;
+        border: 1px solid var(--primary);
+        border-radius: 6px;
+        color: var(--success);
+        box-shadow: 0 0 5px rgba(14, 165, 233, 0.2);
+      }
+
+      .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 20px;
+        padding-bottom: 100px;
+      }
+
+      .level-header {
+        font-family: "Orbitron", sans-serif;
+        font-size: 1.6rem;
+        color: #fff;
+        margin: 60px 0 30px 0;
+        border-left: 6px solid var(--primary);
+        padding-left: 20px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .level-header.purple {
+        border-color: var(--purple);
+        color: var(--purple);
+      }
+      .level-header.amber {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+
+      .task-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 25px;
+      }
+
+      .card {
+        background: var(--panel-bg);
+        border: 1px solid #334155;
+        border-radius: var(--border-radius);
+        padding: 20px;
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.2s, box-shadow 0.2s;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .card:hover {
+        transform: translateY(-3px);
+        border-color: var(--primary);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+      }
+
+      .img-container {
+        width: 100%;
+        height: 200px;
+        background: #000;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        overflow: hidden;
+        border: 1px solid #334155;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .img-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        transition: transform 0.5s;
+      }
+
+      .card:hover .img-container img {
+        transform: scale(1.05);
+      }
+
+      .task-title {
+        font-weight: 700;
+        font-size: 1.1rem;
+        margin-bottom: 10px;
+        color: var(--primary);
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .equation {
+        font-family: "Orbitron", monospace;
+        font-size: 1.4rem;
+        text-align: center;
+        margin: 15px 0;
+        color: #fff;
+        background: #0f172a;
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid #334155;
+      }
+
+      .var {
+        color: var(--purple);
+        font-weight: bold;
+      }
+      .var-y {
+        color: var(--accent);
+        font-weight: bold;
+      }
+
+      .input-area {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        margin-top: auto;
+        padding-top: 15px;
+      }
+
+      input {
+        background: #0f172a;
+        border: 1px solid var(--primary);
+        color: #fff;
+        padding: 10px;
+        border-radius: 8px;
+        width: 100px;
+        text-align: center;
+        font-size: 1.2rem;
+        font-family: "Exo 2", sans-serif;
+        font-weight: bold;
+        outline: none;
+      }
+
+      input:focus {
+        box-shadow: 0 0 10px rgba(14, 165, 233, 0.5);
+      }
+
+      button.btn-go {
+        background: var(--primary);
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: bold;
+        cursor: pointer;
+        font-family: "Orbitron";
+        transition: 0.2s;
+      }
+
+      button.btn-go:hover {
+        filter: brightness(1.1);
+        box-shadow: 0 0 10px var(--primary);
+      }
+
+      button:disabled {
+        background: #475569;
+        cursor: not-allowed;
+        box-shadow: none;
+      }
+
+      .msg {
+        text-align: center;
+        font-size: 0.9rem;
+        font-weight: bold;
+        height: 20px;
+        margin-top: 8px;
+      }
+
+      /* Confetti */
+      .confetti {
+        position: fixed;
+        width: 8px;
+        height: 8px;
+        z-index: 1000;
+        pointer-events: none;
+      }
+
+      /* Modal */
+      .modal-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.9);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 2000;
+        backdrop-filter: blur(5px);
+      }
+      .modal-box {
+        background: var(--panel-bg);
+        border: 2px solid var(--success);
+        padding: 40px;
+        border-radius: 20px;
+        text-align: center;
+        max-width: 400px;
+        animation: zoomIn 0.4s ease;
+      }
+      @keyframes zoomIn {
+        from {
+          transform: scale(0);
+        }
+        to {
+          transform: scale(1);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="brand">
+        <span style="font-size: 1.8rem">👁️</span> CYBER MATH
+      </div>
+      <div class="stats">
+        <div class="stat-box">AUFGABEN: <span id="done">0</span></div>
+        <div class="stat-box">PUNKTE: <span id="score">0</span></div>
+      </div>
+    </header>
+
+    <div class="container">
+      <div class="level-header">LEVEL 1: Objekte scannen (Multiplikation)</div>
+      <div class="task-grid">
+        <div class="card" id="c1">
+          <div class="task-title">🥚 Eierschachtel</div>
+          <div class="img-container">
+            <img
+              src="../../images/masive/s2.png"
+              alt="Eier"
+              onerror="this.src='https://placehold.co/200x150?text=Bild+fehlt'"
+            />
+          </div>
+          <p style="text-align: center; color: #94a3b8">
+            Wie viele Eier sind in der Schachtel?
+          </p>
+          <div class="input-area">
+            <input type="number" id="inp1" placeholder="?" />
+            <button class="btn-go" onclick="check(1, 30)">OK</button>
+          </div>
+          <div class="msg" id="msg1"></div>
+        </div>
+
+        <div class="card" id="c2">
+          <div class="task-title">🔋 Energieblock</div>
+          <div class="img-container">
+            <img
+              src="../../images/masive/s4.png"
+              alt="Batterien"
+              onerror="this.src='https://placehold.co/200x150?text=Bild+fehlt'"
+            />
+          </div>
+          <p style="text-align: center; color: #94a3b8">
+            Wie viele Batterien sind im Block?
+          </p>
+          <div class="input-area">
+            <input type="number" id="inp2" placeholder="?" />
+            <button class="btn-go" onclick="check(2, 24)">OK</button>
+          </div>
+          <div class="msg" id="msg2"></div>
+        </div>
+
+        <div class="card" id="c3">
+          <div class="task-title">📀 Goldreserve</div>
+          <div class="img-container">
+            <img
+              src="../../images/masive/s3.png"
+              alt="Pralinen"
+              onerror="this.src='https://placehold.co/200x150?text=Bild+fehlt'"
+            />
+          </div>
+          <p style="text-align: center; color: #94a3b8">
+            Wie viele Pralinen sind im Set?
+          </p>
+          <div class="input-area">
+            <input type="number" id="inp3" placeholder="?" />
+            <button class="btn-go" onclick="check(3, 24)">OK</button>
+          </div>
+          <div class="msg" id="msg3"></div>
+        </div>
+
+        <div class="card" id="c4">
+          <div class="task-title">💻 Chipsätze</div>
+          <div class="img-container">
+            <img
+              src="../../images/masive/s1.png"
+              alt="Schachtel"
+              onerror="this.src='https://placehold.co/200x150?text=Bild+fehlt'"
+            />
+          </div>
+          <p style="text-align: center; color: #94a3b8">
+            Wie viele Elemente sind im Set?
+          </p>
+          <div class="input-area">
+            <input type="number" id="inp4" placeholder="?" />
+            <button class="btn-go" onclick="check(4, 15)">OK</button>
+          </div>
+          <div class="msg" id="msg4"></div>
+        </div>
+      </div>
+
+      <div class="level-header purple">
+        LEVEL 2: Logische Operationen (Textaufgaben)
+      </div>
+
+      <div class="task-grid">
+        <div class="card" id="c5">
+          <div class="task-title">🎟️ Systemzugang</div>
+          <div class="equation" style="font-size: 1rem; text-align: left">
+            Eintritt pro User = 4 Credits.<br />
+            Die Gruppe hat 9 User.
+          </div>
+          <p style="text-align: center; font-size: 0.9rem">
+            Wie hoch sind die Gesamtkosten?
+          </p>
+          <div class="input-area">
+            <input type="number" id="inp5" />
+            <button class="btn-go" onclick="check(5, 36)">OK</button>
+          </div>
+          <div class="msg" id="msg5"></div>
+        </div>
+
+        <div class="card" id="c6">
+          <div class="task-title">📡 Datenkanal</div>
+          <div class="equation" style="font-size: 1rem; text-align: left">
+            Übertragung kostet 13 Bit/Sek.<br />
+            Verbindung dauerte 12 Sekunden.
+          </div>
+          <p style="text-align: center; font-size: 0.9rem">
+            Wie viele Daten wurden insgesamt übertragen?
+          </p>
+          <div class="input-area">
+            <input type="number" id="inp6" />
+            <button class="btn-go" onclick="check(6, 156)">OK</button>
+          </div>
+          <div class="msg" id="msg6"></div>
+        </div>
+
+        <div class="card" id="c7">
+          <div class="task-title">💰 Server-Profit</div>
+          <div class="equation" style="font-size: 1rem; text-align: left">
+            Eine Anfrage kostet 40 Münzen.<br />
+            Es gab 4000 Anfragen.
+          </div>
+          <p style="text-align: center; font-size: 0.9rem">
+            Wie hoch ist der Gewinn?
+          </p>
+          <div class="input-area">
+            <input type="number" id="inp7" />
+            <button class="btn-go" onclick="check(7, 160000)">OK</button>
+          </div>
+          <div class="msg" id="msg7"></div>
+        </div>
+
+        <div class="card" id="c8">
+          <div class="task-title">🔐 Sichere Leitung</div>
+          <div class="equation" style="font-size: 1rem; text-align: left">
+            Tarif: 15 Münzen/Min + 50 für Verbindung.<br />
+            Dauer: 10 Minuten.
+          </div>
+          <p style="text-align: center; font-size: 0.9rem">
+            Wie hoch sind die Gesamtkosten?
+          </p>
+          <div class="input-area">
+            <input type="number" id="inp8" />
+            <button class="btn-go" onclick="check(8, 200)">OK</button>
+          </div>
+          <div class="msg" id="msg8"></div>
+        </div>
+      </div>
+
+      <div class="level-header amber">LEVEL 3: Zahlendetektiv (Finde X)</div>
+
+      <div class="task-grid">
+        <div class="card" id="c9">
+          <div class="task-title">🔎 Fall Nr. 1</div>
+          <div class="equation">25 - <span class="var">x</span> = 8</div>
+          <div class="input-area">
+            <span class="var">x = </span>
+            <input type="number" id="inp9" />
+            <button class="btn-go" onclick="check(9, 17)">OK</button>
+          </div>
+          <div class="msg" id="msg9"></div>
+        </div>
+
+        <div class="card" id="c10">
+          <div class="task-title">🔎 Fall Nr. 2</div>
+          <div class="equation">7 · <span class="var">x</span> = 42</div>
+          <div class="input-area">
+            <span class="var">x = </span>
+            <input type="number" id="inp10" />
+            <button class="btn-go" onclick="check(10, 6)">OK</button>
+          </div>
+          <div class="msg" id="msg10"></div>
+        </div>
+
+        <div class="card" id="c11">
+          <div class="task-title">🔎 Fall Nr. 3</div>
+          <div class="equation"><span class="var">x</span> : 20 = 40</div>
+          <div class="input-area">
+            <span class="var">x = </span>
+            <input type="number" id="inp11" />
+            <button class="btn-go" onclick="check(11, 800)">OK</button>
+          </div>
+          <div class="msg" id="msg11"></div>
+        </div>
+
+        <div class="card" id="c12">
+          <div class="task-title">🔎 Fall Nr. 4</div>
+          <div class="equation">60 + 340 = <span class="var">x</span></div>
+          <div class="input-area">
+            <span class="var">x = </span>
+            <input type="number" id="inp12" />
+            <button class="btn-go" onclick="check(12, 400)">OK</button>
+          </div>
+          <div class="msg" id="msg12"></div>
+        </div>
+      </div>
+
+      <div class="level-header">LEVEL 4: Rechenmaschinen (Input / Output)</div>
+      <div class="task-grid">
+        <div class="card" id="c13">
+          <div class="task-title">⚙️ Maschine "Summe"</div>
+          <div class="equation">
+            12 + <span class="var">x</span> = <span class="var-y">y</span>
+          </div>
+          <p style="text-align: center">
+            Eingang (<span class="var">x</span>) = <strong>8</strong>
+          </p>
+          <div class="input-area">
+            <span class="var-y">y = </span>
+            <input type="number" id="inp13" />
+            <button class="btn-go" onclick="check(13, 20)">OK</button>
+          </div>
+          <div class="msg" id="msg13"></div>
+        </div>
+
+        <div class="card" id="c14">
+          <div class="task-title">⚙️ Maschine "Multiplikation"</div>
+          <div class="equation">
+            3 · <span class="var">x</span> = <span class="var-y">y</span>
+          </div>
+          <p style="text-align: center">
+            Eingang (<span class="var">x</span>) = <strong>12</strong>
+          </p>
+          <div class="input-area">
+            <span class="var-y">y = </span>
+            <input type="number" id="inp14" />
+            <button class="btn-go" onclick="check(14, 36)">OK</button>
+          </div>
+          <div class="msg" id="msg14"></div>
+        </div>
+
+        <div class="card" id="c15">
+          <div class="task-title">⚙️ Maschine "Division"</div>
+          <div class="equation">
+            80 : <span class="var">x</span> = <span class="var-y">y</span>
+          </div>
+          <p style="text-align: center">
+            Eingang (<span class="var">x</span>) = <strong>4</strong>
+          </p>
+          <div class="input-area">
+            <span class="var-y">y = </span>
+            <input type="number" id="inp15" />
+            <button class="btn-go" onclick="check(15, 20)">OK</button>
+          </div>
+          <div class="msg" id="msg15"></div>
+        </div>
+
+        <div class="card" id="c16">
+          <div class="task-title">⚙️ Maschine "Hundert"</div>
+          <div class="equation">
+            <span class="var">x</span> · 100 = <span class="var-y">y</span>
+          </div>
+          <p style="text-align: center">
+            Eingang (<span class="var">x</span>) = <strong>5</strong>
+          </p>
+          <div class="input-area">
+            <span class="var-y">y = </span>
+            <input type="number" id="inp16" />
+            <button class="btn-go" onclick="check(16, 500)">OK</button>
+          </div>
+          <div class="msg" id="msg16"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-bg" id="modal">
+      <div class="modal-box">
+        <h2 style="color: var(--success); font-family: 'Orbitron'">
+          SYSTEM WIEDERHERGESTELLT!
+        </h2>
+        <div style="font-size: 4rem">🤖</div>
+        <p>Alle Daten erfolgreich neu berechnet.</p>
+        <button
+          class="btn-go"
+          onclick="location.reload()"
+          style="margin-top: 20px; font-size: 1.2rem"
+        >
+          NEUSTART
+        </button>
+      </div>
+    </div>
+
+    <script>
+      let score = 0;
+      let done = 0;
+      const totalCards = 16;
+
+      function check(id, correct) {
+        const inp = document.getElementById("inp" + id);
+        const msg = document.getElementById("msg" + id);
+        const btn = document.querySelector(`#c${id} .btn-go`);
+        const card = document.getElementById("c" + id);
+
+        const val = parseInt(inp.value);
+
+        if (val === correct) {
+          msg.innerText = "RICHTIG!";
+          msg.style.color = "var(--success)";
+          card.style.borderColor = "var(--success)";
+          card.style.background = "#14532d";
+
+          inp.disabled = true;
+          btn.disabled = true;
+          btn.innerText = "✓";
+
+          score += 100;
+          done++;
+          updateStats();
+          launchConfetti();
+
+          if (done >= totalCards) {
+            setTimeout(() => {
+              document.getElementById("modal").style.display = "flex";
+            }, 1000);
+          }
+        } else {
+          msg.innerText = "FEHLER";
+          msg.style.color = "var(--error)";
+          card.style.borderColor = "var(--error)";
+
+          // Shake animation
+          card.style.transform = "translateX(5px)";
+          setTimeout(() => (card.style.transform = "translateX(0)"), 200);
+          setTimeout(() => {
+            card.style.borderColor = "#334155";
+            msg.innerText = "";
+          }, 1000);
+        }
+      }
+
+      function updateStats() {
+        document.getElementById("score").innerText = score;
+        document.getElementById("done").innerText = done;
+      }
+
+      function launchConfetti() {
+        const colors = ["#0ea5e9", "#22c55e", "#f59e0b", "#d946ef"];
+        for (let i = 0; i < 30; i++) {
+          const el = document.createElement("div");
+          el.classList.add("confetti");
+          el.style.backgroundColor =
+            colors[Math.floor(Math.random() * colors.length)];
+          el.style.left = Math.random() * 100 + "vw";
+          el.style.top = "-10px";
+          el.style.transform = `rotate(${Math.random() * 360}deg)`;
+          document.body.appendChild(el);
+
+          const duration = Math.random() * 3 + 2;
+          el.animate(
+            [
+              { transform: `translateY(0) rotate(0)`, opacity: 1 },
+              {
+                transform: `translateY(100vh) rotate(${
+                  Math.random() * 720
+                }deg)`,
+                opacity: 0,
+              },
+            ],
+            {
+              duration: duration * 1000,
+              easing: "cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+            }
+          );
+
+          setTimeout(() => el.remove(), duration * 1000);
+        }
+      }
+    </script>
+  </body>
+</html>
