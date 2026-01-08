@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Домашня Робота з Математики</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
+    />
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"
+    ></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    ></script>
+
+    <style>
+      :root {
+        --primary: #0ea5e9;
+        --primary-dark: #0369a1;
+        --secondary: #6366f1;
+        --bg: #f8fafc;
+        --card-bg: #ffffff;
+        --text: #334155;
+        --success: #10b981;
+        --error: #ef4444;
+        --border: #e2e8f0;
+      }
+
+      body {
+        font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
+        margin: 0;
+        padding: 0;
+        line-height: 1.6;
+      }
+
+      header {
+        background: var(--card-bg);
+        padding: 15px 20px;
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 3px solid var(--primary);
+      }
+
+      .header-title {
+        font-size: 1.4rem;
+        font-weight: 800;
+        color: var(--primary-dark);
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        padding-bottom: 100px;
+      }
+
+      .student-info {
+        background: #fff;
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        border: 2px solid var(--secondary);
+      }
+
+      .info-input {
+        padding: 10px;
+        border: 2px solid #cbd5e1;
+        border-radius: 8px;
+        font-size: 1rem;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      .section-block {
+        background: var(--card-bg);
+        border-radius: 16px;
+        padding: 25px;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        border: 1px solid var(--border);
+      }
+
+      .section-title {
+        color: var(--primary-dark);
+        font-size: 1.3rem;
+        margin-top: 0;
+        margin-bottom: 20px;
+        font-weight: 700;
+        border-bottom: 2px dashed #bae6fd;
+        padding-bottom: 10px;
+      }
+
+      .task-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #f1f5f9;
+        padding: 15px;
+        border-radius: 12px;
+        margin-bottom: 15px;
+        border-left: 5px solid var(--primary);
+      }
+
+      .task-q {
+        font-size: 1.2rem;
+        font-weight: 600;
+        flex: 1;
+      }
+
+      .input-group {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+
+      input.math-input {
+        padding: 10px;
+        border: 2px solid #cbd5e1;
+        border-radius: 8px;
+        width: 80px;
+        font-size: 1.1rem;
+        text-align: center;
+        outline: none;
+        background: #fff;
+        transition: 0.2s;
+      }
+
+      /* Ефект "збереження" при фокусі */
+      input.math-input:focus {
+        border-color: var(--secondary);
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+      }
+
+      /* Стилі для режиму вчителя */
+      input.correct {
+        background-color: #dcfce7 !important;
+        border-color: var(--success) !important;
+        color: var(--success) !important;
+        font-weight: bold;
+      }
+
+      input.wrong {
+        background-color: #fee2e2 !important;
+        border-color: var(--error) !important;
+        color: var(--error) !important;
+        text-decoration: line-through;
+      }
+
+      .correct-ans-hint {
+        color: var(--success);
+        font-weight: bold;
+        margin-left: 10px;
+        display: none; /* Показуємо тільки вчителю */
+      }
+
+      .finish-section {
+        text-align: center;
+        margin-top: 40px;
+      }
+
+      .btn-finish {
+        background: var(--secondary);
+        color: white;
+        font-size: 1.3rem;
+        padding: 15px 40px;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4);
+        transition: transform 0.2s;
+        font-weight: bold;
+      }
+      .btn-finish:hover {
+        transform: scale(1.05);
+      }
+
+      /* Модальні вікна */
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        backdrop-filter: blur(5px);
+      }
+
+      .modal {
+        background: white;
+        padding: 30px;
+        border-radius: 20px;
+        text-align: center;
+        max-width: 500px;
+        width: 90%;
+        position: relative;
+      }
+
+      .link-box {
+        width: 100%;
+        padding: 10px;
+        margin: 15px 0;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background: #f9f9f9;
+        word-break: break-all;
+        font-size: 0.8rem;
+        min-height: 50px;
+      }
+
+      .btn-copy {
+        background: var(--success);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 1rem;
+      }
+
+      .teacher-grade-box {
+        display: none; /* Сховано для учня */
+        background: #fff;
+        border: 4px solid var(--primary);
+        padding: 20px;
+        margin-bottom: 30px;
+        border-radius: 15px;
+        text-align: center;
+      }
+
+      .grade-big {
+        font-size: 3rem;
+        font-weight: 900;
+        display: block;
+        margin: 10px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="header-title">📝 Домашня Робота</div>
+      <div
+        id="mode-badge"
+        style="
+          background: #e2e8f0;
+          padding: 5px 10px;
+          border-radius: 10px;
+          font-size: 0.8rem;
+        "
+      >
+        Режим: Учень
+      </div>
+    </header>
+
+    <div class="container">
+      <div id="teacher-dashboard" class="teacher-grade-box">
+        <h2 style="margin: 0; color: var(--primary-dark)">Перевірка роботи</h2>
+        <p>
+          Учень:
+          <span id="student-name-display" style="font-weight: bold">...</span>
+        </p>
+        <span id="final-score" class="grade-big"></span>
+        <div id="stats-text"></div>
+      </div>
+
+      <div class="student-info" id="student-info-block">
+        <h3 style="margin: 0 0 10px 0; color: var(--secondary)">
+          Хто виконує роботу?
+        </h3>
+        <input
+          type="text"
+          id="student-name"
+          class="info-input"
+          placeholder="Введи своє ім'я"
+        />
+      </div>
+
+      <form id="homework-form">
+        <div class="section-block">
+          <h3 class="section-title">1. Додавання (з переходом)</h3>
+
+          <div class="task-row">
+            <div class="task-q">$29 + 4 =$</div>
+            <div class="input-group">
+              <input
+                type="text"
+                class="math-input"
+                id="q1"
+                autocomplete="off"
+              />
+              <span class="correct-ans-hint" id="hint-q1"></span>
+            </div>
+          </div>
+
+          <div class="task-row">
+            <div class="task-q">$47 + 8 =$</div>
+            <div class="input-group">
+              <input
+                type="text"
+                class="math-input"
+                id="q2"
+                autocomplete="off"
+              />
+              <span class="correct-ans-hint" id="hint-q2"></span>
+            </div>
+          </div>
+
+          <div class="task-row">
+            <div class="task-q">$56 + 5 =$</div>
+            <div class="input-group">
+              <input
+                type="text"
+                class="math-input"
+                id="q3"
+                autocomplete="off"
+              />
+              <span class="correct-ans-hint" id="hint-q3"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-block">
+          <h3 class="section-title">2. Віднімання (з переходом)</h3>
+
+          <div class="task-row">
+            <div class="task-q">$34 - 6 =$</div>
+            <div class="input-group">
+              <input
+                type="text"
+                class="math-input"
+                id="q4"
+                autocomplete="off"
+              />
+              <span class="correct-ans-hint" id="hint-q4"></span>
+            </div>
+          </div>
+
+          <div class="task-row">
+            <div class="task-q">$52 - 7 =$</div>
+            <div class="input-group">
+              <input
+                type="text"
+                class="math-input"
+                id="q5"
+                autocomplete="off"
+              />
+              <span class="correct-ans-hint" id="hint-q5"></span>
+            </div>
+          </div>
+
+          <div class="task-row">
+            <div class="task-q">$63 - 5 =$</div>
+            <div class="input-group">
+              <input
+                type="text"
+                class="math-input"
+                id="q6"
+                autocomplete="off"
+              />
+              <span class="correct-ans-hint" id="hint-q6"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-block">
+          <h3 class="section-title">3. Рівняння (Знайди X)</h3>
+
+          <div class="task-row">
+            <div class="task-q">$x + 18 = 30$</div>
+            <div class="input-group">
+              <span style="font-weight: bold">$x =$</span>
+              <input
+                type="text"
+                class="math-input"
+                id="q7"
+                autocomplete="off"
+              />
+              <span class="correct-ans-hint" id="hint-q7"></span>
+            </div>
+          </div>
+
+          <div class="task-row">
+            <div class="task-q">$60 - x = 20$</div>
+            <div class="input-group">
+              <span style="font-weight: bold">$x =$</span>
+              <input
+                type="text"
+                class="math-input"
+                id="q8"
+                autocomplete="off"
+              />
+              <span class="correct-ans-hint" id="hint-q8"></span>
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <div class="finish-section" id="student-controls">
+        <button class="btn-finish" onclick="generateLink()">
+          📤 ЗДАТИ РОБОТУ ВЧИТЕЛЮ
+        </button>
+      </div>
+    </div>
+
+    <div class="modal-overlay" id="link-modal">
+      <div class="modal">
+        <h2 style="color: var(--success)">Робота збережена!</h2>
+        <p>
+          1. Натисни кнопку "Копіювати".<br />2. Надішли це посилання вчителю
+          (Viber/Telegram).
+        </p>
+        <textarea id="share-link" class="link-box" readonly></textarea>
+        <button class="btn-copy" onclick="copyLink()">
+          📋 Копіювати посилання
+        </button>
+        <br /><br />
+        <button
+          onclick="document.getElementById('link-modal').style.display='none'"
+          style="background: none; border: none; color: #666; cursor: pointer"
+        >
+          Закрити
+        </button>
+      </div>
+    </div>
+
+    <div class="modal-overlay" id="password-modal">
+      <div class="modal">
+        <h2 style="color: var(--primary)">🔐 Вхід для вчителя</h2>
+        <p>Система виявила збережені відповіді.</p>
+        <input
+          type="password"
+          id="teacher-pass"
+          class="info-input"
+          placeholder="Введіть пароль"
+          style="text-align: center; font-size: 1.5rem; margin-bottom: 15px"
+        />
+        <button
+          class="btn-finish"
+          onclick="checkPassword()"
+          style="width: 100%; padding: 10px"
+        >
+          Перевірити
+        </button>
+        <p id="pass-error" style="color: red; display: none">
+          Невірний пароль!
+        </p>
+      </div>
+    </div>
+
+    <script>
+      // Правильні відповіді (зберігаються в коді, перевіряються тільки в режимі вчителя)
+      const ANSWERS_KEY = {
+        q1: "33", // 29 + 4
+        q2: "55", // 47 + 8
+        q3: "61", // 56 + 5
+        q4: "28", // 34 - 6
+        q5: "45", // 52 - 7
+        q6: "58", // 63 - 5
+        q7: "12", // x + 18 = 30
+        q8: "40", // 60 - x = 20
+      };
+
+      document.addEventListener("DOMContentLoaded", function () {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false },
+          ],
+        });
+
+        // Перевірка URL на наявність даних (Режим вчителя)
+        const urlParams = new URLSearchParams(window.location.search);
+        const data = urlParams.get("data");
+
+        if (data) {
+          // Активуємо режим вчителя
+          initTeacherMode(data);
+        }
+      });
+
+      // --- ЛОГІКА УЧНЯ ---
+
+      function generateLink() {
+        const name = document.getElementById("student-name").value.trim();
+        if (!name) {
+          alert("Будь ласка, впиши своє ім'я перед здачею!");
+          return;
+        }
+
+        // Збираємо відповіді
+        let answers = {
+          name: name,
+          vals: {},
+        };
+
+        for (let key in ANSWERS_KEY) {
+          const val = document.getElementById(key).value.trim();
+          answers.vals[key] = val;
+        }
+
+        // Кодуємо в Base64 (щоб передати через URL)
+        const jsonStr = JSON.stringify(answers);
+        const encoded = btoa(encodeURIComponent(jsonStr));
+
+        // Генеруємо посилання
+        const currentUrl = window.location.href.split("?")[0];
+        const finalLink = `${currentUrl}?data=${encoded}`;
+
+        // Показуємо модалку
+        document.getElementById("share-link").value = finalLink;
+        document.getElementById("link-modal").style.display = "flex";
+      }
+
+      function copyLink() {
+        const copyText = document.getElementById("share-link");
+        copyText.select();
+        copyText.setSelectionRange(0, 99999);
+        navigator.clipboard.writeText(copyText.value);
+        alert("Посилання скопійовано! Надішли його вчителю.");
+      }
+
+      // --- ЛОГІКА ВЧИТЕЛЯ ---
+
+      let studentData = null;
+
+      function initTeacherMode(encodedData) {
+        // Блокуємо екран модалкою пароля
+        document.getElementById("password-modal").style.display = "flex";
+
+        try {
+          // Декодуємо дані
+          const jsonStr = decodeURIComponent(atob(encodedData));
+          studentData = JSON.parse(jsonStr);
+        } catch (e) {
+          alert("Помилка читання даних. Посилання пошкоджене.");
+        }
+      }
+
+      function checkPassword() {
+        const pass = document.getElementById("teacher-pass").value;
+        if (pass.toLowerCase() === "янчук") {
+          unlockTeacherInterface();
+        } else {
+          document.getElementById("pass-error").style.display = "block";
+        }
+      }
+
+      function unlockTeacherInterface() {
+        document.getElementById("password-modal").style.display = "none";
+        document.getElementById("mode-badge").innerText = "Режим: ВЧИТЕЛЬ";
+        document.getElementById("mode-badge").style.background = "#dcfce7";
+        document.getElementById("student-controls").style.display = "none"; // Ховаємо кнопку здачі
+        document.getElementById("teacher-dashboard").style.display = "block"; // Показуємо оцінку
+
+        // Заповнюємо дані учня
+        document.getElementById("student-name-display").innerText =
+          studentData.name;
+        document.getElementById("student-name").value = studentData.name;
+        document.getElementById("student-name").disabled = true;
+
+        let score = 0;
+        let total = 0;
+
+        // Перевірка відповідей
+        for (let key in ANSWERS_KEY) {
+          total++;
+          const input = document.getElementById(key);
+          const studentAns = studentData.vals[key];
+          const correctAns = ANSWERS_KEY[key];
+
+          input.value = studentAns;
+          input.disabled = true; // Блокуємо редагування
+
+          if (studentAns === correctAns) {
+            input.classList.add("correct");
+            score++;
+          } else {
+            input.classList.add("wrong");
+            // Показати правильну відповідь поруч
+            const hint = document.getElementById(`hint-${key}`);
+            hint.innerText = `(Правильно: ${correctAns})`;
+            hint.style.display = "inline";
+          }
+        }
+
+        // Виводимо оцінку
+        const percentage = Math.round((score / total) * 100);
+        const scoreDisplay = document.getElementById("final-score");
+        const statsDisplay = document.getElementById("stats-text");
+
+        statsDisplay.innerText = `Правильно: ${score} з ${total}`;
+
+        if (percentage === 100) {
+          scoreDisplay.innerText = "12 БАЛІВ (ВІДМІННО)";
+          scoreDisplay.style.color = "#16a34a";
+        } else if (percentage >= 80) {
+          scoreDisplay.innerText = "ДОБРЕ";
+          scoreDisplay.style.color = "#2563eb";
+        } else if (percentage >= 50) {
+          scoreDisplay.innerText = "ЗАРАХОВАНО";
+          scoreDisplay.style.color = "#ca8a04";
+        } else {
+          scoreDisplay.innerText = "ТРЕБА ПОВТОРИТИ";
+          scoreDisplay.style.color = "#dc2626";
+        }
+      }
+
+      // Enter works for next input
+      function handleEnter(e, input) {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          const form = input.form;
+          const index = Array.prototype.indexOf.call(form, input);
+          form.elements[index + 1].focus();
+        }
+      }
+    </script>
+  </body>
+</html>
