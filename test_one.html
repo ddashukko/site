@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ФСМ: Професійний тренажер</title>
+
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script
+      id="MathJax-script"
+      async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+    ></script>
+
+    <style>
+      :root {
+        --primary: #4834d4;
+        --bg: #f1f2f6;
+        --card: #ffffff;
+        --text: #2f3542;
+        --success: #2ed573;
+        --error: #ff4757;
+      }
+
+      body {
+        font-family: "Segoe UI", sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      h1 {
+        color: var(--primary);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 5px;
+      }
+
+      .desc {
+        margin-bottom: 30px;
+        color: #57606f;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 800px;
+      }
+
+      .block {
+        background: var(--card);
+        border-radius: 12px;
+        padding: 25px;
+        margin-bottom: 25px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        border-left: 6px solid var(--primary);
+      }
+
+      h3 {
+        margin-top: 0;
+        color: var(--primary);
+        border-bottom: 1px solid #dfe4ea;
+        padding-bottom: 10px;
+      }
+
+      .row {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px dashed #dfe4ea;
+      }
+
+      .row:last-child {
+        border-bottom: none;
+      }
+
+      .math-part {
+        font-size: 1.2em;
+        margin-right: 10px;
+      }
+
+      /* Стилізація полів вводу */
+      input {
+        border: 2px solid #ced6e0;
+        border-radius: 6px;
+        padding: 5px 10px;
+        font-size: 1.1em;
+        outline: none;
+        transition: 0.3s;
+        background: #fdfdfd;
+        font-family: "Courier New", monospace; /* Щоб код виглядав чітко */
+        font-weight: bold;
+      }
+
+      input:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 5px rgba(72, 52, 212, 0.2);
+      }
+
+      /* Маленькі інпути для пропусків */
+      .input-short {
+        width: 60px;
+        text-align: center;
+      }
+
+      /* Довгі інпути для виразів */
+      .input-long {
+        width: 200px;
+      }
+
+      .status {
+        margin-left: 10px;
+        font-size: 1.2em;
+      }
+
+      .btn-check {
+        background: var(--primary);
+        color: white;
+        border: none;
+        padding: 15px 40px;
+        border-radius: 30px;
+        font-size: 1.2em;
+        cursor: pointer;
+        display: block;
+        margin: 20px auto;
+        transition: 0.2s;
+        box-shadow: 0 5px 15px rgba(72, 52, 212, 0.3);
+      }
+
+      .btn-check:hover {
+        transform: scale(1.05);
+        background: #3c2bb3;
+      }
+
+      /* Результат перевірки */
+      .correct {
+        border-color: var(--success) !important;
+        background-color: #eaffee !important;
+      }
+
+      .wrong {
+        border-color: var(--error) !important;
+        background-color: #ffeaea !important;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Математичний Тренажер</h1>
+    <div class="desc">Заповни пропуски або запиши повні формули</div>
+
+    <div class="container">
+      <div class="block">
+        <h3>Рівень 1: Віднови коефіцієнти (Memory Gaps)</h3>
+
+        <div class="row">
+          <div class="math-part">$$ (x + 5)^2 = x^2 + \dots x + 25 $$</div>
+          <input type="text" class="input-short" data-ans="10" />
+          <div class="status"></div>
+        </div>
+
+        <div class="row">
+          <div class="math-part">$$ (y - 3)^2 = y^2 - \dots y + 9 $$</div>
+          <input type="text" class="input-short" data-ans="6" />
+          <div class="status"></div>
+        </div>
+
+        <div class="row">
+          <div class="math-part">$$ (4a + 1)^2 = \dots a^2 + 8a + 1 $$</div>
+          <input type="text" class="input-short" data-ans="16" />
+          <div class="status"></div>
+        </div>
+
+        <div class="row">
+          <div class="math-part">$$ (k - 9)(k + 9) = k^2 - \dots $$</div>
+          <input type="text" class="input-short" data-ans="81" />
+          <div class="status"></div>
+        </div>
+
+        <div class="row">
+          <div class="math-part">
+            $$ 125 - b^3 = (5 - b)(25 + \dots b + b^2) $$
+          </div>
+          <input type="text" class="input-short" data-ans="5" />
+          <div class="status"></div>
+        </div>
+      </div>
+
+      <div class="block">
+        <h3>Рівень 2: Знайди помилку (Error Correction)</h3>
+        <div>Напиши <b>повністю</b> правильну праву частину:</div>
+
+        <div class="row">
+          <div class="math-part">$$ (x+2)^2 \neq x^2+4 $$</div>
+          <div class="math-part">$$ = $$</div>
+          <input type="text" class="input-long" data-ans="x^2+4x+4" />
+          <div class="status"></div>
+        </div>
+
+        <div class="row">
+          <div class="math-part">$$ (y-5)^2 \neq y^2-5y+25 $$</div>
+          <div class="math-part">$$ = $$</div>
+          <input type="text" class="input-long" data-ans="y^2-10y+25" />
+          <div class="status"></div>
+        </div>
+
+        <div class="row">
+          <div class="math-part">$$ (2x)^2 \neq 2x^2 $$</div>
+          <div class="math-part">$$ = $$</div>
+          <input type="text" class="input-long" data-ans="4x^2" />
+          <div class="status"></div>
+        </div>
+
+        <div class="row">
+          <div class="math-part">$$ (a-3)(a+3) \neq a^2-6 $$</div>
+          <div class="math-part">$$ = $$</div>
+          <input type="text" class="input-long" data-ans="a^2-9" />
+          <div class="status"></div>
+        </div>
+
+        <div class="row">
+          <div class="math-part">$$ (x+1)^3 \neq x^3+1 $$</div>
+          <div class="math-part">$$ = $$</div>
+          <input type="text" class="input-long" data-ans="x^3+3x^2+3x+1" />
+          <div class="status"></div>
+        </div>
+      </div>
+
+      <div class="block">
+        <h3>Рівень 3: Згорни у дужки (Factorization)</h3>
+
+        <div class="row">
+          <div class="math-part">$$ m^2 + 20m + 100 = $$</div>
+          <input type="text" class="input-long" data-ans="(m+10)^2" />
+          <div class="status"></div>
+        </div>
+
+        <div class="row">
+          <div class="math-part">$$ x^2 - 14x + 49 = $$</div>
+          <input type="text" class="input-long" data-ans="(x-7)^2" />
+          <div class="status"></div>
+        </div>
+
+        <div class="row">
+          <div class="math-part">$$ 36 - c^2 = $$</div>
+          <input
+            type="text"
+            class="input-long"
+            data-ans="(6-c)(6+c)"
+            data-alt="(6+c)(6-c)"
+          />
+          <div class="status"></div>
+        </div>
+
+        <div class="row">
+          <div class="math-part">$$ 4y^2 + 4y + 1 = $$</div>
+          <input type="text" class="input-long" data-ans="(2y+1)^2" />
+          <div class="status"></div>
+        </div>
+
+        <div class="row">
+          <div class="math-part">$$ a^3 + 8 = $$</div>
+          <input type="text" class="input-long" data-ans="(a+2)(a^2-2a+4)" />
+          <div class="status"></div>
+        </div>
+      </div>
+
+      <div class="block">
+        <h3>Рівень 4: Швидкий рахунок (Application)</h3>
+        <div>Впиши тільки кінцеве число:</div>
+
+        <div class="row">
+          <div class="math-part">$$ 29 \cdot 31 = (30-1)(30+1) = $$</div>
+          <input type="text" class="input-short" data-ans="899" />
+          <div class="status"></div>
+        </div>
+
+        <div class="row">
+          <div class="math-part">$$ 41^2 = (40+1)^2 = $$</div>
+          <input type="text" class="input-short" data-ans="1681" />
+          <div class="status"></div>
+        </div>
+
+        <div class="row">
+          <div class="math-part">$$ 18 \cdot 22 = (20-2)(20+2) = $$</div>
+          <input type="text" class="input-short" data-ans="396" />
+          <div class="status"></div>
+        </div>
+
+        <div class="row">
+          <div class="math-part">$$ \text{Спрости: } (x-3)(x+3) - x^2 = $$</div>
+          <input type="text" class="input-short" data-ans="-9" />
+          <div class="status"></div>
+        </div>
+
+        <div class="row">
+          <div class="math-part">$$ \text{Розклади: } x^4 - 1 = $$</div>
+          <input
+            type="text"
+            class="input-long"
+            data-ans="(x-1)(x+1)(x^2+1)"
+            data-alt="(x^2-1)(x^2+1)"
+          />
+          <div class="status"></div>
+        </div>
+      </div>
+
+      <button class="btn-check" onclick="checkAnswers()">ПЕРЕВІРИТИ ВСЕ</button>
+      <div
+        id="final-score"
+        style="
+          text-align: center;
+          font-weight: bold;
+          font-size: 1.5em;
+          margin-bottom: 40px;
+        "
+      ></div>
+    </div>
+
+    <script>
+      function normalize(str) {
+        // Видаляємо всі пробіли, робимо маленькі літери
+        if (!str) return "";
+        return str.replace(/\s+/g, "").toLowerCase();
+      }
+
+      function checkAnswers() {
+        let correctCount = 0;
+        const inputs = document.querySelectorAll("input");
+        const total = inputs.length;
+
+        inputs.forEach((input) => {
+          const userVal = normalize(input.value);
+          const correctAns = normalize(input.dataset.ans);
+          const altAns = normalize(input.dataset.alt); // Для альтернативних варіантів
+          const statusDiv = input.nextElementSibling;
+
+          input.classList.remove("correct", "wrong");
+          statusDiv.innerHTML = "";
+
+          let isCorrect = userVal === correctAns;
+          if (!isCorrect && altAns) {
+            isCorrect = userVal === altAns;
+          }
+
+          if (isCorrect && userVal !== "") {
+            input.classList.add("correct");
+            statusDiv.innerHTML = "✅";
+            correctCount++;
+          } else {
+            input.classList.add("wrong");
+            statusDiv.innerHTML = "❌";
+          }
+        });
+
+        const scoreDiv = document.getElementById("final-score");
+        const percentage = Math.round((correctCount / total) * 100);
+
+        scoreDiv.innerText = `Результат: ${correctCount} з ${total} (${percentage}%)`;
+        scoreDiv.style.color =
+          percentage === 100 ? "var(--success)" : "var(--primary)";
+      }
+    </script>
+  </body>
+</html>

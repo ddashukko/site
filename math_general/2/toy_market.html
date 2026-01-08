@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ігровий Магазин (Ваші Купюри)</title>
+    <style>
+      :root {
+        --bg-color: #fdf4ff; /* Світло-рожевий фон */
+        --tray-color: #f3e8ff; /* Світло-фіолетовий */
+        --primary: #9333ea; /* Фіолетовий */
+        --success: #16a34a;
+        --text: #4a044e;
+      }
+
+      body {
+        font-family: "Comic Sans MS", "Segoe UI", Tahoma, sans-serif;
+        background-color: var(--bg-color);
+        margin: 0;
+        padding: 0;
+        color: var(--text);
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        overflow: hidden;
+        user-select: none;
+      }
+
+      /* --- ВЕРХ: СЦЕНА --- */
+      .stage {
+        flex: 1;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+      }
+
+      .task-card {
+        background: white;
+        padding: 20px 30px;
+        border-radius: 25px;
+        box-shadow: 0 8px 0 rgba(0, 0, 0, 0.1);
+        max-width: 700px;
+        width: 95%;
+        border: 4px solid var(--primary);
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .task-text {
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+        font-weight: bold;
+      }
+
+      .items-display {
+        display: flex;
+        gap: 20px;
+        margin: 15px 0;
+      }
+
+      .item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .item-img {
+        width: 90px;
+        height: 90px;
+        background: white;
+        border-radius: 15px;
+        object-fit: contain;
+        border: 2px dashed #d8b4fe;
+        padding: 5px;
+      }
+
+      .math-display {
+        font-size: 2.2rem;
+        font-weight: 900;
+        color: var(--primary);
+        background: #faf5ff;
+        padding: 10px 30px;
+        border-radius: 15px;
+        border: 2px dashed var(--primary);
+        margin-top: 10px;
+      }
+
+      /* --- СЕРЕДИНА: ТАРІЛКА --- */
+      .payment-zone {
+        background: var(--tray-color);
+        border-top: 5px solid #d8b4fe;
+        border-bottom: 5px solid #d8b4fe;
+        height: 40vh;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        box-shadow: inset 0 0 30px rgba(147, 51, 234, 0.1);
+      }
+
+      .tray-label {
+        margin-top: 10px;
+        font-size: 1.1rem;
+        color: var(--primary);
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        opacity: 0.8;
+        position: absolute; /* Щоб напис не заважав купюрам */
+        top: 10px;
+        width: 100%;
+        text-align: center;
+        z-index: 5;
+      }
+
+      .tray-content {
+        flex: 1;
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        align-content: flex-start;
+        justify-content: center;
+        /* ЗМІНЕНО: Збільшено відступ зверху (було 20px, стало 70px) */
+        padding: 70px 20px 20px 20px;
+        overflow-y: auto;
+      }
+
+      /* Купюра на тарілці */
+      .bill-on-tray {
+        width: 120px;
+        height: auto;
+        margin: -15px;
+        cursor: pointer;
+        transition: transform 0.2s;
+        filter: drop-shadow(0 4px 3px rgba(0, 0, 0, 0.2));
+      }
+      .bill-on-tray:hover {
+        transform: scale(1.1) rotate(-5deg);
+        z-index: 100;
+      }
+
+      .total-badge {
+        position: absolute;
+        bottom: 15px;
+        right: 20px;
+        background: var(--primary);
+        color: white;
+        padding: 10px 30px;
+        border-radius: 30px;
+        font-size: 1.6rem;
+        font-weight: 900;
+        box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
+        z-index: 20;
+        border: 2px solid white;
+      }
+
+      /* Кнопка Оплатити */
+      .btn-pay {
+        position: absolute;
+        bottom: 15px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--success);
+        color: white;
+        border: none;
+        padding: 15px 60px;
+        font-size: 1.5rem;
+        font-weight: 900;
+        border-radius: 50px;
+        cursor: pointer;
+        box-shadow: 0 6px 0 #14532d;
+        transition: 0.1s;
+        z-index: 20;
+        text-transform: uppercase;
+      }
+      .btn-pay:active {
+        transform: translateX(-50%) translateY(4px);
+        box-shadow: 0 2px 0 #14532d;
+      }
+
+      /* --- НИЗ: ГАМАНЕЦЬ --- */
+      .wallet {
+        height: 140px;
+        background: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+        padding: 0 20px;
+        box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.05);
+        border-top: 2px solid #e5e7eb;
+        overflow-x: auto;
+      }
+
+      .wallet-bill {
+        height: 80px;
+        width: auto;
+        cursor: pointer;
+        transition: transform 0.1s;
+        filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.1));
+      }
+      .wallet-bill:active {
+        transform: scale(0.9);
+      }
+      .wallet-bill:hover {
+        transform: translateY(-5px);
+      }
+
+      /* --- МОДАЛКА --- */
+      .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        backdrop-filter: blur(5px);
+      }
+      .modal-content {
+        background: white;
+        padding: 40px;
+        border-radius: 30px;
+        text-align: center;
+        animation: bounceIn 0.5s;
+        border: 6px solid var(--primary);
+        box-shadow: 0 20px 0 rgba(0, 0, 0, 0.2);
+      }
+      .btn-next {
+        background: var(--primary);
+        color: white;
+        border: none;
+        padding: 15px 40px;
+        font-size: 1.4rem;
+        font-weight: bold;
+        border-radius: 15px;
+        margin-top: 20px;
+        cursor: pointer;
+        box-shadow: 0 5px 0 #6b21a8;
+      }
+      .btn-next:active {
+        transform: translateY(5px);
+        box-shadow: none;
+      }
+
+      @keyframes bounceIn {
+        0% {
+          transform: scale(0.3);
+          opacity: 0;
+        }
+        50% {
+          transform: scale(1.05);
+          opacity: 1;
+        }
+        70% {
+          transform: scale(0.9);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      .level-info {
+        position: absolute;
+        top: 15px;
+        left: 20px;
+        font-weight: 900;
+        color: var(--primary);
+        background: white;
+        padding: 5px 15px;
+        border-radius: 20px;
+        border: 2px solid var(--primary);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="level-info">Рівень: <span id="lvl-num">1</span>/5</div>
+
+    <div class="stage">
+      <div class="task-card">
+        <div class="task-text" id="task-desc">Завантаження...</div>
+        <div class="items-display" id="items-container"></div>
+        <div class="math-display" id="math-problem"></div>
+      </div>
+    </div>
+
+    <div class="payment-zone">
+      <div class="tray-label">👇 Клади купюри сюди 👇</div>
+      <div class="tray-content" id="tray"></div>
+
+      <button class="btn-pay" onclick="checkAnswer()">ОПЛАТИТИ</button>
+      <div class="total-badge"><span id="total-sum">0</span></div>
+    </div>
+
+    <div class="wallet" id="wallet-container"></div>
+
+    <div class="modal" id="modal">
+      <div class="modal-content">
+        <h1 id="modal-emoji" style="font-size: 5rem; margin: 0">🎉</h1>
+        <h2 id="modal-msg" style="margin: 10px 0">Правильно!</h2>
+        <button class="btn-next" id="modal-btn" onclick="nextLevel()">
+          Далі ➡
+        </button>
+      </div>
+    </div>
+
+    <script>
+      // === ВАШІ КУПЮРИ (Повернуто локальні шляхи) ===
+      const myBills = [
+        { val: 1, src: "../../images/coins/coin (1).jpg" },
+        { val: 2, src: "../../images/coins/coin (2).jpg" },
+        { val: 5, src: "../../images/coins/coin (3).jpg" },
+        { val: 10, src: "../../images/coins/coin (4).jpg" },
+        { val: 20, src: "../../images/coins/coin (5).jpg" },
+        { val: 50, src: "../../images/coins/coin (6).jpg" },
+        { val: 100, src: "../../images/coins/coin (7).jpg" },
+      ];
+
+      // === ЗАВДАННЯ (Тут залишив заглушки, щоб було видно товари) ===
+      const levels = [
+        {
+          desc: "Додавання: Ведмедик (28) + Пакет (5). <br>Скільки треба заплатити?",
+          items: [
+            {
+              img: "https://placehold.co/100x100/ffe4e6/be123c?text=Ведмедик",
+              label: "28",
+            },
+            {
+              img: "https://placehold.co/100x100/e0f2fe/0369a1?text=Пакет",
+              label: "5",
+            },
+          ],
+          math: "28 + 5 = ?",
+          target: 33,
+        },
+        {
+          desc: "Віднімання: Було 32. Морозиво коштує 7. <br>Відклади <b>решту</b> (те, що залишилось).",
+          items: [
+            {
+              img: "https://placehold.co/100x100/dcfce7/15803d?text=Гаманець",
+              label: "Було: 32",
+            },
+            {
+              img: "https://placehold.co/100x100/fce7f3/be185d?text=Морозиво",
+              label: "Ціна: 7",
+            },
+          ],
+          math: "32 - 7 = ?",
+          target: 25,
+        },
+        {
+          desc: "Мішані: Машинка (25) + Батарейки (6). <br>Скільки разом?",
+          items: [
+            {
+              img: "https://placehold.co/100x100/fee2e2/991b1b?text=Машинка",
+              label: "25",
+            },
+            {
+              img: "https://placehold.co/100x100/f3f4f6/1f2937?text=Батарейки",
+              label: "6",
+            },
+          ],
+          math: "25 + 6 = ?",
+          target: 31,
+        },
+        {
+          desc: "Великі покупки: Лялька (42) + Книга (25). <br>Збери повну суму.",
+          items: [
+            {
+              img: "https://placehold.co/100x100/fce7f3/831843?text=Лялька",
+              label: "42",
+            },
+            {
+              img: "https://placehold.co/100x100/ffedd5/9a3412?text=Книга",
+              label: "25",
+            },
+          ],
+          math: "42 + 25 = ?",
+          target: 67,
+        },
+        {
+          desc: "Рівняння: Всього 45. Робот коштував 12. <br>Скільки коштував <b>М'яч</b>?",
+          items: [
+            {
+              img: "https://placehold.co/100x100/e0e7ff/3730a3?text=Робот",
+              label: "Робот: 12",
+            },
+            {
+              img: "https://placehold.co/100x100/fff7ed/9a3412?text=М'яч",
+              label: "М'яч: ?",
+            },
+          ],
+          math: "12 + ? = 45",
+          target: 33,
+        },
+      ];
+
+      let currentLevel = 0;
+      let currentSum = 0;
+
+      // --- ІНІЦІАЛІЗАЦІЯ ---
+      function initWallet() {
+        const container = document.getElementById("wallet-container");
+        container.innerHTML = "";
+
+        myBills.forEach((bill) => {
+          const img = document.createElement("img");
+          img.src = bill.src;
+          img.className = "wallet-bill";
+          img.onclick = () => addToTray(bill);
+          img.onerror = function () {
+            this.style.display = "none";
+          };
+          container.appendChild(img);
+        });
+      }
+
+      function loadLevel() {
+        const data = levels[currentLevel];
+
+        currentSum = 0;
+        updateDisplay();
+        document.getElementById("tray").innerHTML = "";
+
+        document.getElementById("lvl-num").innerText = currentLevel + 1;
+        document.getElementById("task-desc").innerHTML = data.desc;
+        document.getElementById("math-problem").innerText = data.math;
+
+        const itemsCont = document.getElementById("items-container");
+        itemsCont.innerHTML = "";
+        data.items.forEach((it) => {
+          const el = document.createElement("div");
+          el.className = "item";
+          el.innerHTML = `<img src="${it.img}" class="item-img"><div style="font-weight:bold; font-size:1.2rem; color:#9333ea; margin-top:5px;">${it.label}</div>`;
+          itemsCont.appendChild(el);
+        });
+      }
+
+      // --- ЛОГІКА ГРИ ---
+      function addToTray(bill) {
+        currentSum += bill.val;
+        updateDisplay();
+
+        const img = document.createElement("img");
+        img.src = bill.src;
+        img.className = "bill-on-tray";
+
+        const rotate = Math.floor(Math.random() * 20) - 10;
+        img.style.transform = `scale(1.1) rotate(${rotate}deg)`;
+
+        img.onclick = function () {
+          currentSum -= bill.val;
+          updateDisplay();
+          this.remove();
+        };
+
+        const tray = document.getElementById("tray");
+        tray.appendChild(img);
+        tray.scrollTop = tray.scrollHeight;
+      }
+
+      function updateDisplay() {
+        document.getElementById("total-sum").innerText = currentSum;
+      }
+
+      function checkAnswer() {
+        const target = levels[currentLevel].target;
+        const modal = document.getElementById("modal");
+        const msg = document.getElementById("modal-msg");
+        const emoji = document.getElementById("modal-emoji");
+        const btn = document.getElementById("modal-btn");
+
+        modal.style.display = "flex";
+
+        if (currentSum === target) {
+          emoji.innerText = "🏆";
+          msg.innerText = `Чудово! Це ${target}!`;
+          msg.style.color = "var(--success)";
+
+          if (currentLevel < levels.length - 1) {
+            btn.innerText = "Наступний рівень ➡";
+            btn.onclick = nextLevel;
+          } else {
+            btn.innerText = "Почати знову 🔄";
+            btn.onclick = restart;
+          }
+        } else {
+          emoji.innerText = "🤔";
+          const diff = target - currentSum;
+          if (diff > 0) {
+            msg.innerText = `Треба ще ${diff}.`;
+          } else {
+            msg.innerText = `Забагато на ${Math.abs(diff)}.`;
+          }
+          msg.style.color = "#ef4444";
+          btn.innerText = "Виправити";
+          btn.onclick = () => (modal.style.display = "none");
+        }
+      }
+
+      function nextLevel() {
+        document.getElementById("modal").style.display = "none";
+        currentLevel++;
+        loadLevel();
+      }
+
+      function restart() {
+        document.getElementById("modal").style.display = "none";
+        currentLevel = 0;
+        loadLevel();
+      }
+
+      // Запуск
+      initWallet();
+      loadLevel();
+    </script>
+  </body>
+</html>

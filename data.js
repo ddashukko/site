@@ -77,6 +77,17 @@ window.lessonsData = [
     category: "lesson",
     author: "Даша",
   },
+
+  {
+    id: "math-2-toy-game-lesson",
+    title: "Приклади і магазин розмальовок",
+    grade: 2,
+    topic: "Арифметика",
+    link: "math_general/2/lesson_and_toy_market.html",
+    subject_code: "math_general",
+    category: "lesson",
+    author: "Даша",
+  },
   {
     id: "math-2-hw-01",
     title: "Домашня1",
