@@ -762,6 +762,16 @@ window.lessonsData = [
     category: "lesson",
     author: "Соня",
   },
+  {
+    id: "math-6-1rozdil",
+    title: "Модуль",
+    grade: 6,
+    topic: "Математика",
+    link: "math_general/6/Вадим/Вадим5.html",
+    subject_code: "math_general",
+    category: "lesson",
+    author: "Соня",
+  },
 
   // ==========================================
   // 8 КЛАС (Алгебра - Маринка/Соня) - Автор: Соня
