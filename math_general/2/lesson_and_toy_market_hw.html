@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Домашня Робота з Математики</title>
+    <title>Велика Домашня Робота</title>
 
     <link
       rel="stylesheet"
@@ -137,13 +137,11 @@
         transition: 0.2s;
       }
 
-      /* Ефект "збереження" при фокусі */
       input.math-input:focus {
         border-color: var(--secondary);
         box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
       }
 
-      /* Стилі для режиму вчителя */
       input.correct {
         background-color: #dcfce7 !important;
         border-color: var(--success) !important;
@@ -162,7 +160,7 @@
         color: var(--success);
         font-weight: bold;
         margin-left: 10px;
-        display: none; /* Показуємо тільки вчителю */
+        display: none;
       }
 
       .finish-section {
@@ -186,7 +184,6 @@
         transform: scale(1.05);
       }
 
-      /* Модальні вікна */
       .modal-overlay {
         position: fixed;
         top: 0;
@@ -235,7 +232,7 @@
       }
 
       .teacher-grade-box {
-        display: none; /* Сховано для учня */
+        display: none;
         background: #fff;
         border: 4px solid var(--primary);
         padding: 20px;
@@ -254,7 +251,7 @@
   </head>
   <body>
     <header>
-      <div class="header-title">📝 Домашня Робота</div>
+      <div class="header-title">📝 Велика Домашня Робота</div>
       <div
         id="mode-badge"
         style="
@@ -293,119 +290,236 @@
 
       <form id="homework-form">
         <div class="section-block">
-          <h3 class="section-title">1. Додавання (з переходом)</h3>
-
+          <h3 class="section-title">1. Додавання (з переходом через 10)</h3>
           <div class="task-row">
-            <div class="task-q">$29 + 4 =$</div>
+            <div class="task-q">$38 + 5 =$</div>
             <div class="input-group">
               <input
                 type="text"
                 class="math-input"
                 id="q1"
                 autocomplete="off"
-              />
-              <span class="correct-ans-hint" id="hint-q1"></span>
+              /><span class="correct-ans-hint" id="hint-q1"></span>
             </div>
           </div>
-
           <div class="task-row">
-            <div class="task-q">$47 + 8 =$</div>
+            <div class="task-q">$67 + 6 =$</div>
             <div class="input-group">
               <input
                 type="text"
                 class="math-input"
                 id="q2"
                 autocomplete="off"
-              />
-              <span class="correct-ans-hint" id="hint-q2"></span>
+              /><span class="correct-ans-hint" id="hint-q2"></span>
             </div>
           </div>
-
           <div class="task-row">
-            <div class="task-q">$56 + 5 =$</div>
+            <div class="task-q">$29 + 4 =$</div>
             <div class="input-group">
               <input
                 type="text"
                 class="math-input"
                 id="q3"
                 autocomplete="off"
-              />
-              <span class="correct-ans-hint" id="hint-q3"></span>
+              /><span class="correct-ans-hint" id="hint-q3"></span>
             </div>
           </div>
-        </div>
-
-        <div class="section-block">
-          <h3 class="section-title">2. Віднімання (з переходом)</h3>
-
           <div class="task-row">
-            <div class="task-q">$34 - 6 =$</div>
+            <div class="task-q">$45 + 8 =$</div>
             <div class="input-group">
               <input
                 type="text"
                 class="math-input"
                 id="q4"
                 autocomplete="off"
-              />
-              <span class="correct-ans-hint" id="hint-q4"></span>
+              /><span class="correct-ans-hint" id="hint-q4"></span>
             </div>
           </div>
-
           <div class="task-row">
-            <div class="task-q">$52 - 7 =$</div>
+            <div class="task-q">$76 + 7 =$</div>
             <div class="input-group">
               <input
                 type="text"
                 class="math-input"
                 id="q5"
                 autocomplete="off"
-              />
-              <span class="correct-ans-hint" id="hint-q5"></span>
+              /><span class="correct-ans-hint" id="hint-q5"></span>
             </div>
           </div>
+        </div>
 
+        <div class="section-block">
+          <h3 class="section-title">2. Віднімання (з переходом через 10)</h3>
           <div class="task-row">
-            <div class="task-q">$63 - 5 =$</div>
+            <div class="task-q">$42 - 5 =$</div>
             <div class="input-group">
               <input
                 type="text"
                 class="math-input"
                 id="q6"
                 autocomplete="off"
-              />
-              <span class="correct-ans-hint" id="hint-q6"></span>
+              /><span class="correct-ans-hint" id="hint-q6"></span>
             </div>
           </div>
-        </div>
-
-        <div class="section-block">
-          <h3 class="section-title">3. Рівняння (Знайди X)</h3>
-
           <div class="task-row">
-            <div class="task-q">$x + 18 = 30$</div>
+            <div class="task-q">$81 - 4 =$</div>
             <div class="input-group">
-              <span style="font-weight: bold">$x =$</span>
               <input
                 type="text"
                 class="math-input"
                 id="q7"
                 autocomplete="off"
-              />
-              <span class="correct-ans-hint" id="hint-q7"></span>
+              /><span class="correct-ans-hint" id="hint-q7"></span>
             </div>
           </div>
-
           <div class="task-row">
-            <div class="task-q">$60 - x = 20$</div>
+            <div class="task-q">$53 - 8 =$</div>
             <div class="input-group">
-              <span style="font-weight: bold">$x =$</span>
               <input
                 type="text"
                 class="math-input"
                 id="q8"
                 autocomplete="off"
-              />
-              <span class="correct-ans-hint" id="hint-q8"></span>
+              /><span class="correct-ans-hint" id="hint-q8"></span>
+            </div>
+          </div>
+          <div class="task-row">
+            <div class="task-q">$34 - 6 =$</div>
+            <div class="input-group">
+              <input
+                type="text"
+                class="math-input"
+                id="q9"
+                autocomplete="off"
+              /><span class="correct-ans-hint" id="hint-q9"></span>
+            </div>
+          </div>
+          <div class="task-row">
+            <div class="task-q">$95 - 7 =$</div>
+            <div class="input-group">
+              <input
+                type="text"
+                class="math-input"
+                id="q10"
+                autocomplete="off"
+              /><span class="correct-ans-hint" id="hint-q10"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-block" style="border-color: var(--secondary)">
+          <h3 class="section-title" style="color: var(--secondary)">
+            3. Двоцифрові числа (БЕЗ переходу)
+          </h3>
+          <p style="font-style: italic; color: #666; margin-bottom: 15px">
+            Додаємо одиниці до одиниць, десятки до десятків.
+          </p>
+
+          <div class="task-row">
+            <div class="task-q">$24 + 35 =$</div>
+            <div class="input-group">
+              <input
+                type="text"
+                class="math-input"
+                id="q11"
+                autocomplete="off"
+              /><span class="correct-ans-hint" id="hint-q11"></span>
+            </div>
+          </div>
+          <div class="task-row">
+            <div class="task-q">$41 + 28 =$</div>
+            <div class="input-group">
+              <input
+                type="text"
+                class="math-input"
+                id="q12"
+                autocomplete="off"
+              /><span class="correct-ans-hint" id="hint-q12"></span>
+            </div>
+          </div>
+          <div class="task-row">
+            <div class="task-q">$68 - 23 =$</div>
+            <div class="input-group">
+              <input
+                type="text"
+                class="math-input"
+                id="q13"
+                autocomplete="off"
+              /><span class="correct-ans-hint" id="hint-q13"></span>
+            </div>
+          </div>
+          <div class="task-row">
+            <div class="task-q">$57 - 35 =$</div>
+            <div class="input-group">
+              <input
+                type="text"
+                class="math-input"
+                id="q14"
+                autocomplete="off"
+              /><span class="correct-ans-hint" id="hint-q14"></span>
+            </div>
+          </div>
+          <div class="task-row">
+            <div class="task-q">$89 - 44 =$</div>
+            <div class="input-group">
+              <input
+                type="text"
+                class="math-input"
+                id="q15"
+                autocomplete="off"
+              /><span class="correct-ans-hint" id="hint-q15"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-block">
+          <h3 class="section-title">4. Рівняння (Знайди X)</h3>
+          <div class="task-row">
+            <div class="task-q">$x + 15 = 45$</div>
+            <div class="input-group">
+              <span style="font-weight: bold">$x =$</span
+              ><input
+                type="text"
+                class="math-input"
+                id="q16"
+                autocomplete="off"
+              /><span class="correct-ans-hint" id="hint-q16"></span>
+            </div>
+          </div>
+          <div class="task-row">
+            <div class="task-q">$20 + x = 58$</div>
+            <div class="input-group">
+              <span style="font-weight: bold">$x =$</span
+              ><input
+                type="text"
+                class="math-input"
+                id="q17"
+                autocomplete="off"
+              /><span class="correct-ans-hint" id="hint-q17"></span>
+            </div>
+          </div>
+          <div class="task-row">
+            <div class="task-q">$x - 12 = 30$</div>
+            <div class="input-group">
+              <span style="font-weight: bold">$x =$</span
+              ><input
+                type="text"
+                class="math-input"
+                id="q18"
+                autocomplete="off"
+              /><span class="correct-ans-hint" id="hint-q18"></span>
+            </div>
+          </div>
+          <div class="task-row">
+            <div class="task-q">$88 - x = 44$</div>
+            <div class="input-group">
+              <span style="font-weight: bold">$x =$</span
+              ><input
+                type="text"
+                class="math-input"
+                id="q19"
+                autocomplete="off"
+              /><span class="correct-ans-hint" id="hint-q19"></span>
             </div>
           </div>
         </div>
@@ -422,8 +536,7 @@
       <div class="modal">
         <h2 style="color: var(--success)">Робота збережена!</h2>
         <p>
-          1. Натисни кнопку "Копіювати".<br />2. Надішли це посилання вчителю
-          (Viber/Telegram).
+          1. Натисни кнопку "Копіювати".<br />2. Надішли це посилання вчителю.
         </p>
         <textarea id="share-link" class="link-box" readonly></textarea>
         <button class="btn-copy" onclick="copyLink()">
@@ -464,16 +577,30 @@
     </div>
 
     <script>
-      // Правильні відповіді (зберігаються в коді, перевіряються тільки в режимі вчителя)
+      // Оновлений ключ відповідей (19 завдань)
       const ANSWERS_KEY = {
-        q1: "33", // 29 + 4
-        q2: "55", // 47 + 8
-        q3: "61", // 56 + 5
-        q4: "28", // 34 - 6
-        q5: "45", // 52 - 7
-        q6: "58", // 63 - 5
-        q7: "12", // x + 18 = 30
-        q8: "40", // 60 - x = 20
+        q1: "43", // 38 + 5
+        q2: "73", // 67 + 6
+        q3: "33", // 29 + 4
+        q4: "53", // 45 + 8
+        q5: "83", // 76 + 7
+
+        q6: "37", // 42 - 5
+        q7: "77", // 81 - 4
+        q8: "45", // 53 - 8
+        q9: "28", // 34 - 6
+        q10: "88", // 95 - 7
+
+        q11: "59", // 24 + 35 (без переходу)
+        q12: "69", // 41 + 28 (без переходу)
+        q13: "45", // 68 - 23 (без переходу)
+        q14: "22", // 57 - 35 (без переходу)
+        q15: "45", // 89 - 44 (без переходу)
+
+        q16: "30", // x + 15 = 45
+        q17: "38", // 20 + x = 58
+        q18: "42", // x - 12 = 30
+        q19: "44", // 88 - x = 44
       };
 
       document.addEventListener("DOMContentLoaded", function () {
@@ -484,17 +611,12 @@
           ],
         });
 
-        // Перевірка URL на наявність даних (Режим вчителя)
         const urlParams = new URLSearchParams(window.location.search);
         const data = urlParams.get("data");
-
         if (data) {
-          // Активуємо режим вчителя
           initTeacherMode(data);
         }
       });
-
-      // --- ЛОГІКА УЧНЯ ---
 
       function generateLink() {
         const name = document.getElementById("student-name").value.trim();
@@ -503,26 +625,17 @@
           return;
         }
 
-        // Збираємо відповіді
-        let answers = {
-          name: name,
-          vals: {},
-        };
-
+        let answers = { name: name, vals: {} };
         for (let key in ANSWERS_KEY) {
           const val = document.getElementById(key).value.trim();
           answers.vals[key] = val;
         }
 
-        // Кодуємо в Base64 (щоб передати через URL)
         const jsonStr = JSON.stringify(answers);
         const encoded = btoa(encodeURIComponent(jsonStr));
-
-        // Генеруємо посилання
         const currentUrl = window.location.href.split("?")[0];
         const finalLink = `${currentUrl}?data=${encoded}`;
 
-        // Показуємо модалку
         document.getElementById("share-link").value = finalLink;
         document.getElementById("link-modal").style.display = "flex";
       }
@@ -535,20 +648,15 @@
         alert("Посилання скопійовано! Надішли його вчителю.");
       }
 
-      // --- ЛОГІКА ВЧИТЕЛЯ ---
-
       let studentData = null;
 
       function initTeacherMode(encodedData) {
-        // Блокуємо екран модалкою пароля
         document.getElementById("password-modal").style.display = "flex";
-
         try {
-          // Декодуємо дані
           const jsonStr = decodeURIComponent(atob(encodedData));
           studentData = JSON.parse(jsonStr);
         } catch (e) {
-          alert("Помилка читання даних. Посилання пошкоджене.");
+          alert("Помилка читання даних.");
         }
       }
 
@@ -565,10 +673,9 @@
         document.getElementById("password-modal").style.display = "none";
         document.getElementById("mode-badge").innerText = "Режим: ВЧИТЕЛЬ";
         document.getElementById("mode-badge").style.background = "#dcfce7";
-        document.getElementById("student-controls").style.display = "none"; // Ховаємо кнопку здачі
-        document.getElementById("teacher-dashboard").style.display = "block"; // Показуємо оцінку
+        document.getElementById("student-controls").style.display = "none";
+        document.getElementById("teacher-dashboard").style.display = "block";
 
-        // Заповнюємо дані учня
         document.getElementById("student-name-display").innerText =
           studentData.name;
         document.getElementById("student-name").value = studentData.name;
@@ -577,29 +684,28 @@
         let score = 0;
         let total = 0;
 
-        // Перевірка відповідей
         for (let key in ANSWERS_KEY) {
           total++;
           const input = document.getElementById(key);
           const studentAns = studentData.vals[key];
           const correctAns = ANSWERS_KEY[key];
 
-          input.value = studentAns;
-          input.disabled = true; // Блокуємо редагування
+          if (input) {
+            input.value = studentAns;
+            input.disabled = true;
 
-          if (studentAns === correctAns) {
-            input.classList.add("correct");
-            score++;
-          } else {
-            input.classList.add("wrong");
-            // Показати правильну відповідь поруч
-            const hint = document.getElementById(`hint-${key}`);
-            hint.innerText = `(Правильно: ${correctAns})`;
-            hint.style.display = "inline";
+            if (studentAns === correctAns) {
+              input.classList.add("correct");
+              score++;
+            } else {
+              input.classList.add("wrong");
+              const hint = document.getElementById(`hint-${key}`);
+              hint.innerText = `(Правильно: ${correctAns})`;
+              hint.style.display = "inline";
+            }
           }
         }
 
-        // Виводимо оцінку
         const percentage = Math.round((score / total) * 100);
         const scoreDisplay = document.getElementById("final-score");
         const statsDisplay = document.getElementById("stats-text");
@@ -621,15 +727,22 @@
         }
       }
 
-      // Enter works for next input
-      function handleEnter(e, input) {
-        if (e.key === "Enter") {
-          e.preventDefault();
-          const form = input.form;
-          const index = Array.prototype.indexOf.call(form, input);
-          form.elements[index + 1].focus();
-        }
-      }
+      // Обробка натискання Enter (перехід до наступного поля)
+      const inputs = document.querySelectorAll(".math-input");
+      inputs.forEach((input, index) => {
+        input.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            const nextInput = inputs[index + 1];
+            if (nextInput) {
+              nextInput.focus();
+            } else {
+              // Якщо це останній інпут, можна нічого не робити або запропонувати здати
+              input.blur();
+            }
+          }
+        });
+      });
     </script>
   </body>
 </html>
