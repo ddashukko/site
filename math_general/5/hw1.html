@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CYBER MATH: HAUSAUFGABEN</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Exo+2:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg-dark: #0b1021;
+        --panel-bg: #151b2e;
+        --primary: #8b5cf6;
+        --primary-glow: rgba(139, 92, 246, 0.5);
+        --accent: #f59e0b;
+        --cyan: #06b6d4;
+        --text-main: #e2e8f0;
+        --success: #10b981;
+        --error: #ef4444;
+        --border-radius: 12px;
+      }
+
+      body {
+        background-color: var(--bg-dark);
+        color: var(--text-main);
+        font-family: "Exo 2", sans-serif;
+        margin: 0;
+        padding: 0;
+        background-image: radial-gradient(
+          circle at 50% 50%,
+          #1e1b2e 0%,
+          #0b1021 100%
+        );
+      }
+
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: rgba(11, 16, 33, 0.95);
+        border-bottom: 2px solid var(--primary);
+        box-shadow: 0 0 20px var(--primary-glow);
+        padding: 15px 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        backdrop-filter: blur(10px);
+      }
+
+      .brand {
+        font-family: "Orbitron", sans-serif;
+        font-size: 1.5rem;
+        color: var(--primary);
+        text-shadow: 0 0 10px var(--primary-glow);
+        letter-spacing: 2px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .container {
+        max-width: 900px;
+        margin: 30px auto;
+        padding: 0 20px 150px 20px; /* Padding for bottom bar */
+      }
+
+      .mission-header {
+        font-family: "Orbitron", sans-serif;
+        font-size: 1.5rem;
+        color: #fff;
+        margin: 50px 0 25px 0;
+        border-left: 5px solid var(--primary);
+        padding-left: 15px;
+        text-transform: uppercase;
+      }
+
+      .task-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 25px;
+      }
+
+      .card {
+        background: var(--panel-bg);
+        border: 1px solid #2d3748;
+        border-radius: var(--border-radius);
+        padding: 20px;
+        transition: 0.3s;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .card:hover {
+        border-color: var(--primary);
+        box-shadow: 0 0 15px rgba(139, 92, 246, 0.2);
+        transform: translateY(-3px);
+      }
+
+      .task-title {
+        font-weight: 700;
+        margin-bottom: 10px;
+        color: var(--primary);
+        font-size: 1.1rem;
+      }
+
+      .visual-box {
+        background: #0f172a;
+        border-radius: 8px;
+        padding: 15px;
+        margin: 15px 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 80px;
+      }
+
+      .equation {
+        font-family: "Orbitron";
+        font-size: 1.4rem;
+        color: #fff;
+      }
+      .var-x {
+        color: var(--cyan);
+        font-weight: bold;
+      }
+
+      .grid-display {
+        display: grid;
+        gap: 5px;
+      }
+      .grid-item {
+        width: 15px;
+        height: 15px;
+        background: var(--cyan);
+        border-radius: 3px;
+        box-shadow: 0 0 5px var(--primary-glow);
+      }
+      .grid-item.gold {
+        background: var(--accent);
+      }
+
+      .input-row {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        margin-top: auto;
+        padding-top: 15px;
+      }
+
+      input {
+        background: #0b1021;
+        border: 1px solid #475569;
+        color: #fff;
+        padding: 10px;
+        border-radius: 6px;
+        width: 80px;
+        text-align: center;
+        font-size: 1.2rem;
+        font-weight: bold;
+        transition: 0.3s;
+      }
+
+      input:focus {
+        border-color: var(--primary);
+        outline: none;
+        box-shadow: 0 0 10px var(--primary-glow);
+        background: #1e293b;
+      }
+
+      /* Teacher Feedback Classes */
+      input.correct {
+        border-color: var(--success);
+        background-color: rgba(16, 185, 129, 0.1);
+        color: var(--success);
+      }
+
+      input.wrong {
+        border-color: var(--error);
+        background-color: rgba(239, 68, 68, 0.1);
+        color: var(--error);
+        text-decoration: line-through;
+      }
+
+      .correct-ans-badge {
+        display: none;
+        color: var(--success);
+        font-weight: bold;
+        font-family: "Orbitron";
+        margin-left: 10px;
+      }
+
+      /* Bottom Action Bar */
+      .bottom-bar {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background: rgba(11, 16, 33, 0.95);
+        border-top: 2px solid var(--accent);
+        padding: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 200;
+        backdrop-filter: blur(10px);
+      }
+
+      .submit-btn {
+        background: var(--accent);
+        color: #000;
+        border: none;
+        padding: 15px 40px;
+        font-size: 1.2rem;
+        font-family: "Orbitron", sans-serif;
+        font-weight: bold;
+        border-radius: 8px;
+        cursor: pointer;
+        box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
+        transition: 0.3s;
+      }
+
+      .submit-btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 25px rgba(245, 158, 11, 0.6);
+      }
+
+      /* Modals */
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.95);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        backdrop-filter: blur(5px);
+      }
+      .modal-content {
+        background: var(--panel-bg);
+        border: 2px solid var(--primary);
+        padding: 40px;
+        border-radius: 20px;
+        text-align: center;
+        max-width: 500px;
+        width: 90%;
+        position: relative;
+      }
+
+      .link-box {
+        background: #000;
+        border: 1px solid #475569;
+        padding: 10px;
+        word-break: break-all;
+        margin: 15px 0;
+        color: var(--success);
+        font-family: monospace;
+        border-radius: 6px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="brand">🏠 HAUSAUFGABEN</div>
+      <div
+        id="teacher-status"
+        style="display: none; color: var(--accent); font-family: 'Orbitron'"
+      >
+        👨‍🏫 LEHRER-MODUS
+      </div>
+    </header>
+
+    <div class="container">
+      <div class="mission-header">Sektor 1: Daten-Scan (Multiplikation)</div>
+      <div class="task-grid">
+        <div class="card">
+          <div class="task-title">💾 Speicherchips A</div>
+          <div class="visual-box">
+            <div
+              class="grid-display"
+              style="grid-template-columns: repeat(6, 1fr)"
+            >
+              <script>
+                for (let i = 0; i < 30; i++)
+                  document.write('<div class="grid-item"></div>');
+              </script>
+            </div>
+          </div>
+          <p style="text-align: center; color: #94a3b8">
+            5 Reihen mit je 6 Chips.
+          </p>
+          <div class="input-row">
+            <input type="number" id="inp1" placeholder="?" />
+            <span class="correct-ans-badge" id="ans1"></span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="task-title">🔋 Batteriezellen B</div>
+          <div class="visual-box">
+            <div
+              class="grid-display"
+              style="grid-template-columns: repeat(8, 1fr)"
+            >
+              <script>
+                for (let i = 0; i < 24; i++)
+                  document.write('<div class="grid-item gold"></div>');
+              </script>
+            </div>
+          </div>
+          <p style="text-align: center; color: #94a3b8">
+            3 Reihen mit je 8 Zellen.
+          </p>
+          <div class="input-row">
+            <input type="number" id="inp2" placeholder="?" />
+            <span class="correct-ans-badge" id="ans2"></span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="task-title">🔳 Pixel-Matrix</div>
+          <div class="visual-box">
+            <div
+              class="grid-display"
+              style="grid-template-columns: repeat(9, 1fr)"
+            >
+              <script>
+                for (let i = 0; i < 36; i++)
+                  document.write(
+                    '<div class="grid-item" style="border-radius:50%"></div>'
+                  );
+              </script>
+            </div>
+          </div>
+          <p style="text-align: center; color: #94a3b8">
+            4 Reihen mit je 9 Pixeln.
+          </p>
+          <div class="input-row">
+            <input type="number" id="inp3" placeholder="?" />
+            <span class="correct-ans-badge" id="ans3"></span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="task-title">🏗️ Blöcke</div>
+          <div class="visual-box">
+            <div
+              class="grid-display"
+              style="grid-template-columns: repeat(7, 1fr)"
+            >
+              <script>
+                for (let i = 0; i < 49; i++)
+                  document.write('<div class="grid-item gold"></div>');
+              </script>
+            </div>
+          </div>
+          <p style="text-align: center; color: #94a3b8">
+            7 Reihen mit je 7 Blöcken.
+          </p>
+          <div class="input-row">
+            <input type="number" id="inp4" placeholder="?" />
+            <span class="correct-ans-badge" id="ans4"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="mission-header">Sektor 2: Sachaufgaben (Logik)</div>
+      <div class="task-grid">
+        <div class="card">
+          <div class="task-title">🎟️ Kinotickets</div>
+          <p>Ein Ticket kostet <strong>9 €</strong>.</p>
+          <p>Du kaufst Tickets für <strong>5 Freunde</strong>.</p>
+          <div class="input-row">
+            <input type="number" id="inp5" placeholder="?" /> <span>€</span>
+            <span class="correct-ans-badge" id="ans5"></span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="task-title">📡 Download-Speed</div>
+          <p>Geschwindigkeit: <strong>8 MB</strong> pro Sekunde.</p>
+          <p>Der Download dauert <strong>10 Sekunden</strong>.</p>
+          <div class="input-row">
+            <input type="number" id="inp6" placeholder="?" /> <span>MB</span>
+            <span class="correct-ans-badge" id="ans6"></span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="task-title">📱 Abo-Kosten</div>
+          <p>Das Handy-Abo kostet <strong>10 €</strong> pro Monat.</p>
+          <p>Wie viel kostet es für <strong>1 Jahr</strong> (12 Monate)?</p>
+          <div class="input-row">
+            <input type="number" id="inp7" placeholder="?" /> <span>€</span>
+            <span class="correct-ans-badge" id="ans7"></span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="task-title">🎮 Gaming Punkte</div>
+          <p>Du bekommst <strong>50 Punkte</strong> pro Level.</p>
+          <p>Du hast <strong>6 Level</strong> geschafft.</p>
+          <div class="input-row">
+            <input type="number" id="inp8" placeholder="?" /> <span>XP</span>
+            <span class="correct-ans-badge" id="ans8"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="mission-header">Sektor 3: Code-Knacker (Variable X)</div>
+      <div class="task-grid">
+        <div class="card">
+          <div class="task-title">🔐 Datei Alpha</div>
+          <div class="visual-box">
+            <div class="equation"><span class="var-x">x</span> + 12 = 30</div>
+          </div>
+          <div class="input-row">
+            <span class="var-x">x = </span>
+            <input type="number" id="inp9" placeholder="?" />
+            <span class="correct-ans-badge" id="ans9"></span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="task-title">🔐 Datei Beta</div>
+          <div class="visual-box">
+            <div class="equation">5 · <span class="var-x">x</span> = 45</div>
+          </div>
+          <div class="input-row">
+            <span class="var-x">x = </span>
+            <input type="number" id="inp10" placeholder="?" />
+            <span class="correct-ans-badge" id="ans10"></span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="task-title">🔐 Datei Gamma</div>
+          <div class="visual-box">
+            <div class="equation">100 - <span class="var-x">x</span> = 25</div>
+          </div>
+          <div class="input-row">
+            <span class="var-x">x = </span>
+            <input type="number" id="inp11" placeholder="?" />
+            <span class="correct-ans-badge" id="ans11"></span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="task-title">🔐 Datei Delta</div>
+          <div class="visual-box">
+            <div class="equation"><span class="var-x">x</span> : 10 = 5</div>
+          </div>
+          <div class="input-row">
+            <span class="var-x">x = </span>
+            <input type="number" id="inp12" placeholder="?" />
+            <span class="correct-ans-badge" id="ans12"></span>
+          </div>
+        </div>
+
+        <div class="card" style="border-color: var(--accent)">
+          <div class="task-title" style="color: var(--accent)">
+            🏆 Bonus-Balance
+          </div>
+          <div class="visual-box">
+            <div class="equation"><span class="var-x">x</span> + 5 = 5 + 8</div>
+          </div>
+          <div class="input-row">
+            <span class="var-x">x = </span>
+            <input type="number" id="inp13" placeholder="?" />
+            <span class="correct-ans-badge" id="ans13"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-bar" id="studentBar">
+      <button class="submit-btn" onclick="generateLink()">
+        📤 HAUSAUFGABEN ABGEBEN
+      </button>
+    </div>
+
+    <div class="modal-overlay" id="linkModal">
+      <div class="modal-content">
+        <h2 style="color: var(--success)">BEREIT ZUM SENDEN!</h2>
+        <p>Kopiere diesen Link und sende ihn an deinen Lehrer:</p>
+        <div class="link-box" id="resultLink">...</div>
+        <button
+          class="submit-btn"
+          onclick="copyLink()"
+          style="
+            background: var(--primary);
+            color: #fff;
+            font-size: 1rem;
+            padding: 10px 20px;
+          "
+        >
+          Link kopieren
+        </button>
+        <p style="margin-top: 20px; font-size: 0.8rem; color: #64748b">
+          Nach dem Senden kannst du die Seite schließen.
+        </p>
+      </div>
+    </div>
+
+    <div class="modal-overlay" id="teacherModal">
+      <div class="modal-content" style="border-color: var(--error)">
+        <h2 style="color: var(--error)">🔒 LEHRER-ZUGANG</h2>
+        <p>Geben Sie das Passwort ein:</p>
+        <input
+          type="password"
+          id="teacherPass"
+          style="width: 100%; margin: 10px 0"
+        />
+        <button
+          class="submit-btn"
+          onclick="verifyTeacher()"
+          style="background: var(--error); color: #fff; width: 100%"
+        >
+          LOGIN
+        </button>
+      </div>
+    </div>
+
+    <script>
+      // CORRECT ANSWERS KEY
+      const ANSWERS = {
+        1: 30,
+        2: 24,
+        3: 36,
+        4: 49,
+        5: 45,
+        6: 80,
+        7: 120,
+        8: 300,
+        9: 18,
+        10: 9,
+        11: 75,
+        12: 50,
+        13: 8,
+      };
+
+      // On Load: Check if it's teacher mode (URL has data)
+      document.addEventListener("DOMContentLoaded", () => {
+        const params = new URLSearchParams(window.location.search);
+        const data = params.get("d");
+
+        if (data) {
+          // DATA FOUND -> TEACHER MODE ATTEMPT
+          document.getElementById("studentBar").style.display = "none";
+          document.getElementById("teacherModal").style.display = "flex";
+
+          try {
+            // Decode answers
+            const studentAnswers = JSON.parse(atob(data));
+
+            // Fill inputs
+            for (const [id, val] of Object.entries(studentAnswers)) {
+              const inp = document.getElementById(`inp${id}`);
+              if (inp) {
+                inp.value = val;
+                inp.disabled = true; // Lock inputs
+              }
+            }
+          } catch (e) {
+            alert("Fehler beim Laden der Daten.");
+          }
+        }
+      });
+
+      // --- STUDENT FUNCTIONS ---
+
+      function generateLink() {
+        const studentData = {};
+        let filled = 0;
+
+        // Collect inputs
+        for (let i = 1; i <= 13; i++) {
+          const val = document.getElementById(`inp${i}`).value;
+          studentData[i] = val; // Save even empty ones
+          if (val) filled++;
+        }
+
+        if (filled === 0) {
+          alert("Bitte löse zuerst die Aufgaben!");
+          return;
+        }
+
+        // Encode data (Simple Base64)
+        const encoded = btoa(JSON.stringify(studentData));
+
+        // Build URL
+        const url = window.location.href.split("?")[0] + "?d=" + encoded;
+
+        // Show Modal
+        document.getElementById("resultLink").innerText = url;
+        document.getElementById("linkModal").style.display = "flex";
+      }
+
+      function copyLink() {
+        const text = document.getElementById("resultLink").innerText;
+        navigator.clipboard.writeText(text).then(() => {
+          alert("Link kopiert!");
+        });
+      }
+
+      // --- TEACHER FUNCTIONS ---
+
+      function verifyTeacher() {
+        const pass = document.getElementById("teacherPass").value;
+        // PASSWORD CHECK
+        if (pass.toLowerCase() === "янчук") {
+          document.getElementById("teacherModal").style.display = "none";
+          document.getElementById("teacher-status").style.display = "block";
+          gradeWork();
+        } else {
+          alert("Falsches Passwort!");
+          document.getElementById("teacherPass").value = "";
+        }
+      }
+
+      function gradeWork() {
+        let score = 0;
+        let total = 13;
+
+        for (let i = 1; i <= 13; i++) {
+          const inp = document.getElementById(`inp${i}`);
+          const badge = document.getElementById(`ans${i}`);
+          const userVal = parseInt(inp.value);
+          const correctVal = ANSWERS[i];
+
+          if (userVal === correctVal) {
+            inp.classList.add("correct");
+            score++;
+          } else {
+            inp.classList.add("wrong");
+            badge.style.display = "inline";
+            badge.innerText = `(Richtig: ${correctVal})`;
+          }
+        }
+
+        alert(`Ergebnis: ${score} / ${total} richtig.`);
+      }
+    </script>
+  </body>
+</html>
