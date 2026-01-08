@@ -68,7 +68,7 @@
         width: 100%;
       }
 
-      /* Стилі для дробів */
+      /* --- ДРОБИ --- */
       .fraction {
         display: inline-block;
         text-align: center;
@@ -92,34 +92,36 @@
         padding-top: 1px;
       }
 
-      /* --- ВИПРАВЛЕНИЙ КОРІНЬ (FLEX FIX) --- */
+      /* --- ВИПРАВЛЕНИЙ КОРІНЬ (NEW) --- */
       .sqrt {
-        display: inline-flex; /* Гарантує стиковку елементів */
-        align-items: flex-start; /* Вирівнювання по верху */
+        display: inline-flex;
+        align-items: flex-start;
         white-space: nowrap;
+        vertical-align: middle;
       }
 
       /* Символ галочки */
       .sqrt::before {
-        content: "\221A"; /* Символ кореня */
-        font-family: sans-serif; /* Цей шрифт дає кращу форму галочки */
-        font-size: 1.1em;
-        line-height: 1;
-        padding-right: 1px;
-        margin-top: 3px; /* Підгонка під лінію */
+        content: "\221A";
+        font-family: "Arial", sans-serif; /* Arial має кращу форму галочки */
+        font-size: 1.1em; /* Трохи збільшуємо символ */
+        line-height: 0.9; /* Стискаємо висоту рядка для підгонки */
+        margin-right: -1px; /* Прибираємо пробіл між галочкою і лінією */
+        font-weight: normal;
       }
 
       /* Вміст під лінією */
       .sqrt > span {
-        border-top: 1px solid #000;
-        padding-top: 2px; /* Відступ, щоб лінія не різала текст */
-        margin-top: 0.3em; /* Опускаємо вміст, щоб лінія зійшлася з галочкою */
+        border-top: 0.07em solid currentColor; /* Товщина лінії */
+        padding-top: 0.1em; /* Відступ тексту від лінії */
+        margin-top: 0.22em; /* Цей відступ ідеально стикує лінію з галочкою Arial */
         display: block;
       }
       /* -------------------------------------- */
 
       .list-num {
         margin-right: 3px;
+        font-style: italic; /* Для краси, як у книжках */
       }
 
       /* Сітки */
