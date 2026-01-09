@@ -1,0 +1,503 @@
+ <!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>MATH PRO: Modulus Extreme</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --dark: #0f172a;
+            --primary: #3b82f6;
+            --accent: #f59e0b;
+            --bg-light: #f8fafc;
+            --border: #e2e8f0;
+            --success: #10b981;
+            --danger: #ef4444;
+        }
+
+        body, html {
+            margin: 0; padding: 0; height: 100%;
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--dark);
+            overscroll-behavior: none;
+        }
+
+        .main-wrapper {
+            display: flex;
+            height: 100vh;
+            width: 100vw;
+            transition: all 0.3s ease;
+        }
+
+        /* АДАПТИВНІСТЬ */
+        @media (max-width: 900px) {
+            .main-wrapper {
+                flex-direction: column;
+                height: auto;
+                overflow-x: hidden;
+            }
+            .content-panel {
+                width: 100% !important;
+                height: auto !important;
+                border-right: none !important;
+                border-bottom: 5px solid var(--border);
+            }
+            .board-panel {
+                width: 100% !important;
+                height: 80vh !important;
+            }
+            .lab-section {
+                position: relative !important;
+            }
+        }
+
+        /* ЛІВА ПАНЕЛЬ */
+        .content-panel {
+            flex: 1.2;
+            background: white;
+            overflow-y: auto;
+            padding: 25px;
+            border-right: 4px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* ЛАБОРАТОРІЯ */
+        .lab-section {
+            background: #f1f5f9;
+            border-radius: 16px;
+            padding: 15px;
+            border: 2px solid var(--primary);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+
+        #lab-canvas {
+            background: white;
+            border-radius: 8px;
+            width: 100%;
+            height: 100px;
+            touch-action: none;
+            cursor: grab;
+        }
+
+        .lab-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            text-align: center;
+        }
+
+        /* ЗАВДАННЯ */
+        .block-header {
+            font-size: 1.1rem;
+            font-weight: 900;
+            color: var(--dark);
+            border-left: 6px solid var(--accent);
+            padding-left: 15px;
+            margin: 30px 0 15px;
+            text-transform: uppercase;
+        }
+
+        .task-card {
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
+            background: #fff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .task-row {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        .math-text { flex: 1; min-width: 250px; font-size: 1.05rem; }
+
+        input[type="text"] {
+            width: 110px;
+            padding: 10px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-weight: bold;
+            text-align: center;
+            font-size: 1rem;
+        }
+
+        .status-dot { width: 14px; height: 14px; border-radius: 50%; background: #cbd5e1; flex-shrink: 0; }
+
+        /* ПРАВА ПАНЕЛЬ */
+        .board-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #1e293b;
+            position: relative;
+        }
+
+        .board-tools {
+            padding: 12px;
+            background: #0f172a;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .tool-btn {
+            background: #334155;
+            color: white;
+            border: none;
+            padding: 10px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: 0.2s;
+        }
+
+        .tool-btn.active { background: var(--primary); box-shadow: 0 0 10px var(--primary); }
+
+        #whiteboard {
+            flex: 1;
+            background: #fff;
+            cursor: crosshair;
+            margin: 10px;
+            border-radius: 12px;
+            touch-action: none;
+        }
+
+        #finish-btn {
+            background: var(--success);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            border: none;
+            font-size: 1.3rem;
+            font-weight: 800;
+            cursor: pointer;
+            margin: 20px 0;
+            width: 100%;
+        }
+
+        /* MODAL */
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.98); z-index: 1000;
+            flex-direction: column; align-items: center; justify-content: center;
+            color: white; text-align: center; padding: 20px;
+        }
+
+        .correct { background: var(--success) !important; box-shadow: 0 0 8px var(--success); }
+        .wrong { background: var(--danger) !important; box-shadow: 0 0 8px var(--danger); }
+    </style>
+</head>
+<body>
+
+<div class="main-wrapper">
+    <div class="content-panel">
+        <h1 style="margin:0; color: var(--dark); font-size: 1.5rem;">📏 Модуль та Координати: PRO</h1>
+        
+        <div class="lab-section">
+            <div style="font-weight:bold; color:var(--primary); margin-bottom:5px; font-size: 0.9rem;">🧪 LAB: Динамічна координатна пряма</div>
+            <canvas id="lab-canvas"></canvas>
+            <div class="lab-info">
+                <div id="val-a">A: 0</div>
+                <div id="val-b">B: 0</div>
+                <div id="val-dist" style="color:var(--primary); font-weight:900;">|A-B| = 0</div>
+            </div>
+        </div>
+
+        <div id="tasks-container"></div>
+        <button id="finish-btn" onclick="checkAll()">ЗДАТИ НА ПЕРЕВІРКУ</button>
+    </div>
+
+    <div class="board-panel">
+        <div class="board-tools">
+            <button class="tool-btn active" onclick="setTool('pencil', this)">✏️ Олівець</button>
+            <button class="tool-btn" onclick="setTool('eraser', this)">🧽 Гумка</button>
+            <button class="tool-btn" onclick="clearBoard()">🗑️ Чисто</button>
+            <button class="tool-btn" style="background:var(--accent)" onclick="drawAxis()">📏 Накреслити Вісь</button>
+            <input type="color" id="drawColor" value="#0f172a" style="width:40px; height:35px; border:none; border-radius:4px; cursor:pointer;">
+        </div>
+        <canvas id="whiteboard"></canvas>
+    </div>
+</div>
+
+<div id="result-modal" class="modal">
+    <h1 id="m-title"></h1>
+    <p id="m-score" style="font-size: 4rem; margin: 20px 0; font-weight: 900;"></p>
+    <p id="m-phrase" style="font-size: 1.2rem; max-width: 600px; line-height: 1.6;"></p>
+    <button class="tool-btn" style="padding: 15px 50px; margin-top:30px; font-size: 1.1rem;" onclick="location.reload()">Спробувати ще раз</button>
+</div>
+
+<script>
+    // --- ДАНІ (45 СТАТИЧНИХ ЗАВДАНЬ) ---
+    const data = [
+        {
+            title: "Блок 1: Операції та пріоритети",
+            tasks: [
+                { q: "Обчисліть: \\( | -12.3 | + | -7.7 | \\)", a: "20" },
+                { q: "Знайдіть значення: \\( | -100 | : | -25 | \\cdot | -0.5 | \\)", a: "2" },
+                { q: "Спростіть: \\( -| -15 | - | -5 | \\)", a: "-20" },
+                { q: "Чому дорівнює: \\( | - | - | -8 || | \\)", a: "8" },
+                { q: "Обчисліть: \\( | -5.25 | + | -4.75 | - | -10 | \\)", a: "0" },
+                { q: "Знайдіть: \\( | -2/5 | + 0.6 \\)", a: "1" },
+                { q: "Обчисліть: \\( -(-| -4.2 |) \\)", a: "4.2" },
+                { q: "Значення: \\( | | -6 | - | -14 | | \\)", a: "8" },
+                { q: "Обчисліть: \\( -| 10 - 25 | \\)", a: "-15" },
+                { q: "Результат: \\( | -2.5 | \\cdot | -0.4 | \\)", a: "1" }
+            ]
+        },
+        {
+            title: "Блок 2: Координати та Відстані",
+            tasks: [
+                { q: "Відстань між точками \\( A(-18) \\) та \\( B(14) \\)", a: "32" },
+                { q: "Відстань від точки \\( -| -12.5 | \\) до 0", a: "12.5" },
+                { q: "Координата середини відрізка між -6 та 14", a: "4" },
+                { q: "Відстань між \\( | -9 | \\) та \\( -| -9 | \\)", a: "18" },
+                { q: "Точка K(-5) змістилась на \\( | -8 | \\) вправо. Координата?", a: "3" },
+                { q: "Скільки цілих чисел мають модуль менший за 4.1?", a: "9" },
+                { q: "Відстань між \\( -3/4 \\) та \\( 1.25 \\)", a: "2" },
+                { q: "Знайдіть \\( x \\), якщо \\( |x| = 7 \\) та \\( x < 0 \\)", a: "-7" },
+                { q: "Яка точка рівновіддалена від -50 та 150?", a: "50" },
+                { q: "Відстань між \\( -1.001 \\) та \\( -1.001 \\)", a: "0" }
+            ]
+        },
+        {
+            title: "Блок 3: Рівняння (Найвищий рівень)",
+            tasks: [
+                { q: "\\( |x| = -| -3 | \\) (якщо коренів немає - пиши 'немає')", a: "немає" },
+                { q: "\\( |x| - 15 = -5 \\) (корені через кому)", a: "10,-10" },
+                { q: "\\( ||x| - 12| = 0 \\) (через кому)", a: "12,-12" },
+                { q: "\\( ||x| - 8| = 3 \\) (через кому, 4 корені)", a: "11,-11,5,-5" },
+                { q: "\\( |x + 5| = 0 \\)", a: "-5" },
+                { q: "\\( |x| = | -22 | \\) (через кому)", a: "22,-22" },
+                { q: "\\( |x - 4| = 12 \\) (через кому)", a: "16,-8" },
+                { q: "\\( |x| + 7 = 7 \\)", a: "0" },
+                { q: "\\( ||x| + 4| = 9 \\) (через кому)", a: "5,-5" },
+                { q: "Якщо \\( |x| = -x \\), чи може \\( x \\) бути 10?", a: "ні" },
+                { q: "\\( ||x| - 2| = 2 \\) (через кому, 3 корені)", a: "4,-4,0" },
+                { q: "\\( |x - 5| = -1 \\)", a: "немає" },
+                { q: "\\( |x| : 5 = 4 \\)", a: "20,-20" },
+                { q: "\\( |x| + |x| = 30 \\)", a: "15,-15" },
+                { q: "\\( |x - 2| = 0.8 \\) (через кому)", a: "2.8,1.2" }
+            ]
+        },
+        {
+            title: "Блок 4: Логічні пастки",
+            tasks: [
+                { q: "Яке число дорівнює власному модулю? (додатне/від'ємне/нуль)", a: "додатне" },
+                { q: "Кількість коренів \\( |x| = -x \\) для \\( x < 0 \\)?", a: "безліч" },
+                { q: "Число протилежне до \\( -| -10 | \\)", a: "10" },
+                { q: "Чи є хоч одне число, модуль якого -1?", a: "ні" },
+                { q: "Знайдіть \\( x \\), якщо \\( -|x| = -25 \\) (через кому)", a: "25,-25" },
+                { q: "Чому дорівнює \\( |x| \\), якщо \\( x^2 = 49 \\)?", a: "7" },
+                { q: "Найменше ціле число, модуль якого менший за 10", a: "-9" },
+                { q: "Сума коренів рівняння \\( |x-10| = 50 \\)", a: "20" },
+                { q: "Що більше: \\( | -10 | \\) чи \\( | 9.99 | \\)?", a: "10" },
+                { q: "Знайдіть \\( x \\), якщо \\( | -x | = 1.2 \\) (через кому)", a: "1.2,-1.2" }
+            ]
+        }
+    ];
+
+    // --- LABORATORY (TOUCH + MOUSE) ---
+    const labCanvas = document.getElementById('lab-canvas');
+    const lctx = labCanvas.getContext('2d');
+    let points = { a: -6, b: 4 }, dragging = null;
+
+    function getLabCoords(e) {
+        const rect = labCanvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        return clientX - rect.left;
+    }
+
+    function drawLab() {
+        const w = labCanvas.width = labCanvas.offsetWidth;
+        const h = labCanvas.height = 100;
+        const mid = w / 2, scale = Math.min(w/25, 30);
+        lctx.clearRect(0,0,w,h);
+        lctx.strokeStyle = '#94a3b8'; lctx.lineWidth = 2;
+        lctx.beginPath(); lctx.moveTo(15, h/2); lctx.lineTo(w-15, h/2); lctx.stroke();
+        for(let i=-10; i<=10; i++) {
+            let x = mid + i*scale;
+            lctx.moveTo(x, h/2-6); lctx.lineTo(x, h/2+6);
+            lctx.fillStyle = "#64748b"; lctx.font = "10px Inter"; lctx.fillText(i, x-4, h/2+20);
+        }
+        lctx.stroke();
+        drawP(mid + points.a*scale, '#ef4444', 'A');
+        drawP(mid + points.b*scale, '#3b82f6', 'B');
+        document.getElementById('val-a').innerText = `A: ${points.a}`;
+        document.getElementById('val-b').innerText = `B: ${points.b}`;
+        document.getElementById('val-dist').innerText = `|A-B| = ${Math.abs(points.a - points.b).toFixed(1)}`;
+    }
+
+    function drawP(x, c, l) {
+        lctx.fillStyle = c; lctx.beginPath(); lctx.arc(x, 50, 10, 0, Math.PI*2); lctx.fill();
+        lctx.fillStyle = 'white'; lctx.font = "bold 10px Inter"; lctx.fillText(l, x-4, 54);
+    }
+
+    function startLabDrag(e) {
+        const x = getLabCoords(e);
+        const mid = labCanvas.width/2, scale = Math.min(labCanvas.width/25, 30);
+        const ax = mid + points.a*scale, bx = mid + points.b*scale;
+        if(Math.abs(x - ax) < 20) dragging = 'a';
+        else if(Math.abs(x - bx) < 20) dragging = 'b';
+        if(dragging) e.preventDefault();
+    }
+
+    function moveLabDrag(e) {
+        if(!dragging) return;
+        const x = getLabCoords(e);
+        const mid = labCanvas.width/2, scale = Math.min(labCanvas.width/25, 30);
+        let val = Math.round((x - mid) / scale * 2) / 2;
+        val = Math.max(-10, Math.min(10, val));
+        points[dragging] = val;
+        drawLab();
+        e.preventDefault();
+    }
+
+    labCanvas.addEventListener('mousedown', startLabDrag);
+    labCanvas.addEventListener('touchstart', startLabDrag);
+    window.addEventListener('mousemove', moveLabDrag);
+    window.addEventListener('touchmove', moveLabDrag, {passive: false});
+    window.addEventListener('mouseup', () => dragging = null);
+    window.addEventListener('touchend', () => dragging = null);
+
+    // --- WHITEBOARD (TOUCH + MOUSE) ---
+    const board = document.getElementById('whiteboard');
+    const bctx = board.getContext('2d');
+    let isDrawing = false, currentTool = 'pencil';
+
+    function initBoard() {
+        const rect = board.parentElement.getBoundingClientRect();
+        board.width = board.offsetWidth;
+        board.height = board.offsetHeight;
+        bctx.lineCap = 'round'; bctx.lineWidth = 3;
+    }
+
+    function getBoardPos(e) {
+        const rect = board.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return { x: clientX - rect.left, y: clientY - rect.top };
+    }
+
+    function startDraw(e) {
+        isDrawing = true;
+        const pos = getBoardPos(e);
+        bctx.beginPath(); bctx.moveTo(pos.x, pos.y);
+        if(e.touches) e.preventDefault();
+    }
+
+    function moveDraw(e) {
+        if(!isDrawing) return;
+        const pos = getBoardPos(e);
+        bctx.strokeStyle = currentTool === 'eraser' ? '#fff' : document.getElementById('drawColor').value;
+        bctx.lineWidth = currentTool === 'eraser' ? 40 : 3;
+        bctx.lineTo(pos.x, pos.y); bctx.stroke();
+        e.preventDefault();
+    }
+
+    board.addEventListener('mousedown', startDraw);
+    board.addEventListener('touchstart', startDraw);
+    board.addEventListener('mousemove', moveDraw);
+    board.addEventListener('touchmove', moveDraw, {passive: false});
+    window.addEventListener('mouseup', () => isDrawing = false);
+    window.addEventListener('touchend', () => isDrawing = false);
+
+    function setTool(t, btn) {
+        currentTool = t;
+        document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+    }
+
+    function clearBoard() { bctx.clearRect(0, 0, board.width, board.height); }
+
+    function drawAxis() {
+        const y = board.height / 2;
+        bctx.strokeStyle = '#1e293b'; bctx.lineWidth = 2;
+        bctx.beginPath();
+        bctx.moveTo(40, y); bctx.lineTo(board.width-40, y);
+        bctx.lineTo(board.width-50, y-10); bctx.moveTo(board.width-40, y); bctx.lineTo(board.width-50, y+10);
+        for(let i=-5; i<=5; i++) {
+            let x = (board.width/2) + i*60;
+            bctx.moveTo(x, y-7); bctx.lineTo(x, y+7);
+            bctx.fillStyle = "#0f172a"; bctx.font = "bold 14px Inter"; bctx.fillText(i, x-5, y+25);
+        }
+        bctx.stroke();
+    }
+
+    // --- LOGIC ---
+    function renderTasks() {
+        const container = document.getElementById('tasks-container');
+        data.forEach((group, gIdx) => {
+            const block = document.createElement('div');
+            block.innerHTML = `<div class="block-header">${group.title}</div>`;
+            group.tasks.forEach((t, tIdx) => {
+                const card = document.createElement('div');
+                card.className = 'task-card';
+                card.innerHTML = `
+                    <div class="task-row">
+                        <div class="math-text">${t.q}</div>
+                        <input type="text" id="ans-${gIdx}-${tIdx}" placeholder="Відповідь">
+                        <div class="status-dot" id="dot-${gIdx}-${tIdx}"></div>
+                    </div>
+                `;
+                block.appendChild(card);
+            });
+            container.appendChild(block);
+        });
+        if(window.MathJax) MathJax.typeset();
+    }
+
+    function checkAll() {
+        let score = 0;
+        data.forEach((group, gIdx) => {
+            group.tasks.forEach((t, tIdx) => {
+                const input = document.getElementById(`ans-${gIdx}-${tIdx}`);
+                const dot = document.getElementById(`dot-${gIdx}-${tIdx}`);
+                const userAns = input.value.trim().toLowerCase().replace(/\s/g, '').replace(/,/g, '|');
+                const variants = t.a.toLowerCase().split(',').map(v => v.trim());
+                
+                // Перевірка на множину коренів (порядок не важливий)
+                const userParts = userAns.split('|').sort();
+                const correctParts = variants.sort();
+                
+                const isCorrect = JSON.stringify(userParts) === JSON.stringify(correctParts);
+
+                if(isCorrect) {
+                    dot.className = 'status-dot correct'; score++;
+                } else {
+                    dot.className = 'status-dot wrong';
+                }
+            });
+        });
+
+        const modal = document.getElementById('result-modal');
+        modal.style.display = 'flex';
+        document.getElementById('m-score').innerText = `${score}/45`;
+        document.getElementById('m-title').innerText = score > 40 ? "🏆 РІВЕНЬ: ГЕНІЙ" : "📚 РОБОТУ ЗАВЕРШЕНО";
+        document.getElementById('m-phrase').innerText = score > 35 ? 
+            "Неймовірний результат! Твій математичний апарат працює як швейцарський годинник." : 
+            "Гарна спроба! Модуль — це непроста тема, але ти впевнено рухаєшся вперед.";
+    }
+
+    window.addEventListener('resize', () => { drawLab(); initBoard(); });
+    window.onload = () => { renderTasks(); drawLab(); initBoard(); };
+</script>
+
+</body>
+</html>
