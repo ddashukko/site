@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Велике ДЗ: Фігури та Рівняння</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg-color: #fff9c4;
+        --card-bg: #ffffff;
+        --primary: #ff6f00;
+        --secondary: #0288d1;
+        --success: #76ff03;
+        --error: #ff1744;
+        --text: #37474f;
+      }
+
+      body {
+        font-family: "Comic Neue", cursive, sans-serif;
+        background-color: var(--bg-color);
+        background-image: radial-gradient(#ffe082 2px, transparent 2px);
+        background-size: 20px 20px;
+        margin: 0;
+        padding: 20px;
+        color: var(--text);
+      }
+
+      .container {
+        max-width: 700px;
+        margin: 0 auto;
+        padding-bottom: 50px;
+      }
+
+      header {
+        text-align: center;
+        background: #fff;
+        border-radius: 20px;
+        padding: 20px;
+        box-shadow: 0 8px 0 rgba(0, 0, 0, 0.1);
+        border: 4px solid var(--primary);
+        margin-bottom: 30px;
+        position: relative;
+      }
+
+      h1 {
+        margin: 0;
+        color: var(--primary);
+        font-size: 2rem;
+      }
+
+      .task-card {
+        background: var(--card-bg);
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 25px;
+        border: 3px solid #b3e5fc;
+        box-shadow: 0 5px 0 #b3e5fc;
+        position: relative;
+      }
+
+      .task-number {
+        position: absolute;
+        top: -15px;
+        left: -15px;
+        background: var(--secondary);
+        color: white;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 1.2rem;
+        border: 3px solid white;
+      }
+
+      /* Shape Builder Styles */
+      .shape-display-area {
+        background: #fafafa;
+        border: 3px dashed #cfd8dc;
+        border-radius: 10px;
+        min-height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.8rem;
+        margin: 10px 0;
+        cursor: pointer;
+        padding: 5px;
+        flex-wrap: wrap;
+      }
+      .shape-display-area.correct {
+        background-color: #ccff90;
+        border-color: #76ff03;
+      }
+      .shape-display-area.wrong {
+        background-color: #ff8a80;
+        border-color: #d50000;
+      }
+
+      .shape-buttons {
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+        margin-bottom: 15px;
+        flex-wrap: wrap;
+      }
+
+      .btn-shape {
+        font-size: 1.5rem;
+        background: white;
+        border: 2px solid #ddd;
+        border-radius: 10px;
+        cursor: pointer;
+        padding: 5px 10px;
+        transition: transform 0.1s;
+      }
+      .btn-shape:active {
+        transform: scale(0.9);
+      }
+      .btn-clear {
+        background: #ffccbc;
+        border-color: #ff5722;
+      }
+
+      .task-visual {
+        font-size: 1.8rem;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        flex-wrap: wrap;
+      }
+
+      /* Equations Styles */
+      .equation-block {
+        background: #f0f4c3;
+        padding: 10px;
+        border-radius: 15px;
+        margin-bottom: 20px;
+      }
+      .equation-line {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 1.4rem;
+        font-weight: bold;
+        margin-bottom: 8px;
+        flex-wrap: wrap;
+      }
+
+      input {
+        width: 50px;
+        height: 40px;
+        font-size: 1.3rem;
+        text-align: center;
+        border: 3px solid #cfd8dc;
+        border-radius: 8px;
+        font-family: "Comic Neue", cursive;
+        background: #fff;
+        outline: none;
+      }
+      input:focus {
+        border-color: var(--primary);
+        background: #fff3e0;
+      }
+      .correct {
+        background-color: #ccff90 !important;
+        border-color: #76ff03 !important;
+      }
+      .wrong {
+        background-color: #ff8a80 !important;
+        border-color: #d50000 !important;
+      }
+
+      .btn-finish {
+        display: block;
+        width: 100%;
+        padding: 15px;
+        background: linear-gradient(to bottom, #ffca28, #ff6f00);
+        color: white;
+        font-size: 1.5rem;
+        font-weight: bold;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        box-shadow: 0 5px 0 #e65100;
+        margin-top: 20px;
+      }
+
+      /* Modal & Teacher Styles */
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.85);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+      }
+      .modal-box {
+        background: white;
+        padding: 30px;
+        border-radius: 20px;
+        width: 90%;
+        max-width: 400px;
+        text-align: center;
+        border: 5px solid var(--secondary);
+      }
+      .link-box {
+        width: 100%;
+        height: 80px;
+        margin: 15px 0;
+        resize: none;
+        border-radius: 10px;
+        padding: 10px;
+      }
+
+      #score-badge {
+        display: none;
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        background: #fff;
+        border: 4px solid var(--primary);
+        color: var(--primary);
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        font-weight: bold;
+        transform: rotate(15deg);
+        z-index: 10;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>🦊 Велика Домашка</h1>
+      <div style="color: #555">Фігури та Рівняння (2 сторінки)</div>
+      <div id="score-badge"></div>
+    </header>
+
+    <div class="container">
+      <div class="task-card">
+        <div class="task-number">1</div>
+        <p><strong>Вибери фігури, які заховав X:</strong></p>
+
+        <div class="task-visual">
+          a) <span>🟥🟦🟦🟦</span> -
+          <span style="color: var(--primary)">X</span> = <span>🟦🟦🟦</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px">
+          <span style="font-weight: bold">X = </span>
+          <div
+            id="ans1"
+            class="shape-display-area"
+            style="min-width: 100px"
+          ></div>
+        </div>
+        <div class="shape-buttons">
+          <button class="btn-shape" onclick="addShape('ans1', '🟦')">🟦</button>
+          <button class="btn-shape" onclick="addShape('ans1', '🟥')">🟥</button>
+          <button class="btn-shape btn-clear" onclick="clearShape('ans1')">
+            🔙
+          </button>
+        </div>
+        <hr style="border: 0; border-top: 2px dashed #eee; margin: 15px 0" />
+
+        <div class="task-visual">
+          б) <span>⭐🔴🔺🟡</span> -
+          <span style="color: var(--primary)">X</span> = <span>⭐🔴</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px">
+          <span style="font-weight: bold">X = </span>
+          <div
+            id="ans2"
+            class="shape-display-area"
+            style="min-width: 100px"
+          ></div>
+        </div>
+        <div class="shape-buttons">
+          <button class="btn-shape" onclick="addShape('ans2', '⭐')">⭐</button>
+          <button class="btn-shape" onclick="addShape('ans2', '🔴')">🔴</button>
+          <button class="btn-shape" onclick="addShape('ans2', '🔺')">🔺</button>
+          <button class="btn-shape" onclick="addShape('ans2', '🟡')">🟡</button>
+          <button class="btn-shape btn-clear" onclick="clearShape('ans2')">
+            🔙
+          </button>
+        </div>
+        <hr style="border: 0; border-top: 2px dashed #eee; margin: 15px 0" />
+
+        <div class="task-visual">
+          в) <span>🟢🟢🟢🟩</span> -
+          <span style="color: var(--primary)">X</span> = <span>🟩</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px">
+          <span style="font-weight: bold">X = </span>
+          <div
+            id="ans3"
+            class="shape-display-area"
+            style="min-width: 100px"
+          ></div>
+        </div>
+        <div class="shape-buttons">
+          <button class="btn-shape" onclick="addShape('ans3', '🟢')">🟢</button>
+          <button class="btn-shape" onclick="addShape('ans3', '🟩')">🟩</button>
+          <button class="btn-shape btn-clear" onclick="clearShape('ans3')">
+            🔙
+          </button>
+        </div>
+        <hr style="border: 0; border-top: 2px dashed #eee; margin: 15px 0" />
+
+        <div class="task-visual">
+          г) <span>🔷🔷🔸🔸</span> -
+          <span style="color: var(--primary)">X</span> = <span>🔷🔸</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px">
+          <span style="font-weight: bold">X = </span>
+          <div
+            id="ans4"
+            class="shape-display-area"
+            style="min-width: 100px"
+          ></div>
+        </div>
+        <div class="shape-buttons">
+          <button class="btn-shape" onclick="addShape('ans4', '🔷')">🔷</button>
+          <button class="btn-shape" onclick="addShape('ans4', '🔸')">🔸</button>
+          <button class="btn-shape btn-clear" onclick="clearShape('ans4')">
+            🔙
+          </button>
+        </div>
+      </div>
+
+      <div class="task-card">
+        <div class="task-number">2</div>
+        <p><strong>Розв'яжи рівняння, записавши дію:</strong></p>
+
+        <div class="equation-block">
+          <div
+            class="equation-line"
+            style="
+              justify-content: center;
+              background: white;
+              border-radius: 10px;
+            "
+          >
+            10 - X = 6
+          </div>
+          <div class="equation-line">
+            <span>X = </span><input type="number" id="t2_a_1" /><span>-</span
+            ><input type="number" id="t2_a_2" />
+          </div>
+          <div class="equation-line">
+            <span>X = </span><input type="number" id="t2_a_res" />
+          </div>
+        </div>
+
+        <div class="equation-block">
+          <div
+            class="equation-line"
+            style="
+              justify-content: center;
+              background: white;
+              border-radius: 10px;
+            "
+          >
+            8 - X = 3
+          </div>
+          <div class="equation-line">
+            <span>X = </span><input type="number" id="t2_b_1" /><span>-</span
+            ><input type="number" id="t2_b_2" />
+          </div>
+          <div class="equation-line">
+            <span>X = </span><input type="number" id="t2_b_res" />
+          </div>
+        </div>
+
+        <div class="equation-block">
+          <div
+            class="equation-line"
+            style="
+              justify-content: center;
+              background: white;
+              border-radius: 10px;
+            "
+          >
+            7 - X = 2
+          </div>
+          <div class="equation-line">
+            <span>X = </span><input type="number" id="t2_c_1" /><span>-</span
+            ><input type="number" id="t2_c_2" />
+          </div>
+          <div class="equation-line">
+            <span>X = </span><input type="number" id="t2_c_res" />
+          </div>
+        </div>
+
+        <div class="equation-block">
+          <div
+            class="equation-line"
+            style="
+              justify-content: center;
+              background: white;
+              border-radius: 10px;
+            "
+          >
+            9 - X = 4
+          </div>
+          <div class="equation-line">
+            <span>X = </span><input type="number" id="t2_d_1" /><span>-</span
+            ><input type="number" id="t2_d_2" />
+          </div>
+          <div class="equation-line">
+            <span>X = </span><input type="number" id="t2_d_res" />
+          </div>
+        </div>
+      </div>
+
+      <div class="task-card">
+        <div class="task-number">3</div>
+        <p><strong>Віднови рівність:</strong></p>
+
+        <div class="equation-line" style="justify-content: center">
+          5 + X = 9
+        </div>
+        <div
+          class="equation-line"
+          style="justify-content: center; margin-top: 5px"
+        >
+          <span>X = </span><input type="number" id="t3_res" placeholder="?" />
+        </div>
+        <br />
+        <div class="equation-line" style="justify-content: center">
+          2 + X = 10
+        </div>
+        <div
+          class="equation-line"
+          style="justify-content: center; margin-top: 5px"
+        >
+          <span>X = </span><input type="number" id="t3_b_res" placeholder="?" />
+        </div>
+      </div>
+
+      <button class="btn-finish" onclick="finishHomework()">
+        📤 Здати роботу вчителю
+      </button>
+    </div>
+
+    <div class="modal-overlay" id="student-modal">
+      <div class="modal-box">
+        <h2>🎉 Готово!</h2>
+        <p>Надішли цей код вчителю:</p>
+        <textarea id="result-link" class="link-box" readonly></textarea>
+        <button
+          class="btn-finish"
+          style="font-size: 1rem; padding: 10px"
+          onclick="copyLink()"
+        >
+          📋 Копіювати
+        </button>
+      </div>
+    </div>
+
+    <div
+      class="modal-overlay"
+      id="teacher-login"
+      style="background: #fff9c4; z-index: 2000"
+    >
+      <div class="modal-box" style="border-color: var(--primary)">
+        <h2>🔐 Перевірка</h2>
+        <input
+          type="password"
+          id="teacher-pass"
+          style="width: 100%; height: 40px; margin-bottom: 15px"
+          placeholder="Пароль"
+        />
+        <button class="btn-finish" onclick="checkTeacher()">Увійти</button>
+      </div>
+    </div>
+
+    <script>
+      // --- LOGIC ---
+      function addShape(id, shape) {
+        document.getElementById(id).innerText += shape;
+      }
+      function clearShape(id) {
+        let t = document.getElementById(id).innerText;
+        document.getElementById(id).innerText = Array.from(t)
+          .slice(0, -1)
+          .join("");
+      }
+
+      const correctData = {
+        ans1: "🟥", // 4-3=1 (red)
+        ans2: "🔺🟡", // Star+Red+Tri+Yel - X = Star+Red. Missing Tri+Yel.
+        ans3: "🟢🟢🟢", // 3Green+1SquareGreen - X = 1SquareGreen. X = 3 Greens.
+        ans4: "🔷🔸", // 2Blue+2Orange - X = 1Blue+1Orange. X = 1Blue+1Orange.
+
+        t2_a_1: 10,
+        t2_a_2: 6,
+        t2_a_res: 4,
+        t2_b_1: 8,
+        t2_b_2: 3,
+        t2_b_res: 5,
+        t2_c_1: 7,
+        t2_c_2: 2,
+        t2_c_res: 5, // New
+        t2_d_1: 9,
+        t2_d_2: 4,
+        t2_d_res: 5, // New
+
+        t3_res: 4,
+        t3_b_res: 8, // New (2+8=10)
+      };
+
+      window.onload = function () {
+        if (window.location.hash.includes("data=")) {
+          document.getElementById("teacher-login").style.display = "flex";
+          document.querySelector(".btn-finish").style.display = "none";
+        }
+      };
+
+      function finishHomework() {
+        let answers = {};
+        // Loops through all keys in correctData to gather inputs with same IDs
+        for (let key in correctData) {
+          let el = document.getElementById(key);
+          if (el.tagName === "INPUT") answers[key] = el.value;
+          else answers[key] = el.innerText;
+        }
+
+        const json = JSON.stringify(answers);
+        const encoded = btoa(encodeURIComponent(json));
+        const link = window.location.href.split("#")[0] + "#data=" + encoded;
+        document.getElementById("result-link").value = link;
+        document.getElementById("student-modal").style.display = "flex";
+      }
+
+      function copyLink() {
+        document.getElementById("result-link").select();
+        document.execCommand("copy");
+        alert("Скопійовано!");
+      }
+
+      function checkTeacher() {
+        if (
+          document.getElementById("teacher-pass").value.toLowerCase() ===
+          "янчук"
+        ) {
+          document.getElementById("teacher-login").style.display = "none";
+          verify();
+        } else alert("Невірний пароль");
+      }
+
+      function verify() {
+        try {
+          const hash = window.location.hash.split("data=")[1];
+          const json = decodeURIComponent(atob(hash));
+          const answers = JSON.parse(json);
+
+          let score = 0;
+          let total = Object.keys(correctData).length; // Total points
+
+          for (let key in correctData) {
+            const el = document.getElementById(key);
+            const userVal = answers[key];
+            const trueVal = correctData[key];
+
+            if (el.tagName === "INPUT") {
+              el.value = userVal;
+              el.disabled = true;
+              if (parseInt(userVal) == trueVal) {
+                el.classList.add("correct");
+                score++;
+              } else el.classList.add("wrong");
+            } else {
+              el.innerText = userVal;
+              // Sort emojis to compare (so order doesn't matter)
+              let uSorted = Array.from(userVal).sort().join("");
+              let tSorted = Array.from(trueVal).sort().join("");
+              if (uSorted === tSorted) {
+                el.classList.add("correct");
+                score++;
+              } else {
+                el.classList.add("wrong");
+                let hint = document.createElement("div");
+                hint.style.fontSize = "1rem";
+                hint.style.color = "green";
+                hint.innerText = "Правильно: " + trueVal;
+                el.parentNode.appendChild(hint);
+              }
+            }
+          }
+
+          const badge = document.getElementById("score-badge");
+          badge.innerText = score + "/" + total;
+          badge.style.display = "flex";
+          document.body.style.backgroundColor = "#e8f5e9";
+        } catch (e) {
+          alert("Помилка даних");
+        }
+      }
+    </script>
+  </body>
+</html>
