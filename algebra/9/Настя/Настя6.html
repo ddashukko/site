@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>9 Клас: Повний інтерактивний курс (Алгебра та Геометрія)</title>
+    
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #3498db;
+            --bg: #f5f7fa;
+            --white: #ffffff;
+            --success: #27ae60;
+            --error: #e74c3c;
+            --hint-bg: #fffdea;
+            --hint-border: #f1c40f;
+            --sol-bg: #e8f4fd;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body, html {
+            margin: 0; padding: 0; height: 100%;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--bg);
+            overflow: hidden;
+        }
+
+        .main-container {
+            display: flex;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* --- ЛІВА ПАНЕЛЬ (КОНТЕНТ) --- */
+        .content-panel {
+            flex: 1.4;
+            padding: 25px;
+            overflow-y: auto;
+            background: var(--white);
+            border-right: 2px solid #ddd;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .section-header {
+            background: var(--primary);
+            color: white;
+            padding: 12px 18px;
+            border-radius: 10px;
+            margin: 35px 0 15px 0;
+            font-size: 1.1em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .task-card {
+            background: #fff;
+            border: 1px solid #e1e8ed;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+
+        .input-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        input[type="text"] {
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            width: 180px;
+            font-size: 16px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input.correct { border-color: var(--success); background: #f0fff4; }
+        input.wrong { border-color: var(--error); background: #fff5f5; }
+
+        .btn {
+            padding: 12px 18px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .btn-check { background: var(--accent); color: white; }
+        .btn-hint { background: var(--hint-border); color: #333; }
+        .btn-sol { background: var(--primary); color: white; }
+        .btn:active { transform: scale(0.95); }
+
+        .hidden-info {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 0.95em;
+            animation: slideDown 0.3s ease;
+        }
+
+        .hint { background: var(--hint-bg); border-left: 5px solid var(--hint-border); }
+        .solution { background: var(--sol-bg); border-left: 5px solid var(--accent); }
+
+        /* --- ПРАВА ПАНЕЛЬ (ДОШКА) --- */
+        .whiteboard-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #f0f0f0;
+        }
+
+        .toolbar {
+            padding: 12px;
+            background: #333;
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .tool-btn {
+            background: #444;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.2em;
+        }
+
+        .tool-btn.active { background: var(--accent); }
+
+        #canvas {
+            background: white;
+            flex-grow: 1;
+            touch-action: none;
+            cursor: crosshair;
+        }
+
+        @media (max-width: 1024px) {
+            .main-container { flex-direction: column; }
+            .content-panel { flex: 1; height: 50vh; }
+            .whiteboard-panel { flex: 1; height: 50vh; }
+        }
+
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+<div class="main-container">
+    <div class="content-panel" id="content-scroll">
+        <h1 style="color: var(--primary); margin-top: 0;">📚 Повний Практикум (9 клас)</h1>
+        
+        <details style="background:#f8f9fa; padding:15px; border-radius:10px; cursor:pointer; margin-bottom:20px;">
+            <summary>📝 <strong>Швидка Теорія (Клацніть, щоб відкрити)</strong></summary>
+            <div style="margin-top:10px; font-size:0.9em;">
+                <strong>Алгебра:</strong> \(y=ax^2+bx+c\) (гілки вгору при \(a>0\)). \(c_n = c_1 + (n-1)d\). <br>
+                <strong>Геометрія:</strong> \(\frac{a}{\sin A} = \frac{b}{\sin B}\). \(a^2 = b^2 + c^2 - 2bc \cos A\). <br>
+                <strong>Вектори:</strong> \(\vec{a} \cdot \vec{b} = x_1x_2 + y_1y_2\).
+            </div>
+        </details>
+
+        <div class="section-header">📈 Блок 1. Алгебра (Функції та Прогресії)</div>
+
+        <div class="task-card" data-answer="вгору">
+            <p><strong>№609 (1).</strong> Куди напрямлені гілки параболи \(y = 3x^2 - 2x + 7\)?</p>
+            <div class="input-area">
+                <input type="text" placeholder="Відповідь">
+                <button class="btn btn-check" onclick="check(this)">Перевірити</button>
+                <button class="btn btn-hint" onclick="toggle(this, 'hint')">Підказка</button>
+            </div>
+            <div class="hidden-info hint">Коефіцієнт \(a\) дорівнює 3. Дивись на знак.</div>
+        </div>
+
+        <div class="task-card" data-answer="0">
+            <p><strong>№588 (1).</strong> Знайдіть \(f(1)\), якщо \(f(x) = x^2 - 1\).</p>
+            <div class="input-area">
+                <input type="text" placeholder="Відповідь">
+                <button class="btn btn-check" onclick="check(this)">Перевірити</button>
+                <button class="btn btn-hint" onclick="toggle(this, 'hint')">Підказка</button>
+            </div>
+            <div class="hidden-info hint">Заміни \(x\) числом 1: \(1^2 - 1\).</div>
+        </div>
+
+        <div class="task-card" data-answer="(-inf;-7)U(0;+inf)">
+            <p><strong>№627 (1).</strong> Розв'яжіть нерівність \(x^2 + 7x > 0\). (Формат: (-inf;a)U(b;+inf))</p>
+            <div class="input-area">
+                <input type="text" style="width:250px" placeholder="Відповідь">
+                <button class="btn btn-check" onclick="check(this)">Перевірити</button>
+                <button class="btn btn-hint" onclick="toggle(this, 'hint')">Підказка</button>
+            </div>
+            <div class="hidden-info hint">Винеси \(x\) за дужки: \(x(x+7)>0\). Корені: \(0\) та \(-7\).</div>
+        </div>
+
+        <div class="task-card" data-answer="3">
+            <p><strong>№709 (1).</strong> Знайдіть різницю \(d\), якщо \(c_{17} = 3, c_{18} = 6\).</p>
+            <div class="input-area">
+                <input type="text" placeholder="d = ?">
+                <button class="btn btn-check" onclick="check(this)">Перевірити</button>
+                <button class="btn btn-hint" onclick="toggle(this, 'hint')">Підказка</button>
+            </div>
+            <div class="hidden-info hint">\(d = c_{18} - c_{17}\).</div>
+        </div>
+
+        <div class="section-header">📐 Блок 2. Геометрія (Теореми та Площі)</div>
+
+        <div class="task-card" data-answer="Б">
+            <p><strong>№1 (Скрін).</strong> У трикутнику проти \(a\) лежить кут \(70^\circ\), проти \(b\) — \(80^\circ\). Яка рівність вірна?</p>
+            <p>А) \(\frac{a}{\cos 70^\circ} = \frac{b}{\cos 80^\circ}\) &nbsp;&nbsp; Б) \(\frac{a}{\sin 70^\circ} = \frac{b}{\sin 80^\circ}\)</p>
+            <div class="input-area">
+                <input type="text" placeholder="А чи Б">
+                <button class="btn btn-check" onclick="check(this)">Перевірити</button>
+                <button class="btn btn-hint" onclick="toggle(this, 'hint')">Підказка</button>
+            </div>
+            <div class="hidden-info hint">Це пряме застосування теореми синусів.</div>
+        </div>
+
+        <div class="task-card" data-answer="13">
+            <p><strong>№4 (Скрін).</strong> Дві сторони \(7\) см і \(15\) см, кут між ними \(60^\circ\). Знайдіть третю сторону.</p>
+            <div class="input-area">
+                <input type="text" placeholder="см">
+                <button class="btn btn-check" onclick="check(this)">Перевірити</button>
+                <button class="btn btn-hint" onclick="toggle(this, 'hint')">Підказка</button>
+                <button class="btn btn-sol" onclick="toggle(this, 'sol')">Розв'язання</button>
+            </div>
+            <div class="hidden-info hint">Використовуй теорему косинусів: \(x^2 = a^2 + b^2 - 2ab \cos 60^\circ\).</div>
+            <div class="hidden-info sol">\(x^2 = 49 + 225 - 2 \cdot 7 \cdot 15 \cdot 0.5 = 169\). \(\sqrt{169} = 13\).</div>
+        </div>
+
+        <div class="task-card" data-answer="16">
+            <p><strong>№5 (Скрін).</strong> У \(\triangle ABC\): \(\angle A=30^\circ, \angle B=45^\circ, BC=8\sqrt{2}\) см. Знайдіть \(AC\).</p>
+            <div class="input-area">
+                <input type="text" placeholder="см">
+                <button class="btn btn-check" onclick="check(this)">Перевірити</button>
+                <button class="btn btn-hint" onclick="toggle(this, 'hint')">Підказка</button>
+            </div>
+            <div class="hidden-info hint">\(\frac{AC}{\sin 45^\circ} = \frac{8\sqrt{2}}{\sin 30^\circ}\).</div>
+        </div>
+
+        <div class="task-card" data-answer="120">
+            <p><strong>№6 (Скрін).</strong> Знайдіть найбільший кут трикутника зі сторонами \(7\) см, \(8\) см і \(13\) см.</p>
+            <div class="input-area">
+                <input type="text" placeholder="градуси">
+                <button class="btn btn-check" onclick="check(this)">Перевірити</button>
+                <button class="btn btn-hint" onclick="toggle(this, 'hint')">Підказка</button>
+            </div>
+            <div class="hidden-info hint">Найбільший кут лежить проти найбільшої сторони (\(13\) см).</div>
+        </div>
+
+        <div class="section-header">↗️ Блок 3. Вектори на площині</div>
+
+        <div class="task-card" data-answer="(2;6)">
+            <p><strong>№1 (Вектори).</strong> Дано \(\vec{a}(-2; 5), \vec{b}(4; 1)\). Координати \(\vec{c} = \vec{a} + \vec{b}\):</p>
+            <div class="input-area">
+                <input type="text" placeholder="(x;y)">
+                <button class="btn btn-check" onclick="check(this)">Перевірити</button>
+                <button class="btn btn-hint" onclick="toggle(this, 'hint')">Підказка</button>
+            </div>
+            <div class="hidden-info hint">Додай ікси до іксів, ігреки до ігреків.</div>
+        </div>
+
+        <div class="task-card" data-answer="12">
+            <p><strong>№3 (Вектори).</strong> Скалярний добуток \(\vec{a}(2; -5)\) та \(\vec{b}(1; -2)\) дорівнює:</p>
+            <div class="input-area">
+                <input type="text" placeholder="Число">
+                <button class="btn btn-check" onclick="check(this)">Перевірити</button>
+                <button class="btn btn-hint" onclick="toggle(this, 'hint')">Підказка</button>
+            </div>
+            <div class="hidden-info hint">\(x_1 x_2 + y_1 y_2\).</div>
+        </div>
+
+        <div class="task-card" data-answer="-1">
+            <p><strong>№7 (Вектори).</strong> При якому \(x\) вектори \(\vec{a}(x; -2)\) та \(\vec{b}(6; 12)\) колінеарні?</p>
+            <div class="input-area">
+                <input type="text" placeholder="x">
+                <button class="btn btn-check" onclick="check(this)">Перевірити</button>
+                <button class="btn btn-hint" onclick="toggle(this, 'hint')">Підказка</button>
+            </div>
+            <div class="hidden-info hint">Умова: \(\frac{x}{6} = \frac{-2}{12}\).</div>
+        </div>
+
+        <button class="btn btn-sol" style="width:100%; margin-top:30px; padding:20px; font-size:1.2em;" onclick="finish()">ЗАВЕРШИТИ УРОК</button>
+        <div style="height:100px"></div>
+    </div>
+
+    <div class="whiteboard-panel">
+        <div class="toolbar">
+            <button class="tool-btn active" onclick="setMode('pen', this)">✏️</button>
+            <button class="tool-btn" onclick="setMode('arrow', this)">↗️</button>
+            <button class="tool-btn" onclick="setMode('eraser', this)">🧽</button>
+            <button class="tool-btn" onclick="drawGrid()">🌐</button>
+            <button class="tool-btn" onclick="clearCanvas()" style="color:red">🗑️</button>
+        </div>
+        <canvas id="canvas"></canvas>
+    </div>
+</div>
+
+<script>
+    let solved = 0;
+    const total = 11;
+
+    function check(btn) {
+        const card = btn.closest('.task-card');
+        const input = card.querySelector('input');
+        const ans = card.dataset.answer.toLowerCase();
+        const user = input.value.trim().toLowerCase().replace(/\s/g, '');
+
+        if (user === ans) {
+            input.className = 'correct';
+            if (!card.dataset.done) { solved++; card.dataset.done = true; }
+        } else {
+            input.className = 'wrong';
+        }
+    }
+
+    function toggle(btn, type) {
+        const card = btn.closest('.task-card');
+        const info = card.querySelector('.' + (type === 'hint' ? 'hint' : 'sol'));
+        info.style.display = (info.style.display === 'block') ? 'none' : 'block';
+    }
+
+    function finish() {
+        const score = Math.round((solved / total) * 12);
+        const msg = score > 9 ? "Ти супер! Відмінна робота! 🌟" : "Непогано, але можна краще. Тренуйся! 💪";
+        alert(`Твій результат: ${score} з 12 балів.\n${msg}`);
+    }
+
+    // --- CANVAS ---
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    let drawing = false;
+    let mode = 'pen';
+    let startX, startY;
+
+    function resize() {
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+    }
+    window.onresize = resize;
+    resize();
+
+    function setMode(m, btn) {
+        mode = m;
+        document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+    }
+
+    const getPos = (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const cx = e.clientX || e.touches[0].clientX;
+        const cy = e.clientY || e.touches[0].clientY;
+        return { x: cx - rect.left, y: cy - rect.top };
+    }
+
+    canvas.addEventListener('mousedown', start);
+    canvas.addEventListener('touchstart', (e) => { e.preventDefault(); start(e.touches[0]); });
+
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('touchmove', (e) => { e.preventDefault(); draw(e.touches[0]); });
+
+    canvas.addEventListener('mouseup', stop);
+    canvas.addEventListener('touchend', stop);
+
+    function start(e) {
+        drawing = true;
+        const pos = getPos(e);
+        startX = pos.x; startY = pos.y;
+        if (mode === 'pen') {
+            ctx.beginPath();
+            ctx.moveTo(startX, startY);
+        }
+    }
+
+    function draw(e) {
+        if (!drawing) return;
+        const pos = getPos(e);
+        if (mode === 'pen') {
+            ctx.lineTo(pos.x, pos.y);
+            ctx.strokeStyle = '#2c3e50';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+        } else if (mode === 'eraser') {
+            ctx.clearRect(pos.x - 15, pos.y - 15, 30, 30);
+        }
+    }
+
+    function stop(e) {
+        if (!drawing) return;
+        const pos = getPos(e.changedTouches ? e.changedTouches[0] : e);
+        if (mode === 'arrow') {
+            drawArrow(startX, startY, pos.x, pos.y);
+        }
+        drawing = false;
+    }
+
+    function drawArrow(fx, fy, tx, ty) {
+        const headlen = 12;
+        const angle = Math.atan2(ty - fy, tx - fx);
+        ctx.beginPath();
+        ctx.moveTo(fx, fy);
+        ctx.lineTo(tx, ty);
+        ctx.lineTo(tx - headlen * Math.cos(angle - Math.PI / 6), ty - headlen * Math.sin(angle - Math.PI / 6));
+        ctx.moveTo(tx, ty);
+        ctx.lineTo(tx - headlen * Math.cos(angle + Math.PI / 6), ty - headlen * Math.sin(angle + Math.PI / 6));
+        ctx.strokeStyle = '#3498db'; ctx.lineWidth = 3; ctx.stroke();
+    }
+
+    function drawGrid() {
+        ctx.strokeStyle = '#eee'; ctx.lineWidth = 1;
+        for(let i=0; i<canvas.width; i+=25) { ctx.beginPath(); ctx.moveTo(i,0); ctx.lineTo(i,canvas.height); ctx.stroke(); }
+        for(let i=0; i<canvas.height; i+=25) { ctx.beginPath(); ctx.moveTo(0,i); ctx.lineTo(canvas.width,i); ctx.stroke(); }
+    }
+
+    function clearCanvas() { ctx.clearRect(0,0,canvas.width,canvas.height); }
+</script>
+
+</body>
+</html>
