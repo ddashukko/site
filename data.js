@@ -772,7 +772,16 @@ window.lessonsData = [
     category: "lesson",
     author: "Соня",
   },
-
+  {
+    id: "math-6-rivniannyia",
+    title: "Рівняння",
+    grade: 6,
+    topic: "Математика",
+    link: "math_general/6/Вадим/Всеволод2.html",
+    subject_code: "math_general",
+    category: "lesson",
+    author: "Соня",
+  },
   // ==========================================
   // 8 КЛАС (Алгебра - Маринка/Соня) - Автор: Соня
   // ЦІ УРОКИ ТЕПЕР В КІНЦІ СПИСКУ 8 КЛАСУ
