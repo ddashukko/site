@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Діагностика + Дошка</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script
+      id="MathJax-script"
+      async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+    ></script>
+    <style>
+      :root {
+        --primary: #2c3e50;
+        --accent: #2980b9;
+        --bg: #f0f2f5;
+        --grid-color: #e0e0e0;
+      }
+
+      body {
+        font-family: "Segoe UI", sans-serif;
+        margin: 0;
+        padding: 0;
+        overflow: hidden; /* Щоб не було подвійного скролу */
+        height: 100vh;
+        display: flex;
+      }
+
+      /* --- ЛІВА ПАНЕЛЬ (ЗАВДАННЯ) --- */
+      .left-panel {
+        width: 50%;
+        height: 100%;
+        overflow-y: auto; /* Скролиться тільки ця частина */
+        background-color: var(--bg);
+        padding: 20px;
+        box-sizing: border-box;
+        border-right: 2px solid #ccc;
+      }
+
+      /* --- ПРАВА ПАНЕЛЬ (ДОШКА) --- */
+      .right-panel {
+        width: 50%;
+        height: 100%;
+        position: relative;
+        background-color: #ffffff;
+        /* Малюємо клітинку CSS градієнтами */
+        background-image: linear-gradient(
+            var(--grid-color) 1px,
+            transparent 1px
+          ),
+          linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+        background-size: 20px 20px; /* Розмір клітинки */
+        cursor: crosshair;
+      }
+
+      canvas {
+        display: block;
+      }
+
+      .board-controls {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: white;
+        padding: 5px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        display: flex;
+        gap: 5px;
+      }
+
+      .tool-btn {
+        border: 1px solid #ccc;
+        background: white;
+        padding: 5px 10px;
+        cursor: pointer;
+        border-radius: 3px;
+        font-size: 14px;
+      }
+      .tool-btn:hover {
+        background: #eee;
+      }
+      .tool-btn.active {
+        background: var(--accent);
+        color: white;
+        border-color: var(--accent);
+      }
+
+      /* Стилі завдань */
+      .task-card {
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+      }
+      h2 {
+        color: var(--accent);
+        border-bottom: 2px solid #ddd;
+        padding-bottom: 5px;
+      }
+      input[type="number"] {
+        padding: 5px;
+        border: 2px solid #ddd;
+        border-radius: 4px;
+      }
+
+      .check-btn {
+        background: var(--accent);
+        color: white;
+        border: none;
+        padding: 7px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-left: 10px;
+      }
+
+      .options-grid {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 10px;
+      }
+      .option-btn {
+        background: white;
+        border: 1px solid #ccc;
+        padding: 8px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .option-btn.selected {
+        background: var(--accent);
+        color: white;
+      }
+
+      .result-msg {
+        margin-top: 10px;
+        font-weight: bold;
+        display: none;
+      }
+      .correct {
+        color: green;
+      }
+      .wrong {
+        color: red;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="left-panel">
+      <header style="text-align: center; margin-bottom: 20px">
+        <h1>Діагностична робота</h1>
+        <p style="color: #666">Пиши розв'язки на дошці праворуч 👉</p>
+      </header>
+
+      <section>
+        <h2>I. Алгебра</h2>
+
+        <div class="task-card">
+          <h3>1. Додавання дробів</h3>
+          $$ \frac{1}{4} + \frac{3}{8} $$
+          <div class="options-grid">
+            <button
+              class="option-btn"
+              onclick="checkOption(this, 'res1', false)"
+            >
+              \( 4/12 \)
+            </button>
+            <button
+              class="option-btn"
+              onclick="checkOption(this, 'res1', true)"
+            >
+              \( 5/8 \)
+            </button>
+            <button
+              class="option-btn"
+              onclick="checkOption(this, 'res1', false)"
+            >
+              \( 1/2 \)
+            </button>
+          </div>
+          <div id="res1" class="result-msg"></div>
+        </div>
+
+        <div class="task-card">
+          <h3>2. Рівняння</h3>
+          <p>Знайдіть x: \( \frac{12}{x} = 3 \)</p>
+          <input type="number" id="inp2" />
+          <button class="check-btn" onclick="checkInput('inp2', 'res2', 4)">
+            Ок
+          </button>
+          <div id="res2" class="result-msg"></div>
+        </div>
+
+        <div class="task-card">
+          <h3>3. Спрощення виразу</h3>
+          $$ \frac{x^2 - 9}{x - 3} $$
+          <div class="options-grid">
+            <button
+              class="option-btn"
+              onclick="checkOption(this, 'res3', true)"
+            >
+              \( x+3 \)
+            </button>
+            <button
+              class="option-btn"
+              onclick="checkOption(this, 'res3', false)"
+            >
+              \( x-3 \)
+            </button>
+          </div>
+          <div id="res3" class="result-msg"></div>
+        </div>
+
+        <div class="task-card">
+          <h3>4. Від'ємний степінь</h3>
+          $$ 2^{-3} = ? $$
+          <div class="options-grid">
+            <button
+              class="option-btn"
+              onclick="checkOption(this, 'res4', false)"
+            >
+              \( -8 \)
+            </button>
+            <button
+              class="option-btn"
+              onclick="checkOption(this, 'res4', true)"
+            >
+              \( 1/8 \)
+            </button>
+            <button
+              class="option-btn"
+              onclick="checkOption(this, 'res4', false)"
+            >
+              \( -6 \)
+            </button>
+          </div>
+          <div id="res4" class="result-msg"></div>
+        </div>
+      </section>
+
+      <section>
+        <h2>II. Геометрія</h2>
+        <div class="task-card">
+          <h3>5. Середня лінія трикутника</h3>
+          <p>
+            Сторона трикутника = 16 см. Знайди середню лінію паралельну до цієї
+            сторони.
+          </p>
+          <input type="number" id="inp5" />
+          <button class="check-btn" onclick="checkInput('inp5', 'res5', 8)">
+            Ок
+          </button>
+          <div id="res5" class="result-msg"></div>
+        </div>
+
+        <div class="task-card">
+          <h3>6. Середня лінія трапеції</h3>
+          <p>Основи 4 см і 10 см. Знайди середню лінію.</p>
+          <input type="number" id="inp6" />
+          <button class="check-btn" onclick="checkInput('inp6', 'res6', 7)">
+            Ок
+          </button>
+          <div id="res6" class="result-msg"></div>
+        </div>
+      </section>
+
+      <br /><br /><br />
+    </div>
+
+    <div class="right-panel" id="boardContainer">
+      <canvas id="drawingBoard"></canvas>
+
+      <div class="board-controls">
+        <button class="tool-btn active" onclick="setMode('draw')">
+          ✏️ Ручка
+        </button>
+        <button class="tool-btn" onclick="setMode('eraser')">🧼 Гумка</button>
+        <button class="tool-btn" onclick="clearBoard()" style="color: red">
+          🗑️ Очистити все
+        </button>
+      </div>
+    </div>
+
+    <script>
+      // --- JS ДЛЯ ТЕСТІВ ---
+      function checkInput(id, resId, ans) {
+        const val = parseFloat(document.getElementById(id).value);
+        const msg = document.getElementById(resId);
+        if (val === ans) {
+          msg.innerHTML = "✅ Правильно";
+          msg.className = "result-msg correct";
+        } else {
+          msg.innerHTML = "❌ Неправильно";
+          msg.className = "result-msg wrong";
+        }
+        msg.style.display = "block";
+      }
+
+      function checkOption(btn, resId, isCorrect) {
+        let siblings = btn.parentElement.children;
+        for (let s of siblings) s.classList.remove("selected");
+        btn.classList.add("selected");
+
+        const msg = document.getElementById(resId);
+        if (isCorrect) {
+          msg.innerHTML = "✅ Правильно";
+          msg.className = "result-msg correct";
+        } else {
+          msg.innerHTML = "❌ Неправильно";
+          msg.className = "result-msg wrong";
+        }
+        msg.style.display = "block";
+      }
+
+      // --- JS ДЛЯ ДОШКИ ---
+      const canvas = document.getElementById("drawingBoard");
+      const ctx = canvas.getContext("2d");
+      const container = document.getElementById("boardContainer");
+
+      let isDrawing = false;
+      let mode = "draw"; // draw or eraser
+
+      // Налаштування розміру
+      function resizeCanvas() {
+        canvas.width = container.clientWidth;
+        canvas.height = container.clientHeight;
+        // Після ресайзу треба повернути налаштування пензля
+        setupBrush();
+      }
+      window.addEventListener("resize", resizeCanvas);
+      resizeCanvas(); // викликати один раз на старті
+
+      function setupBrush() {
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+        if (mode === "draw") {
+          ctx.strokeStyle = "#2c3e50"; // Темно-синій колір ручки
+          ctx.lineWidth = 2;
+        } else {
+          ctx.strokeStyle = "#ffffff"; // Колір фону для гумки (але прозорість фону тут не спрацює ідеально, тому малюємо білим)
+          // Оскільки у нас фон прозорий на canvas, а сітка в CSS,
+          // 'eraser' в canvas це globalCompositeOperation = 'destination-out'
+        }
+      }
+
+      function setMode(newMode) {
+        mode = newMode;
+        // Оновлюємо кнопки
+        document
+          .querySelectorAll(".tool-btn")
+          .forEach((b) => b.classList.remove("active"));
+        if (newMode === "draw")
+          document
+            .querySelector("button[onclick=\"setMode('draw')\"]")
+            .classList.add("active");
+        if (newMode === "eraser")
+          document
+            .querySelector("button[onclick=\"setMode('eraser')\"]")
+            .classList.add("active");
+      }
+
+      function clearBoard() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+
+      // Малювання мишкою
+      function startDraw(e) {
+        isDrawing = true;
+        ctx.beginPath();
+        ctx.moveTo(e.offsetX, e.offsetY);
+
+        if (mode === "eraser") ctx.globalCompositeOperation = "destination-out";
+        else ctx.globalCompositeOperation = "source-over";
+
+        setupBrush();
+        if (mode === "eraser") ctx.lineWidth = 20;
+      }
+
+      function draw(e) {
+        if (!isDrawing) return;
+        ctx.lineTo(e.offsetX, e.offsetY);
+        ctx.stroke();
+      }
+
+      function stopDraw() {
+        isDrawing = false;
+        ctx.closePath();
+      }
+
+      canvas.addEventListener("mousedown", startDraw);
+      canvas.addEventListener("mousemove", draw);
+      canvas.addEventListener("mouseup", stopDraw);
+      canvas.addEventListener("mouseout", stopDraw);
+    </script>
+  </body>
+</html>
