@@ -1,477 +1,248 @@
-.<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Підсумкова контрольна робота №6 — Математика 6 клас</title>
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <title>Blitz Math: Коло та Круг</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: { fontCache: 'global' }
+        };
+    </script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <style>
-        :root {
-            --paper-bg: #fdfdfd;
-            --line-color: #e2eaf3;
-            --ink-blue: #1a3a5f;
-            --margin-red: #ff9999;
-            --pencil: #444;
-            --accent: #3498db;
-        }
-
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            font-family: 'Segoe UI', 'Comic Sans MS', cursive, sans-serif;
-            background-color: #d1d8e0;
-            overflow: hidden;
-        }
-
-        .split-screen {
-            display: flex;
-            height: 100vh;
-            width: 100vw;
-        }
-
-        /* ЛІВА ЧАСТИНА - ЛИСТОЧОК */
-        .notebook-side {
-            flex: 1.2;
-            background-color: var(--paper-bg);
-            background-image: linear-gradient(var(--line-color) 1px, transparent 1px);
-            background-size: 100% 28px;
-            padding: 40px 40px 40px 80px;
-            position: relative;
-            overflow-y: auto;
-            box-shadow: 10px 0 20px rgba(0,0,0,0.1);
-            border-right: 2px solid #ccc;
-        }
-
-        .notebook-side::before {
-            content: '';
-            position: absolute;
-            left: 60px;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background-color: var(--margin-red);
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-            line-height: 1.2;
-        }
-
-        .header h1 { color: var(--ink-blue); font-size: 24px; margin: 0; }
-        .header p { font-size: 14px; color: #666; font-style: italic; }
-
-        details {
-            margin-bottom: 30px;
-            padding: 10px;
-            background: rgba(52, 152, 219, 0.05);
-            border-radius: 8px;
-            border: 1px dashed var(--accent);
-        }
-
-        .task-container {
-            margin-bottom: 50px;
-        }
-
-        .task-condition {
-            font-weight: bold;
-            font-size: 18px;
-            line-height: 28px;
-            color: var(--pencil);
-            margin-bottom: 10px;
-        }
-
-        .solution-field {
-            width: 95%;
-            min-height: 120px;
-            background: transparent;
-            border: none;
-            border-bottom: 1px solid #999;
-            font-family: 'Courier New', monospace;
-            font-size: 16px;
-            line-height: 28px;
-            padding: 5px;
-            resize: vertical;
-            margin-bottom: 15px;
-            outline: none;
-        }
-
-        .answer-block {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-
-        input[type="text"] {
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            padding: 5px 10px;
-            font-size: 16px;
-            width: 200px;
-        }
-
-        .btn {
-            cursor: pointer;
-            padding: 6px 12px;
-            border: none;
-            border-radius: 4px;
-            font-size: 14px;
-            transition: 0.3s;
-        }
-
-        .btn-check { background: var(--accent); color: white; }
-        .btn-hint { background: #95a5a6; color: white; }
-        .btn-sol { background: #f39c12; color: white; }
-
-        .hidden-content {
-            display: none;
-            padding: 10px;
-            margin-top: 10px;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-
-        .hint-box { background: #fff9c4; border-left: 4px solid #fbc02d; }
-        .sol-box { background: #e8f5e9; border-left: 4px solid #4caf50; }
-
-        /* ПРАВА ЧАСТИНА - ДОШКА */
-        .board-side {
-            flex: 0.8;
-            background: #2c3e50;
-            display: flex;
-            flex-direction: column;
-            padding: 10px;
-        }
-
-        .toolbar {
-            background: #34495e;
-            padding: 10px;
-            border-radius: 8px;
-            display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
-            flex-wrap: wrap;
-        }
-
-        #canvas {
-            flex: 1;
-            background: #fff;
-            border-radius: 8px;
-            cursor: crosshair;
-        }
-
-        .tool-btn {
-            padding: 8px;
-            background: #5d6d7e;
-            border: none;
-            color: white;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .tool-btn.active { background: var(--accent); }
-
-        /* ТАБЛИЦЯ ДЛЯ ЗАВДАННЯ 7 */
-        .math-table {
-            border-collapse: collapse;
-            margin: 10px 0;
-            background: white;
-        }
-        .math-table td {
-            border: 1px solid #333;
-            padding: 5px 15px;
-            text-align: center;
-        }
-
-        .status-msg { font-weight: bold; margin-left: 10px; }
-        .correct { color: #27ae60; }
-        .wrong { color: #e74c3c; }
-
-        #final-section {
-            padding: 40px;
-            text-align: center;
-            background: #f1f2f6;
-            border-radius: 12px;
-            margin-top: 50px;
-        }
+        body { font-family: 'Inter', sans-serif; overflow: hidden; }
+        .content-scroll::-webkit-scrollbar { width: 6px; }
+        .content-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .canvas-container { cursor: crosshair; }
+        .task-card { transition: all 0.2s ease; border-width: 2px; }
+        .is-correct { border-color: #22c55e !important; background-color: #f0fdf4 !important; }
+        .is-wrong { border-color: #ef4444 !important; background-color: #fef2f2 !important; }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
+        .shake { animation: shake 0.3s ease-in-out; }
     </style>
 </head>
-<body>
+<body class="bg-slate-50 text-slate-900">
 
-<div class="split-screen">
-    <div class="notebook-side">
-        <div class="header">
-            <h1>Контрольна робота №6</h1>
-            <p>Тема: Пряма та обернена пропорційність. Коло і круг. Дроби.</p>
-        </div>
-
-        <details>
-            <summary>📖 Шпаргалка (Високий рівень)</summary>
-            <ul>
-                <li><strong>Пряма пропорційність:</strong> \( y = kx \). Зі збільшенням \( x \) у \( n \) разів, \( y \) збільшується у \( n \) разів.</li>
-                <li><strong>Обернена пропорційність:</strong> \( y = \frac{k}{x} \). Зі збільшенням \( x \) у \( n \) разів, \( y \) зменшується у \( n \) разів.</li>
-                <li><strong>Коло:</strong> \( L = 2\pi r \) або \( L = \pi d \).</li>
-                <li><strong>Круг:</strong> \( S = \pi r^2 \).</li>
-            </ul>
-        </details>
-
-        <div class="task-container">
-            <div class="task-condition">1. Турист за деякий час пройшов 9 км. Яку відстань проїде за той самий час вершник, швидкість якого в 3 рази більша за швидкість туриста?</div>
-            <textarea class="solution-field" placeholder="Розв'язання..."></textarea>
-            <div class="answer-block">
-                <span>Відповідь:</span>
-                <input type="text" id="ans1" placeholder="число">
-                <button class="btn btn-check" onclick="check(1, '27')">Перевірити</button>
-                <button class="btn btn-hint" onclick="toggle('hint1')">Підказка</button>
-                <button class="btn btn-sol" onclick="toggle('sol1')">Розв'язання</button>
+<div class="flex h-screen w-full">
+    <div class="flex-[1.1] flex flex-col h-full bg-white border-r border-slate-200">
+        <div class="p-4 border-b border-slate-100 flex justify-between items-center bg-white z-10">
+            <div>
+                <h1 class="text-xl font-black text-blue-600 tracking-tight">Geometry Blitz ⚡</h1>
+                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">30 хвилин • Тільки Коло та Круг</p>
             </div>
-            <div id="hint1" class="hidden-content hint-box">За однакового часу шлях прямо пропорційний швидкості.</div>
-            <div id="sol1" class="hidden-content sol-box">Оскільки швидкість у 3 рази більша, то і відстань буде у 3 рази більшою: \( 9 \cdot 3 = 27 \) (км).</div>
-        </div>
-
-        <div class="task-container">
-            <div class="task-condition">2. За деяку суму грошей можна купити 16 великих наборів фломастерів. Скільки маленьких наборів, які в 4 рази дешевші від великих, можна купити за цю суму?</div>
-            <textarea class="solution-field" placeholder="Розв'язання..."></textarea>
-            <div class="answer-block">
-                <span>Відповідь:</span>
-                <input type="text" id="ans2" placeholder="число">
-                <button class="btn btn-check" onclick="check(2, '64')">Перевірити</button>
-                <button class="btn btn-hint" onclick="toggle('hint2')">Підказка</button>
-                <button class="btn btn-sol" onclick="toggle('sol2')">Розв'язання</button>
-            </div>
-            <div id="hint2" class="hidden-content hint-box">Це обернена пропорційність: у скільки разів менша ціна, у стільки разів більше товару.</div>
-            <div id="sol2" class="hidden-content sol-box">\( 16 \cdot 4 = 64 \) (набори).</div>
-        </div>
-
-        <div class="task-container">
-            <div class="task-condition">3. Знайдіть довжину кола, якщо його радіус дорівнює 3,5 см. (Прийміть \( \pi \approx 3.14 \))</div>
-            <textarea class="solution-field" placeholder="Розв'язання..."></textarea>
-            <div class="answer-block">
-                <span>Відповідь:</span>
-                <input type="text" id="ans3" placeholder="число">
-                <button class="btn btn-check" onclick="check(3, '21.98')">Перевірити</button>
-                <button class="btn btn-hint" onclick="toggle('hint3')">Підказка</button>
-                <button class="btn btn-sol" onclick="toggle('sol3')">Розв'язання</button>
-            </div>
-            <div id="hint3" class="hidden-content hint-box">Використовуй формулу \( L = 2\pi r \).</div>
-            <div id="sol3" class="hidden-content sol-box">\( L = 2 \cdot 3.14 \cdot 3.5 = 7 \cdot 3.14 = 21.98 \) (см).</div>
-        </div>
-
-        <div class="task-container">
-            <div class="task-condition">4. Знайдіть площу круга, якщо його радіус дорівнює 5 см. (Прийміть \( \pi \approx 3.14 \))</div>
-            <textarea class="solution-field" placeholder="Розв'язання..."></textarea>
-            <div class="answer-block">
-                <span>Відповідь:</span>
-                <input type="text" id="ans4" placeholder="число">
-                <button class="btn btn-check" onclick="check(4, '78.5')">Перевірити</button>
-                <button class="btn btn-hint" onclick="toggle('hint4')">Підказка</button>
-                <button class="btn btn-sol" onclick="toggle('sol4')">Розв'язання</button>
-            </div>
-            <div id="hint4" class="hidden-content hint-box">Використовуй формулу \( S = \pi r^2 \).</div>
-            <div id="sol4" class="hidden-content sol-box">\( S = 3.14 \cdot 5^2 = 3.14 \cdot 25 = 78.5 \) (см²).</div>
-        </div>
-
-        <div class="task-container">
-            <div class="task-condition">5. Обчислити: \( (10 - 1\frac{17}{27} : \frac{22}{45}) : 4\frac{4}{9} \)</div>
-            <textarea class="solution-field" placeholder="Розпишіть дії..."></textarea>
-            <div class="answer-block">
-                <span>Відповідь:</span>
-                <input type="text" id="ans5" placeholder="число або дріб">
-                <button class="btn btn-check" onclick="check(5, '1.5')">Перевірити</button>
-                <button class="btn btn-sol" onclick="toggle('sol5')">Розв'язання</button>
-            </div>
-            <div id="sol5" class="hidden-content sol-box">
-                1) \( 1\frac{17}{27} : \frac{22}{45} = \frac{44}{27} \cdot \frac{45}{22} = \frac{2 \cdot 5}{3 \cdot 1} = \frac{10}{3} = 3\frac{1}{3} \)<br>
-                2) \( 10 - 3\frac{1}{3} = 6\frac{2}{3} = \frac{20}{3} \)<br>
-                3) \( \frac{20}{3} : 4\frac{4}{9} = \frac{20}{3} : \frac{40}{9} = \frac{20}{3} \cdot \frac{9}{40} = \frac{1 \cdot 3}{1 \cdot 2} = 1.5 \)
+            <div class="flex flex-col items-end">
+                <span id="progress-text" class="text-sm font-black text-blue-500">0/25</span>
+                <div class="w-24 h-1.5 bg-slate-100 rounded-full mt-1 overflow-hidden">
+                    <div id="progress-bar" class="h-full bg-blue-500 transition-all duration-300" style="width: 0%"></div>
+                </div>
             </div>
         </div>
 
-        <div class="task-container">
-            <div class="task-condition">6. Перетворіть звичайний дріб \( \frac{5}{6} \) у нескінченний періодичний десятковий дріб.</div>
-            <textarea class="solution-field" placeholder="Ділення в стовпчик..."></textarea>
-            <div class="answer-block">
-                <span>Відповідь:</span>
-                <input type="text" id="ans6" placeholder=" ">
-                <button class="btn btn-check" onclick="check(6, '0.8(3)')">Перевірити</button>
-            </div>
-        </div>
+        <div class="content-scroll overflow-y-auto p-5 space-y-6">
+            
+            <section class="bg-slate-900 rounded-2xl p-5 text-white shadow-lg">
+                <h2 class="text-md font-bold mb-3 flex items-center gap-2">
+                    <span>🔬</span> Лабораторія Радіуса
+                </h2>
+                <div class="flex items-center gap-6">
+                    <div class="flex-1 space-y-3">
+                        <input type="range" id="lab-r" min="5" max="70" value="35" class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-500" oninput="updateLab()">
+                        <div class="grid grid-cols-2 gap-2 text-[10px] uppercase font-bold tracking-wider">
+                            <div class="bg-slate-800 p-2 rounded-lg border border-slate-700">
+                                <p class="text-slate-500">Довжина $C$</p>
+                                <p id="lab-c" class="text-md text-blue-400">219.8</p>
+                            </div>
+                            <div class="bg-slate-800 p-2 rounded-lg border border-slate-700">
+                                <p class="text-slate-500">Площа $S$</p>
+                                <p id="lab-s" class="text-md text-purple-400">3846</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="w-24 h-24 bg-white/5 rounded-xl flex items-center justify-center relative">
+                        <div id="v-circle" class="border-2 border-blue-400 rounded-full bg-blue-400/10" style="width: 70px; height: 70px;"></div>
+                    </div>
+                </div>
+            </section>
 
-        <div class="task-container">
-            <div class="task-condition">7. Заповніть таблицю, якщо величина \( y \) прямо пропорційна величині \( x \):</div>
-            <table class="math-table">
-                <tr><td>\( x \)</td><td>0,8</td><td>1,2</td><td><input type="text" style="width:40px" id="tabX"></td></tr>
-                <tr><td>\( y \)</td><td><input type="text" style="width:40px" id="tabY"></td><td>4,8</td><td>2,8</td></tr>
-            </table>
-            <button class="btn btn-check" onclick="checkTable()">Перевірити таблицю</button>
-            <div id="sol7" class="hidden-content sol-box">Коефіцієнт \( k = y/x = 4.8 / 1.2 = 4 \). Отже \( y = 4x \). При \( x=0.8, y=3.2 \). При \( y=2.8, x=0.7 \).</div>
-        </div>
+            <details class="bg-blue-50 rounded-xl p-3 border border-blue-100 group">
+                <summary class="text-sm font-bold text-blue-700 cursor-pointer list-none flex justify-between">
+                    <span>📖 Швидка шпаргалка</span>
+                    <span class="group-open:rotate-180 transition-transform text-[10px]">▼</span>
+                </summary>
+                <div class="mt-3 text-xs space-y-2 text-blue-800/80 leading-relaxed">
+                    <p>• <b>Діаметр:</b> $d = 2r$</p>
+                    <p>• <b>Довжина кола:</b> $C = \pi d = 2\pi r$</p>
+                    <p>• <b>Площа круга:</b> $S = \pi r^2$</p>
+                    <p>• <b>Стала:</b> $\pi \approx 3.14$</p>
+                </div>
+            </details>
 
-        <div class="task-container">
-            <div class="task-condition">8. Між трьома санаторіями розподілили 320 кг бананів у відношенні \( 4:7:5 \). Скільки кг одержав кожний?</div>
-            <textarea class="solution-field" placeholder="Введіть x..."></textarea>
-            <div class="answer-block">
-                <span>Відповідь:</span>
-                <input type="text" id="ans8" placeholder="через пробіл">
-                <button class="btn btn-check" onclick="check(8, '80 140 100')">Перевірити</button>
-            </div>
-        </div>
+            <div id="tasks-container" class="grid grid-cols-1 gap-3">
+                </div>
 
-        <div class="task-container">
-            <div class="task-condition">9. Розв'яжіть рівняння: \( \frac{4x+5}{13} = \frac{8}{9} \)</div>
-            <textarea class="solution-field" placeholder="Використайте властивість пропорції..."></textarea>
-            <div class="answer-block">
-                <span>Відповідь (округліть до 2 знаків):</span>
-                <input type="text" id="ans9">
-                <button class="btn btn-check" onclick="check(9, '1.64')">Перевірити</button>
-            </div>
-            <div id="sol9" class="hidden-content sol-box">\( 9(4x+5) = 13 \cdot 8 \Rightarrow 36x + 45 = 104 \Rightarrow 36x = 59 \Rightarrow x \approx 1.64 \)</div>
-        </div>
-
-        <div class="task-container">
-            <div class="task-condition">10. До 600 г восьмивідсоткового сплаву міді додали 136 г міді. Знайдіть відсотковий вміст міді в новому сплаві.</div>
-            <textarea class="solution-field" placeholder="1) Маса міді... 2) Загальна маса..."></textarea>
-            <div class="answer-block">
-                <span>Відповідь:</span>
-                <input type="text" id="ans10" placeholder="%">
-                <button class="btn btn-check" onclick="check(10, '25')">Перевірити</button>
-            </div>
-            <div id="sol10" class="hidden-content sol-box">
-                1) Чиста мідь: \( 600 \cdot 0.08 = 48 \) г.<br>
-                2) Нова мідь: \( 48 + 136 = 184 \) г.<br>
-                3) Нова маса сплаву: \( 600 + 136 = 736 \) г.<br>
-                4) % вміст: \( (184 / 736) \cdot 100 = 25\% \).
-            </div>
-        </div>
-
-        <div id="final-section">
-            <button class="btn btn-check" style="padding: 15px 30px; font-size: 20px;" onclick="finish()">Завершити урок</button>
-            <h2 id="final-mark"></h2>
-            <p id="final-praise"></p>
+            <button onclick="finishLesson()" class="w-full py-4 bg-slate-900 text-white rounded-2xl font-black text-lg hover:bg-black transition-all shadow-xl">ЗАВЕРШИТИ УРОК 🏁</button>
         </div>
     </div>
 
-    <div class="board-side">
-        <div class="toolbar">
-            <button class="tool-btn active" onclick="setMode('pencil')">✏️ Олівець</button>
-            <button class="tool-btn" onclick="setMode('eraser')">🧽 Гумка</button>
-            <button class="tool-btn" onclick="drawCircle()">⭕ Коло</button>
-            <button class="tool-btn" onclick="toggleGrid()">📏 Сітка</button>
-            <button class="tool-btn" style="background:#c0392b" onclick="clearBoard()">🗑️ Очистити</button>
+    <div class="flex-[0.9] bg-slate-100 flex flex-col relative">
+        <div class="p-3 bg-slate-800 flex gap-2 items-center shadow-lg z-20">
+            <button onclick="setTool('pencil', this)" class="w-10 h-10 bg-blue-600 text-white rounded-lg flex items-center justify-center tool-btn active">✏️</button>
+            <button onclick="setTool('eraser', this)" class="w-10 h-10 bg-slate-700 text-white rounded-lg flex items-center justify-center tool-btn">🧽</button>
+            <div class="h-6 w-px bg-slate-600 mx-1"></div>
+            <button onclick="drawGrid()" class="w-10 h-10 bg-slate-700 text-white rounded-lg flex items-center justify-center" title="Сітка">▦</button>
+            <button onclick="drawCircle()" class="w-10 h-10 bg-slate-700 text-white rounded-lg flex items-center justify-center" title="Коло">⭕</button>
+            <button onclick="clearCanvas()" class="w-10 h-10 bg-red-500/10 text-red-400 rounded-lg flex items-center justify-center ml-auto hover:bg-red-500 hover:text-white transition-all">🗑️</button>
         </div>
-        <canvas id="canvas"></canvas>
+        <div class="flex-1 m-4 bg-white rounded-2xl shadow-inner relative overflow-hidden canvas-container border-2 border-slate-200">
+            <canvas id="canvas"></canvas>
+            <div class="absolute bottom-4 left-4 text-[9px] font-bold text-slate-300 uppercase tracking-widest pointer-events-none">Interactive Sketchpad</div>
+        </div>
+    </div>
+</div>
+
+<div id="modal" class="fixed inset-0 bg-slate-900/90 backdrop-blur-md hidden items-center justify-center z-[100] p-4">
+    <div class="bg-white rounded-[40px] p-8 max-w-sm w-full text-center shadow-2xl">
+        <div class="text-5xl mb-4">🎖️</div>
+        <h2 class="text-2xl font-black mb-2 text-slate-900">Завдання виконано!</h2>
+        <p id="modal-text" class="text-slate-500 text-sm mb-6 leading-relaxed"></p>
+        <button onclick="location.reload()" class="w-full py-4 bg-blue-600 text-white rounded-xl font-bold shadow-lg hover:shadow-blue-200 transition-all">ЩЕ РАЗ</button>
     </div>
 </div>
 
 <script>
-    // --- Логіка завдань ---
-    let correctCount = 0;
+    // --- ГЕНЕРАЦІЯ 25 ЗАВДАНЬ ---
+    const tasks = [
+        // Блок 1: Діаметр (9 завдань)
+        ...Array.from({length: 9}, (_, i) => {
+            let r = [7, 3.6, 5, 12, 1.5, 25, 6, 8, 10][i];
+            return { q: `Завдання №${i+1}: $r = ${r}$. Знайди $d$.`, a: r * 2, h: "Діаметр удвічі більший за радіус: $d = 2r$." }
+        }),
+        // Блок 2: Довжина кола (8 завдань)
+        ...Array.from({length: 8}, (_, i) => {
+            let d = [6, 30, 2.5, 3, 0.5, 10, 20, 50][i];
+            return { q: `Завдання №${i+10}: $d = ${d}$. Знайди $C$. ($\\pi \\approx 3.14$)`, a: (d * 3.14).toFixed(2), h: "Формула: $C = \\pi d$." }
+        }),
+        // Блок 3: Площа (8 завдань)
+        ...Array.from({length: 8}, (_, i) => {
+            let r = [5, 2, 10, 3, 1, 4, 8, 0.5][i];
+            return { q: `Завдання №${i+18}: $r = ${r}$. Знайди $S$. ($\\pi \\approx 3.14$)`, a: (r * r * 3.14).toFixed(2), h: "Формула: $S = \\pi r^2$." }
+        })
+    ];
 
-    function toggle(id) {
-        const el = document.getElementById(id);
-        el.style.display = (el.style.display === 'block') ? 'none' : 'block';
-    }
+    const container = document.getElementById('tasks-container');
+    tasks.forEach((t) => {
+        const card = document.createElement('div');
+        card.className = "task-card p-4 border border-slate-100 rounded-xl space-y-3";
+        card.innerHTML = `
+            <p class="font-bold text-xs text-slate-700">${t.q}</p>
+            <div class="flex gap-2">
+                <input type="text" data-ans="${t.a}" class="w-full p-2 bg-slate-50 rounded-lg border outline-none focus:border-blue-400 text-xs font-bold" placeholder="?">
+                <button onclick="checkTask(this)" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-[10px] font-bold transition-all">OK</button>
+            </div>
+            <details class="text-[9px] text-slate-400 font-bold uppercase">
+                <summary class="cursor-pointer hover:text-blue-500">Допомога</summary>
+                <div class="mt-2 normal-case font-medium text-slate-500 bg-slate-50 p-2 rounded-md">${t.h}</div>
+            </details>
+        `;
+        container.appendChild(card);
+    });
 
-    function check(id, correct) {
-        const val = document.getElementById('ans' + id).value.trim().replace(',', '.');
-        const status = document.createElement('span');
-        status.className = 'status-msg';
-        
-        if (val === correct || val + '%' === correct) {
-            status.innerHTML = "✅ Вірно!";
-            status.className += " correct";
-            correctCount++;
+    // --- ЛОГІКА ПЕРЕВІРКИ ---
+    let solved = 0;
+    function checkTask(btn) {
+        const card = btn.closest('.task-card');
+        const input = card.querySelector('input');
+        const userVal = parseFloat(input.value.replace(',', '.').trim());
+        const correct = parseFloat(input.dataset.ans);
+
+        if (Math.abs(userVal - correct) < 0.01) {
+            if (!card.classList.contains('is-correct')) {
+                card.classList.add('is-correct');
+                input.disabled = true;
+                btn.disabled = true;
+                btn.innerText = "✓";
+                solved++;
+                updateProgress();
+            }
         } else {
-            status.innerHTML = "❌ Помилка";
-            status.className += " wrong";
-        }
-        
-        const parent = document.getElementById('ans' + id).parentElement;
-        if (parent.querySelector('.status-msg')) parent.querySelector('.status-msg').remove();
-        parent.appendChild(status);
-    }
-
-    function checkTable() {
-        const x = document.getElementById('tabX').value.trim().replace(',', '.');
-        const y = document.getElementById('tabY').value.trim().replace(',', '.');
-        if (x === '0.7' && y === '3.2') {
-            alert('Таблиця заповнена правильно!');
-            correctCount++;
-        } else {
-            alert('У таблиці є помилки. Перевір коефіцієнт k = y/x');
+            card.classList.add('shake', 'is-wrong');
+            setTimeout(() => card.classList.remove('shake', 'is-wrong'), 500);
         }
     }
 
-    function finish() {
-        const mark = Math.min(12, Math.round((correctCount / 10) * 12) + 2); // Бонус за складність
-        document.getElementById('final-mark').innerText = "Твій результат: " + mark + " балів";
-        document.getElementById('final-praise').innerText = mark > 9 ? "Ти неймовірний! Справжній математик 2025 року! 🚀" : "Гарна спроба! Твій хід думок правильний, продовжуй практику! 💪";
-        window.scrollTo(0, document.body.scrollHeight);
+    function updateProgress() {
+        const p = (solved / 25) * 100;
+        document.getElementById('progress-bar').style.width = p + '%';
+        document.getElementById('progress-text').innerText = solved + "/25";
     }
 
-    // --- Логіка дошки (Whiteboard) ---
+    function updateLab() {
+        const r = document.getElementById('lab-r').value;
+        const circle = document.getElementById('v-circle');
+        circle.style.width = (r * 1.5) + 'px';
+        circle.style.height = (r * 1.5) + 'px';
+        document.getElementById('lab-c').innerText = (2 * 3.14 * r).toFixed(1);
+        document.getElementById('lab-s').innerText = (3.14 * r * r).toFixed(0);
+    }
+
+    // --- ДОШКА (WHITEBOARD) ---
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
-    let drawing = false;
-    let mode = 'pencil';
-    let hasGrid = false;
+    let isDrawing = false;
+    let currentTool = 'pencil';
 
-    function resize() {
-        canvas.width = canvas.offsetWidth;
-        canvas.height = canvas.offsetHeight;
-    }
-    window.onresize = resize;
-    resize();
-
-    canvas.addEventListener('mousedown', () => drawing = true);
-    canvas.addEventListener('mouseup', () => { drawing = false; ctx.beginPath(); });
-    canvas.addEventListener('mousemove', draw);
-
-    function setMode(m) { 
-        mode = m; 
-        document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
-        event.target.classList.add('active');
-    }
-
-    function draw(e) {
-        if (!drawing) return;
-        const rect = canvas.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-
-        ctx.lineWidth = mode === 'eraser' ? 20 : 2;
+    function initCanvas() {
+        canvas.width = canvas.parentElement.offsetWidth;
+        canvas.height = canvas.parentElement.offsetHeight;
         ctx.lineCap = 'round';
-        ctx.strokeStyle = mode === 'eraser' ? '#ffffff' : '#444';
+        ctx.lineWidth = 3;
+    }
+    window.onload = () => { initCanvas(); MathJax.typeset(); updateLab(); };
 
-        ctx.lineTo(x, y);
+    canvas.onmousedown = (e) => { isDrawing = true; ctx.beginPath(); ctx.moveTo(e.offsetX, e.offsetY); };
+    canvas.onmousemove = (e) => {
+        if (!isDrawing) return;
+        ctx.strokeStyle = currentTool === 'eraser' ? '#ffffff' : '#1e293b';
+        ctx.lineWidth = currentTool === 'eraser' ? 40 : 3;
+        ctx.lineTo(e.offsetX, e.offsetY);
         ctx.stroke();
-        ctx.beginPath();
-        ctx.moveTo(x, y);
+    };
+    window.onmouseup = () => isDrawing = false;
+
+    function setTool(t, btn) {
+        currentTool = t;
+        document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('bg-blue-600', 'active'));
+        btn.classList.add('bg-blue-600', 'active');
     }
 
-    function clearBoard() { ctx.clearRect(0, 0, canvas.width, canvas.height); if(hasGrid) drawGrid(); }
+    function clearCanvas() { ctx.clearRect(0,0,canvas.width, canvas.height); }
+    
+    function drawGrid() {
+        ctx.strokeStyle = '#f1f5f9';
+        ctx.lineWidth = 1;
+        for(let i=0; i<canvas.width; i+=25) { ctx.moveTo(i,0); ctx.lineTo(i,canvas.height); }
+        for(let i=0; i<canvas.height; i+=25) { ctx.moveTo(0,i); ctx.lineTo(canvas.width,i); }
+        ctx.stroke();
+        ctx.lineWidth = 3;
+    }
 
     function drawCircle() {
-        ctx.strokeStyle = '#3498db';
+        ctx.strokeStyle = '#3b82f6';
         ctx.beginPath();
         ctx.arc(canvas.width/2, canvas.height/2, 60, 0, Math.PI*2);
         ctx.stroke();
     }
 
-    function toggleGrid() {
-        hasGrid = !hasGrid;
-        if(hasGrid) drawGrid(); else clearBoard();
-    }
-
-    function drawGrid() {
-        ctx.strokeStyle = '#eee';
-        ctx.lineWidth = 1;
-        for(let i=0; i<canvas.width; i+=20) { ctx.moveTo(i,0); ctx.lineTo(i,canvas.height); }
-        for(let i=0; i<canvas.height; i+=20) { ctx.moveTo(0,i); ctx.lineTo(canvas.width,i); }
-        ctx.stroke();
+    function finishLesson() {
+        document.getElementById('modal').classList.remove('hidden');
+        document.getElementById('modal').classList.add('flex');
+        document.getElementById('modal-text').innerText = `Вітаю! Ви успішно розв'язали ${solved} завдань. Тепер переходимо до діаграм на основній дошці!`;
     }
 </script>
 
