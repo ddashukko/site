@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Тест 1: Перевірка знань (Степінь)</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
+    />
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"
+    ></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    ></script>
+
+    <style>
+      :root {
+        --primary: #7c3aed;
+        --primary-light: #f5f3ff;
+        --success: #16a34a;
+        --error: #dc2626;
+        --bg: #f8fafc;
+        --card: #ffffff;
+        --text: #1e293b;
+        --border: #e2e8f0;
+        --grid-color: #e2e8f0;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        display: flex;
+        overflow: hidden;
+      }
+
+      #tasks-section {
+        flex: 1;
+        background: var(--bg);
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+      }
+
+      #board-section {
+        flex: 1;
+        position: relative;
+        background-color: #fff;
+        border-left: 4px solid #cbd5e1;
+        background-image: linear-gradient(
+            var(--grid-color) 1px,
+            transparent 1px
+          ),
+          linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+        background-size: 25px 25px;
+        cursor: crosshair;
+        overflow: hidden;
+      }
+
+      canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+        touch-action: none;
+      }
+
+      .tools {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        display: flex;
+        gap: 10px;
+        background: rgba(255, 255, 255, 0.95);
+        padding: 8px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        border: 1px solid var(--border);
+        flex-wrap: wrap;
+        z-index: 10;
+      }
+
+      .btn-tool {
+        border: 1px solid #cbd5e1;
+        background: white;
+        padding: 8px 12px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 1.2rem;
+        transition: 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 40px;
+      }
+      .btn-tool:hover {
+        background: #f1f5f9;
+      }
+      .btn-tool.active {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+      }
+
+      header {
+        background: var(--card);
+        padding: 15px 20px;
+        border-bottom: 2px solid var(--primary);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+      }
+
+      .header-title {
+        font-weight: 800;
+        font-size: 1.2rem;
+        color: var(--primary);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .test-badge {
+        background: var(--primary);
+        color: white;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .stats-container {
+        display: flex;
+        gap: 15px;
+        font-weight: 600;
+      }
+      .stat-correct {
+        color: var(--success);
+      }
+      .stat-wrong {
+        color: var(--error);
+      }
+
+      .tutor-hidden {
+        display: none;
+      }
+
+      .content-container {
+        padding: 20px;
+        padding-bottom: 80px;
+        max-width: 800px;
+        margin: 0 auto;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      .exercise-block {
+        background: var(--card);
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        margin-bottom: 30px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      }
+
+      .exercise-header {
+        background: var(--primary-light);
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border);
+      }
+      .exercise-title {
+        margin: 0;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--primary);
+      }
+      .exercise-desc {
+        margin: 5px 0 0 0;
+        font-size: 0.95rem;
+        color: #475569;
+        line-height: 1.5;
+      }
+
+      .task-row {
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .task-row:last-child {
+        border-bottom: none;
+      }
+      .task-row.solved-correct {
+        background-color: #f0fdf4;
+      }
+      .task-row.solved-wrong {
+        background-color: #fef2f2;
+      }
+
+      .task-content {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .task-number {
+        font-weight: 600;
+        color: #94a3b8;
+        min-width: 25px;
+      }
+      .task-question {
+        font-size: 1.1rem;
+        font-weight: 500;
+      }
+      .task-question .katex {
+        font-size: 1.1em;
+      }
+
+      .options-container {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 10px;
+        overflow-x: auto;
+        padding-bottom: 5px;
+      }
+      .option-btn {
+        flex: 1;
+        background: white;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        padding: 10px 15px;
+        font-size: 1rem;
+        cursor: pointer;
+        min-width: 70px;
+        white-space: nowrap;
+        transition: 0.2s;
+      }
+      .option-btn:hover:not(:disabled) {
+        border-color: var(--primary);
+        color: var(--primary);
+        background: var(--primary-light);
+      }
+      .option-btn.selected-temp {
+        background: #e0e7ff;
+        border-color: #6366f1;
+        color: #3730a3;
+        font-weight: bold;
+      }
+      .option-btn.selected-correct {
+        background: var(--success);
+        color: white;
+        border-color: var(--success);
+      }
+      .option-btn.selected-correct .katex {
+        color: white !important;
+      }
+      .option-btn.selected-wrong {
+        background: var(--error);
+        color: white;
+        border-color: var(--error);
+      }
+      .option-btn.selected-wrong .katex {
+        color: white !important;
+      }
+
+      .input-group {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+      .input-answer {
+        padding: 10px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        width: 140px;
+        font-size: 1rem;
+      }
+      .btn-check {
+        padding: 10px 20px;
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+      .input-answer.correct {
+        border-color: var(--success);
+        background: #f0fdf4;
+        color: var(--success);
+      }
+      .input-answer.wrong {
+        border-color: var(--error);
+        background: #fef2f2;
+      }
+
+      .finish-section {
+        margin-top: 40px;
+        text-align: center;
+      }
+      .btn-finish {
+        padding: 15px 40px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: white;
+        background: var(--primary);
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4);
+        transition: transform 0.2s;
+      }
+      .btn-finish:hover {
+        transform: scale(1.05);
+        background-color: #6d28d9;
+      }
+
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(5px);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+        animation: fadeInOverlay 0.3s ease;
+      }
+
+      .modal-card {
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        max-width: 450px;
+        width: 90%;
+        text-align: center;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        position: relative;
+        animation: scaleInModal 0.3s ease;
+      }
+
+      .modal-close-btn {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: #94a3b8;
+        cursor: pointer;
+      }
+      .modal-close-btn:hover {
+        color: var(--error);
+      }
+
+      .modal-result-title {
+        font-size: 2rem;
+        font-weight: 800;
+        color: var(--primary);
+        margin-bottom: 20px;
+      }
+      .modal-score-big {
+        font-size: 4rem;
+        font-weight: 900;
+        color: var(--primary);
+        line-height: 1;
+        margin: 10px 0;
+      }
+      .modal-score-sub {
+        font-size: 1rem;
+        color: #64748b;
+        margin-bottom: 20px;
+      }
+
+      .modal-progress-container {
+        background: #f1f5f9;
+        border-radius: 10px;
+        padding: 15px;
+        margin-top: 20px;
+      }
+      .modal-bar-bg {
+        width: 100%;
+        height: 12px;
+        background: #e2e8f0;
+        border-radius: 6px;
+        overflow: hidden;
+        margin-top: 10px;
+      }
+      .modal-bar-fill {
+        height: 100%;
+        background: var(--primary);
+        transition: width 1s ease;
+      }
+
+      .modal-footer-btn {
+        margin-top: 30px;
+        padding: 12px 30px;
+        background: var(--text);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        cursor: pointer;
+      }
+      .modal-footer-btn:hover {
+        background: black;
+      }
+
+      .link-box {
+        background: #f1f5f9;
+        padding: 15px;
+        border-radius: 8px;
+        word-break: break-all;
+        font-family: monospace;
+        border: 1px dashed #94a3b8;
+        margin: 15px 0;
+        font-size: 0.9rem;
+      }
+
+      .password-field {
+        width: 100%;
+        padding: 12px;
+        margin: 15px 0;
+        border: 2px solid var(--border);
+        border-radius: 8px;
+        font-size: 1.1rem;
+        box-sizing: border-box;
+      }
+      .password-field:focus {
+        border-color: var(--primary);
+        outline: none;
+      }
+
+      @keyframes fadeInOverlay {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      @keyframes scaleInModal {
+        from {
+          transform: scale(0.8);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      @media (max-width: 768px) {
+        body {
+          flex-direction: column;
+        }
+        #board-section {
+          height: 40vh;
+          border-left: none;
+          border-top: 4px solid #cbd5e1;
+          order: 2;
+        }
+        #tasks-section {
+          height: 60vh;
+          border-bottom: 4px solid #cbd5e1;
+          order: 1;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="tasks-section">
+      <header>
+        <div class="header-title">
+          <span class="test-badge">Тест</span>
+          <span>Перевірка знань</span>
+        </div>
+        <div class="stats-container tutor-hidden" id="tutor-stats">
+          <span class="stat-correct">✅ <span id="val-correct">0</span></span>
+          <span class="stat-wrong">❌ <span id="val-wrong">0</span></span>
+        </div>
+      </header>
+
+      <div class="content-container" id="quiz-root"></div>
+    </div>
+
+    <div id="board-section">
+      <div class="tools">
+        <button
+          class="btn-tool active"
+          onclick="setTool('pen')"
+          id="t-pen"
+          title="Ручка"
+        >
+          🖊️
+        </button>
+        <button
+          class="btn-tool"
+          onclick="setTool('eraser')"
+          id="t-eraser"
+          title="Гумка"
+        >
+          🧹
+        </button>
+        <button
+          class="btn-tool"
+          onclick="drawSystem()"
+          title="Додати координатну пряму"
+        >
+          📉
+        </button>
+        <button
+          class="btn-tool"
+          onclick="clearCanvasSafe()"
+          style="color: red; border-color: #fee2e2"
+          title="Очистити все"
+        >
+          ❌
+        </button>
+      </div>
+      <canvas id="board"></canvas>
+    </div>
+
+    <div id="result-modal" class="modal-overlay">
+      <div class="modal-card">
+        <button class="modal-close-btn" onclick="closeModal()">×</button>
+        <div id="modal-content-body"></div>
+      </div>
+    </div>
+
+    <div id="password-modal" class="modal-overlay">
+      <div class="modal-card">
+        <div
+          class="modal-result-title"
+          style="font-size: 1.5rem; margin-bottom: 10px"
+        >
+          Вхід для вчителя
+        </div>
+        <p style="color: #64748b; margin-bottom: 20px">
+          Введіть пароль для перегляду результатів
+        </p>
+        <input
+          type="password"
+          id="tutor-pass-input"
+          class="password-field"
+          placeholder="Пароль"
+        />
+        <button
+          class="btn-check"
+          style="width: 100%; font-size: 1.1rem; padding: 12px"
+          onclick="checkTutorPassword()"
+        >
+          Увійти
+        </button>
+      </div>
+    </div>
+
+    <script>
+      const canvas = document.getElementById("board");
+      const ctx = canvas.getContext("2d");
+      const boardSection = document.getElementById("board-section");
+      let painting = false;
+      let tool = "pen";
+      let isTutorMode = false;
+      let pendingResultData = null;
+
+      function resizeCanvas() {
+        const temp = document.createElement("canvas");
+        const tempCtx = temp.getContext("2d");
+        temp.width = canvas.width;
+        temp.height = canvas.height;
+        if (canvas.width > 0 && canvas.height > 0) {
+          tempCtx.drawImage(canvas, 0, 0);
+        }
+
+        canvas.width = boardSection.offsetWidth;
+        canvas.height = boardSection.offsetHeight;
+
+        ctx.drawImage(temp, 0, 0);
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+      }
+
+      window.addEventListener("resize", resizeCanvas);
+      window.addEventListener("load", resizeCanvas);
+
+      function getMousePos(e) {
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return { x: clientX - rect.left, y: clientY - rect.top };
+      }
+
+      function startPosition(e) {
+        painting = true;
+        draw(e);
+      }
+
+      function finishedPosition() {
+        painting = false;
+        ctx.beginPath();
+      }
+
+      function draw(e) {
+        if (!painting) return;
+        if (e.type.startsWith("touch")) {
+        }
+
+        const pos = getMousePos(e);
+
+        if (tool === "pen") {
+          ctx.lineWidth = 2;
+          ctx.strokeStyle = "#7c3aed";
+          ctx.globalCompositeOperation = "source-over";
+        } else {
+          ctx.lineWidth = 25;
+          ctx.strokeStyle = "#ffffff";
+          ctx.globalCompositeOperation = "destination-out";
+        }
+
+        ctx.lineTo(pos.x, pos.y);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(pos.x, pos.y);
+      }
+
+      canvas.addEventListener("mousedown", startPosition);
+      canvas.addEventListener("mouseup", finishedPosition);
+      canvas.addEventListener("mousemove", draw);
+      canvas.addEventListener("mouseout", finishedPosition);
+
+      canvas.addEventListener("touchstart", startPosition);
+      canvas.addEventListener("touchend", finishedPosition);
+      canvas.addEventListener("touchmove", draw);
+
+      function setTool(t) {
+        tool = t;
+        document
+          .getElementById("t-pen")
+          .classList.toggle("active", t === "pen");
+        document
+          .getElementById("t-eraser")
+          .classList.toggle("active", t === "eraser");
+      }
+
+      function clearCanvasSafe() {
+        if (confirm("Очистити чернетку?")) {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+      }
+
+      function drawSystem() {
+        const prevStrokeStyle = ctx.strokeStyle;
+        const prevLineWidth = ctx.lineWidth;
+        const prevComposite = ctx.globalCompositeOperation;
+
+        ctx.globalCompositeOperation = "source-over";
+        ctx.strokeStyle = "#334155";
+        ctx.lineWidth = 2;
+        ctx.fillStyle = "#334155";
+        ctx.font = "16px Arial";
+
+        const w = canvas.width;
+        const h = canvas.height;
+        const cx = Math.floor(w / 2);
+        const cy = Math.floor(h / 2);
+        const step = 25;
+
+        ctx.beginPath();
+        ctx.moveTo(0, cy);
+        ctx.lineTo(w, cy);
+        ctx.lineTo(w - 10, cy - 5);
+        ctx.moveTo(w, cy);
+        ctx.lineTo(w - 10, cy + 5);
+        ctx.moveTo(cx, h);
+        ctx.lineTo(cx, 0);
+        ctx.lineTo(cx - 5, 10);
+        ctx.moveTo(cx, 0);
+        ctx.lineTo(cx + 5, 10);
+
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.lineWidth = 1;
+
+        for (let x = cx + step; x < w; x += step) {
+          ctx.moveTo(x, cy - 3);
+          ctx.lineTo(x, cy + 3);
+        }
+        for (let x = cx - step; x > 0; x -= step) {
+          ctx.moveTo(x, cy - 3);
+          ctx.lineTo(x, cy + 3);
+        }
+        for (let y = cy + step; y < h; y += step) {
+          ctx.moveTo(cx - 3, y);
+          ctx.lineTo(cx + 3, y);
+        }
+        for (let y = cy - step; y > 0; y -= step) {
+          ctx.moveTo(cx - 3, y);
+          ctx.lineTo(cx + 3, y);
+        }
+        ctx.stroke();
+
+        ctx.fillText("x", w - 20, cy + 20);
+        ctx.fillText("y", cx + 15, 20);
+        ctx.fillText("0", cx - 15, cy + 20);
+        ctx.fillText("1", cx + step - 3, cy + 20);
+
+        ctx.beginPath();
+        ctx.strokeStyle = prevStrokeStyle;
+        ctx.lineWidth = prevLineWidth;
+        ctx.globalCompositeOperation = prevComposite;
+
+        if (tool === "eraser") {
+          setTool("pen");
+        }
+      }
+
+      const exercises = [
+        {
+          id: "T1.1",
+          title: "Завдання 1. Властивості нуля та одиниці",
+          desc: "Перевірка базових визначень (Так/Ні).",
+          tasks: [
+            {
+              id: "1)",
+              q: "$5^0 = 1$",
+              a: "Так",
+              opts: ["Так", "Ні"],
+            },
+            {
+              id: "2)",
+              q: "$(-10)^0 = -1$",
+              a: "Ні",
+              opts: ["Так", "Ні"],
+            },
+            {
+              id: "3)",
+              q: "$0^{-5}$ має зміст",
+              a: "Ні",
+              opts: ["Так", "Ні"],
+            },
+          ],
+        },
+        {
+          id: "T1.2",
+          title: "Завдання 2. Запис степеня з від'ємним показником",
+          desc: "Подайте вираз у вигляді дробу або навпаки.",
+          tasks: [
+            {
+              id: "1)",
+              q: "$x^{-3}$",
+              a: "$\\frac{1}{x^3}$",
+              opts: ["$x^3$", "$\\frac{1}{x^3}$", "$-x^3$", "$\\frac{3}{x}$"],
+            },
+            {
+              id: "2)",
+              q: "$\\frac{1}{m^5}$",
+              a: "$m^{-5}$",
+              opts: ["$m^5$", "$m^{-5}$", "$-m^5$", "$5^m$"],
+            },
+            {
+              id: "3)",
+              q: "$\\frac{1}{(a+b)^2}$",
+              a: "$(a+b)^{-2}$",
+              opts: [
+                "$(a+b)^2$",
+                "$(a+b)^{-2}$",
+                "$a^{-2}+b^{-2}$",
+                "$a+b^{-2}$",
+              ],
+            },
+          ],
+        },
+        {
+          id: "T1.3",
+          title: "Завдання 3. Обчислення (цілі основи)",
+          desc: "Обчисліть значення виразу.",
+          tasks: [
+            {
+              id: "1)",
+              q: "$2^{-3}$",
+              a: "$\\frac{1}{8}$",
+              opts: ["$8$", "$-8$", "$\\frac{1}{8}$", "$-\\frac{1}{8}$"],
+            },
+            {
+              id: "2)",
+              q: "$(-3)^{-2}$",
+              a: "$\\frac{1}{9}$",
+              opts: ["$\\frac{1}{9}$", "$-\\frac{1}{9}$", "$9$", "$-9$"],
+            },
+            {
+              id: "3)",
+              q: "$(-1)^{-5}$",
+              a: "-1",
+              opts: ["1", "-1", "5", "-5"],
+            },
+            {
+              id: "4)",
+              q: "$4^{-1} + 2^0$",
+              a: "1.25",
+              opts: ["1.25", "5", "0.25", "1.4"],
+            },
+          ],
+        },
+        {
+          id: "T1.4",
+          title: "Завдання 4. Обчислення (дроби та десяткові)",
+          desc: "Будьте уважні зі знаками.",
+          tasks: [
+            {
+              id: "1)",
+              q: "$(\\frac{1}{3})^{-2}$",
+              a: "$9$",
+              opts: ["$\\frac{1}{9}$", "$9$", "$-9$", "$\\frac{1}{6}$"],
+            },
+            {
+              id: "2)",
+              q: "$(-\\frac{2}{5})^{-1}$",
+              a: "$-2.5$",
+              opts: ["$2.5$", "$-2.5$", "$0.4$", "$-0.4$"],
+            },
+            {
+              id: "3)",
+              q: "$0.1^{-2}$",
+              a: "100",
+              opts: ["10", "100", "0.01", "0.02"],
+            },
+          ],
+        },
+        {
+          id: "T1.5",
+          title: "Завдання 5. Спрощення виразів",
+          desc: "Запишіть результат у стандартному вигляді.",
+          tasks: [
+            {
+              id: "1)",
+              q: "$x^2 \\cdot x^{-5}$",
+              a: "$x^{-3}$",
+              opts: ["$x^3$", "$x^{-3}$", "$x^{-10}$", "$x^7$"],
+            },
+            {
+              id: "2)",
+              q: "$4 a^{-2} b$",
+              a: "$\\frac{4b}{a^2}$",
+              opts: [
+                "$\\frac{4b}{a^2}$",
+                "$\\frac{4}{a^2 b}$",
+                "$4a^2 b$",
+                "$\\frac{b}{4a^2}$",
+              ],
+            },
+            {
+              id: "3)",
+              q: "$\\frac{x^{-3}}{y^{-2}}$",
+              a: "$\\frac{y^2}{x^3}$",
+              opts: [
+                "$\\frac{x^3}{y^2}$",
+                "$\\frac{y^2}{x^3}$",
+                "$x^3 y^2$",
+                "$\\frac{1}{x^3 y^2}$",
+              ],
+            },
+          ],
+        },
+      ];
+
+      let totalCorrect = 0;
+      let totalWrong = 0;
+      let totalTasksCount = 0;
+      let userAnswers = {};
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const resultData = urlParams.get("d");
+
+        // Setup initial view
+        const root = document.getElementById("quiz-root");
+        exercises.forEach((ex) => {
+          totalTasksCount += ex.tasks.length;
+        });
+
+        exercises.forEach((ex, exIdx) => {
+          const exBlock = document.createElement("div");
+          exBlock.className = "exercise-block";
+
+          exBlock.innerHTML = `
+          <div class="exercise-header">
+            <h3 class="exercise-title">${ex.title}</h3>
+            <p class="exercise-desc">${ex.desc}</p>
+          </div>
+        `;
+
+          const taskList = document.createElement("div");
+          taskList.className = "task-list";
+
+          ex.tasks.forEach((task, taskIdx) => {
+            const uniqueId = `q-${exIdx}-${taskIdx}`;
+            const row = document.createElement("div");
+            row.className = "task-row";
+            row.setAttribute("data-uid", uniqueId);
+
+            let contentHTML = `
+              <div class="task-content">
+                <div class="task-number">${task.id}</div>
+                <div class="task-question">${task.q}</div>
+              </div>
+            `;
+
+            let actionHTML = "";
+            const isMultipleChoice = task.opts && task.opts.length > 0;
+
+            if (isMultipleChoice) {
+              actionHTML = `<div class="options-container">`;
+              task.opts.forEach((opt) => {
+                const safeOpt = opt.replace(/"/g, "&quot;");
+                const safeAns = task.a.replace(/"/g, "&quot;");
+                actionHTML += `<button class="option-btn" data-val="${safeOpt}" onclick="handleOptClick(this, '${uniqueId}', '${safeOpt}', '${safeAns}')">${opt}</button>`;
+              });
+              actionHTML += `</div>`;
+            } else {
+              const answers = Array.isArray(task.a) ? task.a.join("|") : task.a;
+              actionHTML = `
+                <div class="input-group">
+                  <input type="text" class="input-answer" data-uid="${uniqueId}" placeholder="Відповідь..." oninput="handleInput(this, '${uniqueId}')">
+                </div>
+              `;
+            }
+
+            row.innerHTML =
+              contentHTML + `<div style="margin-top:10px;">${actionHTML}</div>`;
+            taskList.appendChild(row);
+          });
+
+          exBlock.appendChild(taskList);
+          root.appendChild(exBlock);
+        });
+
+        const finishSection = document.createElement("div");
+        finishSection.className = "finish-section";
+        finishSection.innerHTML = `
+          <button class="btn-finish" onclick="finishLesson()">
+            Здати роботу
+          </button>
+        `;
+        root.appendChild(finishSection);
+
+        renderMath();
+        setTimeout(resizeCanvas, 100);
+
+        // Check for tutor mode
+        if (resultData) {
+          pendingResultData = resultData;
+          document.getElementById("password-modal").style.display = "flex";
+        }
+      });
+
+      function checkTutorPassword() {
+        const inp = document.getElementById("tutor-pass-input");
+        const pass = inp.value.trim().toLowerCase();
+
+        if (pass === "янчук") {
+          document.getElementById("password-modal").style.display = "none";
+          isTutorMode = true;
+          document
+            .getElementById("tutor-stats")
+            .classList.remove("tutor-hidden");
+          document.querySelector(".btn-finish").style.display = "none";
+          loadStudentData(pendingResultData);
+        } else {
+          alert("Невірний пароль!");
+          inp.value = "";
+        }
+      }
+
+      function renderMath() {
+        if (window.renderMathInElement) {
+          renderMathInElement(document.body, {
+            delimiters: [
+              { left: "$$", right: "$$", display: true },
+              { left: "\\[", right: "\\]", display: true },
+              { left: "$", right: "$", display: false },
+              { left: "\\(", right: "\\)", display: false },
+            ],
+            throwOnError: false,
+          });
+        }
+      }
+
+      function handleOptClick(btn, uid, val, ans) {
+        if (isTutorMode) return;
+
+        userAnswers[uid] = val;
+
+        const row = btn.closest(".task-row");
+        row
+          .querySelectorAll(".option-btn")
+          .forEach((b) => b.classList.remove("selected-temp"));
+        btn.classList.add("selected-temp");
+      }
+
+      function handleInput(inp, uid) {
+        if (isTutorMode) return;
+        userAnswers[uid] = inp.value;
+      }
+
+      function checkTask(uid, userVal, correctVal, type) {
+        const row = document.querySelector(`.task-row[data-uid="${uid}"]`);
+        if (!row) return;
+
+        let isCorrect = false;
+
+        if (type === "opt") {
+          const cleanUser = userVal.replace(/\\/g, "").replace(/\s/g, "");
+          const cleanAns = correctVal.replace(/\\/g, "").replace(/\s/g, "");
+          isCorrect = cleanUser === cleanAns;
+
+          const btns = row.querySelectorAll(".option-btn");
+          btns.forEach((b) => {
+            b.disabled = true;
+            const bVal = b
+              .getAttribute("data-val")
+              .replace(/\\/g, "")
+              .replace(/\s/g, "");
+            if (bVal === cleanUser) {
+              if (isCorrect) b.classList.add("selected-correct");
+              else b.classList.add("selected-wrong");
+            }
+          });
+        } else {
+          const correctArr = correctVal.split("|");
+          const val = userVal.trim().replace(",", ".");
+          isCorrect = correctArr.includes(val);
+
+          const inp = row.querySelector("input");
+          inp.value = userVal;
+          inp.disabled = true;
+          if (isCorrect) inp.classList.add("correct");
+          else inp.classList.add("wrong");
+        }
+
+        if (isCorrect) {
+          row.classList.add("solved-correct");
+          totalCorrect++;
+        } else {
+          row.classList.add("solved-wrong");
+          totalWrong++;
+        }
+      }
+
+      function finishLesson() {
+        if (!isTutorMode) {
+          generateLink();
+        }
+      }
+
+      function generateLink() {
+        const jsonStr = JSON.stringify(userAnswers);
+        const encoded = btoa(encodeURIComponent(jsonStr));
+        const link =
+          window.location.origin + window.location.pathname + "?d=" + encoded;
+
+        const modal = document.getElementById("result-modal");
+        const body = document.getElementById("modal-content-body");
+
+        body.innerHTML = `
+            <div class="modal-result-title">Тест завершено!</div>
+            <p style="color:#475569; margin-bottom:10px;">Щоб вчитель побачив твої результати, скопіюй це посилання та надішли його:</p>
+            <div class="link-box">${link}</div>
+            <button class="modal-footer-btn" onclick="copyLink('${link}')">Скопіювати посилання</button>
+            <button class="modal-footer-btn" style="background:#cbd5e1; margin-left:10px;" onclick="closeModal()">Закрити</button>
+          `;
+        modal.style.display = "flex";
+      }
+
+      function copyLink(txt) {
+        navigator.clipboard.writeText(txt).then(() => {
+          alert("Посилання скопійовано!");
+        });
+      }
+
+      function loadStudentData(data) {
+        try {
+          const decoded = decodeURIComponent(atob(data));
+          userAnswers = JSON.parse(decoded);
+
+          // Apply answers and check
+          exercises.forEach((ex, exIdx) => {
+            ex.tasks.forEach((task, taskIdx) => {
+              const uid = `q-${exIdx}-${taskIdx}`;
+              const userVal = userAnswers[uid];
+
+              if (userVal !== undefined) {
+                const isOpt = task.opts && task.opts.length > 0;
+                const correct = Array.isArray(task.a)
+                  ? task.a.join("|")
+                  : task.a;
+                checkTask(uid, userVal, correct, isOpt ? "opt" : "inp");
+              }
+            });
+          });
+
+          updateStats();
+          showTutorResult();
+        } catch (e) {
+          console.error("Error parsing data", e);
+          alert("Помилка при читанні даних тесту.");
+        }
+      }
+
+      function updateStats() {
+        document.getElementById("val-correct").innerText = totalCorrect;
+        document.getElementById("val-wrong").innerText = totalWrong;
+      }
+
+      function showTutorResult() {
+        const modal = document.getElementById("result-modal");
+        const body = document.getElementById("modal-content-body");
+
+        let score12 = 0;
+        if (totalTasksCount > 0) {
+          score12 = Math.round((totalCorrect / totalTasksCount) * 12);
+        }
+
+        let msg = "";
+        let color = "#7c3aed";
+
+        if (score12 >= 10) {
+          msg = "Відмінно!";
+          color = "#16a34a";
+        } else if (score12 >= 7) {
+          msg = "Добре!";
+          color = "#7c3aed";
+        } else if (score12 >= 4) {
+          msg = "Задовільно";
+          color = "#f59e0b";
+        } else {
+          msg = "Потрібно потренуватись";
+          color = "#dc2626";
+        }
+
+        const html = `
+            <div class="modal-result-title" style="color:${color}">${msg}</div>
+            
+            <div>
+              <div style="font-size: 1rem; color: #64748b;">Оцінка учня</div>
+              <div class="modal-score-big" style="color:${color}">${score12}</div>
+              <div class="modal-score-sub">
+                (з 12 можливих балів)
+              </div>
+              <div style="font-size: 0.9rem; color: #94a3b8; margin-top: 5px;">
+                 Правильних відповідей: ${totalCorrect} з ${totalTasksCount}
+              </div>
+            </div>
+
+            <div class="modal-progress-container">
+               <div class="modal-bar-bg">
+                 <div class="modal-bar-fill" style="width: ${
+                   (totalCorrect / totalTasksCount) * 100
+                 }%; background: ${color};"></div>
+               </div>
+            </div>
+
+            <button class="modal-footer-btn" onclick="closeModal()">Переглянути помилки</button>
+          `;
+
+        body.innerHTML = html;
+        modal.style.display = "flex";
+      }
+
+      function closeModal() {
+        document.getElementById("result-modal").style.display = "none";
+      }
+    </script>
+  </body>
+</html>
