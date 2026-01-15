@@ -931,7 +931,11 @@
               task.opts.forEach((opt) => {
                 const safeOpt = opt.replace(/"/g, "&quot;");
                 const safeAns = task.a.replace(/"/g, "&quot;");
-                actionHTML += `<button class="option-btn" data-val="${safeOpt}" onclick="handleOptClick(this, '${uniqueId}', '${safeOpt}', '${safeAns}')">${opt}</button>`;
+                // FIXED: Use data attributes and a simpler handler call
+                actionHTML += `<button class="option-btn" 
+                    data-val="${safeOpt}" 
+                    data-uid="${uniqueId}"
+                    onclick="handleOptClick(this)">${opt}</button>`;
               });
               actionHTML += `</div>`;
             } else {
@@ -1003,8 +1007,12 @@
         }
       }
 
-      function handleOptClick(btn, uid, val, ans) {
+      function handleOptClick(btn) {
         if (isTutorMode) return;
+
+        // FIXED: Retrieve data from attributes instead of arguments
+        const uid = btn.getAttribute("data-uid");
+        const val = btn.getAttribute("data-val");
 
         userAnswers[uid] = val;
 
