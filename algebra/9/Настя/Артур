@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Арифметична прогресія: Інтерактивний Тренажер</title>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$']],
+                processEscapes: true
+            },
+            options: {
+                enableMenu: false
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Inter:wght@400;500&display=swap');
+        
+        :root {
+            --primary: #4f46e5;
+            --success: #10b981;
+            --error: #ef4444;
+            --bg-light: #f8fafc;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-light);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        h1, h2, h3 { font-family: 'Montserrat', sans-serif; }
+
+        .split-screen { display: flex; height: 100vh; }
+
+        /* Left side styles */
+        #content-side {
+            width: 55%;
+            height: 100%;
+            overflow-y: auto;
+            padding: 2rem;
+            border-right: 2px solid #e2e8f0;
+            scrollbar-width: thin;
+        }
+
+        .task-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f1f5f9;
+            transition: all 0.3s ease;
+        }
+
+        .task-card:hover { transform: translateY(-2px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.08); }
+
+        .answer-input {
+            width: 100px;
+            height: 42px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: all 0.2s;
+            outline: none;
+        }
+
+        .answer-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1); }
+        .answer-input.correct { border-color: var(--success); background-color: #ecfdf5; color: #065f46; }
+        .answer-input.wrong { border-color: var(--error); background-color: #fef2f2; color: #991b1b; }
+
+        /* Details styling */
+        details {
+            margin-top: 1rem;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #f1f5f9;
+        }
+        summary {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #475569;
+            user-select: none;
+            transition: background 0.2s;
+        }
+        summary:hover { background: #e2e8f0; }
+        .details-content { padding: 1rem; border-top: 1px solid #e2e8f0; font-size: 0.9rem; line-height: 1.6; }
+
+        /* Whiteboard styles */
+        #tool-side { width: 45%; height: 100%; display: flex; flex-direction: column; background: #fff; }
+        .toolbar {
+            background: #1e293b;
+            padding: 0.75rem;
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            align-items: center;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+        .tool-btn {
+            padding: 0.5rem 0.75rem;
+            border-radius: 8px;
+            background: #334155;
+            color: white;
+            font-size: 0.8rem;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .tool-btn:hover { background: #475569; }
+        .tool-btn.active { background: var(--primary); }
+        
+        canvas { flex-grow: 1; cursor: crosshair; touch-action: none; }
+
+        /* Progress Bar */
+        #progress-container {
+            position: sticky;
+            top: -2rem;
+            z-index: 100;
+            background: rgba(248, 250, 252, 0.9);
+            backdrop-filter: blur(8px);
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+        }
+        .progress-bar { height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--primary); width: 0%; transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+
+        .instruction-box {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            color: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="split-screen">
+    <div id="content-side">
+        <div id="progress-container">
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-sm font-bold text-slate-600">Твій прогрес: <span id="solved-count">0</span> / 30</span>
+                <span id="grade-badge" class="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-xs font-bold">Середній рівень</span>
+            </div>
+            <div class="progress-bar">
+                <div id="progress-fill" class="progress-fill"></div>
+            </div>
+        </div>
+
+        <div class="instruction-box">
+            <h1 class="text-2xl font-bold mb-2">Арифметична прогресія 📈</h1>
+            <p class="text-indigo-100 text-sm opacity-90 leading-relaxed">
+                Сьогодні ми розберемо 30 практичних задач. Кожне поле перевіряється автоматично. 
+                Якщо заплутався — під кожною задачею є прихована підказка та повний розв'язок. Успіхів!
+            </p>
+        </div>
+
+        <details class="mb-10 border-2 border-indigo-200">
+            <summary class="text-indigo-700 uppercase tracking-widest text-xs">📖 Теорія: Короткий довідник</summary>
+            <div class="details-content bg-indigo-50">
+                <p><strong>Формула $n$-го члена:</strong> $a_n = a_1 + (n-1)d$</p>
+                <p><strong>Різниця:</strong> $d = a_{n+1} - a_n$</p>
+                <p><strong>Сума $n$ перших членів:</strong> $S_n = \frac{a_1 + a_n}{2} \cdot n$ або $S_n = \frac{2a_1 + (n-1)d}{2} \cdot n$</p>
+                <p class="mt-2 italic">Для зручності використовуй чернетку справа для обчислень!</p>
+            </div>
+        </details>
+
+        
+
+        <h2 class="text-xl font-bold text-slate-800 mb-4">Блок 1: Означення (№691)</h2>
+        <div class="task-card">
+            <p class="mb-4">Чи є послідовність арифметичною прогресією? <br><small class="text-slate-500">(Впиши <b>так</b> або <b>ні</b>)</small></p>
+            <div class="space-y-4">
+                <div class="flex justify-between items-center bg-slate-50 p-3 rounded-lg">
+                    <span>1) $1; 2; 3; 4; 5; \dots$</span>
+                    <input type="text" class="answer-input" data-answer="так">
+                </div>
+                <div class="flex justify-between items-center bg-slate-50 p-3 rounded-lg">
+                    <span>2) $1; 4; 9; 16; 25; \dots$</span>
+                    <input type="text" class="answer-input" data-answer="ні">
+                </div>
+                <div class="flex justify-between items-center bg-slate-50 p-3 rounded-lg">
+                    <span>3) $1; 3; 5; 7; 9; \dots$</span>
+                    <input type="text" class="answer-input" data-answer="так">
+                </div>
+                <div class="flex justify-between items-center bg-slate-50 p-3 rounded-lg">
+                    <span>4) $\frac{1}{2}; \frac{1}{3}; \frac{1}{4}; \frac{1}{5}; \dots$</span>
+                    <input type="text" class="answer-input" data-answer="ні">
+                </div>
+                <div class="flex justify-between items-center bg-slate-50 p-3 rounded-lg">
+                    <span>5) $5; 5; 5; 5; \dots$</span>
+                    <input type="text" class="answer-input" data-answer="так">
+                </div>
+            </div>
+            <details>
+                <summary>💡 Підказка та розв'язання</summary>
+                <div class="details-content text-slate-600">
+                    <strong>Підказка:</strong> Перевір, чи є різниця між сусідніми членами однаковою ($a_2 - a_1 = a_3 - a_2$).<br>
+                    <strong>Розв'язання:</strong> 5) Так, тут $d = 0$. Це так звана стаціонарна прогресія.
+                </div>
+            </details>
+        </div>
+
+        <h2 class="text-xl font-bold text-slate-800 mb-4">Блок 2: Пошук членів (№693)</h2>
+        <div class="task-card">
+            <p class="mb-4">Знайдіть другий член ($a_2$) прогресії, якщо відомо $a_1$ та $d$:</p>
+            <div class="grid grid-cols-1 gap-4">
+                <div class="flex justify-between items-center border-b pb-2">
+                    <span>6) $a_1 = 4, d = -2$. $a_2 =$</span>
+                    <input type="number" class="answer-input" data-answer="2">
+                </div>
+                <div class="flex justify-between items-center border-b pb-2">
+                    <span>7) $a_1 = 3.8, d = 0.2$. $a_2 =$</span>
+                    <input type="number" class="answer-input" data-answer="4" step="0.1">
+                </div>
+                <div class="flex justify-between items-center border-b pb-2">
+                    <span>8) $a_1 = -10, d = 5$. $a_2 =$</span>
+                    <input type="number" class="answer-input" data-answer="-5">
+                </div>
+                <div class="flex justify-between items-center border-b pb-2">
+                    <span>9) $a_1 = 15, a_2 = 12$. $d =$</span>
+                    <input type="number" class="answer-input" data-answer="-3">
+                </div>
+                <div class="flex justify-between items-center border-b pb-2">
+                    <span>10) $a_1 = 8, a_{11} = 33$. $d =$</span>
+                    <input type="number" class="answer-input" data-answer="2.5" step="0.1">
+                </div>
+            </div>
+            <details>
+                <summary>💡 Підказка та розв'язання</summary>
+                <div class="details-content text-slate-600">
+                    <strong>Підказка:</strong> $a_2 = a_1 + d$. Для №10 використай $a_{11} = a_1 + 10d$.<br>
+                    <strong>Розв'язання:</strong> №10: $33 = 8 + 10d \Rightarrow 25 = 10d \Rightarrow d = 2.5$.
+                </div>
+            </details>
+        </div>
+
+        <h2 class="text-xl font-bold text-slate-800 mb-4">Блок 3: n-й член та повторення</h2>
+        <div class="task-card">
+            <div class="space-y-6">
+                <div>
+                    <p class="font-semibold text-sm mb-2 text-indigo-600 underline">№671 / 680 / 708</p>
+                    <div class="space-y-4">
+                        <div class="p-3 bg-slate-50 rounded-lg">
+                            <span>11) $x_n = 4n^2 - 17$. Знайдіть $x_2$:</span>
+                            <input type="number" class="answer-input ml-4" data-answer="-1">
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded-lg">
+                            <span>12) $a_{18} = 5, a_{19} = 3$. Знайдіть $a_{20}$:</span>
+                            <input type="number" class="answer-input ml-4" data-answer="1">
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded-lg">
+                            <span>13) $a_4 = 11, a_{20} = 43$. Знайдіть $d$:</span>
+                            <input type="number" class="answer-input ml-4" data-answer="2">
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded-lg">
+                            <span>14) Найбільший член $a_n = 26 - n^2$:</span>
+                            <input type="number" class="answer-input ml-4" data-answer="25">
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded-lg">
+                            <span>15) $b_n = -2n^2 + 16n$. При якому $n$ він макс.?</span>
+                            <input type="number" class="answer-input ml-4" data-answer="4">
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <p class="font-semibold text-sm mb-2 text-green-600 underline">№723 (Повторення алгебри)</p>
+                    <div class="space-y-4">
+                        <div class="p-3 bg-green-50 rounded-lg">
+                            <span>16) $-4p^2t \cdot (-0.5p^3t^4)$. Коефіцієнт:</span>
+                            <input type="number" class="answer-input ml-4" data-answer="2">
+                        </div>
+                        <div class="p-3 bg-green-50 rounded-lg">
+                            <span>17) Степінь $p$ у результаті №16:</span>
+                            <input type="number" class="answer-input ml-4" data-answer="5">
+                        </div>
+                        <div class="p-3 bg-green-50 rounded-lg">
+                            <span>18) Степінь $t$ у результаті №16:</span>
+                            <input type="number" class="answer-input ml-4" data-answer="5">
+                        </div>
+                        <div class="p-3 bg-green-50 rounded-lg">
+                            <span>19) $\frac{39p^3}{5a} : 13p^7a^5$. Степінь $p$ у знаменнику:</span>
+                            <input type="number" class="answer-input ml-4" data-answer="4">
+                        </div>
+                        <div class="p-3 bg-green-50 rounded-lg">
+                            <span>20) Числовий коефіцієнт у результаті №19:</span>
+                            <input type="text" class="answer-input ml-4" data-answer="0.6">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <details>
+                <summary>💡 Підказка та розв'язання</summary>
+                <div class="details-content text-slate-600 text-sm">
+                    <strong>№13:</strong> $a_{20} - a_4 = 16d \Rightarrow 43 - 11 = 32 \Rightarrow d=2$.<br>
+                    <strong>№15:</strong> Це парабола гілками вниз. Максимум у вершині $n = -B/2A = -16 / (2 \cdot -2) = 4$.
+                </div>
+            </details>
+        </div>
+
+        <h2 class="text-xl font-bold text-slate-800 mb-4">Блок 4: Сума $S_n$ та Властивості</h2>
+        <div class="task-card">
+            <div class="space-y-4 text-sm">
+                <div class="flex items-center justify-between p-3 border-l-4 border-indigo-400 bg-slate-50">
+                    <span>21) $a_1+a_{23}=-37$. Знайдіть $a_5+a_{19}$:</span>
+                    <input type="number" class="answer-input" data-answer="-37">
+                </div>
+                <div class="flex items-center justify-between p-3 border-l-4 border-indigo-400 bg-slate-50">
+                    <span>22) $S_8$ якщо $a_1=5, a_8=10$:</span>
+                    <input type="number" class="answer-input" data-answer="60">
+                </div>
+                <div class="flex items-center justify-between p-3 border-l-4 border-indigo-400 bg-slate-50">
+                    <span>23) $S_{10}$ якщо $a_1=7, a_{10}=15$:</span>
+                    <input type="number" class="answer-input" data-answer="110">
+                </div>
+                <div class="flex items-center justify-between p-3 border-l-4 border-indigo-400 bg-slate-50">
+                    <span>24) $S_{18}$ якщо $c_1=17, d=-2$:</span>
+                    <input type="number" class="answer-input" data-answer="0">
+                </div>
+                <div class="flex items-center justify-between p-3 border-l-4 border-indigo-400 bg-slate-50">
+                    <span>25) $S_{20}$ якщо $a_1=15, d=-3$:</span>
+                    <input type="number" class="answer-input" data-answer="-270">
+                </div>
+                <div class="flex items-center justify-between p-3 border-l-4 border-indigo-400 bg-slate-50">
+                    <span>26) Сума додатних чл. $19; 17; 15; \dots$:</span>
+                    <input type="number" class="answer-input" data-answer="100">
+                </div>
+                <div class="flex items-center justify-between p-3 border-l-4 border-indigo-400 bg-slate-50">
+                    <span>27) Сума від’ємних чл. $-23; -20; -17; \dots$:</span>
+                    <input type="number" class="answer-input" data-answer="-100">
+                </div>
+                <div class="p-3 bg-amber-50 rounded-lg border border-amber-200">
+                    <p class="font-bold text-amber-800 mb-2">🚚 Задача 722: Логістика</p>
+                    <p class="mb-2">Яка вартість найдешевшого перевезення 40т на 1200км?</p>
+                    <div class="flex justify-end items-center gap-3">
+                        <span class="text-xs italic text-amber-700">Впиши тільки число</span>
+                        <input type="number" class="answer-input" data-answer="96000">
+                    </div>
+                </div>
+                <div class="flex items-center justify-between p-3 border-l-4 border-indigo-400 bg-slate-50">
+                    <span>29) $a_{10}+a_{24}=5$. Знайдіть $a_{17}$:</span>
+                    <input type="number" class="answer-input" data-answer="2.5" step="0.1">
+                </div>
+                <div class="flex items-center justify-between p-3 border-l-4 border-indigo-400 bg-slate-50">
+                    <span>30) Знайдіть $a_1$, якщо $S_2=10$ та $d=2$:</span>
+                    <input type="number" class="answer-input" data-answer="4">
+                </div>
+            </div>
+            <details>
+                <summary>💡 Підказка та розв'язання</summary>
+                <div class="details-content text-slate-600 text-sm">
+                    <strong>№21:</strong> Властивість: $1+23 = 5+19$. Суми рівні!<br>
+                    <strong>№28 (Транспорт):</strong> Машина Б бере 5т. Треба 8 машин. $8 \cdot 1000 \text{ грн} \cdot 12 \text{ сотень км} = 96000$. Це вигідніше за А (115200) та В (110400).
+                </div>
+            </details>
+        </div>
+
+        <button id="final-btn" onclick="checkFinal()" class="w-full py-5 bg-indigo-600 text-white rounded-2xl font-bold text-xl hover:bg-indigo-700 transition shadow-xl mt-4 mb-20">
+            ЗАВЕРШИТИ ТА ОЦІНИТИ
+        </button>
+    </div>
+
+    <div id="tool-side">
+        <div class="toolbar">
+            <button class="tool-btn active" id="penTool" onclick="setTool('pen')">✏️ Олівець</button>
+            <button class="tool-btn" id="eraserTool" onclick="setTool('eraser')">🧽 Гумка</button>
+            <button class="tool-btn" onclick="clearCanvas()">🗑️ Очистити</button>
+            <div class="w-px h-6 bg-slate-600 mx-2"></div>
+            <button class="tool-btn bg-indigo-500" onclick="drawGrid()">🌐 Сітка</button>
+            <button class="tool-btn bg-purple-500" onclick="drawAxes()">➕ Осі</button>
+        </div>
+        <canvas id="whiteboard"></canvas>
+    </div>
+</div>
+
+<div id="modal" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-[1000] p-4 backdrop-blur-sm">
+    <div class="bg-white p-10 rounded-3xl max-w-md w-full text-center shadow-2xl transform scale-95 transition-transform duration-300" id="modal-box">
+        <div class="w-24 h-24 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-6 text-5xl">🏆</div>
+        <h2 class="text-3xl font-bold text-slate-800 mb-2">Урок пройдено!</h2>
+        <p id="final-score" class="text-5xl font-black text-indigo-600 mb-4">12 / 12</p>
+        <p id="motivational-phrase" class="text-slate-500 italic mb-8"></p>
+        <button onclick="location.reload()" class="w-full py-4 bg-slate-800 text-white rounded-xl font-bold">Спробувати ще раз</button>
+    </div>
+</div>
+
+<script>
+    // --- ПЕРЕВІРКА ---
+    const inputs = document.querySelectorAll('.answer-input');
+    const totalCount = 30;
+    const solvedText = document.getElementById('solved-count');
+    const progressFill = document.getElementById('progress-fill');
+
+    inputs.forEach(input => {
+        input.addEventListener('input', function() {
+            const userVal = this.value.trim().toLowerCase().replace(',', '.');
+            const correctVal = this.dataset.answer.toLowerCase();
+
+            if (userVal === correctVal) {
+                this.classList.add('correct');
+                this.classList.remove('wrong');
+                this.disabled = true;
+                updateProgress();
+            } else if (userVal.length >= correctVal.length) {
+                this.classList.add('wrong');
+            } else {
+                this.classList.remove('wrong', 'correct');
+            }
+        });
+    });
+
+    function updateProgress() {
+        const solved = document.querySelectorAll('.answer-input.correct').length;
+        solvedText.innerText = solved;
+        const percent = (solved / totalCount) * 100;
+        progressFill.style.width = percent + '%';
+    }
+
+    function checkFinal() {
+        const solved = document.querySelectorAll('.answer-input.correct').length;
+        const mark = Math.round((solved / totalCount) * 12);
+        
+        document.getElementById('modal').classList.remove('hidden');
+        document.getElementById('modal-box').classList.add('scale-100');
+        document.getElementById('final-score').innerText = mark + " / 12";
+        
+        const phrases = [
+            "Математика — це гімнастика для мозку. Ти сьогодні добре розім'явся!",
+            "Твої навички прогресують так само швидко, як і арифметична прогресія!",
+            "Чудовий результат! Твоя логіка працює бездоганно.",
+            "Неймовірно! Ти впорався з усіма викликами уроку.",
+            "Продовжуй у тому ж дусі, успіх вже поруч!"
+        ];
+        document.getElementById('motivational-phrase').innerText = phrases[Math.floor(Math.random() * phrases.length)];
+    }
+
+    // --- CANVAS (ЧЕРНЕТКА) ---
+    const canvas = document.getElementById('whiteboard');
+    const ctx = canvas.getContext('2d');
+    let isDrawing = false;
+    let currentTool = 'pen';
+
+    function resize() {
+        const rect = canvas.parentElement.getBoundingClientRect();
+        canvas.width = rect.width;
+        canvas.height = rect.height;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    function setTool(tool) {
+        currentTool = tool;
+        document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+        if (tool === 'pen') document.getElementById('penTool').classList.add('active');
+        if (tool === 'eraser') document.getElementById('eraserTool').classList.add('active');
+    }
+
+    function startDraw(e) {
+        isDrawing = true;
+        ctx.beginPath();
+        const pos = getPos(e);
+        ctx.moveTo(pos.x, pos.y);
+    }
+
+    function draw(e) {
+        if (!isDrawing) return;
+        const pos = getPos(e);
+        ctx.lineWidth = currentTool === 'eraser' ? 30 : 2;
+        ctx.strokeStyle = currentTool === 'eraser' ? '#ffffff' : '#1e293b';
+        ctx.lineTo(pos.x, pos.y);
+        ctx.stroke();
+    }
+
+    function getPos(e) {
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.clientX || e.touches[0].clientX;
+        const clientY = e.clientY || e.touches[0].clientY;
+        return { x: clientX - rect.left, y: clientY - rect.top };
+    }
+
+    canvas.addEventListener('mousedown', startDraw);
+    canvas.addEventListener('mousemove', draw);
+    window.addEventListener('mouseup', () => isDrawing = false);
+    canvas.addEventListener('touchstart', (e) => { e.preventDefault(); startDraw(e); });
+    canvas.addEventListener('touchmove', (e) => { e.preventDefault(); draw(e); });
+    canvas.addEventListener('touchend', () => isDrawing = false);
+
+    function clearCanvas() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
+
+    function drawGrid() {
+        ctx.strokeStyle = '#e2e8f0';
+        ctx.lineWidth = 1;
+        for (let x = 0; x < canvas.width; x += 30) {
+            ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+        }
+        for (let y = 0; y < canvas.height; y += 30) {
+            ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+        }
+    }
+
+    function drawAxes() {
+        const midX = canvas.width / 2;
+        const midY = canvas.height / 2;
+        ctx.strokeStyle = '#475569';
+        ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(0, midY); ctx.lineTo(canvas.width, midY); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(midX, 0); ctx.lineTo(midX, canvas.height); ctx.stroke();
+        ctx.font = '12px Montserrat';
+        ctx.fillText('X', canvas.width - 20, midY - 10);
+        ctx.fillText('Y', midX + 10, 20);
+    }
+</script>
+
+</body>
+</html>
