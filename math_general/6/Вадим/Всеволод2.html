@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Методичний тренажер: Рівняння (6 клас)</title>
+    
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #3498db;
+            --success: #27ae60;
+            --danger: #e74c3c;
+            --warning: #f1c40f;
+            --light: #ecf0f1;
+            --white: #ffffff;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            overflow: hidden;
+            background: var(--light);
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* --- LEFT SIDE: CONTENT --- */
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 30px;
+            background: var(--white);
+            border-right: 3px solid #ddd;
+            scroll-behavior: smooth;
+        }
+
+        .section-title {
+            background: var(--primary);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 40px 0 20px 0;
+            font-size: 1.2em;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title span {
+            background: var(--accent);
+            width: 30px;
+            height: 30px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            margin-right: 15px;
+            font-weight: bold;
+        }
+
+        .theory-card {
+            background: #f8f9fa;
+            border-left: 5px solid var(--accent);
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
+        .task-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .task-card:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-color: var(--accent);
+        }
+
+        .task-math {
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .input-box {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        input {
+            width: 120px;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 1em;
+            outline: none;
+        }
+
+        input:focus { border-color: var(--accent); }
+
+        button {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .btn-check { background: var(--accent); color: white; }
+        .btn-check:hover { background: #2980b9; }
+
+        .btn-tool { background: #95a5a6; color: white; font-size: 0.8em; margin-top: 10px; margin-right: 5px; }
+        .btn-tool:hover { opacity: 0.8; }
+
+        .feedback { margin-top: 10px; font-weight: bold; display: none; }
+        .hint, .solution {
+            display: none;
+            margin-top: 10px;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 0.9em;
+        }
+        .hint { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+        .solution { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+
+        /* --- RIGHT SIDE: WHITEBOARD --- */
+        .whiteboard-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #ecf0f1;
+        }
+
+        .wb-toolbar {
+            padding: 10px;
+            background: #2c3e50;
+            display: flex;
+            gap: 10px;
+            color: white;
+            align-items: center;
+        }
+
+        .canvas-container {
+            flex: 1;
+            position: relative;
+            background: white;
+            margin: 10px;
+            border-radius: 8px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        canvas {
+            position: absolute;
+            top: 0; left: 0;
+            cursor: crosshair;
+        }
+
+        /* --- MODAL --- */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+        }
+
+        .modal {
+            background: white;
+            color: #333;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 500px;
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 800px) {
+            .container { flex-direction: column; }
+            .content-area, .whiteboard-area { height: 50vh; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="content-area" id="lesson-content">
+        <h1 style="color: var(--primary); text-align: center;">🎓 Майстер Рівнянь</h1>
+        <p style="text-align: center; color: #7f8c8d;">6 клас • Покрокове навчання</p>
+
+        <div class="section-title"><span>1</span> Знаходження невідомого доданка</div>
+        <div class="theory-card">
+            Щоб знайти невідомий доданок, треба від суми відняти відомий доданок.<br>
+            <strong>Аналогія:</strong> Якщо в кошику з яблуками та грушами всього 10 фруктів, і 4 з них — яблука, то груш буде \(10 - 4 = 6\).
+        </div>
+        <div id="block-1"></div>
+
+        <div class="section-title"><span>2</span> Знаходження зменшуваного та від'ємника</div>
+        <div class="theory-card">
+            • Щоб знайти <strong>зменшуване</strong> (\(x - a = b\)), треба до різниці додати від'ємник: \(x = b + a\).<br>
+            • Щоб знайти <strong>від'ємник</strong> (\(a - x = b\)), треба від зменшуваного відняти різницю: \(x = a - b\).
+        </div>
+        <div id="block-2"></div>
+
+        <div class="section-title"><span>3</span> Множення та ділення</div>
+        <div class="theory-card">
+            • Невідомий <strong>множник</strong>: \(x = \text{добуток} : \text{відомий множник}\).<br>
+            • Невідоме <strong>ділене</strong>: \(x = \text{частка} \cdot \text{дільник}\).<br>
+            • Невідомий <strong>дільник</strong>: \(x = \text{ділене} : \text{частка}\).
+        </div>
+        <div id="block-3"></div>
+
+        <div class="section-title"><span>4</span> Рівняння з дробами та мішаними числами</div>
+        <div class="theory-card">
+            Тут діють ті самі правила! Головне — пам'ятай про спільний знаменник та перетворення мішаних чисел у неправильні дроби при множенні/діленні.
+        </div>
+        <div id="block-4"></div>
+
+        <div class="section-title"><span>5</span> Комбіновані рівняння</div>
+        <div class="theory-card">
+            Розв'язуй крок за кроком, "розплутуючи" рівняння з кінця. Спочатку знайди невідомий доданок або різницю, а потім — множник.
+        </div>
+        <div id="block-5"></div>
+
+        <button class="btn-check" style="width: 100%; margin: 50px 0; padding: 20px;" onclick="finishLesson()">🏁 ЗАВЕРШИТИ ТРЕНУВАННЯ</button>
+    </div>
+
+    <div class="whiteboard-area">
+        <div class="wb-toolbar">
+            <span style="margin-right: 10px;">🎨 Чернетка:</span>
+            <button class="btn-check" style="background: #e67e22;" onclick="setWbTool('pencil')">✏️ Олівець</button>
+            <button class="btn-check" style="background: #95a5a6;" onclick="setWbTool('eraser')">🧽 Гумка</button>
+            <button class="btn-check" style="background: #c0392b;" onclick="clearWb()">🗑️ Очистити</button>
+            <button class="btn-check" style="background: #27ae60;" onclick="toggleWbGrid()">📏 Сітка</button>
+        </div>
+        <div class="canvas-container" id="canvas-wrap">
+            <canvas id="whiteboard"></canvas>
+        </div>
+    </div>
+</div>
+
+<div class="overlay" id="overlay">
+    <div class="modal">
+        <h2 id="res-title">Чудова робота!</h2>
+        <p id="res-score"></p>
+        <p id="res-msg" style="font-style: italic; margin: 20px 0;"></p>
+        <button class="btn-check" onclick="location.reload()">Повторити ще раз</button>
+    </div>
+</div>
+
+<script>
+    // --- ТИПИ ЗАВДАНЬ (30 штук) ---
+    const taskData = [
+        // Блок 1: Додавання (6)
+        { b: 1, q: "x + 17 = 40", a: "23", h: "x = 40 - 17", s: "x = 23" },
+        { b: 1, q: "125 + x = 300", a: "175", h: "x = 300 - 125", s: "x = 175" },
+        { b: 1, q: "x + 0.45 = 1", a: "0.55", h: "x = 1 - 0.45", s: "x = 0.55" },
+        { b: 1, q: "x + \\frac{2}{7} = \\frac{6}{7}", a: "4/7", h: "Чисельники віднімаються: 6 - 2", s: "x = 4/7" },
+        { b: 1, q: "x + 2\\frac{1}{5} = 4\\frac{4}{5}", a: "2 3/5", h: "Відніми цілі та дробові частини", s: "x = 2 3/5 або 2.6" },
+        { b: 1, q: "x + \\frac{1}{2} = \\frac{3}{4}", a: "1/4", h: "Зведи до знаменника 4: 1/2 = 2/4", s: "x = 3/4 - 2/4 = 1/4" },
+
+        // Блок 2: Віднімання (6)
+        { b: 2, q: "x - 14 = 26", a: "40", h: "x = 26 + 14", s: "x = 40" },
+        { b: 2, q: "100 - x = 72", a: "28", h: "x = 100 - 72", s: "x = 28" },
+        { b: 2, q: "x - \\frac{3}{10} = 0.5", a: "0.8", h: "0.5 — це 5/10. Додай їх.", s: "x = 0.5 + 0.3 = 0.8 або 4/5" },
+        { b: 2, q: "5\\frac{7}{9} - x = 2\\frac{4}{9}", a: "3 3/9", a2: "3 1/3", h: "x = 5 7/9 - 2 4/9", s: "x = 3 3/9 = 3 1/3" },
+        { b: 2, q: "x - 1.25 = 2.5", a: "3.75", h: "x = 2.5 + 1.25", s: "x = 3.75" },
+        { b: 2, q: "4 - x = 1\\frac{1}{2}", a: "2.5", h: "4 - 1.5 = ?", s: "x = 2 1/2 або 2.5" },
+
+        // Блок 3: Множення/Ділення (6)
+        { b: 3, q: "5x = 85", a: "17", h: "x = 85 : 5", s: "x = 17" },
+        { b: 3, q: "0.2x = 10", a: "50", h: "x = 10 : 0.2", s: "x = 50" },
+        { b: 3, q: "x : 6 = 12", a: "72", h: "x = 12 * 6", s: "x = 72" },
+        { b: 3, q: "48 : x = 4", a: "12", h: "x = 48 : 4", s: "x = 12" },
+        { b: 3, q: "\\frac{1}{3}x = 9", a: "27", h: "x = 9 * 3", s: "x = 27" },
+        { b: 3, q: "x : 0.5 = 20", a: "10", h: "x = 20 * 0.5", s: "x = 10" },
+
+        // Блок 4: Дроби та мішані (6)
+        { b: 4, q: "x \\cdot \\frac{2}{3} = \\frac{8}{9}", a: "4/3", h: "x = 8/9 : 2/3 = 8/9 * 3/2", s: "x = 4/3 або 1 1/3" },
+        { b: 4, q: "x : 1\\frac{1}{2} = 4", a: "6", h: "x = 4 * 1.5", s: "x = 6" },
+        { b: 4, q: "\\frac{3}{4} : x = \\frac{1}{2}", a: "1.5", h: "x = 3/4 : 1/2 = 3/4 * 2", s: "x = 3/2 або 1.5" },
+        { b: 4, q: "x + 3\\frac{1}{4} = 5", a: "1.75", h: "x = 5 - 3.25", s: "x = 1 3/4 або 1.75" },
+        { b: 4, q: "2x = \\frac{4}{5}", a: "0.4", h: "x = 4/5 : 2", s: "x = 2/5 або 0.4" },
+        { b: 4, q: "x - \\frac{1}{6} = \\frac{1}{3}", a: "0.5", h: "x = 1/3 + 1/6 = 2/6 + 1/6", s: "x = 3/6 = 0.5" },
+
+        // Блок 5: Складніші (6)
+        { b: 5, q: "2x + 10 = 30", a: "10", h: "2x = 30 - 10 = 20", s: "2x = 20; x = 10" },
+        { b: 5, q: "3x - 4 = 11", a: "5", h: "3x = 11 + 4 = 15", s: "3x = 15; x = 5" },
+        { b: 5, q: "0.5x + 1 = 4", a: "6", h: "0.5x = 3", s: "x = 3 / 0.5 = 6" },
+        { b: 5, q: "(x + 5) \\cdot 2 = 20", a: "5", h: "x + 5 = 20 : 2 = 10", s: "x + 5 = 10; x = 5" },
+        { b: 5, q: "15 - 2x = 5", a: "5", h: "2x = 15 - 5 = 10", s: "2x = 10; x = 5" },
+        { b: 5, q: "x + x + 3 = 13", a: "5", h: "2x + 3 = 13", s: "2x = 10; x = 5" }
+    ];
+
+    let solvedCount = 0;
+
+    // --- RENDER ---
+    function initTasks() {
+        taskData.forEach((t, i) => {
+            const container = document.getElementById(`block-${t.b}`);
+            const card = document.createElement('div');
+            card.className = 'task-card';
+            card.innerHTML = `
+                <div class="task-math">\\( ${t.q} \\)</div>
+                <div class="input-box">
+                    <input type="text" id="ans-${i}" placeholder="x = ?">
+                    <button class="btn-check" onclick="checkAnswer(${i})">Перевірити</button>
+                </div>
+                <div id="feed-${i}" class="feedback"></div>
+                <button class="btn-tool" onclick="toggle('hint-${i}')">💡 Підказка</button>
+                <button class="btn-tool" onclick="toggle('sol-${i}')">📖 Розв'язок</button>
+                <div id="hint-${i}" class="hint">${t.h}</div>
+                <div id="sol-${i}" class="solution">${t.s}</div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    function toggle(id) {
+        const el = document.getElementById(id);
+        el.style.display = el.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function checkAnswer(i) {
+        const input = document.getElementById(`ans-${i}`);
+        const feed = document.getElementById(`feed-${i}`);
+        const user = input.value.trim().replace(',', '.').replace(' ', '');
+        const target = taskData[i].a.replace(' ', '');
+        const target2 = taskData[i].a2 ? taskData[i].a2.replace(' ', '') : null;
+
+        feed.style.display = 'block';
+        if (user === target || (target2 && user === target2)) {
+            feed.innerHTML = "✅ Правильно!";
+            feed.style.color = "var(--success)";
+            input.style.borderColor = "var(--success)";
+            if(!input.readOnly) solvedCount++;
+            input.readOnly = true;
+        } else {
+            feed.innerHTML = "❌ Спробуй ще раз";
+            feed.style.color = "var(--danger)";
+            input.style.borderColor = "var(--danger)";
+        }
+    }
+
+    // --- WHITEBOARD ---
+    const canvas = document.getElementById('whiteboard');
+    const ctx = canvas.getContext('2d');
+    const wrap = document.getElementById('canvas-wrap');
+    let drawing = false;
+    let wbTool = 'pencil';
+    let wbGrid = false;
+
+    function resizeCanvas() {
+        canvas.width = wrap.clientWidth;
+        canvas.height = wrap.clientHeight;
+        if(wbGrid) drawGrid();
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+    setTimeout(resizeCanvas, 500);
+
+    canvas.addEventListener('mousedown', (e) => { drawing = true; draw(e); });
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('mouseup', () => { drawing = false; ctx.beginPath(); });
+
+    function draw(e) {
+        if(!drawing) return;
+        const rect = canvas.getBoundingClientRect();
+        ctx.lineWidth = wbTool === 'eraser' ? 30 : 2;
+        ctx.lineCap = 'round';
+        ctx.strokeStyle = wbTool === 'eraser' ? 'white' : '#2c3e50';
+
+        ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+    }
+
+    function setWbTool(t) { wbTool = t; }
+    function clearWb() { 
+        ctx.clearRect(0,0,canvas.width, canvas.height); 
+        if(wbGrid) drawGrid();
+    }
+    function toggleWbGrid() {
+        wbGrid = !wbGrid;
+        clearWb();
+    }
+    function drawGrid() {
+        ctx.strokeStyle = '#f0f0f0';
+        ctx.lineWidth = 1;
+        for(let i=0; i<canvas.width; i+=25) { ctx.moveTo(i,0); ctx.lineTo(i,canvas.height); }
+        for(let i=0; i<canvas.height; i+=25) { ctx.moveTo(0,i); ctx.lineTo(canvas.width,i); }
+        ctx.stroke();
+    }
+
+    // --- FINISH ---
+    function finishLesson() {
+        const overlay = document.getElementById('overlay');
+        const title = document.getElementById('res-title');
+        const score = document.getElementById('res-score');
+        const msg = document.getElementById('res-msg');
+
+        overlay.style.display = 'flex';
+        const points = Math.round((solvedCount / 30) * 12);
+        
+        score.innerHTML = `Виконано завдань: <b>${solvedCount} з 30</b><br>Оцінка: <b>${points} балів</b>`;
+        
+        const praises = [
+            "Ти — справжній підкорювач рівнянь! Так тримати!",
+            "Твоя логіка вражає, математика тобою пишається!",
+            "Чудовий результат! Кожне рівняння — це сходинка до успіху.",
+            "Неймовірна робота! Твої зусилля обов'язково дадуть плоди.",
+            "Ти молодець! Навіть найскладніші рівняння тобі під силу."
+        ];
+        msg.innerText = praises[Math.floor(Math.random() * praises.length)];
+    }
+
+    initTasks();
+</script>
+
+</body>
+</html>

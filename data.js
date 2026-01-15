@@ -772,7 +772,16 @@ window.lessonsData = [
     category: "lesson",
     author: "Соня",
   },
-
+  {
+    id: "math-6-rivniannyia",
+    title: "Рівняння",
+    grade: 6,
+    topic: "Математика",
+    link: "math_general/6/Вадим/Всеволод2.html",
+    subject_code: "math_general",
+    category: "lesson",
+    author: "Соня",
+  },
   // ==========================================
   // 8 КЛАС (Алгебра - Маринка/Соня) - Автор: Соня
   // ЦІ УРОКИ ТЕПЕР В КІНЦІ СПИСКУ 8 КЛАСУ
@@ -927,6 +936,16 @@ window.lessonsData = [
     grade: 9,
     topic: "Математика",
     link: "algebra/9/Настя/Настя7.html",
+    subject_code: "algebra",
+    category: "lesson",
+    author: "Соня",
+  },
+   {
+    id: "alg-9-artur",
+    title: "Арифметична прогресія",
+    grade: 9,
+    topic: "Математика",
+    link: "algebra/9/Настя/Артур.html",
     subject_code: "algebra",
     category: "lesson",
     author: "Соня",
