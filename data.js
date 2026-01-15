@@ -940,4 +940,14 @@ window.lessonsData = [
     category: "lesson",
     author: "Соня",
   },
+   {
+    id: "alg-9-artur",
+    title: "Арифметична прогресія",
+    grade: 9,
+    topic: "Математика",
+    link: "algebra/9/Настя/Артур.html",
+    subject_code: "algebra",
+    category: "lesson",
+    author: "Соня",
+  },
 ];
