@@ -77,13 +77,22 @@ window.lessonsData = [
     category: "lesson",
     author: "Даша",
   },
-
   {
     id: "math-2-toy-game-lesson",
     title: "Приклади і магазин розмальовок",
     grade: 2,
     topic: "Арифметика",
     link: "math_general/2/lesson_and_toy_market.html",
+    subject_code: "math_general",
+    category: "lesson",
+    author: "Даша",
+  },
+  {
+    id: "math-2-bear-lesson",
+    title: "Накорми ведмедиків!",
+    grade: 2,
+    topic: "Арифметика",
+    link: "math_general/2/1-bear-lesson.html",
     subject_code: "math_general",
     category: "lesson",
     author: "Даша",
@@ -940,7 +949,7 @@ window.lessonsData = [
     category: "lesson",
     author: "Соня",
   },
-   {
+  {
     id: "alg-9-artur",
     title: "Арифметична прогресія",
     grade: 9,

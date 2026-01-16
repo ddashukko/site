@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ведмежа Математика</title>
+    <style>
+      body {
+        font-family: "Comic Sans MS", "Verdana", sans-serif;
+        margin: 0;
+        padding: 20px;
+        overflow-x: hidden;
+
+        /* --- ФОН З ЛАПКАМИ --- */
+        background-color: #fff8e1;
+        background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23795548' fill-opacity='0.15' fill-rule='evenodd'%3E%3Cpath d='M30 40c-6.6 0-12-4.5-12-10 0-5.5 5.4-10 12-10s12 4.5 12 10c0 5.5-5.4 10-12 10zm-12-17c-3.3 0-6-2.2-6-5s2.7-5 6-5 6 2.2 6 5-2.7 5-6 5zm12-5c-3.3 0-6-2.2-6-5s2.7-5 6-5 6 2.2 6 5-2.7 5-6 5zm12 5c-3.3 0-6-2.2-6-5s2.7-5 6-5 6 2.2 6 5-2.7 5-6 5z'/%3E%3C/g%3E%3C/svg%3E");
+        background-size: 60px 60px;
+      }
+
+      .container {
+        max-width: 700px;
+        margin: 0 auto;
+        padding-bottom: 50px;
+        position: relative;
+        z-index: 1;
+      }
+
+      h1 {
+        text-align: center;
+        color: #d84315;
+        font-size: 2.5em;
+        margin-bottom: 10px;
+        text-shadow: 3px 3px 0px #fff, 0 0 10px rgba(255, 255, 255, 0.8);
+      }
+
+      .intro-text {
+        text-align: center;
+        font-size: 1.2em;
+        background: rgba(255, 255, 255, 0.8);
+        display: inline-block;
+        padding: 5px 15px;
+        border-radius: 20px;
+        margin-bottom: 20px;
+        width: 100%;
+        box-sizing: border-box;
+        border: 2px solid #ffe0b2;
+      }
+
+      .block-card {
+        background: white;
+        border-radius: 20px;
+        padding: 25px;
+        margin-bottom: 40px;
+        box-shadow: 0 5px 15px rgba(121, 85, 72, 0.2);
+        border: 2px solid #ffe0b2;
+        position: relative;
+        transition: transform 0.2s;
+      }
+      .block-card.completed {
+        border-color: #66bb6a;
+        background-color: #f1f8e9;
+        transform: scale(1.02);
+        box-shadow: 0 0 20px rgba(102, 187, 106, 0.4);
+      }
+      h2 {
+        margin-top: 0;
+        color: #ef6c00;
+        border-bottom: 3px dashed #ffcc80;
+        padding-bottom: 10px;
+        text-align: center;
+      }
+      .task-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background-color: #fff3e0;
+        margin-bottom: 15px;
+        padding: 12px 20px;
+        border-radius: 15px;
+        font-size: 1.4em;
+        font-weight: bold;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      }
+      input[type="number"] {
+        width: 80px;
+        font-size: 22px;
+        text-align: center;
+        border: 2px solid #ffcc80;
+        border-radius: 10px;
+        padding: 5px;
+        color: #5d4037;
+        outline: none;
+        margin-left: 10px;
+        margin-right: 10px;
+      }
+      input:focus {
+        border-color: #ef6c00;
+        background-color: #fff;
+      }
+      button {
+        background-color: #ffb74d;
+        color: #3e2723;
+        border: none;
+        padding: 8px 20px;
+        font-size: 18px;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.1s;
+        font-weight: bold;
+      }
+      button:hover {
+        background-color: #ffa726;
+        transform: scale(1.1);
+      }
+      .feedback {
+        width: 40px;
+        text-align: center;
+        font-size: 24px;
+      }
+
+      #confetti-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 9999;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="confetti-canvas"></canvas>
+
+    <div class="container">
+      <h1>🐻 Ведмежа школа 🍯</h1>
+      <div class="intro-text">
+        Розв'яжи приклади, щоб нагодувати ведмедиків!
+      </div>
+
+      <div class="block-card" id="block1">
+        <h2>Вулик 1: Додавання (Мікс)</h2>
+        <div class="task-row">
+          <span>41 + 5 = </span><input type="number" data-ans="46" /><button
+            onclick="check(this)"
+          >
+            ОК</button
+          ><span class="feedback"></span>
+        </div>
+        <div class="task-row">
+          <span>23 + 4 = </span><input type="number" data-ans="27" /><button
+            onclick="check(this)"
+          >
+            ОК</button
+          ><span class="feedback"></span>
+        </div>
+        <div class="task-row">
+          <span>62 + 6 = </span><input type="number" data-ans="68" /><button
+            onclick="check(this)"
+          >
+            ОК</button
+          ><span class="feedback"></span>
+        </div>
+        <div class="task-row">
+          <span>28 + 4 = </span><input type="number" data-ans="32" /><button
+            onclick="check(this)"
+          >
+            ОК</button
+          ><span class="feedback"></span>
+        </div>
+        <div class="task-row">
+          <span>57 + 6 = </span><input type="number" data-ans="63" /><button
+            onclick="check(this)"
+          >
+            ОК</button
+          ><span class="feedback"></span>
+        </div>
+      </div>
+
+      <div class="block-card" id="block2">
+        <h2>Вулик 2: Віднімання (Мікс)</h2>
+        <div class="task-row">
+          <span>59 - 4 = </span><input type="number" data-ans="55" /><button
+            onclick="check(this)"
+          >
+            ОК</button
+          ><span class="feedback"></span>
+        </div>
+        <div class="task-row">
+          <span>76 - 3 = </span><input type="number" data-ans="73" /><button
+            onclick="check(this)"
+          >
+            ОК</button
+          ><span class="feedback"></span>
+        </div>
+        <div class="task-row">
+          <span>28 - 7 = </span><input type="number" data-ans="21" /><button
+            onclick="check(this)"
+          >
+            ОК</button
+          ><span class="feedback"></span>
+        </div>
+        <div class="task-row">
+          <span>32 - 5 = </span><input type="number" data-ans="27" /><button
+            onclick="check(this)"
+          >
+            ОК</button
+          ><span class="feedback"></span>
+        </div>
+        <div class="task-row">
+          <span>44 - 8 = </span><input type="number" data-ans="36" /><button
+            onclick="check(this)"
+          >
+            ОК</button
+          ><span class="feedback"></span>
+        </div>
+      </div>
+
+      <div class="block-card" id="block3">
+        <h2>Вулик 3: Зроби число круглим! (База)</h2>
+        <div class="task-row">
+          <span>38 + 2 = </span><input type="number" data-ans="40" /><button
+            onclick="check(this)"
+          >
+            ОК</button
+          ><span class="feedback"></span>
+        </div>
+        <div class="task-row">
+          <span>44 + 6 = </span><input type="number" data-ans="50" /><button
+            onclick="check(this)"
+          >
+            ОК</button
+          ><span class="feedback"></span>
+        </div>
+        <div class="task-row">
+          <span>21 + 9 = </span><input type="number" data-ans="30" /><button
+            onclick="check(this)"
+          >
+            ОК</button
+          ><span class="feedback"></span>
+        </div>
+        <div class="task-row">
+          <span>63 + 7 = </span><input type="number" data-ans="70" /><button
+            onclick="check(this)"
+          >
+            ОК</button
+          ><span class="feedback"></span>
+        </div>
+        <div class="task-row">
+          <span>15 + 5 = </span><input type="number" data-ans="20" /><button
+            onclick="check(this)"
+          >
+            ОК</button
+          ><span class="feedback"></span>
+        </div>
+      </div>
+
+      <div class="block-card" id="block4">
+        <h2>Вулик 4: Тільки перехід через 10</h2>
+        <div class="task-row">
+          <span>19 + 2 = </span><input type="number" data-ans="21" /><button
+            onclick="check(this)"
+          >
+            ОК</button
+          ><span class="feedback"></span>
+        </div>
+        <div class="task-row">
+          <span>35 + 6 = </span><input type="number" data-ans="41" /><button
+            onclick="check(this)"
+          >
+            ОК</button
+          ><span class="feedback"></span>
+        </div>
+        <div class="task-row">
+          <span>48 + 7 = </span><input type="number" data-ans="55" /><button
+            onclick="check(this)"
+          >
+            ОК</button
+          ><span class="feedback"></span>
+        </div>
+        <div class="task-row">
+          <span>64 + 8 = </span><input type="number" data-ans="72" /><button
+            onclick="check(this)"
+          >
+            ОК</button
+          ><span class="feedback"></span>
+        </div>
+        <div class="task-row">
+          <span>26 + 9 = </span><input type="number" data-ans="35" /><button
+            onclick="check(this)"
+          >
+            ОК</button
+          ><span class="feedback"></span>
+        </div>
+      </div>
+
+      <div class="block-card" id="block5">
+        <h2>Вулик 5: Позичаємо десяток</h2>
+        <div class="task-row">
+          <span>31 - 2 = </span><input type="number" data-ans="29" /><button
+            onclick="check(this)"
+          >
+            ОК</button
+          ><span class="feedback"></span>
+        </div>
+        <div class="task-row">
+          <span>52 - 4 = </span><input type="number" data-ans="48" /><button
+            onclick="check(this)"
+          >
+            ОК</button
+          ><span class="feedback"></span>
+        </div>
+        <div class="task-row">
+          <span>23 - 6 = </span><input type="number" data-ans="17" /><button
+            onclick="check(this)"
+          >
+            ОК</button
+          ><span class="feedback"></span>
+        </div>
+        <div class="task-row">
+          <span>74 - 5 = </span><input type="number" data-ans="69" /><button
+            onclick="check(this)"
+          >
+            ОК</button
+          ><span class="feedback"></span>
+        </div>
+        <div class="task-row">
+          <span>40 - 8 = </span><input type="number" data-ans="32" /><button
+            onclick="check(this)"
+          >
+            ОК</button
+          ><span class="feedback"></span>
+        </div>
+      </div>
+
+      <div class="block-card" id="block6">
+        <h2>Вулик 6: Рівняння (Знайди x)</h2>
+        <div class="task-row">
+          <span>25 - x = 21</span><input type="number" data-ans="4" /><button
+            onclick="check(this)"
+          >
+            ОК</button
+          ><span class="feedback"></span>
+        </div>
+        <div class="task-row">
+          <span>x + 4 = 13</span><input type="number" data-ans="9" /><button
+            onclick="check(this)"
+          >
+            ОК</button
+          ><span class="feedback"></span>
+        </div>
+        <div class="task-row">
+          <span>12 + x = 20</span><input type="number" data-ans="8" /><button
+            onclick="check(this)"
+          >
+            ОК</button
+          ><span class="feedback"></span>
+        </div>
+        <div class="task-row">
+          <span>30 - x = 24</span><input type="number" data-ans="6" /><button
+            onclick="check(this)"
+          >
+            ОК</button
+          ><span class="feedback"></span>
+        </div>
+        <div class="task-row">
+          <span>x + 10 = 55</span><input type="number" data-ans="45" /><button
+            onclick="check(this)"
+          >
+            ОК</button
+          ><span class="feedback"></span>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function check(btn) {
+        const row = btn.parentElement;
+        const input = row.querySelector("input");
+        const feedback = row.querySelector(".feedback");
+        const correctAns = parseInt(input.getAttribute("data-ans"));
+        const userAns = parseInt(input.value);
+        const block = row.closest(".block-card");
+
+        if (userAns === correctAns) {
+          input.style.backgroundColor = "#c8e6c9";
+          input.style.borderColor = "#2e7d32";
+          input.disabled = true;
+          btn.style.display = "none";
+          feedback.innerHTML = "✅";
+
+          checkBlockCompletion(block);
+        } else {
+          input.style.backgroundColor = "#ffcdd2";
+          input.style.borderColor = "#c62828";
+          feedback.innerHTML = "❌";
+          input.style.transform = "translateX(5px)";
+          setTimeout(() => {
+            input.style.transform = "translateX(0px)";
+          }, 100);
+        }
+      }
+
+      function checkBlockCompletion(block) {
+        const allInputs = block.querySelectorAll("input");
+        let allCorrect = true;
+
+        allInputs.forEach((inp) => {
+          if (!inp.disabled) allCorrect = false;
+        });
+
+        if (allCorrect && !block.classList.contains("completed")) {
+          block.classList.add("completed");
+          triggerBearConfetti();
+        }
+      }
+
+      // --- БЛИСКАВИЧНЕ ВЕДМЕЖЕ КОНФЕТІ (FADE OUT) ---
+      const canvas = document.getElementById("confetti-canvas");
+      const ctx = canvas.getContext("2d");
+      let particles = [];
+      const emojis = ["🐻", "🍯", "🐾", "✨"];
+
+      function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      window.addEventListener("resize", resizeCanvas);
+      resizeCanvas();
+
+      function triggerBearConfetti() {
+        particles = [];
+
+        // 50 частинок
+        for (let i = 0; i < 50; i++) {
+          particles.push({
+            x: Math.random() * canvas.width,
+            y: -10 - Math.random() * 50,
+            emoji: emojis[Math.floor(Math.random() * emojis.length)],
+            size: 25 + Math.random() * 20,
+            speedY: 10 + Math.random() * 10,
+            speedX: -2 + Math.random() * 4,
+            rotation: Math.random() * 360,
+            rotationSpeed: -10 + Math.random() * 20,
+            opacity: 1,
+          });
+        }
+        if (!isAnimating) {
+          animateConfetti();
+        }
+      }
+
+      let isAnimating = false;
+
+      function animateConfetti() {
+        if (particles.length === 0) {
+          isAnimating = false;
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          return;
+        }
+
+        isAnimating = true;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        for (let i = 0; i < particles.length; i++) {
+          let p = particles[i];
+
+          ctx.globalAlpha = p.opacity;
+          ctx.font = p.size + "px serif";
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate((p.rotation * Math.PI) / 180);
+          ctx.fillText(p.emoji, 0, 0);
+          ctx.restore();
+
+          p.y += p.speedY;
+          p.x += p.speedX;
+          p.rotation += p.rotationSpeed;
+
+          p.opacity -= 0.02;
+
+          if (p.opacity <= 0) {
+            particles.splice(i, 1);
+            i--;
+          }
+        }
+        ctx.globalAlpha = 1;
+
+        requestAnimationFrame(animateConfetti);
+      }
+    </script>
+  </body>
+</html>
