@@ -806,7 +806,7 @@ window.lessonsData = [
     author: "Соня",
   },
    {
-    id: "alg-8-sonya-fractions-1",
+    id: "alg-8-sonya-",
     title: "Дз",
     grade: 8,
     topic: "Математика",
