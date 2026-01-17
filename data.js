@@ -731,6 +731,16 @@ window.lessonsData = [
     category: "lesson",
     author: "Соня",
   },
+   {
+    id: "math-6-vadim-domashnie",
+    title: "ДЗ",
+    grade: 6,
+    topic: "Математика",
+    link: "math_general/6/Вадим/dzvadym.html",
+    subject_code: "math_general",
+    category: "lesson",
+    author: "Соня",
+  },
   {
     id: "math-6-vadim-02",
     title: "Вадим Урок2",
