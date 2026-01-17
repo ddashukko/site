@@ -810,7 +810,7 @@ window.lessonsData = [
     title: "Дз",
     grade: 8,
     topic: "Математика",
-    link: "algebra/8/Маринкка/dzmarina.html",
+    link: "algebra/8/Маринка/dzmarina.html",
     subject_code: "algebra",
     category: "lesson",
     author: "Соня",
