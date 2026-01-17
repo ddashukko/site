@@ -805,6 +805,16 @@ window.lessonsData = [
     category: "lesson",
     author: "Соня",
   },
+   {
+    id: "alg-8-sonya-fractions-1",
+    title: "Дз",
+    grade: 8,
+    topic: "Математика",
+    link: "algebra/8/Маринкка/dzmarina.html",
+    subject_code: "algebra",
+    category: "lesson",
+    author: "Соня",
+  },
   {
     id: "alg-8-sonya-fractions-2",
     title: "Соніна Маринка учить дроби2",
