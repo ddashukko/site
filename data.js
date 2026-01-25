@@ -924,7 +924,7 @@ window.lessonsData = [
     title: "Настя Урок3",
     grade: 9,
     topic: "Математика",
-    link: "algebra/9/Настя/Настя3.html",
+    link: "algebra/9/Настя/теоремасинусів.html",
     subject_code: "algebra",
     category: "lesson",
     author: "Соня",
