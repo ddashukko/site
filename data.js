@@ -287,6 +287,16 @@ window.lessonsData = [
     category: "lesson",
     author: "Даша",
   },
+  {
+    id: "math-probne",
+    title: "Пробне",
+    grade: 7,
+    topic: "Алгебра",
+    link: "algebra/7/probne7.html",
+    subject_code: "algebra",
+    category: "lesson",
+    author: "Соня",
+  },
 
   // ==========================================
   // 8 КЛАС (Алгебра - ТЕСТИ) - Автор: Даша
