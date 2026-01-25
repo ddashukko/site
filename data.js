@@ -293,7 +293,7 @@ window.lessonsData = [
     title: "Пробне",
     grade: 7,
     topic: "Алгебра",
-    link: "algebra/7/lesson/probne7.html",
+    link: "algebra/7/lesson/probbne7.html",
     subject_code: "algebra",
     category: "lesson",
     author: "Даша",
