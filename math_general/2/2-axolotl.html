@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Контрольна робота: Арифметичний квадратний корінь</title>
+    <style>
+      body {
+        font-family: "Times New Roman", Times, serif;
+        line-height: 1.3;
+        max-width: 210mm; /* А4 */
+        margin: 0 auto;
+        padding: 20px;
+        color: #000;
+      }
+
+      h1 {
+        text-align: center;
+        font-size: 16pt;
+        margin-bottom: 5px;
+        text-transform: uppercase;
+      }
+
+      h2 {
+        text-align: center;
+        font-size: 13pt;
+        font-weight: normal;
+        margin-top: 0;
+        margin-bottom: 20px;
+      }
+
+      .header-fields {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        font-size: 11pt;
+        border-bottom: 2px solid #000;
+        padding-bottom: 15px;
+      }
+
+      .field {
+        border-bottom: 1px solid #000;
+        display: inline-block;
+        min-width: 100px;
+      }
+
+      .section {
+        margin-bottom: 15px;
+      }
+      .section-title {
+        font-weight: bold;
+        font-size: 11pt;
+        margin-bottom: 8px;
+        text-decoration: underline;
+      }
+
+      .tasks-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .task {
+        flex: 1 1 45%;
+        margin-bottom: 5px;
+      }
+      .task-full {
+        flex: 1 1 100%;
+        margin-bottom: 5px;
+      }
+
+      .answer-line {
+        display: inline-block;
+        border-bottom: 1px solid #000;
+        width: 80px;
+        margin-left: 5px;
+      }
+
+      .long-line {
+        width: 150px;
+      }
+
+      /* Стилі для кореня з кришечкою */
+      .sqrt {
+        white-space: nowrap;
+      }
+      .sqrt span {
+        border-top: 1px solid black;
+        padding: 0 2px;
+        display: inline-block;
+      }
+
+      /* Дроби */
+      .fraction {
+        display: inline-block;
+        text-align: center;
+        vertical-align: middle;
+        font-size: 0.9em;
+        margin-top: -5px;
+      }
+      .fraction > span {
+        display: block;
+        padding: 0.1em;
+      }
+      .fraction span.numerator {
+        border-bottom: 1px solid #000;
+      }
+
+      /* Таблиця для Так/Ні */
+      .check-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      .check-table td {
+        padding: 2px 5px;
+      }
+
+      @media print {
+        .no-print {
+          display: none;
+        }
+        .page-break {
+          page-break-before: always;
+        }
+        body {
+          margin: 1cm;
+          padding: 0;
+        }
+      }
+
+      .btn {
+        background-color: #2563eb;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        display: block;
+        margin: 0 auto 20px auto;
+        font-size: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <button class="btn no-print" onclick="window.print()">
+      🖨️ Роздрукувати тест
+    </button>
+
+    <h1>Контрольна робота</h1>
+    <h2>Тема: Арифметичний квадратний корінь</h2>
+
+    <div class="header-fields">
+      <div>
+        Прізвище та ім'я: <span class="field" style="width: 220px">&nbsp;</span>
+      </div>
+      <div>Клас: <span class="field" style="width: 40px">&nbsp;</span></div>
+      <div>Дата: <span class="field" style="width: 90px">&nbsp;</span></div>
+      <div>Оцінка: <span class="field" style="width: 40px">&nbsp;</span></div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">1. Обчислення та зміст виразів</div>
+      <table class="check-table">
+        <tr>
+          <td width="50%">
+            <b>1.1.</b> Чи має зміст вираз
+            <span class="sqrt">&#8730;<span>-25</span></span
+            >?<br />
+            [ &nbsp; ] Так &nbsp;&nbsp;&nbsp; [ &nbsp; ] Ні
+          </td>
+          <td width="50%">
+            <b>1.2.</b> Обчисліть
+            <span class="sqrt">&#8730;<span>0,36</span></span
+            >:<br />
+            Відповідь: <span class="answer-line">&nbsp;</span>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <b>1.3.</b> Знайдіть значення
+            <span class="sqrt">&#8730;<span>100</span></span> -
+            <span class="sqrt">&#8730;<span>64</span></span
+            >:<br />
+            Відповідь: <span class="answer-line">&nbsp;</span>
+          </td>
+          <td>
+            <b>1.4.</b> Обчисліть
+            <span class="sqrt"
+              >&#8730;<span>12<sup>2</sup> + 5<sup>2</sup></span></span
+            >:<br />
+            Відповідь: <span class="answer-line">&nbsp;</span>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="section">
+      <div class="section-title">2. Область допустимих значень (ОДЗ)</div>
+      <div class="tasks-container">
+        <div class="task-full">
+          <b>2.1.</b> При яких значеннях <i>x</i> має зміст вираз
+          <span class="sqrt"
+            >&#8730;<span>x<sup>3</sup></span></span
+          >?
+          <br />
+          [ &nbsp; ] x > 0 &nbsp;&nbsp; [ &nbsp; ] x &ge; 0 &nbsp;&nbsp; [
+          &nbsp; ] будь-яке x
+        </div>
+        <div class="task-full">
+          <b>2.2.</b> При яких значеннях <i>a</i> має зміст вираз
+          <div class="fraction">
+            <span class="numerator">1</span
+            ><span class="denominator"
+              ><span class="sqrt">&#8730;<span>a</span></span></span
+            >
+          </div>
+          ?
+          <br />
+          [ &nbsp; ] a > 0 &nbsp;&nbsp; [ &nbsp; ] a &ge; 0 &nbsp;&nbsp; [
+          &nbsp; ] a &ne; 0
+        </div>
+        <div class="task-full">
+          <b>2.3.</b> Чи існує значення <i>x</i>, при якому
+          <span class="sqrt"
+            >&#8730;<span>-(x+1)<sup>2</sup></span></span
+          >
+          має зміст?
+          <br />
+          Відповідь: <span class="answer-line long-line">&nbsp;</span> (Вкажіть
+          число або "ні")
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">3. Розв'яжіть рівняння</div>
+      <div class="tasks-container">
+        <div class="task">
+          1) <span class="sqrt">&#8730;<span>x</span></span> = 9 <br />
+          <i>x</i> = <span class="answer-line">&nbsp;</span>
+        </div>
+        <div class="task">
+          2) <span class="sqrt">&#8730;<span>x</span></span> = -4 <br />
+          <i>x</i> = <span class="answer-line">&nbsp;</span>
+        </div>
+        <div class="task">
+          3) 2<span class="sqrt">&#8730;<span>x</span></span> + 6 = 0 <br />
+          <i>x</i> = <span class="answer-line">&nbsp;</span>
+        </div>
+        <div class="task">
+          4) 5<span class="sqrt">&#8730;<span>3x - 2</span></span> = 20 <br />
+          <i>x</i> = <span class="answer-line">&nbsp;</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">4. Спростіть вираз</div>
+      <div style="margin-bottom: 10px">
+        <div class="fraction">
+          <span class="numerator">a<sup>2</sup> - 4</span
+          ><span class="denominator">2a</span>
+        </div>
+        &middot;
+        <div class="fraction">
+          <span class="numerator">4</span><span class="denominator">a + 2</span>
+        </div>
+      </div>
+      <div style="border: 1px dotted #999; height: 50px; padding: 5px">
+        <small><i>Місце для розв'язання:</i></small>
+      </div>
+      <div style="text-align: right; margin-top: 5px">
+        Відповідь: <span class="answer-line long-line">&nbsp;</span>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">5. Перетворення дробів</div>
+      <table class="check-table">
+        <tr>
+          <td>
+            <b>5.1.</b> Запишіть десятковим дробом:
+            <div class="fraction">
+              <span class="numerator">3</span><span class="denominator">4</span>
+            </div>
+            = <span class="answer-line">&nbsp;</span>
+          </td>
+          <td>
+            <b>5.2.</b> Запишіть звичайним дробом: 0,75 =
+            <span class="answer-line">&nbsp;</span>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2" style="padding-top: 10px">
+            <b>5.3.</b> Запишіть у вигляді нескінченного періодичного дробу:
+            <div class="fraction">
+              <span class="numerator">1</span><span class="denominator">3</span>
+            </div>
+            = <span class="answer-line">&nbsp;</span>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div
+      class="section"
+      style="border: 2px solid #000; padding: 10px; margin-top: 20px"
+    >
+      <div class="section-title" style="text-align: center">
+        🧠 Завдання із зірочкою
+      </div>
+
+      <div style="margin-bottom: 10px">
+        <b>6.1.</b> Знайдіть пару чисел (x; y), що задовольняє рівняння:<br />
+        <span style="display: inline-block; margin-top: 5px; font-weight: bold">
+          x<sup>2</sup> - 8x + 16 + y<sup>2</sup> = 0
+        </span>
+      </div>
+      <div style="text-align: right">
+        x = <span class="answer-line" style="width: 40px">&nbsp;</span>; y =
+        <span class="answer-line" style="width: 40px">&nbsp;</span>
+      </div>
+
+      <hr style="border-top: 1px dashed #000; margin: 10px 0" />
+
+      <div>
+        <b>6.2.</b> Розв'яжіть рівняння:
+        <span class="sqrt"
+          >&#8730;<span
+            >4 + <span class="sqrt">&#8730;<span>x</span></span></span
+          ></span
+        >
+        = 3
+      </div>
+      <div style="text-align: right; margin-top: 5px">
+        x = <span class="answer-line">&nbsp;</span>
+      </div>
+    </div>
+
+    <div class="page-break"></div>
+    <h3 style="text-align: center">Ключ до тесту (Для вчителя)</h3>
+    <table
+      border="1"
+      cellpadding="5"
+      style="
+        width: 90%;
+        margin: 0 auto;
+        border: 1px solid black;
+        border-collapse: collapse;
+      "
+    >
+      <tr style="background-color: #eee">
+        <th>№</th>
+        <th>Відповідь</th>
+        <th>Коментар</th>
+      </tr>
+
+      <tr>
+        <td>1.1</td>
+        <td>Ні</td>
+        <td>Корінь з від'ємного не існує</td>
+      </tr>
+      <tr>
+        <td>1.2</td>
+        <td>0,6</td>
+        <td>0,6 * 0,6 = 0,36</td>
+      </tr>
+      <tr>
+        <td>1.3</td>
+        <td>2</td>
+        <td>10 - 8 = 2</td>
+      </tr>
+      <tr>
+        <td>1.4</td>
+        <td>13</td>
+        <td>&#8730;(144+25) = &#8730;169</td>
+      </tr>
+
+      <tr>
+        <td>2.1</td>
+        <td>x &ge; 0</td>
+        <td>Невід'ємне</td>
+      </tr>
+      <tr>
+        <td>2.2</td>
+        <td>a > 0</td>
+        <td>Під коренем і в знаменнику</td>
+      </tr>
+      <tr>
+        <td>2.3</td>
+        <td>x = -1</td>
+        <td>Тільки тоді під коренем 0</td>
+      </tr>
+
+      <tr>
+        <td>3.1</td>
+        <td>81</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>3.2</td>
+        <td>&Oslash;</td>
+        <td>Немає коренів</td>
+      </tr>
+      <tr>
+        <td>3.3</td>
+        <td>&Oslash;</td>
+        <td>2&#8730;x = -6 (неможливо)</td>
+      </tr>
+      <tr>
+        <td>3.4</td>
+        <td>6</td>
+        <td>&#8730;(...) = 4 &rarr; 3x-2=16 &rarr; 3x=18</td>
+      </tr>
+
+      <tr>
+        <td>4</td>
+        <td>
+          <div class="fraction">
+            <span class="numerator">2(a-2)</span
+            ><span class="denominator">a</span>
+          </div>
+        </td>
+        <td>Скорочення (a-2)(a+2)</td>
+      </tr>
+
+      <tr>
+        <td>5.1</td>
+        <td>0,75</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>5.2</td>
+        <td>3/4</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>5.3</td>
+        <td>0,(3)</td>
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>6.1</td>
+        <td>x=4; y=0</td>
+        <td>(x-4)<sup>2</sup> + y<sup>2</sup> = 0</td>
+      </tr>
+      <tr>
+        <td>6.2</td>
+        <td>25</td>
+        <td>4+&#8730;x = 9 &rarr; &#8730;x = 5</td>
+      </tr>
+    </table>
+  </body>
+</html>

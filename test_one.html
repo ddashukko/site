@@ -1,369 +1,262 @@
-<!DOCTYPE html>
-<html lang="uk">
+<!doctype html>
+<html lang="de">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ФСМ: Професійний тренажер</title>
+    <title>Arbeitsblatt: Rechengesetze</title>
 
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [
+            ["$", "$"],
+            ["\\(", "\\)"],
+          ],
+        },
+      };
+    </script>
     <script
       id="MathJax-script"
       async
-      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
     ></script>
 
     <style>
-      :root {
-        --primary: #4834d4;
-        --bg: #f1f2f6;
-        --card: #ffffff;
-        --text: #2f3542;
-        --success: #2ed573;
-        --error: #ff4757;
-      }
-
       body {
-        font-family: "Segoe UI", sans-serif;
-        background-color: var(--bg);
-        color: var(--text);
+        font-family: "Times New Roman", Times, serif;
+        line-height: 1.4;
+        color: #000;
+        max-width: 210mm;
+        margin: 0 auto;
+        background: #fff;
         padding: 20px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
       }
 
-      h1 {
-        color: var(--primary);
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        margin-bottom: 5px;
-      }
-
-      .desc {
-        margin-bottom: 30px;
-        color: #57606f;
-      }
-
-      .container {
+      /* Заголовок */
+      .header-table {
         width: 100%;
-        max-width: 800px;
-      }
-
-      .block {
-        background: var(--card);
-        border-radius: 12px;
-        padding: 25px;
-        margin-bottom: 25px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-        border-left: 6px solid var(--primary);
-      }
-
-      h3 {
-        margin-top: 0;
-        color: var(--primary);
-        border-bottom: 1px solid #dfe4ea;
+        border-bottom: 2px solid #000;
         padding-bottom: 10px;
+        margin-bottom: 20px;
+        font-family: Arial, sans-serif;
       }
 
-      .row {
-        display: flex;
-        align-items: center;
-        justify-content: flex-start;
-        flex-wrap: wrap;
-        margin-bottom: 15px;
-        padding-bottom: 10px;
-        border-bottom: 1px dashed #dfe4ea;
-      }
-
-      .row:last-child {
-        border-bottom: none;
-      }
-
-      .math-part {
-        font-size: 1.2em;
-        margin-right: 10px;
-      }
-
-      /* Стилізація полів вводу */
-      input {
-        border: 2px solid #ced6e0;
-        border-radius: 6px;
-        padding: 5px 10px;
-        font-size: 1.1em;
-        outline: none;
-        transition: 0.3s;
-        background: #fdfdfd;
-        font-family: "Courier New", monospace; /* Щоб код виглядав чітко */
+      .title {
+        font-size: 26px;
         font-weight: bold;
-      }
-
-      input:focus {
-        border-color: var(--primary);
-        box-shadow: 0 0 5px rgba(72, 52, 212, 0.2);
-      }
-
-      /* Маленькі інпути для пропусків */
-      .input-short {
-        width: 60px;
         text-align: center;
+        margin-top: 10px;
       }
 
-      /* Довгі інпути для виразів */
-      .input-long {
-        width: 200px;
+      .subtitle {
+        text-align: center;
+        font-size: 16px;
+        margin-bottom: 30px;
+        font-style: italic;
       }
 
-      .status {
-        margin-left: 10px;
-        font-size: 1.2em;
+      /* Стилі завдань */
+      .task-block {
+        margin-bottom: 20px;
+        page-break-inside: avoid;
       }
 
-      .btn-check {
-        background: var(--primary);
-        color: white;
-        border: none;
-        padding: 15px 40px;
-        border-radius: 30px;
-        font-size: 1.2em;
-        cursor: pointer;
-        display: block;
-        margin: 20px auto;
-        transition: 0.2s;
-        box-shadow: 0 5px 15px rgba(72, 52, 212, 0.3);
+      .task-title {
+        font-weight: bold;
+        font-size: 18px;
+        margin-bottom: 8px;
+        font-family: Arial, sans-serif;
       }
 
-      .btn-check:hover {
-        transform: scale(1.05);
-        background: #3c2bb3;
+      .answer-line {
+        display: inline-block;
+        border-bottom: 1px dotted #000;
+        width: 100%;
+        height: 20px;
       }
 
-      /* Результат перевірки */
-      .correct {
-        border-color: var(--success) !important;
-        background-color: #eaffee !important;
+      .match-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+      }
+      .match-table td {
+        padding: 8px;
+        border: 1px solid #aaa;
+        vertical-align: middle;
       }
 
-      .wrong {
-        border-color: var(--error) !important;
-        background-color: #ffeaea !important;
+      .solutions {
+        page-break-before: always;
+        margin-top: 50px;
+      }
+
+      @media print {
+        @page {
+          margin: 1.5cm;
+        }
+        body {
+          padding: 0;
+        }
+        .no-print {
+          display: none;
+        }
+        a[href]:after {
+          content: none !important;
+        }
       }
     </style>
   </head>
   <body>
-    <h1>Математичний Тренажер</h1>
-    <div class="desc">Заповни пропуски або запиши повні формули</div>
-
-    <div class="container">
-      <div class="block">
-        <h3>Рівень 1: Віднови коефіцієнти (Memory Gaps)</h3>
-
-        <div class="row">
-          <div class="math-part">$$ (x + 5)^2 = x^2 + \dots x + 25 $$</div>
-          <input type="text" class="input-short" data-ans="10" />
-          <div class="status"></div>
-        </div>
-
-        <div class="row">
-          <div class="math-part">$$ (y - 3)^2 = y^2 - \dots y + 9 $$</div>
-          <input type="text" class="input-short" data-ans="6" />
-          <div class="status"></div>
-        </div>
-
-        <div class="row">
-          <div class="math-part">$$ (4a + 1)^2 = \dots a^2 + 8a + 1 $$</div>
-          <input type="text" class="input-short" data-ans="16" />
-          <div class="status"></div>
-        </div>
-
-        <div class="row">
-          <div class="math-part">$$ (k - 9)(k + 9) = k^2 - \dots $$</div>
-          <input type="text" class="input-short" data-ans="81" />
-          <div class="status"></div>
-        </div>
-
-        <div class="row">
-          <div class="math-part">
-            $$ 125 - b^3 = (5 - b)(25 + \dots b + b^2) $$
-          </div>
-          <input type="text" class="input-short" data-ans="5" />
-          <div class="status"></div>
-        </div>
-      </div>
-
-      <div class="block">
-        <h3>Рівень 2: Знайди помилку (Error Correction)</h3>
-        <div>Напиши <b>повністю</b> правильну праву частину:</div>
-
-        <div class="row">
-          <div class="math-part">$$ (x+2)^2 \neq x^2+4 $$</div>
-          <div class="math-part">$$ = $$</div>
-          <input type="text" class="input-long" data-ans="x^2+4x+4" />
-          <div class="status"></div>
-        </div>
-
-        <div class="row">
-          <div class="math-part">$$ (y-5)^2 \neq y^2-5y+25 $$</div>
-          <div class="math-part">$$ = $$</div>
-          <input type="text" class="input-long" data-ans="y^2-10y+25" />
-          <div class="status"></div>
-        </div>
-
-        <div class="row">
-          <div class="math-part">$$ (2x)^2 \neq 2x^2 $$</div>
-          <div class="math-part">$$ = $$</div>
-          <input type="text" class="input-long" data-ans="4x^2" />
-          <div class="status"></div>
-        </div>
-
-        <div class="row">
-          <div class="math-part">$$ (a-3)(a+3) \neq a^2-6 $$</div>
-          <div class="math-part">$$ = $$</div>
-          <input type="text" class="input-long" data-ans="a^2-9" />
-          <div class="status"></div>
-        </div>
-
-        <div class="row">
-          <div class="math-part">$$ (x+1)^3 \neq x^3+1 $$</div>
-          <div class="math-part">$$ = $$</div>
-          <input type="text" class="input-long" data-ans="x^3+3x^2+3x+1" />
-          <div class="status"></div>
-        </div>
-      </div>
-
-      <div class="block">
-        <h3>Рівень 3: Згорни у дужки (Factorization)</h3>
-
-        <div class="row">
-          <div class="math-part">$$ m^2 + 20m + 100 = $$</div>
-          <input type="text" class="input-long" data-ans="(m+10)^2" />
-          <div class="status"></div>
-        </div>
-
-        <div class="row">
-          <div class="math-part">$$ x^2 - 14x + 49 = $$</div>
-          <input type="text" class="input-long" data-ans="(x-7)^2" />
-          <div class="status"></div>
-        </div>
-
-        <div class="row">
-          <div class="math-part">$$ 36 - c^2 = $$</div>
-          <input
-            type="text"
-            class="input-long"
-            data-ans="(6-c)(6+c)"
-            data-alt="(6+c)(6-c)"
-          />
-          <div class="status"></div>
-        </div>
-
-        <div class="row">
-          <div class="math-part">$$ 4y^2 + 4y + 1 = $$</div>
-          <input type="text" class="input-long" data-ans="(2y+1)^2" />
-          <div class="status"></div>
-        </div>
-
-        <div class="row">
-          <div class="math-part">$$ a^3 + 8 = $$</div>
-          <input type="text" class="input-long" data-ans="(a+2)(a^2-2a+4)" />
-          <div class="status"></div>
-        </div>
-      </div>
-
-      <div class="block">
-        <h3>Рівень 4: Швидкий рахунок (Application)</h3>
-        <div>Впиши тільки кінцеве число:</div>
-
-        <div class="row">
-          <div class="math-part">$$ 29 \cdot 31 = (30-1)(30+1) = $$</div>
-          <input type="text" class="input-short" data-ans="899" />
-          <div class="status"></div>
-        </div>
-
-        <div class="row">
-          <div class="math-part">$$ 41^2 = (40+1)^2 = $$</div>
-          <input type="text" class="input-short" data-ans="1681" />
-          <div class="status"></div>
-        </div>
-
-        <div class="row">
-          <div class="math-part">$$ 18 \cdot 22 = (20-2)(20+2) = $$</div>
-          <input type="text" class="input-short" data-ans="396" />
-          <div class="status"></div>
-        </div>
-
-        <div class="row">
-          <div class="math-part">$$ \text{Спрости: } (x-3)(x+3) - x^2 = $$</div>
-          <input type="text" class="input-short" data-ans="-9" />
-          <div class="status"></div>
-        </div>
-
-        <div class="row">
-          <div class="math-part">$$ \text{Розклади: } x^4 - 1 = $$</div>
-          <input
-            type="text"
-            class="input-long"
-            data-ans="(x-1)(x+1)(x^2+1)"
-            data-alt="(x^2-1)(x^2+1)"
-          />
-          <div class="status"></div>
-        </div>
-      </div>
-
-      <button class="btn-check" onclick="checkAnswers()">ПЕРЕВІРИТИ ВСЕ</button>
-      <div
-        id="final-score"
+    <div
+      class="no-print"
+      style="text-align: center; margin-bottom: 20px; font-family: Arial"
+    >
+      <p
         style="
-          text-align: center;
-          font-weight: bold;
-          font-size: 1.5em;
-          margin-bottom: 40px;
+          background: #d4edda;
+          color: #155724;
+          padding: 10px;
+          border-radius: 5px;
+          border: 1px solid #c3e6cb;
         "
-      ></div>
+      >
+        ✅ <b>Виправлено:</b> Формули тепер відображаються коректно (з
+        крапками).<br />
+        Натисніть <b>Ctrl + P</b> для друку.
+      </p>
     </div>
 
-    <script>
-      function normalize(str) {
-        // Видаляємо всі пробіли, робимо маленькі літери
-        if (!str) return "";
-        return str.replace(/\s+/g, "").toLowerCase();
-      }
+    <table class="header-table">
+      <tr>
+        <td style="width: 40%">Name: ____________________</td>
+        <td style="width: 30%; text-align: center">Klasse: ______</td>
+        <td style="width: 30%; text-align: right">Datum: __________</td>
+      </tr>
+    </table>
 
-      function checkAnswers() {
-        let correctCount = 0;
-        const inputs = document.querySelectorAll("input");
-        const total = inputs.length;
+    <div class="title">Übung: Geschickt rechnen</div>
+    <div class="subtitle">Thema: Rechengesetze & Fachbegriffe</div>
 
-        inputs.forEach((input) => {
-          const userVal = normalize(input.value);
-          const correctAns = normalize(input.dataset.ans);
-          const altAns = normalize(input.dataset.alt); // Для альтернативних варіантів
-          const statusDiv = input.nextElementSibling;
+    <div class="task-block">
+      <div class="task-title">1. Welches Gesetz passt?</div>
+      Ordne den Rechnungen das richtige Gesetz zu:
+      <i>Kommutativgesetz (K), Assoziativgesetz (A), Distributivgesetz (D)</i>.
 
-          input.classList.remove("correct", "wrong");
-          statusDiv.innerHTML = "";
+      <table class="match-table">
+        <tr>
+          <td width="5%"><b>a)</b></td>
+          <td width="40%">$19 + 45 = 45 + 19$</td>
+          <td width="55%">Gesetz: __________________</td>
+        </tr>
+        <tr>
+          <td><b>b)</b></td>
+          <td>$5 \cdot (10 + 4) = 50 + 20$</td>
+          <td>Gesetz: __________________</td>
+        </tr>
+        <tr>
+          <td><b>c)</b></td>
+          <td>$(3 \cdot 4) \cdot 2 = 3 \cdot (4 \cdot 2)$</td>
+          <td>Gesetz: __________________</td>
+        </tr>
+      </table>
+    </div>
 
-          let isCorrect = userVal === correctAns;
-          if (!isCorrect && altAns) {
-            isCorrect = userVal === altAns;
-          }
+    <div class="task-block">
+      <div class="task-title">2. Vorteilhaft rechnen</div>
+      Rechne geschickt, indem du Klammern setzt oder Zahlen vertauschst.
+      <br /><br />
 
-          if (isCorrect && userVal !== "") {
-            input.classList.add("correct");
-            statusDiv.innerHTML = "✅";
-            correctCount++;
-          } else {
-            input.classList.add("wrong");
-            statusDiv.innerHTML = "❌";
-          }
-        });
+      <b>a)</b> $46 + 18 + 54$ <br />
+      <span style="font-size: 0.9em; color: #555">Rechnungsweg:</span>
+      <div class="answer-line"></div>
+      <div class="answer-line" style="margin-top: 5px"></div>
+      <br /><br />
 
-        const scoreDiv = document.getElementById("final-score");
-        const percentage = Math.round((correctCount / total) * 100);
+      <b>b)</b> $25 \cdot 13 \cdot 4$ <br />
+      <span style="font-size: 0.9em; color: #555">Rechnungsweg:</span>
+      <div class="answer-line"></div>
+      <div class="answer-line" style="margin-top: 5px"></div>
+    </div>
 
-        scoreDiv.innerText = `Результат: ${correctCount} з ${total} (${percentage}%)`;
-        scoreDiv.style.color =
-          percentage === 100 ? "var(--success)" : "var(--primary)";
-      }
-    </script>
+    <div class="task-block">
+      <div class="task-title">3. Der Zerlege-Trick (Distributivgesetz)</div>
+      Zerlege die große Zahl, um im Kopf zu rechnen. Beispiel: $4 \cdot 12 = 4
+      \cdot (10 + 2)$.
+      <br /><br />
+
+      <b>a)</b> $6 \cdot 105 =$ ____________ $\cdot$ ( ______ + ______ ) <br />
+      $= $ ____________ + ____________ $= $ <b>____________</b> <br /><br />
+
+      <b>b)</b> $8 \cdot 19 =$ ____________ $\cdot$ ( ______ $-$ ______ ) <br />
+      $= $ ____________ $-$ ____________ $= $ <b>____________</b>
+    </div>
+
+    <div class="task-block">
+      <div class="task-title">4. Wahr oder Falsch?</div>
+      Kreuze an.
+      <table class="match-table">
+        <tr>
+          <th>Aussage</th>
+          <th width="15%">Wahr</th>
+          <th width="15%">Falsch</th>
+        </tr>
+        <tr>
+          <td>
+            Das Kommutativgesetz gilt auch beim Minusrechnen ($10-2 = 2-10$).
+          </td>
+          <td style="text-align: center">⬜</td>
+          <td style="text-align: center">⬜</td>
+        </tr>
+        <tr>
+          <td>"$24 : 4$" ist das Gleiche wie "$4 : 24$".</td>
+          <td style="text-align: center">⬜</td>
+          <td style="text-align: center">⬜</td>
+        </tr>
+        <tr>
+          <td>Assoziativgesetz heißt auf Deutsch "Verbindungsgesetz".</td>
+          <td style="text-align: center">⬜</td>
+          <td style="text-align: center">⬜</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="solutions">
+      <h3
+        style="
+          text-align: center;
+          border-bottom: 2px double black;
+          padding-bottom: 10px;
+        "
+      >
+        Lösungen (Відповіді)
+      </h3>
+
+      <p>
+        <b>1. Gesetze:</b><br />
+        a) Kommutativgesetz (Vertauschungsgesetz)<br />
+        b) Distributivgesetz (Verteilungsgesetz)<br />
+        c) Assoziativgesetz (Verbindungsgesetz)
+      </p>
+
+      <p>
+        <b>2. Vorteilhaft rechnen:</b><br />
+        a) $(46 + 54) + 18 = 100 + 18 = \mathbf{118}$<br />
+        b) $(25 \cdot 4) \cdot 13 = 100 \cdot 13 = \mathbf{1300}$
+      </p>
+
+      <p>
+        <b>3. Zerlege-Trick:</b><br />
+        a) $6 \cdot (100 + 5) = 600 + 30 = \mathbf{630}$<br />
+        b) $8 \cdot (20 - 1) = 160 - 8 = \mathbf{152}$
+      </p>
+
+      <p>
+        <b>4. Wahr oder Falsch:</b><br />
+        1. Falsch (Ergebnis ist unterschiedlich)<br />
+        2. Falsch<br />
+        3. Wahr
+      </p>
+    </div>
   </body>
 </html>
