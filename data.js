@@ -295,7 +295,7 @@ window.lessonsData = [
     link: "algebra/7/probne7.html",
     subject_code: "algebra",
     category: "lesson",
-    author: "Соня",
+    author: "Даша",
   },
 
   // ==========================================
