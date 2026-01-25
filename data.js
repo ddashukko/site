@@ -6,6 +6,7 @@ window.lessonsData = [
   // ==========================================
   {
     id: "math-2-eq-simple",
+    
     title: "Прості рівняння з малюнками та без (без переходу через десяток)",
     grade: 2,
     topic: "Арифметика",
@@ -292,7 +293,7 @@ window.lessonsData = [
     title: "Пробне",
     grade: 7,
     topic: "Алгебра",
-    link: "algebra/7/probne7.html",
+    link: "algebra/7/lesson/probne7.html",
     subject_code: "algebra",
     category: "lesson",
     author: "Даша",
