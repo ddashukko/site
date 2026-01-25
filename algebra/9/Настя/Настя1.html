@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тренажер: Квадратні нерівності</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body { height: 100vh; overflow: hidden; background-color: #f8fafc; }
+        .split-screen { display: flex; height: 100vh; }
+        .content-part { width: 55%; overflow-y: auto; padding: 2.5rem; scroll-behavior: smooth; }
+        .whiteboard-part { width: 45%; background: #ffffff; border-left: 3px solid #e2e8f0; display: flex; flex-direction: column; }
+        #whiteboard { cursor: crosshair; touch-action: none; flex-grow: 1; }
+        .option-card { transition: all 0.2s; cursor: pointer; border: 2px solid #f1f5f9; }
+        .option-card:hover { border-color: #6366f1; background-color: #f5f3ff; }
+        .option-selected { border-color: #6366f1; background-color: #eef2ff; }
+        .custom-scroll::-webkit-scrollbar { width: 8px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    </style>
+</head>
+<body>
+
+<div class="split-screen">
+    <div class="content-part custom-scroll">
+        <header class="mb-10 text-center">
+            <h1 class="text-4xl font-extrabold text-slate-900 mb-2">Квадратні нерівності</h1>
+            <p class="text-indigo-600 font-bold tracking-widest uppercase text-sm">Інтерактивний посібник • 9 клас</p>
+        </header>
+
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold text-slate-800 mb-6 flex items-center">
+                <span class="bg-indigo-600 text-white w-8 h-8 rounded-lg flex items-center justify-center mr-3 text-base">M</span>
+                Математичний алгоритм розв'язання
+            </h2>
+            <div class="grid gap-4">
+                <div class="p-5 bg-white rounded-2xl shadow-sm border border-slate-100 border-l-4 border-l-indigo-500">
+                    <p class="font-bold text-slate-800 mb-1">Крок 1: Перетворення</p>
+                    <p class="text-slate-600">Замінюємо знак нерівності на знак рівності та розв'язуємо квадратне рівняння:</p>
+                    <p class="mt-2 text-indigo-700 font-serif text-lg text-center">$$ax^2 + bx + c = 0$$</p>
+                </div>
+                <div class="p-5 bg-white rounded-2xl shadow-sm border border-slate-100 border-l-4 border-l-emerald-500">
+                    <p class="font-bold text-slate-800 mb-1">Крок 2: Метод інтервалів (Графічний)</p>
+                    <p class="text-slate-600">Позначаємо знайдені корені $x_1$ та $x_2$ на числовій осі та схематично малюємо параболу:</p>
+                    <ul class="mt-2 text-sm text-slate-500 list-disc ml-5">
+                        <li>Якщо $a > 0$ — гілки вгору (посмішка)</li>
+                        <li>Якщо $a < 0$ — гілки вниз (сум)</li>
+                    </ul>
+                </div>
+                <div class="p-5 bg-white rounded-2xl shadow-sm border border-slate-100 border-l-4 border-l-amber-500">
+                    <p class="font-bold text-slate-800 mb-1">Крок 3: Вибір інтервалу</p>
+                    <p class="text-slate-600">Обираємо проміжки відповідно до знаку нерівності:</p>
+                    <p class="mt-2 text-center font-bold">
+                        $>$ — де парабола вище осі $x$ ($+$) <br>
+                        $<$ — де парабола нижче осі $x$ ($-$)
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <div class="space-y-12">
+            <h2 class="text-3xl font-bold text-slate-900 border-b pb-4">Практичні завдання (20)</h2>
+            <div id="tasks-box" class="space-y-8">
+                </div>
+        </div>
+
+        <div class="mt-20 p-10 bg-slate-900 rounded-3xl text-white text-center shadow-2xl">
+            <h2 class="text-3xl font-bold mb-4">Урок завершено?</h2>
+            <p class="text-slate-400 mb-8">Натисни кнопку, щоб отримати підсумок своїх досягнень.</p>
+            <button onclick="finishLesson()" class="px-10 py-4 bg-indigo-500 hover:bg-indigo-400 rounded-2xl font-black text-xl transition-all shadow-lg">ПЕРЕВІРИТИ РЕЗУЛЬТАТ</button>
+        </div>
+    </div>
+
+    <div class="whiteboard-part">
+        <div class="p-4 border-b bg-slate-50 flex items-center justify-between shadow-sm">
+            <div class="flex gap-2">
+                <button onclick="setTool('pen')" id="pen-btn" class="p-3 bg-indigo-600 text-white rounded-xl shadow-md transition">✏️</button>
+                <button onclick="setTool('eraser')" id="eraser-btn" class="p-3 bg-white border rounded-xl hover:bg-slate-100 transition">🧽</button>
+                <button onclick="clearCanvas()" class="p-3 bg-white border text-red-500 rounded-xl hover:bg-red-50 transition">🗑️</button>
+            </div>
+            <div class="flex items-center gap-3">
+                <button onclick="drawGrid()" class="text-xs font-bold uppercase tracking-widest text-slate-500 hover:text-indigo-600">Накласти сітку Oxy</button>
+                <input type="color" id="brushColor" value="#4f46e5" class="w-8 h-8 rounded-full border-none cursor-pointer">
+            </div>
+        </div>
+        <div id="wb-container" class="relative flex-grow">
+            <canvas id="whiteboard"></canvas>
+        </div>
+        <div class="p-4 bg-slate-50 border-t text-[10px] text-slate-400 text-center uppercase font-bold tracking-tighter">
+            Панель для розрахунків: $D = b^2 - 4ac$ • $x = \frac{-b \pm \sqrt{D}}{2a}$
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- ДАНІ ЗАВДАНЬ (Вибір варіантів) ---
+    const tasks = [
+        { q: "x^2 - 1 > 0", options: ["(-\\infty; -1) \\cup (1; +\\infty)", "(-1; 1)", "[-1; 1]", "x \\in \\mathbb{R}"], correct: 0, hint: "Корені: $\\pm 1$. Гілки вгору, беремо зони плюс." },
+        { q: "x^2 - 4 \\leq 0", options: ["(-\\infty; -2] \\cup [2; +\\infty)", "[-2; 2]", "(-2; 2)", "\\varnothing"], correct: 1, hint: "Корені: $\\pm 2$. Знак $\\leq$ означає дужки квадратні та зону мінус." },
+        { q: "x^2 + 5x > 0", options: ["(0; 5)", "(-\\infty; -5) \\cup (0; +\\infty)", "(-5; 0)", "(-\\infty; 0) \\cup (5; +\\infty)"], correct: 1, hint: "$x(x+5)=0 \\Rightarrow x_1=0, x_2=-5$. Беремо краї." },
+        { q: "x^2 - 9 < 0", options: ["(-3; 3)", "[-3; 3]", "(-\\infty; -3) \\cup (3; +\\infty)", "\\varnothing"], correct: 0, hint: "Знак $<$ — це 'яма' параболи між коренями." },
+        { q: "-x^2 + 16 \\geq 0", options: ["(-\\infty; -4] \\cup [4; +\\infty)", "(-4; 4)", "[-4; 4]", "[-16; 16]"], correct: 2, hint: "Увага! $a < 0$, гілки вниз. $> 0$ буде посередині." },
+        { q: "x^2 + 1 > 0", options: ["x \\in \\mathbb{R}", "\\varnothing", "(1; +\\infty)", "(-1; 1)"], correct: 0, hint: "Парабола завжди вище нуля, бо $x^2 \\geq 0$." },
+        { q: "x^2 - 25 \\leq 0", options: ["(-5; 5)", "[-5; 5]", "(-\\infty; -5] \\cup [5; +\\infty)", "[-25; 25]"], correct: 1, hint: "Корені $\\pm 5$, нерівність нестрога." },
+        { q: "x^2 - 2x < 0", options: ["(0; 2)", "(-2; 0)", "(-\\infty; 0) \\cup (2; +\\infty)", "x \\in \\mathbb{R}"], correct: 0, hint: "$x(x-2)=0$. Потрібен інтервал між 0 та 2." },
+        { q: "x^2 - 8x + 16 > 0", options: ["(-\\infty; 4) \\cup (4; +\\infty)", "x \\in \\mathbb{R}", "(4; +\\infty)", "\\varnothing"], correct: 0, hint: "Це $(x-4)^2$. Вираз завжди $>0$, крім точки $x=4$." },
+        { q: "x^2 - 100 \\geq 0", options: ["[-10; 10]", "(-\\infty; -10] \\cup [10; +\\infty)", "(-\\infty; 10]", "[10; +\\infty)"], correct: 1, hint: "Зовнішні інтервали для знаку $\\geq$." },
+        { q: "x^2 + 10x + 25 \\leq 0", options: ["-5", "x \\in \\mathbb{R}", "\\varnothing", "[-5; 5]"], correct: 0, hint: "$(x+5)^2 \\leq 0$ можливе лише при $x=-5$." },
+        { q: "x^2 - 0.16 < 0", options: ["(-0.04; 0.04)", "(-0.4; 0.4)", "[-0.4; 0.4]", "(-\\infty; -0.4) \\cup (0.4; +\\infty)"], correct: 1, hint: "$0.4^2 = 0.16$." },
+        { q: "-x^2 + 4 < 0", options: ["(-2; 2)", "(-\\infty; -2) \\cup (2; +\\infty)", "[-2; 2]", "x > 2"], correct: 1, hint: "Гілки вниз, шукаємо де парабола йде під вісь $x$." },
+        { q: "x^2 - 2x - 3 > 0", options: ["(-1; 3)", "(-\\infty; -1) \\cup (3; +\\infty)", "(-3; 1)", "[-1; 3]"], correct: 1, hint: "Корені $-1$ та $3$. Беремо краї." },
+        { q: "x^2 + 3x \leq 0", options: ["[-3; 0]", "(-3; 0)", "(-\\infty; -3] \\cup [0; +\\infty)", "[0; 3]"], correct: 0, hint: "Корені $0$ та $-3$." },
+        { q: "x^2 - 121 < 0", options: ["(-11; 11)", "[-11; 11]", "(-\\infty; 11)", "\\varnothing"], correct: 0, hint: "Корені $\\pm 11$." },
+        { q: "x^2 + 9 < 0", options: ["\\varnothing", "x \\in \\mathbb{R}", "(-3; 3)", "x < -9"], correct: 0, hint: "Додатне число не може бути менше нуля." },
+        { q: "x^2 - 5x + 6 \\geq 0", options: ["(2; 3)", "(-\\infty; 2] \\cup [3; +\\infty)", "[2; 3]", "(-\\infty; 2) \\cup (3; +\\infty)"], correct: 1, hint: "Корені $2, 3$ за теоремою Вієта." },
+        { q: "x^2 - 1.44 \\geq 0", options: ["(-\\infty; -1.2] \\cup [1.2; +\\infty)", "[-1.2; 1.2]", "(-1.2; 1.2)", "x \\geq 1.44"], correct: 0, hint: "Корінь з $1.44$ це $1.2$." },
+        { q: "x^2 - x - 2 < 0", options: ["(-1; 2)", "(-2; 1)", "(-\\infty; -1) \\cup (2; +\\infty)", "[-1; 2]"], correct: 0, hint: "Корені $-1$ та $2$." }
+    ];
+
+    let userScore = 0;
+
+    // --- ГЕНЕРАЦІЯ ТЕСТІВ ---
+    function initApp() {
+        const container = document.getElementById('tasks-box');
+        tasks.forEach((task, i) => {
+            const taskDiv = document.createElement('div');
+            taskDiv.className = "bg-white p-8 rounded-3xl shadow-sm border border-slate-100";
+            
+            let optionsHtml = task.options.map((opt, optIndex) => `
+                <div onclick="selectOption(${i}, ${optIndex})" id="task-${i}-opt-${optIndex}" class="option-card p-4 rounded-xl text-lg font-serif">
+                    $ ${opt} $
+                </div>
+            `).join('');
+
+            taskDiv.innerHTML = `
+                <div class="flex items-center justify-between mb-6">
+                    <span class="px-4 py-1 bg-slate-100 rounded-full text-xs font-black text-slate-500 uppercase">Місія ${i+1}</span>
+                    <span id="status-${i}" class="text-xs font-bold"></span>
+                </div>
+                <h3 class="text-2xl font-serif mb-8 text-slate-800">Розв'яжіть нерівність: <span class="text-indigo-600">$ ${task.q} $</span></h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    ${optionsHtml}
+                </div>
+                <div id="feedback-${i}" class="mt-6 hidden p-4 rounded-2xl text-sm"></div>
+                <div class="mt-4 flex gap-4">
+                    <button onclick="toggleHint(${i})" class="text-xs font-bold text-slate-400 hover:text-indigo-500 uppercase tracking-widest">💡 Підказка</button>
+                    <div id="hint-${i}" class="hidden text-xs italic text-slate-500">$ ${task.hint} $</div>
+                </div>
+            `;
+            container.appendChild(taskDiv);
+        });
+        MathJax.typeset();
+    }
+
+    function selectOption(taskIdx, optIdx) {
+        // Очищення попереднього вибору
+        for(let j=0; j<4; j++) {
+            document.getElementById(`task-${taskIdx}-opt-${j}`).classList.remove('option-selected', 'bg-green-100', 'bg-red-100', 'border-green-500', 'border-red-500');
+        }
+
+        const selectedEl = document.getElementById(`task-${taskIdx}-opt-${optIdx}`);
+        const feedback = document.getElementById(`feedback-${i=taskIdx}`);
+        const status = document.getElementById(`status-${taskIdx}`);
+        
+        selectedEl.classList.add('option-selected');
+
+        if(optIdx === tasks[taskIdx].correct) {
+            selectedEl.classList.add('bg-green-50', 'border-green-500');
+            status.innerHTML = "✅ ВИКОНАНО";
+            status.className = "text-xs font-bold text-green-500";
+            userScore++;
+        } else {
+            selectedEl.classList.add('bg-red-50', 'border-red-500');
+            status.innerHTML = "❌ ПОМИЛКА";
+            status.className = "text-xs font-bold text-red-500";
+        }
+    }
+
+    function toggleHint(i) {
+        document.getElementById(`hint-${i}`).classList.toggle('hidden');
+    }
+
+    // --- WHITEBOARD ЛОГІКА (ФІКС) ---
+    const canvas = document.getElementById('whiteboard');
+    const ctx = canvas.getContext('2d');
+    const container = document.getElementById('wb-container');
+    let drawing = false;
+    let tool = 'pen';
+
+    function resizeCanvas() {
+        canvas.width = container.offsetWidth;
+        canvas.height = container.offsetHeight;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+    }
+
+    window.addEventListener('load', () => {
+        resizeCanvas();
+        initApp();
+    });
+    window.addEventListener('resize', resizeCanvas);
+
+    function getMousePos(e) {
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return {
+            x: clientX - rect.left,
+            y: clientY - rect.top
+        };
+    }
+
+    function startDrawing(e) {
+        drawing = true;
+        const pos = getMousePos(e);
+        ctx.beginPath();
+        ctx.moveTo(pos.x, pos.y);
+        e.preventDefault();
+    }
+
+    function draw(e) {
+        if (!drawing) return;
+        const pos = getMousePos(e);
+        ctx.lineWidth = tool === 'pen' ? 3 : 40;
+        ctx.strokeStyle = tool === 'pen' ? document.getElementById('brushColor').value : '#ffffff';
+        ctx.lineTo(pos.x, pos.y);
+        ctx.stroke();
+        e.preventDefault();
+    }
+
+    function stopDrawing() {
+        drawing = false;
+        ctx.closePath();
+    }
+
+    canvas.addEventListener('mousedown', startDrawing);
+    canvas.addEventListener('mousemove', draw);
+    window.addEventListener('mouseup', stopDrawing);
+
+    canvas.addEventListener('touchstart', startDrawing);
+    canvas.addEventListener('touchmove', draw);
+    canvas.addEventListener('touchend', stopDrawing);
+
+    function setTool(t) {
+        tool = t;
+        document.getElementById('pen-btn').className = t === 'pen' ? 'p-3 bg-indigo-600 text-white rounded-xl shadow-md' : 'p-3 bg-white border rounded-xl';
+        document.getElementById('eraser-btn').className = t === 'eraser' ? 'p-3 bg-indigo-600 text-white rounded-xl shadow-md' : 'p-3 bg-white border rounded-xl';
+    }
+
+    function clearCanvas() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function drawGrid() {
+        ctx.strokeStyle = '#e2e8f0';
+        ctx.lineWidth = 1;
+        const midX = canvas.width / 2;
+        const midY = canvas.height / 2;
+        
+        // Вісь X
+        ctx.beginPath(); ctx.moveTo(0, midY); ctx.lineTo(canvas.width, midY); ctx.stroke();
+        // Вісь Y
+        ctx.beginPath(); ctx.moveTo(midX, 0); ctx.lineTo(midX, canvas.height); ctx.stroke();
+        
+        ctx.fillStyle = '#94a3b8';
+        ctx.fillText('x', canvas.width - 15, midY - 5);
+        ctx.fillText('y', midX + 5, 15);
+    }
+
+    function finishLesson() {
+        alert(`Чудовий результат! Ви опрацювали матеріал. Правильних відповідей зафіксовано: ${userScore}. Продовжуйте в тому ж дусі!`);
+    }
+</script>
+
+</body>
+</html>

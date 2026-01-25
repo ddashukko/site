@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Урок: Теорема синусів (9 клас)</title>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --primary: #2c3e50; --accent: #3498db; --bg: #f8fafc;
+            --success: #27ae60; --error: #e74c3c; --white: #ffffff;
+        }
+        
+        * { box-sizing: border-box; }
+        
+        body, html { 
+            margin: 0; padding: 0; min-height: 100%; 
+            font-family: 'Inter', system-ui, -apple-system, sans-serif; 
+            background: var(--bg); 
+        }
+
+        /* ОСНОВНА СТРУКТУРА (АДАПТИВНА) */
+        .wrapper { 
+            display: flex; 
+            flex-direction: row; 
+            height: 100vh; 
+        }
+
+        @media (max-width: 900px) {
+            .wrapper { flex-direction: column; height: auto; }
+            .content, .board-container { width: 100%; height: auto; }
+            .content { overflow-y: visible; border-right: none; border-bottom: 2px solid #e2e8f0; }
+            .board-container { height: 500px; } /* Фіксована висота для дошки на мобілках */
+        }
+
+        /* ЛІВА ЧАСТИНА: КОНТЕНТ */
+        .content { 
+            flex: 1.2; 
+            overflow-y: auto; 
+            padding: 20px; 
+            border-right: 2px solid #e2e8f0; 
+        }
+        
+        .header { border-bottom: 4px solid var(--accent); margin-bottom: 25px; padding-bottom: 10px; }
+        
+        details.theory { 
+            background: #fff; padding: 15px; border-radius: 8px; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 20px; 
+        }
+        summary { font-weight: 700; cursor: pointer; color: var(--primary); outline: none; }
+
+        /* КАРТКИ ЗАВДАНЬ */
+        .task-list { display: flex; flex-direction: column; gap: 20px; }
+        .task-card { 
+            background: var(--white); padding: 20px; border-radius: 12px; 
+            border-left: 6px solid #cbd5e1; box-shadow: 0 4px 6px rgba(0,0,0,0.05); 
+        }
+        .level-label { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
+
+        /* ВАРІАНТИ ВІДПОВІДЕЙ */
+        .options-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); 
+            gap: 10px; margin: 15px 0; 
+        }
+        .option-item { 
+            border: 2px solid #e2e8f0; padding: 12px; border-radius: 8px; cursor: pointer; 
+            transition: 0.2s; text-align: center; font-weight: 500; background: #fff;
+        }
+        .option-item:hover { background: #f1f5f9; border-color: var(--accent); }
+        .option-item.selected { background: var(--accent); color: white; border-color: var(--accent); }
+
+        .btn-chk { 
+            background: var(--primary); color: white; padding: 12px; border: none; 
+            border-radius: 6px; cursor: pointer; font-weight: 600; width: 100%; transition: 0.3s;
+        }
+        .btn-chk:active { transform: scale(0.98); }
+        
+        .feedback { margin-top: 10px; font-weight: 600; font-size: 0.9rem; }
+        .btn-hint { background: none; color: #64748b; border: none; cursor: pointer; font-size: 0.8rem; text-decoration: underline; padding: 0; margin-top: 10px; }
+        .hint-content { display: none; background: #fff9db; padding: 10px; border-radius: 6px; margin-top: 10px; font-size: 0.85rem; border: 1px dashed #fab005; }
+
+        /* ПРАВА ЧАСТИНА: ДОШКА */
+        .board-container { flex: 1; display: flex; flex-direction: column; background: #fff; position: relative; }
+        .toolbar { padding: 10px; background: #1e293b; display: flex; flex-wrap: wrap; gap: 5px; justify-content: center; }
+        .tool { background: #334155; color: white; padding: 8px 12px; border: none; border-radius: 4px; cursor: pointer; font-size: 0.9rem; }
+        .tool:hover { background: #475569; }
+        canvas { flex-grow: 1; cursor: crosshair; touch-action: none; background: #ffffff; }
+
+        .finish-btn { margin: 30px 0; width: 100%; padding: 18px; background: var(--success); color: white; border: none; font-size: 1.1rem; font-weight: bold; cursor: pointer; border-radius: 8px; }
+        #final-msg { display: none; text-align: center; padding: 40px 20px; }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <div class="content">
+        <div class="header">
+            <h1>$\S 12.$ Теорема синусів</h1>
+            <p>9 клас • Тренажер для розв'язування трикутників</p>
+        </div>
+
+        <details class="theory">
+            <summary>📐 Шпаргалка: Лема та Теорема</summary>
+            
+            <div style="padding-top:15px;">
+                <p><strong>Лема:</strong> $\frac{a}{\sin A} = 2R$</p>
+                <p><strong>Теорема:</strong> $\frac{a}{\sin A} = \frac{b}{\sin B} = \frac{c}{\sin C} = 2R$</p>
+                <p><strong>Наслідок:</strong> У трикутнику проти більшої сторони лежить більший кут.</p>
+            </div>
+        </details>
+
+        <div class="task-list" id="tasks-container"></div>
+
+        <button class="finish-btn" onclick="showFinal()">ЗАВЕРШИТИ УРОК</button>
+        <div id="final-msg">
+            <h2 style="color: var(--success);">Чудова робота! 🌟</h2>
+            <p id="stats" style="font-size: 1.2rem; margin: 20px 0;"></p>
+            <button onclick="location.reload()" style="padding: 10px 20px; cursor: pointer; border-radius: 5px; border: 1px solid #ccc;">Пройти ще раз</button>
+        </div>
+    </div>
+
+    <div class="board-container">
+        <div class="toolbar">
+            <button class="tool" onclick="setMode('pen')" title="Олівець">✏️</button>
+            <button class="tool" onclick="setMode('eraser')" title="Гумка">🧽</button>
+            <button class="tool" onclick="drawGeom('triangle')" title="Трикутник">📐</button>
+            <button class="tool" onclick="drawGeom('circle')" title="Коло">⭕</button>
+            <button class="tool" onclick="drawGeom('grid')" title="Сітка">🌐</button>
+            <button class="tool" style="background:var(--error)" onclick="clearBoard()" title="Очистити">🗑️</button>
+        </div>
+        <canvas id="canvas"></canvas>
+    </div>
+</div>
+
+<script>
+    const taskData = [
+        { id: 544, lvl: "Початковий", q: "У $\\Delta ABC$ проти сторони $b$ лежить $\\angle 80^\\circ$, проти $c$ — $\\angle 70^\\circ$. Заповніть пропуск: $\\frac{b}{\\sin 80^\\circ} = \\frac{c}{\\sin \\dots}$", options: ["70°", "80°", "30°", "110°"], a: "70°", h: "Згідно з теоремою синусів, сторони трикутника пропорційні синусам протилежних кутів." },
+        { id: 545, lvl: "Початковий", q: "$\\sin A = 0.2$, $\\sin B = 0.4$, сторона $a = 10$ см. Знайдіть сторону $b$.", options: ["5 см", "15 см", "20 см", "40 см"], a: "20 см", h: "Використайте формулу: $b = \\frac{a \\cdot \\sin B}{\\sin A}$." },
+        { id: 546, lvl: "Початковий", q: "$a = 2$ см, $b = 6$ см, $\\sin A = 0.3$. Обчисліть $\\sin B$.", options: ["0.1", "0.6", "0.9", "1.0"], a: "0.9", h: "$\\sin B = \\frac{b \\cdot \\sin A}{a}$." },
+        { id: 547, lvl: "Середній", q: "У трикутнику $\\angle A = 60^\\circ$, $\\angle B = 45^\\circ$. Знайдіть відношення сторін $BC : AC$.", options: ["sqrt1.22", "sqrt1.50", "sqrt0.82", "sqrt1.73"], a: "sqrt1.50", h: "$\\frac{BC}{AC} = \\frac{\\sin A}{\\sin B} = \\frac{\\sqrt{3}/2}{\\sqrt{2}/2} = \\sqrt{1.5}" },
+        { id: 553, lvl: "Середній", q: "$AB = 7\\sqrt{3}$ см, $\\angle C = 120^\\circ$. Обчисліть радіус $R$ описаного кола.", options: ["3.5 см", "7 см", "14 см", "7\\sqrt{3} см"], a: "7 см", h: "$R = \\frac{AB}{2 \\sin C}$. Зауважте: $\\sin 120^\\circ = \\frac{\\sqrt{3}}{2}$." },
+        { id: 564, lvl: "Достатній", q: "Сторона трикутника дорівнює радіусу описаного кола ($a = R$). Яка градусна міра гострого кута, що лежить проти цієї сторони?", options: ["30°", "45°", "60°", "90°"], a: "30°", h: "$\\frac{a}{\\sin A} = 2R$. Якщо $a = R$, то $\\frac{R}{\\sin A} = 2R$, отже $\\sin A = 0.5$." }
+    ];
+
+    // Додаємо рівно 3 додаткових завдання
+    for(let i=1; i<=3; i++) {
+        let side = i * 15;
+        taskData.push({
+            id: `Тренування-${i}`, lvl: "Практика", 
+            q: `Знайдіть діаметр описаного кола ($D = 2R$), якщо сторона трикутника $a = ${side}$ см, а протилежний їй кут становить $30^\\circ$.`, 
+            options: [`${side} см`, `${side * 2} см`, `${side / 2} см`, "100 см"],
+            a: `${side * 2} см`, h: "$2R = \\frac{a}{\\sin 30^\\circ}$. Оскільки $\\sin 30^\\circ = 0.5$, діаметр буде вдвічі більшим за сторону."
+        });
+    }
+
+    const container = document.getElementById('tasks-container');
+    let solvedCount = 0;
+    let userSelections = {};
+
+    taskData.forEach(task => {
+        const div = document.createElement('div');
+        div.className = 'task-card';
+        let optionsHtml = task.options.map(opt => 
+            `<div class="option-item" onclick="selectOption('${task.id}', '${opt}', this)">${opt}</div>`
+        ).join('');
+
+        div.innerHTML = `
+            <div class="level-label">${task.lvl}</div>
+            <div style="line-height: 1.4"><strong>№${task.id}:</strong> ${task.q}</div>
+            <div class="options-grid" id="opts-${task.id}">${optionsHtml}</div>
+            <button class="btn-chk" onclick="check('${task.id}', '${task.a}')">Перевірити відповідь</button>
+            <div id="fb-${task.id}" class="feedback"></div>
+            <button class="btn-hint" onclick="toggleHint('${task.id}')">Підказка</button>
+            <div id="hint-${task.id}" class="hint-content">${task.h}</div>
+        `;
+        container.appendChild(div);
+    });
+
+    function selectOption(taskId, val, el) {
+        const parent = document.getElementById(`opts-${taskId}`);
+        parent.querySelectorAll('.option-item').forEach(c => c.classList.remove('selected'));
+        el.classList.add('selected');
+        userSelections[taskId] = val;
+    }
+
+    function check(id, correct) {
+        const fb = document.getElementById(`fb-${id}`);
+        const userVal = userSelections[id];
+        if(!userVal) { fb.innerHTML = "☝️ Оберіть варіант!"; fb.style.color = "#f39c12"; return; }
+
+        if(userVal === correct) {
+            fb.innerHTML = "✅ Правильно!"; fb.style.color = "var(--success)";
+            solvedCount++;
+        } else {
+            fb.innerHTML = `❌ Невірно. Правильно: ${correct}`; fb.style.color = "var(--error)";
+        }
+    }
+
+    function toggleHint(id) {
+        const h = document.getElementById(`hint-${id}`);
+        h.style.display = h.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function showFinal() {
+        container.style.display = 'none';
+        document.querySelector('.finish-btn').style.display = 'none';
+        document.getElementById('final-msg').style.display = 'block';
+        document.getElementById('stats').innerText = `Результат: ${solvedCount} з 9 правильно!`;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // МАЛЮВАННЯ НА ДОШЦІ
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    let drawing = false;
+    let mode = 'pen';
+
+    function initBoard() {
+        const container = document.querySelector('.board-container');
+        canvas.width = container.clientWidth;
+        canvas.height = container.clientHeight - 50; // Мінус висота тулбару
+        ctx.lineCap = 'round'; ctx.lineWidth = 2;
+    }
+    window.addEventListener('resize', initBoard);
+    setTimeout(initBoard, 100);
+
+    // Підтримка миші та Touch-подій для смартфонів
+    const getPos = (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return { x: clientX - rect.left, y: clientY - rect.top };
+    };
+
+    const startDraw = (e) => { drawing = true; const pos = getPos(e); ctx.beginPath(); ctx.moveTo(pos.x, pos.y); };
+    const endDraw = () => drawing = false;
+    const moveDraw = (e) => {
+        if(!drawing) return;
+        const pos = getPos(e);
+        ctx.strokeStyle = mode === 'eraser' ? '#fff' : '#2c3e50';
+        ctx.lineWidth = mode === 'eraser' ? 30 : 2;
+        ctx.lineTo(pos.x, pos.y);
+        ctx.stroke();
+    };
+
+    canvas.addEventListener('mousedown', startDraw);
+    canvas.addEventListener('mouseup', endDraw);
+    canvas.addEventListener('mousemove', moveDraw);
+    canvas.addEventListener('touchstart', (e) => { e.preventDefault(); startDraw(e); });
+    canvas.addEventListener('touchend', endDraw);
+    canvas.addEventListener('touchmove', (e) => { e.preventDefault(); moveDraw(e); });
+
+    function setMode(m) { mode = m; }
+    function clearBoard() { ctx.clearRect(0,0,canvas.width,canvas.height); }
+    
+    function drawGeom(type) {
+        ctx.strokeStyle = '#3498db'; ctx.lineWidth = 2;
+        if(type === 'triangle') {
+            ctx.beginPath(); ctx.moveTo(canvas.width/4, canvas.height/1.5); ctx.lineTo(canvas.width/1.5, canvas.height/1.5); ctx.lineTo(canvas.width/2, canvas.height/3); ctx.closePath(); ctx.stroke();
+        } else if(type === 'circle') {
+            ctx.beginPath(); ctx.arc(canvas.width/2, canvas.height/2, 60, 0, Math.PI*2); ctx.stroke();
+        } else if(type === 'grid') {
+            ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 0.5;
+            for(let i=0; i<canvas.width; i+=25) { ctx.beginPath(); ctx.moveTo(i,0); ctx.lineTo(i,canvas.height); ctx.stroke(); }
+            for(let i=0; i<canvas.height; i+=25) { ctx.beginPath(); ctx.moveTo(0,i); ctx.lineTo(canvas.width,i); ctx.stroke(); }
+        }
+    }
+</script>
+
+</body>
+</html>

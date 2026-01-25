@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Математика 6 клас: Контрольна ДЗ</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #f1f5f9;
+            color: #1e293b;
+        }
+        .container-main { max-width: 680px; margin: 0 auto; padding: 20px; }
+        
+        .task-card {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 1.5rem;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .correct { border-color: #10b981 !important; background-color: #f0fdf4; }
+        .wrong { border-color: #ef4444 !important; background-color: #fef2f2; }
+
+        .hint-box { 
+            display: none; 
+            margin-top: 1rem; 
+            padding: 1rem; 
+            border-radius: 1rem; 
+            font-size: 0.95rem; 
+            background: #f0f9ff; 
+            border-left: 5px solid #0ea5e9; 
+            color: #0369a1; 
+        }
+
+        .option-btn {
+            width: 100%;
+            text-align: left;
+            padding: 1rem 1.5rem;
+            border: 2px solid #f1f5f9;
+            border-radius: 1rem;
+            margin-top: 0.75rem;
+            transition: 0.2s;
+            font-weight: 500;
+            background: #f8fafc;
+            cursor: pointer;
+        }
+        
+        .option-btn:not(:disabled):hover { border-color: #3b82f6; background: #eff6ff; }
+        
+        /* Стилі для вибраних та заблокованих кнопок */
+        .option-btn.selected-correct { background: #10b981 !important; color: white !important; border-color: #059669 !important; opacity: 1 !important; }
+        .option-btn.selected-wrong { background: #ef4444 !important; color: white !important; border-color: #dc2626 !important; opacity: 1 !important; }
+        .option-btn:disabled { cursor: not-allowed; opacity: 0.6; }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #cbd5e1;
+            border-radius: 1rem;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container-main">
+    <header class="text-center py-10">
+        <h1 class="text-4xl font-black text-slate-900 mb-2">Математика, 6 клас 📌</h1>
+        <p class="text-slate-500 font-medium text-lg italic">Одна спроба на кожну відповідь!</p>
+    </header>
+
+    <div class="task-card border-blue-200 bg-blue-50/30">
+        <label class="block font-bold text-blue-900 mb-2 text-sm uppercase tracking-widest text-center">Прізвище та Ім'я учня:</label>
+        <input type="text" id="student-name" placeholder="Напишіть ваше ім'я..." class="text-center focus:ring-2 focus:ring-blue-500">
+    </div>
+
+    <details class="mb-10 bg-white rounded-3xl border-2 border-slate-200 overflow-hidden shadow-sm">
+        <summary class="p-5 font-bold cursor-pointer text-slate-700 bg-slate-50 flex items-center gap-3">
+            🔍 Шпаргалка (правила модуля та прямої)
+        </summary>
+        <div class="p-6 text-sm space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-blue-50 p-4 rounded-2xl">
+                    <strong class="text-blue-700">📏 Модуль:</strong>
+                    <p>\(|x| \ge 0\) завжди!</p>
+                    <p>\(|-10| = 10\)</p>
+                    <p>\(|10| = 10\)</p>
+                </div>
+                <div class="bg-amber-50 p-4 rounded-2xl">
+                    <strong class="text-amber-700">🛰️ Відстань:</strong>
+                    <p>Між точками \(a\) та \(b\): </p>
+                    <p>\(d = |a - b|\)</p>
+                </div>
+            </div>
+            <p class="text-center text-xs text-gray-400">Пам'ятай: від'ємне число тим менше, чим далі воно від нуля.</p>
+        </div>
+    </details>
+
+    <div id="quiz-box">
+        <div class="task-card" id="t1">
+            <p class="font-bold text-xl mb-4 text-slate-800">1. Яке число є протилежним до числа \(-7,5\)?</p>
+            <button onclick="checkTest('t1', true, this)" class="option-btn">7,5</button>
+            <button onclick="checkTest('t1', false, this)" class="option-btn">-7,5</button>
+            <button onclick="checkTest('t1', false, this)" class="option-btn">0</button>
+            <button onclick="toggleHint('h1')" class="mt-4 text-blue-600 text-sm font-bold">💡 Підказка</button>
+            <div id="h1" class="hint-box">Протилежні числа відрізняються лише знаком.</div>
+        </div>
+
+        <div class="task-card" id="t2">
+            <p class="font-bold text-xl mb-4 text-slate-800">2. Обчисліть: \(|-12| - |8|\)</p>
+            <button onclick="checkTest('t2', false, this)" class="option-btn">-4</button>
+            <button onclick="checkTest('t2', true, this)" class="option-btn">4</button>
+            <button onclick="checkTest('t2', false, this)" class="option-btn">20</button>
+            <button onclick="toggleHint('h2')" class="mt-4 text-blue-600 text-sm font-bold">💡 Підказка</button>
+            <div id="h2" class="hint-box">Спочатку знайди модулі: 12 та 8. Потім виконай віднімання.</div>
+        </div>
+
+        <div class="task-card" id="t3">
+            <p class="font-bold text-xl mb-4 text-slate-800">3. Знайдіть відстань між \(M(-5)\) та \(N(-1)\).</p>
+            <button onclick="checkTest('t3', true, this)" class="option-btn">4 одиниці</button>
+            <button onclick="checkTest('t3', false, this)" class="option-btn">6 одиниць</button>
+            <button onclick="toggleHint('h3')" class="mt-4 text-blue-600 text-sm font-bold">💡 Підказка</button>
+            <div id="h3" class="hint-box">Порахуй скільки кроків від -5 до -1 на прямій.</div>
+        </div>
+
+        <div class="task-card" id="t4">
+            <p class="font-bold text-xl mb-4 text-slate-800">4. Розв'яжіть рівняння: \(|x| = -2\)</p>
+            <button onclick="checkTest('t4', false, this)" class="option-btn">2 або -2</button>
+            <button onclick="checkTest('t4', true, this)" class="option-btn">коренів немає</button>
+            <button onclick="toggleHint('h4')" class="mt-4 text-blue-600 text-sm font-bold">💡 Підказка</button>
+            <div id="h4" class="hint-box">Чи може бути відстань (модуль) від'ємним числом?</div>
+        </div>
+
+        <div class="task-card" id="t5">
+            <p class="font-bold text-xl mb-4 text-slate-800">5. Порівняйте: \(-15\) та \(-10\)</p>
+            <button onclick="checkTest('t5', false, this)" class="option-btn">\(-15 > -10\)</button>
+            <button onclick="checkTest('t5', true, this)" class="option-btn">\(-15 < -10\)</button>
+            <button onclick="toggleHint('h5')" class="mt-4 text-blue-600 text-sm font-bold">💡 Підказка</button>
+            <div id="h5" class="hint-box">Чим далі число від нуля ліворуч, тим воно менше.</div>
+        </div>
+
+        <div class="task-card" id="t6">
+            <p class="font-bold text-xl mb-4 text-slate-800">6. (Складніше) Скільки цілих чисел на прямій мають модуль менший за 3?</p>
+            <button onclick="checkTest('t6', false, this)" class="option-btn">2</button>
+            <button onclick="checkTest('t6', true, this)" class="option-btn">5</button>
+            <button onclick="checkTest('t6', false, this)" class="option-btn">6</button>
+            <button onclick="toggleHint('h6')" class="mt-4 text-blue-600 text-sm font-bold">💡 Підказка</button>
+            <div id="h6" class="hint-box">Це числа: -2, -1, 0, 1, 2. Порахуй їх кількість.</div>
+        </div>
+
+        <div class="task-card" id="t7">
+            <p class="font-bold text-xl mb-4 text-slate-800">7. Чому дорівнює \(|x|\), якщо \(x = 0\)?</p>
+            <button onclick="checkTest('t7', true, this)" class="option-btn">0</button>
+            <button onclick="checkTest('t7', false, this)" class="option-btn">не існує</button>
+        </div>
+
+        <div class="task-card" id="t8">
+            <p class="font-bold text-xl mb-4 text-slate-800">8. Знайдіть корінь рівняння: \(|x| - 5 = 0\)</p>
+            <button onclick="checkTest('t8', true, this)" class="option-btn">5 або -5</button>
+            <button onclick="checkTest('t8', false, this)" class="option-btn">тільки 5</button>
+            <button onclick="toggleHint('h8')" class="mt-4 text-blue-600 text-sm font-bold">💡 Підказка</button>
+            <div id="h8" class="hint-box">Перенеси 5: \(|x| = 5\). Які числа мають такий модуль?</div>
+        </div>
+
+        <div class="task-card" id="t9">
+            <p class="font-bold text-xl mb-4 text-slate-800">9. Відстань між \(A(x)\) та \(O(0)\) дорівнює 10. Чому може дорівнювати \(x\)?</p>
+            <button onclick="checkTest('t9', true, this)" class="option-btn">10 або -10</button>
+            <button onclick="checkTest('t9', false, this)" class="option-btn">тільки 10</button>
+        </div>
+
+        <div class="task-card" id="t10">
+            <p class="font-bold text-xl mb-4 text-slate-800">10. Обчисліть: \(|-5| \cdot |2| + |-3|\)</p>
+            <button onclick="checkTest('t10', true, this)" class="option-btn">13</button>
+            <button onclick="checkTest('t10', false, this)" class="option-btn">10</button>
+            <button onclick="checkTest('t10', false, this)" class="option-btn">7</button>
+            <button onclick="toggleHint('h10')" class="mt-4 text-blue-600 text-sm font-bold">💡 Підказка</button>
+            <div id="h10" class="hint-box">\(5 \cdot 2 + 3 = ?\). Порядок дій як завжди.</div>
+        </div>
+    </div>
+
+    <div id="result-screen" class="hidden text-center bg-white p-10 rounded-[3rem] shadow-2xl border-t-8 border-blue-600 mb-12">
+        <h2 class="text-3xl font-black text-slate-800 mb-2">Фінал! 🏁</h2>
+        <div id="final-score" class="text-7xl font-black text-blue-600 my-6">0/10</div>
+        <p id="motivate" class="text-xl text-slate-600 mb-8 font-medium"></p>
+        
+        <button onclick="copyReport()" class="w-full bg-slate-900 text-white py-5 rounded-2xl font-bold hover:bg-black transition shadow-lg flex items-center justify-center gap-3">
+            📋 Копіювати звіт для вчителя
+        </button>
+        <button onclick="location.reload()" class="mt-6 text-gray-400 font-bold hover:text-blue-600 transition text-sm">ПОЧАТИ ЗАНОВО</button>
+    </div>
+
+    <button id="finish-btn" onclick="showResults()" class="w-full bg-blue-600 text-white py-6 rounded-3xl font-black text-xl hover:bg-blue-700 transition shadow-xl mb-16 uppercase tracking-widest">ЗДАТИ РОБОТУ</button>
+</div>
+
+<script>
+    let scores = {};
+
+    function checkTest(taskId, isCorrect, btn) {
+        const parent = document.getElementById(taskId);
+        const buttons = parent.querySelectorAll('.option-btn');
+        
+        // Блокуємо всі кнопки в цьому питанні після кліку
+        buttons.forEach(b => {
+            b.disabled = true;
+        });
+
+        if (isCorrect) {
+            btn.classList.add('selected-correct');
+            parent.classList.add('correct');
+            scores[taskId] = true;
+        } else {
+            btn.classList.add('selected-wrong');
+            parent.classList.add('wrong');
+            scores[taskId] = false;
+        }
+    }
+
+    function toggleHint(id) {
+        const el = document.getElementById(id);
+        el.style.display = (el.style.display === 'block') ? 'none' : 'block';
+    }
+
+    function showResults() {
+        const name = document.getElementById('student-name').value.trim();
+        if (!name) {
+            alert("Спочатку введіть своє Прізвище та Ім'я!");
+            document.getElementById('student-name').focus();
+            return;
+        }
+
+        const correctCount = Object.values(scores).filter(v => v === true).length;
+        
+        document.getElementById('quiz-box').classList.add('hidden');
+        document.getElementById('finish-btn').classList.add('hidden');
+        document.getElementById('result-screen').classList.remove('hidden');
+        
+        document.getElementById('final-score').innerText = `${correctCount}/10`;
+        
+        let msg = "";
+        if(correctCount === 10) msg = "Ти — абсолютний чемпіон! Всі відповіді вірні! 🌟";
+        else if(correctCount >= 7) msg = "Дуже круто! Ти добре знаєш ці теми. 👍";
+        else if(correctCount >= 4) msg = "Гарний результат, але деякі моменти варто повторити. ✨";
+        else msg = "Спробуй ще раз, уважно читаючи підказки. Все вдасться! 💪";
+        
+        document.getElementById('motivate').innerText = `${name}, ${msg}`;
+        window.scrollTo(0,0);
+    }
+
+    function copyReport() {
+        const name = document.getElementById('student-name').value;
+        const correctCount = Object.values(scores).filter(v => v === true).length;
+        
+        let report = `📊 МАТЕМАТИКА 6 КЛАС: МОДУЛЬ ТА ЧИСЛА\n`;
+        report += `👤 Учень: ${name}\n`;
+        report += `🎯 Правильних відповідей: ${correctCount} з 10\n`;
+        report += `--------------------------\n`;
+        for(let i=1; i<=10; i++) {
+            report += `Питання ${i}: ${scores['t'+i] ? "✅ Вірно" : "❌ Помилка/Без відповіді"}\n`;
+        }
+        
+        navigator.clipboard.writeText(report).then(() => {
+            alert("Результати скопійовано! Надішли їх вчителю.");
+        });
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Математичний Тренажер: Експрес-курс</title>
+    
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['\\(', '\\)']],
+                displayMath: [['\\[', '\\]']]
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --secondary: #64748b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --dark: #1e293b;
+            --light: #f8fafc;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', system-ui, sans-serif; }
+
+        body {
+            display: flex;
+            height: 100vh;
+            background-color: var(--light);
+            overflow: hidden;
+        }
+
+        /* Split Screen */
+        .panel-left {
+            width: 50%;
+            height: 100%;
+            overflow-y: auto;
+            padding: 2rem;
+            background: white;
+            border-right: 2px solid #e2e8f0;
+        }
+
+        .panel-right {
+            width: 50%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            background: #f1f5f9;
+        }
+
+        /* Завдання */
+        h1 { color: var(--primary); margin-bottom: 1.5rem; text-align: center; font-size: 1.75rem; }
+        .section-header { 
+            margin: 25px 0 10px; 
+            color: var(--secondary); 
+            font-size: 1.1rem;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 5px;
+        }
+
+        .task-card {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .formula { font-size: 1.2rem; margin-bottom: 1rem; display: block; }
+
+        .input-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+
+        input[type="text"] {
+            padding: 8px 12px;
+            border: 2px solid #cbd5e1;
+            border-radius: 6px;
+            width: 100px;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        input[type="text"]:focus { border-color: var(--primary); }
+
+        .btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.8rem;
+            transition: 0.2s;
+        }
+
+        .btn-check { background: var(--primary); color: white; }
+        .btn-hint { background: var(--warning); color: white; }
+        .btn-sol { background: var(--secondary); color: white; }
+        .btn:hover { opacity: 0.9; }
+
+        .box {
+            display: none;
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            border-left: 4px solid;
+        }
+        .hint-box { background: #fffbeb; border-left-color: var(--warning); color: #92400e; }
+        .sol-box { background: #f0fdf4; border-left-color: var(--success); color: #166534; }
+
+        .feedback { margin-top: 5px; font-weight: bold; font-size: 0.9rem; }
+
+        /* Whiteboard */
+        #toolbar {
+            padding: 10px;
+            background: var(--dark);
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .tool-btn {
+            padding: 6px 12px;
+            background: #334155;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .tool-btn.active { background: var(--primary); }
+
+        canvas { flex-grow: 1; background: white; cursor: crosshair; }
+
+        /* Results */
+        #result-screen { display: none; text-align: center; padding: 40px; }
+        .score { font-size: 4rem; color: var(--primary); font-weight: 800; }
+    </style>
+</head>
+<body>
+
+<div class="panel-left" id="main-content">
+    <h1>🚀 Практичне заняття</h1>
+
+    <div id="tasks-container"></div>
+
+    <div style="text-align: center; margin-top: 30px;">
+        <button class="btn btn-check" style="padding: 15px 30px; font-size: 1.1rem;" onclick="finish()">Завершити</button>
+    </div>
+
+    <div id="result-screen">
+        <h2>Твій результат:</h2>
+        <div class="score" id="score-text">0/15</div>
+        <p id="motivational" style="font-size: 1.2rem; margin-top: 10px;"></p>
+        <button class="btn btn-sol" style="margin-top: 20px;" onclick="location.reload()">Спробувати ще раз</button>
+    </div>
+</div>
+
+<div class="panel-right">
+    <div id="toolbar">
+        <button class="tool-btn active" onclick="setMode('pen', this)">✏️ Олівець</button>
+        <button class="tool-btn" onclick="setMode('eraser', this)">🧽 Гумка</button>
+        <button class="tool-btn" onclick="addGrid()">🌐 Сітка</button>
+        <button class="tool-btn" onclick="drawShape('rect')">🟦 Квадрат</button>
+        <button class="tool-btn" style="background: var(--danger)" onclick="clearAll()">🗑️ Очистити</button>
+    </div>
+    <canvas id="whiteboard"></canvas>
+</div>
+
+<script>
+    const taskData = [
+        // Додавання/Віднімання (4) - Спрощені
+        { cat: "Арифметика: Додавання та Віднімання", q: "250 + 135", a: "385", h: "Додай сотні до сотень, а десятки до десятків.", s: "250 + 135 = 385" },
+        { q: "500 - 123", a: "377", h: "500 - 100, а потім - 23.", s: "377" },
+        { q: "12.5 + 4.5", a: "17", h: "Додай цілі частини та половинки.", s: "12.5 + 4.5 = 17" },
+        { q: "100 - 45.5", a: "54.5", h: "Змоделюй як 100 - 45, а потім ще мінус 0.5.", s: "54.5" },
+
+        // Множення/Ділення (4) - Складні
+        { cat: "Арифметика: Множення та Ділення (Складне)", q: "1.2 \\cdot 15", a: "18", h: "12 помнож на 15 і відділи кому.", s: "12 \\times 15 = 180 \\rightarrow 18" },
+        { q: "144 \\div 1.2", a: "120", h: "Перенеси кому: 1440 / 12.", s: "1440 / 12 = 120" },
+        { q: "0.25 \\cdot 40", a: "10", h: "0.25 — це чверть від числа.", s: "40 / 4 = 10" },
+        { q: "\\frac{1}{2} \\cdot \\frac{1}{4}", a: "0.125", a2: "1/8", h: "Помнож чисельники і знаменники окремо.", s: "\\frac{1}{8} = 0.125" },
+
+        // Букви (3)
+        { cat: "Вирази зі змінними", q: "4a + 5a", a: "9a", h: "Додай числа біля букви.", s: "9a" },
+        { q: "10x - 2x + 1", a: "8x+1", h: "Відніми ікси, одиницю залиш.", s: "8x + 1" },
+        { q: "3(2y)", a: "6y", h: "Помнож число на коефіцієнт біля y.", s: "6y" },
+
+        // Рівняння (2)
+        { cat: "Рівняння", q: "x + 15 = 40", a: "25", h: "x = 40 - 15", s: "x = 25" },
+        { q: "2x - 5 = 11", a: "8", h: "Спочатку знайди 2x = 11 + 5.", s: "2x = 16 \\rightarrow x = 8" },
+
+        // Геометрія (2)
+        { cat: "Основи геометрії", q: "\\text{Периметр квадрата зі стороною 5:}", a: "20", h: "P = 4 \\cdot a", s: "4 \\times 5 = 20" },
+        { q: "\\text{Третій кут трикутника, якщо два інші кути } 60^\\circ \\text{ та } 60^\\circ:", a: "60", h: "Сума кутів трикутника = 180 градусів.", s: "180 - 120 = 60" }
+    ];
+
+    let correctCount = 0;
+
+    function renderTasks() {
+        const container = document.getElementById('tasks-container');
+        taskData.forEach((task, i) => {
+            if (task.cat) {
+                container.innerHTML += `<div class="section-header">${task.cat}</div>`;
+            }
+            container.innerHTML += `
+                <div class="task-card">
+                    <span class="formula">\\(${task.q}\\)</span>
+                    <div class="input-row">
+                        <input type="text" id="in-${i}" placeholder="?">
+                        <button class="btn btn-check" onclick="check(${i})">Перевірити</button>
+                        <button class="btn btn-hint" onclick="toggle('h-${i}')">Підказка</button>
+                        <button class="btn btn-sol" onclick="toggle('s-${i}')">Рішення</button>
+                    </div>
+                    <div id="h-${i}" class="box hint-box">💡 ${task.h}</div>
+                    <div id="s-${i}" class="box sol-box">📝 \\(${task.s}\\)</div>
+                    <div id="fb-${i}" class="feedback"></div>
+                </div>
+            `;
+        });
+        MathJax.typeset();
+    }
+
+    function toggle(id) {
+        const el = document.getElementById(id);
+        el.style.display = el.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function check(i) {
+        const val = document.getElementById(`in-${i}`).value.trim().replace(',', '.').toLowerCase();
+        const fb = document.getElementById(`fb-${i}`);
+        if (val === taskData[i].a || (taskData[i].a2 && val === taskData[i].a2)) {
+            fb.innerHTML = "<span style='color:var(--success)'>✅ Вірно!</span>";
+            if (!taskData[i].done) { correctCount++; taskData[i].done = true; }
+        } else {
+            fb.innerHTML = "<span style='color:var(--danger)'>❌ Спробуй ще</span>";
+        }
+    }
+
+    function finish() {
+        document.querySelectorAll('.panel-left > *:not(#result-screen)').forEach(e => e.style.display = 'none');
+        const res = document.getElementById('result-screen');
+        res.style.display = 'block';
+        document.getElementById('score-text').innerText = `${correctCount}/15`;
+        const m = document.getElementById('motivational');
+        if (correctCount >= 12) m.innerText = "🏆 Блискуче! Ти справжній майстер математики!";
+        else if (correctCount >= 8) m.innerText = "✨ Хороший результат! Так тримати!";
+        else m.innerText = "💪 Гарна спроба! Математика любить практику!";
+    }
+
+    // Canvas Logic
+    const canvas = document.getElementById('whiteboard');
+    const ctx = canvas.getContext('2d');
+    let drawing = false;
+    let toolMode = 'pen';
+
+    function init() {
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+        ctx.lineCap = 'round';
+        ctx.lineWidth = 2.5;
+    }
+    window.addEventListener('resize', init);
+    init();
+
+    canvas.addEventListener('mousedown', (e) => { drawing = true; draw(e); });
+    canvas.addEventListener('mousemove', draw);
+    window.addEventListener('mouseup', () => { drawing = false; ctx.beginPath(); });
+
+    function draw(e) {
+        if (!drawing) return;
+        const r = canvas.getBoundingClientRect();
+        ctx.strokeStyle = toolMode === 'eraser' ? 'white' : '#1e293b';
+        ctx.lineWidth = toolMode === 'eraser' ? 30 : 2.5;
+        ctx.lineTo(e.clientX - r.left, e.clientY - r.top);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(e.clientX - r.left, e.clientY - r.top);
+    }
+
+    function setMode(m, b) {
+        toolMode = m;
+        document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
+        b.classList.add('active');
+    }
+
+    function clearAll() { ctx.clearRect(0,0,canvas.width,canvas.height); }
+    function addGrid() {
+        ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 1;
+        for(let i=0; i<canvas.width; i+=40) { ctx.moveTo(i,0); ctx.lineTo(i,canvas.height); }
+        for(let i=0; i<canvas.height; i+=40) { ctx.moveTo(0,i); ctx.lineTo(canvas.width,i); }
+        ctx.stroke(); ctx.beginPath();
+    }
+    function drawShape(t) {
+        ctx.strokeStyle = '#4f46e5'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.rect(canvas.width/2-50, canvas.height/2-50, 100, 100); ctx.stroke(); ctx.beginPath();
+    }
+
+    window.onload = renderTasks;
+</script>
+
+</body>
+</html>
