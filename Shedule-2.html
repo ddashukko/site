@@ -1512,40 +1512,60 @@
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         try {
-          const startDate = new Date(2026, 0, 26);
+          // Встановлюємо дату початку відліку: 26 січня 2026 року
+          const startDate = new Date(2026, 0, 26); 
           const now = new Date();
+          
+          // Розрахунок різниці в часі
           const diffTime = now - startDate;
           const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-          const weeksPassed = Math.floor(diffDays / 7);
+          
+          // Якщо дата в майбутньому (diffDays < 0), вважаємо, що це 0-й тиждень
+          const adjustedDays = diffDays < 0 ? 0 : diffDays;
+          const weeksPassed = Math.floor(adjustedDays / 7);
 
           const statusEl = document.getElementById("weekStatus");
 
-          if (weeksPassed % 2 !== 0) {
+          // Логіка: 
+          // 26.01 - 01.02 (weeksPassed = 0, парне) -> Верхній
+          // 02.02 - 08.02 (weeksPassed = 1, непарне) -> Нижній
+          
+          if (weeksPassed % 2 === 0) {
+            // ПАРНИЙ ТИЖДЕНЬ (0, 2, 4...) -> ВЕРХНІЙ
             openTab("upper");
             statusEl.innerHTML = "Зараз активний: <span>Верхній тиждень</span>";
           } else {
+            // НЕПАРНИЙ ТИЖДЕНЬ (1, 3, 5...) -> НИЖНІЙ
+            openTab("lower");
             statusEl.innerHTML = "Зараз активний: <span>Нижній тиждень</span>";
           }
         } catch (e) {
-          console.log("Помилка авто-визначення, залишаємо нижній розклад");
+          console.log("Помилка авто-визначення, залишаємо нижній розклад", e);
         }
       });
 
       function openTab(tabName) {
         var i, tabContent, tabBtns;
 
+        // Приховати всі вкладки
         tabContent = document.getElementsByClassName("tab-content");
         for (i = 0; i < tabContent.length; i++) {
           tabContent[i].classList.remove("active");
         }
 
+        // Деактивувати всі кнопки
         tabBtns = document.getElementsByClassName("tab-btn");
         for (i = 0; i < tabBtns.length; i++) {
           tabBtns[i].classList.remove("active");
         }
 
-        document.getElementById(tabName).classList.add("active");
+        // Показати потрібну вкладку
+        const targetTab = document.getElementById(tabName);
+        if (targetTab) {
+            targetTab.classList.add("active");
+        }
 
+        // Активувати потрібну кнопку
         if (tabName === "upper") {
           document.getElementById("btn-upper").classList.add("active");
         } else {
