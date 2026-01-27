@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>НМТ Експрес: Лінійні рівняння та ОДЗ</title>
+    
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --secondary: #6366f1;
+            --success: #10b981;
+            --error: #f43f5e;
+            --bg: #f8fafc;
+            --text: #0f172a;
+            --card: #ffffff;
+        }
+
+        body, html {
+            margin: 0; padding: 0;
+            height: 100%; font-family: 'Inter', system-ui, sans-serif;
+            background-color: var(--bg); color: var(--text);
+            overflow: hidden;
+        }
+
+        .split-screen { display: flex; height: 100vh; }
+
+        /* ЛІВА ЧАСТИНА - КОНТЕНТ */
+        .content-side {
+            flex: 1; padding: 40px;
+            overflow-y: auto; border-right: 1px solid #e2e8f0;
+            scroll-behavior: smooth;
+        }
+
+        .nmt-badge {
+            background: linear-gradient(90deg, #4f46e5, #818cf8);
+            color: white; padding: 4px 12px; border-radius: 20px;
+            font-size: 0.85rem; font-weight: 700; display: inline-block;
+            margin-bottom: 10px; text-transform: uppercase;
+        }
+
+        h1 { font-size: 2rem; margin-top: 0; letter-spacing: -0.025em; }
+
+        .theory-section {
+            background: #eef2ff; border-left: 4px solid var(--primary);
+            border-radius: 8px; margin-bottom: 30px;
+        }
+
+        details summary {
+            padding: 15px; cursor: pointer; font-weight: 600;
+            outline: none; list-style: none; display: flex; align-items: center;
+        }
+        details summary::before { content: "📘"; margin-right: 10px; }
+
+        .section-block {
+            margin-bottom: 40px; border-top: 2px solid #f1f5f9; padding-top: 20px;
+        }
+
+        .section-header {
+            font-size: 1.25rem; font-weight: 700; color: var(--primary);
+            margin-bottom: 20px; display: flex; align-items: center;
+        }
+
+        .task-card {
+            background: var(--card); padding: 20px; border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-bottom: 15px;
+            border: 1px solid #f1f5f9; transition: 0.2s;
+        }
+        .task-card:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+
+        .input-group { display: flex; gap: 10px; margin-top: 15px; align-items: center; }
+        
+        input {
+            padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px;
+            width: 120px; outline: none; transition: 0.2s; font-size: 1rem;
+        }
+        input:focus { border-color: var(--primary); }
+
+        button {
+            padding: 10px 16px; border-radius: 8px; border: none;
+            cursor: pointer; font-weight: 600; transition: 0.2s;
+        }
+        .btn-check { background: var(--primary); color: white; }
+        .btn-hint { background: #f1f5f9; color: #475569; }
+        .btn-sol { background: #fff7ed; color: #c2410c; }
+
+        .feedback { margin-top: 10px; font-weight: 700; display: none; }
+        .hint-box, .sol-box {
+            display: none; margin-top: 15px; padding: 15px;
+            background: #f8fafc; border-radius: 8px; font-size: 0.95rem;
+            border: 1px dashed #cbd5e1;
+        }
+
+        /* ПРАВА ЧАСТИНА - ДОШКА */
+        .board-side { flex: 1; display: flex; flex-direction: column; background: white; }
+        .toolbar {
+            padding: 15px; background: #1e293b; display: flex; gap: 10px; flex-wrap: wrap;
+        }
+        .tool-btn {
+            background: #334155; color: white; border: 1px solid #475569;
+            padding: 8px 12px; font-size: 0.8rem; border-radius: 6px;
+        }
+        .tool-btn.active { background: var(--primary); border-color: var(--primary); }
+        canvas { flex: 1; cursor: crosshair; touch-action: none; background: #fff; }
+
+        /* ТЕСТ ТА ФІНАЛ */
+        #final-section { display: none; text-align: center; padding: 40px; }
+        .confetti { font-size: 3rem; }
+    </style>
+</head>
+<body>
+
+<div class="split-screen">
+    <div class="content-side" id="content">
+        <div class="nmt-badge">Підготовка до НМТ</div>
+        <h1>Універсальні рівняння та ОДЗ</h1>
+        <p>📊 <b>20 завдань</b> | ⏱ <b>60 хвилин</b> | Рівень: <b>Профі</b></p>
+
+        <details class="theory-section">
+            <summary>Шпаргалка: Все, що треба для НМТ</summary>
+            <div style="padding: 0 15px 15px 15px;">
+                <p><b>1. Форма $ax = b$:</b>
+                    <ul>
+                        <li>Якщо $a \neq 0$, то $x = \frac{b}{a}$ (єдиний корінь).</li>
+                        <li>Якщо $a = 0$ і $b = 0$, то $0x = 0$ (безліч коренів).</li>
+                        <li>Якщо $a = 0$ і $b \neq 0$, то $0x = b$ (коренів немає).</li>
+                    </ul>
+                </p>
+                <p><b>2. ОДЗ (Раціональні рівняння):</b>
+                    <ul>
+                        <li>Дріб $\frac{P(x)}{Q(x)} = 0$ рівносильний системі: $\begin{cases} P(x) = 0 \\ Q(x) \neq 0 \end{cases}$</li>
+                    </ul>
+                </p>
+                <p><b>3. Пастки:</b> Завжди перевіряй, чи не перетворює знайдений корінь знаменник на нуль!</p>
+            </div>
+        </details>
+
+        <div id="tasks-container">
+            </div>
+
+        <div id="test-area" class="section-block">
+            <div class="section-header">🏁 Підсумковий контроль</div>
+            <div class="task-card">
+                <p>Яке з рівнянь не має розв'язків?</p>
+                <label><input type="radio" name="final-q" value="a"> $5x = 0$</label><br>
+                <label><input type="radio" name="final-q" value="b"> $0x = 0$</label><br>
+                <label><input type="radio" name="final-q" value="c"> $0x = -1$</label>
+            </div>
+            <button class="btn-check" style="width: 100%; padding: 18px;" onclick="finishLesson()">ЗАВЕРШИТИ УРОК</button>
+        </div>
+
+        <div id="final-section">
+            <div class="confetti">🎉</div>
+            <h2 id="final-score"></h2>
+            <p id="final-praise"></p>
+            <button class="btn-check" onclick="location.reload()">Повторити курс</button>
+        </div>
+    </div>
+
+    <div class="board-side">
+        <div class="toolbar">
+            <button class="tool-btn active" onclick="setTool('pen', this)">✏️ Олівець</button>
+            <button class="tool-btn" onclick="setTool('eraser', this)">🧼 Гумка</button>
+            <button class="tool-btn" onclick="clearCanvas()">🗑️ Очистити</button>
+            <div style="width: 1px; height: 25px; background: #475569; margin: 0 5px;"></div>
+            <button class="tool-btn" onclick="drawCoordinateSystem()">🌐 Координатна площина</button>
+            <button class="tool-btn" onclick="drawShape('triangle')">📐 Трикутник</button>
+            <button class="tool-btn" onclick="drawShape('circle')">⭕ Коло</button>
+        </div>
+        <canvas id="whiteboard"></canvas>
+    </div>
+</div>
+
+<script>
+    const data = [
+        {
+            title: "Розділ 1: Логіка рівноваги (Базові рівняння)",
+            tasks: [
+                { q: "x + 14 = 30", a: "16", h: "Відніми 14 від обох частин рівняння.", s: "$x = 30 - 14 \\Rightarrow x = 16$" },
+                { q: "x - 9 = -5", a: "4", h: "Додай 9 до обох частин.", s: "$x = -5 + 9 \\Rightarrow x = 4$" },
+                { q: "25 - x = 10", a: "15", h: "Перенеси x в одну сторону, а числа в іншу.", s: "$x = 25 - 10 \\Rightarrow x = 15$" },
+                { q: "12 + x = 2", a: "-10", h: "Перенеси 12 зі зміною знаку.", s: "$x = 2 - 12 \\Rightarrow x = -10$" },
+                { q: "x - 1.5 = 2", a: "3.5", h: "Додай 1.5 до двійки.", s: "$x = 2 + 1.5 \\Rightarrow x = 3.5$" }
+            ]
+        },
+        {
+            title: "Розділ 2: Основна форма $ax = b$",
+            tasks: [
+                { q: "5x = 45", a: "9", h: "Поділи обидві частини на 5.", s: "$x = 45 : 5 = 9$" },
+                { q: "-3x = 21", a: "-7", h: "Поділи на від'ємне число -3.", s: "$x = 21 : (-3) = -7$" },
+                { q: "0.2x = 4", a: "20", h: "Помнож на 5 або поділи на 0.2.", s: "$x = 4 / 0.2 = 20$" },
+                { q: "0x = 10", a: "немає", h: "Чи існує число, яке при множенні на 0 дасть 10?", s: "0 не може дорівнювати 10. Коренів не існує." },
+                { q: "0x = 0", a: "безліч", h: "Спробуй підставити будь-яке число.", s: "Рівність виконується для будь-якого x." }
+            ]
+        },
+        {
+            title: "Розділ 3: Раціональні пастки (ОДЗ)",
+            tasks: [
+                { q: "\\frac{x-5}{x+2} = 0", a: "5", h: "Дріб дорівнює 0, коли чисельник 0, а знаменник ні.", s: "$x-5=0 \\Rightarrow x=5$. При $x=5$ знаменник $5+2 \\neq 0$." },
+                { q: "\\frac{2x+6}{x-1} = 0", a: "-3", h: "Знайди корінь чисельника $2x+6=0$.", s: "$2x = -6 \\Rightarrow x = -3$." },
+                { q: "\\frac{x-4}{x-4} = 0", a: "немає", h: "Перевір, чи не стає знаменник нулем.", s: "Чисельник 0 при $x=4$, але знаменник також 0. Коренів немає." },
+                { q: "\\frac{x(x-2)}{x} = 0", a: "2", h: "x=0 випадає через ОДЗ.", s: "Тільки $x=2$, бо $x \\neq 0$." },
+                { q: "\\frac{x^2-9}{x-3} = 0", a: "-3", h: "$x^2-9=(x-3)(x+3)$.", s: "Корені чисельника 3 та -3. Але $x=3$ заборонено знаменником." }
+            ]
+        },
+        {
+            title: "Розділ 4: Вступ до параметрів",
+            tasks: [
+                { q: "ax = 5. \\text{При якому } a \\text{ немає коренів?}", a: "0", h: "Рівняння } 0x = b \\text{ не має розв'язків.", s: "Якщо $a=0$, отримаємо $0x=5$ (неможливо)." },
+                { q: "(a-2)x = 0. \\text{При якому } a \\text{ коренів безліч?}", a: "2", h: "Потрібно отримати } 0x = 0.", s: "При $a=2$ маємо $0x=0$." },
+                { q: "\\frac{x-3}{x-a} = 0. \\text{При якому } a \\text{ немає коренів?}", a: "3", h: "Корінь чисельника має збігатися зі знаменником.", s: "Якщо $a=3$, то єдиний можливий корінь $x=3$ стає забороненим." },
+                { q: "(a+5)x = 7. \\text{При якому } a \\text{ немає коренів?}", a: "-5", h: "Зроби коефіцієнт біля x нулем.", s: "$a+5=0 \\Rightarrow a=-5$." },
+                { q: "\\frac{x-a}{x-7} = 0. \\text{При якому } a \\text{ немає коренів?}", a: "7", h: "Коли значення параметра 'вибиває' єдиний корінь?", s: "Якщо $a=7$, то $x=7$ стає недопустимим через ОДЗ." }
+            ]
+        }
+    ];
+
+    let globalCorrect = 0;
+
+    // ГЕНЕРАЦІЯ КОНТЕНТУ
+    const container = document.getElementById('tasks-container');
+    data.forEach((section, sIdx) => {
+        const sectionDiv = document.createElement('div');
+        sectionDiv.className = 'section-block';
+        sectionDiv.innerHTML = `<div class="section-header">${section.title}</div>`;
+        
+        section.tasks.forEach((task, tIdx) => {
+            const id = `task-${sIdx}-${tIdx}`;
+            const card = document.createElement('div');
+            card.className = 'task-card';
+            card.innerHTML = `
+                <p><b>Завдання ${sIdx * 5 + tIdx + 1}:</b> $${task.q}$</p>
+                <div class="input-group">
+                    <input type="text" id="input-${id}" placeholder="Відповідь">
+                    <button class="btn-check" onclick="checkAnswer('${id}', '${task.a}')">Перевірити</button>
+                    <button class="btn-hint" onclick="toggleBox('hint-${id}')">Підказка</button>
+                    <button class="btn-sol" onclick="toggleBox('sol-${id}')">Розв'язання</button>
+                </div>
+                <div id="fb-${id}" class="feedback"></div>
+                <div id="hint-${id}" class="hint-box">💡 ${task.h}</div>
+                <div id="sol-${id}" class="sol-box">✅ ${task.s}</div>
+            `;
+            sectionDiv.appendChild(card);
+        });
+        container.appendChild(sectionDiv);
+    });
+
+    function toggleBox(id) {
+        const el = document.getElementById(id);
+        el.style.display = (el.style.display === 'block') ? 'none' : 'block';
+    }
+
+    function checkAnswer(id, correct) {
+        const userVal = document.getElementById(`input-${id}`).value.trim().toLowerCase();
+        const fb = document.getElementById(`fb-${id}`);
+        fb.style.display = 'block';
+        
+        if (userVal === correct.toLowerCase()) {
+            fb.innerHTML = "✨ Вірно! Ти молодець.";
+            fb.style.color = "var(--success)";
+            globalCorrect++;
+        } else {
+            fb.innerHTML = "❌ Помилка. Поглянь у підказку.";
+            fb.style.color = "var(--error)";
+        }
+    }
+
+    // ЛОГІКА ДОШКИ
+    const canvas = document.getElementById('whiteboard');
+    const ctx = canvas.getContext('2d');
+    let drawing = false;
+    let tool = 'pen';
+
+    function initCanvas() {
+        canvas.width = canvas.parentElement.clientWidth;
+        canvas.height = canvas.parentElement.clientHeight;
+    }
+    window.addEventListener('resize', initCanvas);
+    initCanvas();
+
+    canvas.addEventListener('mousedown', () => drawing = true);
+    canvas.addEventListener('mouseup', () => { drawing = false; ctx.beginPath(); });
+    canvas.addEventListener('mousemove', draw);
+
+    function setTool(t, btn) {
+        tool = t;
+        document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+    }
+
+    function draw(e) {
+        if (!drawing) return;
+        ctx.lineWidth = tool === 'eraser' ? 30 : 2;
+        ctx.lineCap = 'round';
+        ctx.strokeStyle = tool === 'eraser' ? '#ffffff' : '#1e293b';
+
+        const rect = canvas.getBoundingClientRect();
+        ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+    }
+
+    function clearCanvas() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
+
+    function drawCoordinateSystem() {
+        clearCanvas();
+        ctx.strokeStyle = "#e2e8f0";
+        ctx.lineWidth = 1;
+        const step = 30;
+        for (let i = 0; i < canvas.width; i += step) { ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, canvas.height); ctx.stroke(); }
+        for (let i = 0; i < canvas.height; i += step) { ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(canvas.width, i); ctx.stroke(); }
+        ctx.strokeStyle = "#475569";
+        ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(canvas.width/2, 0); ctx.lineTo(canvas.width/2, canvas.height); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(0, canvas.height/2); ctx.lineTo(canvas.width, canvas.height/2); ctx.stroke();
+    }
+
+    function drawShape(type) {
+        ctx.strokeStyle = "#4f46e5";
+        ctx.lineWidth = 2;
+        const cx = canvas.width / 2;
+        const cy = canvas.height / 2;
+        if (type === 'triangle') {
+            ctx.beginPath(); ctx.moveTo(cx, cy-50); ctx.lineTo(cx-50, cy+50); ctx.lineTo(cx+50, cy+50); ctx.closePath(); ctx.stroke();
+        } else if (type === 'circle') {
+            ctx.beginPath(); ctx.arc(cx, cy, 50, 0, Math.PI*2); ctx.stroke();
+        }
+    }
+
+    function finishLesson() {
+        const finalAns = document.querySelector('input[name="final-q"]:checked')?.value;
+        if (finalAns === 'c') globalCorrect += 5;
+
+        document.getElementById('tasks-container').style.display = 'none';
+        document.getElementById('test-area').style.display = 'none';
+        const final = document.getElementById('final-section');
+        final.style.display = 'block';
+        
+        document.getElementById('final-score').innerText = `Твій результат: ${globalCorrect} балів`;
+        const praises = ["Ти — майбутній стобальник НМТ!", "Чудова робота, логіка на висоті!", "Математика тебе любить!", "Крутий результат! Так тримати!"];
+        document.getElementById('final-praise').innerText = praises[Math.floor(Math.random()*praises.length)];
+    }
+</script>
+
+</body>
+</html>
