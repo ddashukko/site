@@ -1007,7 +1007,7 @@ window.lessonsData = [
   {
     id: "nmt-10-yara",
     title: "Функції Настя",
-    grade: nmt,
+    grade: 10,
     topic: "Математика",
     link: "algebra/nmt/rivniannia1.html",
     subject_code: "algebra",
