@@ -1005,7 +1005,7 @@ window.lessonsData = [
   // ==========================================
   {
     id: "nmt-10-yara",
-    title: "Функції Настя",
+    title: "Рівняння лінійні",
     grade: 10,
     topic: "Математика",
     link: "algebra/nmt/rivnianiia1.html",
