@@ -1009,7 +1009,7 @@ window.lessonsData = [
     title: "Функції Настя",
     grade: 10,
     topic: "Математика",
-    link: "algebra/nmt/rivniannia1.html",
+    link: "algebra/nmt/rivnianiia1.html",
     subject_code: "algebra",
     category: "lesson",
     author: "Соня",
