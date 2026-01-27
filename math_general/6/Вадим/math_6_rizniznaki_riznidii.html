@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Математичний Тест (70 прикладів)</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --bg: #f8fafc;
+            --text: #1e293b;
+        }
+
+        body {
+            margin: 0; font-family: 'Inter', system-ui, sans-serif;
+            background-color: var(--bg); color: var(--text);
+            padding-bottom: 60px;
+        }
+
+        /* Top Navigation */
+        .top-bar {
+            position: sticky; top: 0; z-index: 1000;
+            background: white; padding: 12px 20px;
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .timer-display { font-weight: 800; font-size: 1.4rem; color: var(--primary); font-family: monospace; }
+        .hearts-box { display: flex; gap: 8px; cursor: pointer; user-select: none; }
+        .heart { font-size: 1.8rem; transition: 0.2s; }
+        .heart.broken { filter: grayscale(1); opacity: 0.3; transform: scale(0.8); }
+
+        .container { max-width: 1000px; margin: 30px auto; padding: 0 15px; }
+        h1 { text-align: center; color: var(--primary); font-size: 1.5rem; }
+
+        /* Grid */
+        .quiz-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px; margin-top: 25px;
+        }
+
+        .card {
+            background: white; padding: 20px; border-radius: 12px;
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border: 3px solid #e2e8f0;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .math-expr { font-size: 1.2rem; font-weight: 700; }
+
+        input {
+            width: 80px; padding: 10px; border: 2px solid #cbd5e1;
+            border-radius: 8px; text-align: center; font-size: 1.2rem;
+            font-weight: 700; outline: none; background: white;
+        }
+
+        /* Цей стиль важливий для того, щоб колір картки було видно крізь інпут */
+        input:disabled { 
+            color: #000; 
+            opacity: 1; 
+            -webkit-text-fill-color: #000; 
+            background: transparent !important; 
+            border-color: rgba(0,0,0,0.1);
+        }
+
+        /* Кнопки */
+        .footer { text-align: center; margin-top: 40px; }
+        .btn {
+            padding: 16px 45px; border-radius: 50px; border: none;
+            font-size: 1.2rem; font-weight: 700; cursor: pointer; transition: 0.3s;
+        }
+        .btn-finish { background: var(--primary); color: white; box-shadow: 0 4px 14px rgba(79, 70, 229, 0.4); }
+        .btn-review { background: #10b981; color: white; display: none; margin: 0 auto; }
+        .btn:hover { transform: scale(1.05); opacity: 0.9; }
+
+        /* Modal */
+        .overlay {
+            position: fixed; inset: 0; background: rgba(15, 23, 42, 0.95);
+            display: none; justify-content: center; align-items: center; z-index: 2000;
+        }
+        .modal {
+            background: white; padding: 40px; border-radius: 24px;
+            max-width: 400px; width: 90%; text-align: center;
+        }
+
+        @media (max-width: 600px) {
+            .quiz-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    <div class="hearts-box" id="hearts-ui" onclick="getHint()">
+        <span id="heart-1" class="heart">❤️</span>
+        <span id="heart-2" class="heart">❤️</span>
+        <span id="heart-3" class="heart">❤️</span>
+    </div>
+    <div class="timer-display" id="timer-clock">00:00</div>
+</div>
+
+<div class="container">
+    <h1>📝 Математичний Тест (70 прикладів)</h1>
+    <div class="quiz-grid" id="main-test-grid"></div>
+
+    <div class="footer">
+        <button class="btn btn-finish" id="finish-action" onclick="finishTest()">Завершити тест</button>
+        <button class="btn btn-review" id="review-action" onclick="mistakeWork()">Робота над помилками</button>
+    </div>
+</div>
+
+<div class="overlay" id="result-overlay">
+    <div class="modal">
+        <h2 style="color: var(--primary); font-size: 1.8rem;">Результат 📊</h2>
+        <div id="result-text" style="font-size: 1.2rem; margin: 25px 0; line-height: 1.6;"></div>
+        <button class="btn btn-finish" style="width: 100%" onclick="closeResult()">Переглянути помилки</button>
+    </div>
+</div>
+
+<script>
+    let seconds = 0;
+    let timerOn = true;
+    let hintCount = 0;
+    const totalCount = 70;
+    const taskData = [];
+
+    // 1. Генерація 70 завдань
+    function initTest() {
+        const grid = document.getElementById('main-test-grid');
+        for (let i = 0; i < totalCount; i++) {
+            let a, b, op, res;
+            const mode = Math.floor(Math.random() * 3);
+
+            if (mode === 0) { // Обидва від'ємні
+                a = -Math.floor(Math.random() * 45 + 5);
+                b = -Math.floor(Math.random() * 45 + 5);
+                op = '+';
+                res = a + b;
+            } else if (mode === 1) { // Додатне + Від'ємне
+                a = Math.floor(Math.random() * 90 - 45);
+                b = Math.floor(Math.random() * 90 - 45);
+                op = '+';
+                res = a + b;
+            } else { // Віднімання (мінус на мінус)
+                a = Math.floor(Math.random() * 50 - 25);
+                b = -Math.floor(Math.random() * 30 + 2);
+                op = '-';
+                res = a - b;
+            }
+
+            taskData.push({ answer: res });
+
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.id = `box-${i}`;
+            card.innerHTML = `
+                <div class="math-expr">\\( ${a} ${op} ${b < 0 ? '('+b+')' : b} = \\)</div>
+                <input type="number" id="inp-${i}" onblur="lockInput(${i})">
+            `;
+            grid.appendChild(card);
+        }
+        MathJax.typeset();
+        startTimer();
+    }
+
+    // 2. Блокування після вводу
+    function lockInput(i) {
+        const input = document.getElementById(`inp-${i}`);
+        if (input.value !== "") {
+            input.disabled = true;
+        }
+    }
+
+    // 3. Таймер (працює)
+    function startTimer() {
+        setInterval(() => {
+            if (!timerOn) return;
+            seconds++;
+            const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+            const s = (seconds % 60).toString().padStart(2, '0');
+            document.getElementById('timer-clock').innerText = `${m}:${s}`;
+        }, 1000);
+    }
+
+    // 4. Підказки (Серця)
+    function getHint() {
+        if (!timerOn || hintCount >= 3) return;
+        hintCount++;
+        document.getElementById(`heart-${hintCount}`).innerText = '💔';
+        document.getElementById(`heart-${hintCount}`).classList.add('broken');
+        alert("💡 Порада:\n1. Якщо знаки однакові (напр. -5 + -3) — додай числа (5+3=8) і постав мінус (-8).\n2. Якщо знаки різні — відніми від більшого числа менше і постав знак більшого!\n3. а - (-b) завжди стає а + b.");
+    }
+
+    // 5. Фінал
+    function finishTest() {
+        timerOn = false;
+        let correct = 0;
+        let attempted = 0;
+
+        taskData.forEach((task, i) => {
+            const val = document.getElementById(`inp-${i}`).value;
+            if (val !== "") {
+                attempted++;
+                if (parseInt(val) === task.answer) correct++;
+            }
+            document.getElementById(`inp-${i}`).disabled = true;
+        });
+
+        const score = attempted > 0 ? Math.round((correct / attempted) * 12) : 0;
+        const timeResult = document.getElementById('timer-clock').innerText;
+
+        document.getElementById('result-text').innerHTML = `
+            Витрачено часу: <b>${timeResult}</b><br>
+            Відповідей дано: <b>${attempted}</b> із ${totalCount}<br>
+            Правильно: <span style="color: #10b981"><b>${correct}</b></span><br><br>
+            <span style="font-size: 2.2rem; color: var(--primary); font-weight: 900;">${score} / 12 БАЛІВ</span>
+        `;
+
+        document.getElementById('result-overlay').style.display = 'flex';
+        document.getElementById('finish-action').style.display = 'none';
+        document.getElementById('review-action').style.display = 'block';
+    }
+
+    // 6. РОБОТА НАД ПОМИЛКАМИ (ЖОРСТКЕ ПІДСВІЧУВАННЯ)
+    function mistakeWork() {
+        taskData.forEach((task, i) => {
+            const card = document.getElementById(`box-${i}`);
+            const input = document.getElementById(`inp-${i}`);
+            const userVal = input.value;
+
+            if (userVal !== "") {
+                const userInt = parseInt(userVal);
+                if (userInt === task.answer) {
+                    // ГАРАНТОВАНО ЗЕЛЕНИЙ (через inline styles)
+                    card.style.setProperty('background-color', '#dcfce7', 'important');
+                    card.style.setProperty('border-color', '#22c55e', 'important');
+                } else {
+                    // ГАРАНТОВАНО ЧЕРВОНИЙ (через inline styles)
+                    card.style.setProperty('background-color', '#fee2e2', 'important');
+                    card.style.setProperty('border-color', '#ef4444', 'important');
+                }
+            } else {
+                card.style.opacity = "0.4";
+            }
+        });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function closeResult() {
+        document.getElementById('result-overlay').style.display = 'none';
+    }
+
+    window.onload = initTest;
+</script>
+
+</body>
+</html>
