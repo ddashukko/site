@@ -1001,3 +1001,16 @@ window.lessonsData = [
     author: "Соня",
   },
 ];
+ // ==========================================
+  // 10 КЛАС (Алгебра - Соня) - Автор: Соня
+  // ==========================================
+  {
+    id: "nmt-10-yara",
+    title: "Функції Настя",
+    grade: nmt,
+    topic: "Математика",
+    link: "algebra/nmt/rivniannia1.html",
+    subject_code: "algebra",
+    category: "lesson",
+    author: "Соня",
+  },
