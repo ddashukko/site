@@ -3,776 +3,302 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agenten-Training 007: Master Edition</title>
+    <title>Agenten-Test: Hausaufgabe (30 Fragen)</title>
     <style>
         :root {
-            --primary: #6c5ce7;
-            --secondary: #00cec9;
+            --bg-color: #130f1a;
+            --card-bg: #241b35;
+            --primary: #9b59b6;
+            --accent: #e056fd;
+            --text-main: #ecf0f1;
+            --text-muted: #bdc3c7;
             --success: #00b894;
-            --error: #d63031;
-            --dark: #2d3436;
-            --bg: #dfe6e9;
-            --card-bg: #ffffff;
-            --section-header: #a29bfe;
+            --error: #ff7675;
+            --border-radius: 12px;
         }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg);
-            color: var(--dark);
+            background-color: var(--bg-color);
+            color: var(--text-main);
             margin: 0;
-            padding-bottom: 50px;
-        }
-
-        header {
-            background: linear-gradient(135deg, var(--primary), var(--dark));
-            color: white;
-            padding: 1.5rem;
-            text-align: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        }
-
-        .status-bar {
-            background: rgba(255,255,255,0.1);
-            padding: 10px;
-            border-radius: 20px;
-            margin-top: 10px;
-            display: inline-block;
-            width: 80%;
-            max-width: 600px;
-        }
-
-        .progress-container {
-            height: 10px;
-            background-color: rgba(0,0,0,0.3);
-            border-radius: 5px;
-            overflow: hidden;
-            margin-top: 5px;
-        }
-
-        .progress-bar {
-            height: 100%;
-            width: 0%;
-            background-color: var(--secondary);
-            transition: width 0.5s ease;
+            padding: 20px;
         }
 
         .container {
             max-width: 800px;
-            margin: 2rem auto;
-            padding: 0 1rem;
+            margin: 0 auto;
         }
 
-        .section-title {
+        header {
             text-align: center;
-            color: var(--dark);
-            margin: 3rem 0 1.5rem 0;
+            margin-bottom: 40px;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 20px;
+        }
+
+        h1 {
+            color: var(--accent);
             text-transform: uppercase;
             letter-spacing: 2px;
-            border-bottom: 3px solid var(--primary);
-            display: inline-block;
-            padding-bottom: 5px;
+            margin: 0;
         }
 
-        .card {
-            background: var(--card-bg);
-            border-radius: 15px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        .subtitle {
+            color: var(--text-muted);
+            margin-top: 5px;
+        }
+
+        .question-card {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
             border-left: 5px solid var(--primary);
             transition: transform 0.2s;
         }
 
-        .card:hover {
-            transform: translateY(-2px);
+        .question-card:hover {
+            transform: translateX(5px);
         }
 
-        h2 {
-            color: var(--primary);
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-top: 0;
-        }
-
-        .task-badge {
-            background: var(--primary);
-            color: white;
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .question-title {
             font-size: 1.1rem;
-            font-weight: bold;
+            margin-bottom: 15px;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
         }
 
-        .question-item {
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px dashed #ccc;
+        .q-number {
+            color: var(--accent);
         }
 
-        .question-item:last-child {
-            border-bottom: none;
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
         }
 
-        /* Interactive Elements */
-        input[type="number"], input[type="text"], select {
-            padding: 10px;
-            border: 2px solid #b2bec3;
+        .option-btn {
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 2px solid var(--primary);
+            color: var(--text-main);
+            padding: 12px;
             border-radius: 8px;
-            font-size: 1rem;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+        }
+
+        .option-btn:hover {
+            background-color: rgba(155, 89, 182, 0.2);
+        }
+
+        .option-btn.selected {
+            background-color: var(--primary);
+            color: white;
+            box-shadow: 0 0 10px var(--primary);
+        }
+
+        .result-section {
+            text-align: center;
+            margin-top: 40px;
+            padding: 30px;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            display: none;
+        }
+
+        .score-display {
+            font-size: 3rem;
+            color: var(--accent);
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .btn-submit {
+            display: block;
             width: 100%;
-            max-width: 200px;
-            transition: 0.3s;
-            background-color: #f9f9f9;
-        }
-
-        input:focus {
-            border-color: var(--primary);
-            outline: none;
-            background-color: #fff;
-        }
-
-        .btn-check {
-            background-color: var(--dark);
+            max-width: 300px;
+            margin: 40px auto;
+            padding: 15px;
+            font-size: 1.2rem;
+            background: linear-gradient(45deg, var(--primary), var(--accent));
             color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
+            border-radius: 50px;
             cursor: pointer;
-            font-size: 1rem;
-            margin-top: 10px;
-            transition: transform 0.2s, background 0.2s;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(155, 89, 182, 0.4);
+            transition: transform 0.2s;
         }
 
-        .btn-check:hover {
+        .btn-submit:hover {
             transform: scale(1.05);
-            background-color: var(--primary);
         }
 
-        .feedback {
-            margin-top: 10px;
-            font-weight: bold;
-            padding: 10px;
-            border-radius: 5px;
-            display: none;
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-5px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .feedback.correct {
-            background-color: rgba(0, 184, 148, 0.2);
-            color: var(--success);
-            display: block;
-            border-left: 4px solid var(--success);
-        }
-
-        .feedback.wrong {
-            background-color: rgba(214, 48, 49, 0.2);
-            color: var(--error);
-            display: block;
-            border-left: 4px solid var(--error);
-        }
-
-        /* True/False Buttons */
-        .tf-group {
-            display: flex;
-            gap: 10px;
-            margin-top: 5px;
-        }
-        .tf-btn {
-            flex: 1;
-            padding: 10px;
-            border: 2px solid #b2bec3;
-            background: white;
-            cursor: pointer;
-            border-radius: 8px;
-            font-weight: bold;
-            transition: 0.2s;
-        }
-        .tf-btn:hover {
-            background: #f1f2f6;
-        }
-        .tf-btn.selected {
-            background-color: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
-
-        /* Specific Task Styles */
-        .grid-numbers {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        .tag {
-            background: #dfe6e9;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 0.9rem;
-        }
-        
-        .safe-display {
-            font-family: 'Courier New', monospace;
-            font-size: 2rem;
-            background: #333;
-            color: #0f0;
-            padding: 10px;
-            border-radius: 5px;
+        .feedback-badge {
             display: inline-block;
-            margin-bottom: 10px;
-            letter-spacing: 5px;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-left: 10px;
+            visibility: hidden;
         }
 
-        .story-box {
-            background-color: #fff3cd;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            font-style: italic;
-            border-left: 4px solid #fdcb6e;
-        }
+        .correct { color: var(--success); }
+        .wrong { color: var(--error); }
 
     </style>
 </head>
 <body>
 
-<header>
-    <h1>🕵️‍♂️ Agenten-Akademie</h1>
-    <div class="status-bar">
-        <span>Level: Master of Numbers</span>
-        <div class="progress-container">
-            <div class="progress-bar" id="progressBar"></div>
-        </div>
-    </div>
-</header>
-
 <div class="container">
+    <header>
+        <h1>Agenten-Test</h1>
+        <div class="subtitle">Abschlussprüfung: Teilbarkeit & Primzahlen</div>
+    </header>
 
-    <div style="text-align:center;">
-        <h3 class="section-title">Teil 1: Die Regeln der Teilbarkeit</h3>
+    <div id="quiz-container">
     </div>
 
-    <div class="card" id="task1">
-        <h2><span class="task-badge">1</span> Wahr oder Falsch?</h2>
-        <p>Analysiere die Aussagen. Klicke auf die richtige Antwort.</p>
-        
-        <div class="question-item" data-correct="true">
-            <p>(1) <strong>50 400</strong> ist durch 10 teilbar.</p>
-            <div class="tf-group">
-                <button class="tf-btn" onclick="selectTF(this, true)">Wahr</button>
-                <button class="tf-btn" onclick="selectTF(this, false)">Falsch</button>
-            </div>
-            <div class="feedback"></div>
-        </div>
+    <button class="btn-submit" onclick="submitTest()">Geheimdaten senden</button>
 
-        <div class="question-item" data-correct="true">
-            <p>(2) <strong>31 124</strong> ist durch 4 teilbar.</p>
-            <div class="tf-group">
-                <button class="tf-btn" onclick="selectTF(this, true)">Wahr</button>
-                <button class="tf-btn" onclick="selectTF(this, false)">Falsch</button>
-            </div>
-            <div class="feedback"></div>
-        </div>
-
-        <div class="question-item" data-correct="false">
-            <p>(3) <strong>12 345</strong> ist durch 2 teilbar.</p>
-            <div class="tf-group">
-                <button class="tf-btn" onclick="selectTF(this, true)">Wahr</button>
-                <button class="tf-btn" onclick="selectTF(this, false)">Falsch</button>
-            </div>
-            <div class="feedback"></div>
-        </div>
-
-        <div class="question-item" data-correct="true">
-            <p>(4) <strong>81 909</strong> ist durch 9 teilbar.</p>
-            <div class="tf-group">
-                <button class="tf-btn" onclick="selectTF(this, true)">Wahr</button>
-                <button class="tf-btn" onclick="selectTF(this, false)">Falsch</button>
-            </div>
-            <div class="feedback"></div>
-        </div>
+    <div class="result-section" id="result-box">
+        <h2>Mission Report</h2>
+        <div class="score-display" id="final-score">0 / 30</div>
+        <p id="final-msg"></p>
+        <button class="btn-submit" style="background: var(--primary)" onclick="location.reload()">Neuer Versuch</button>
     </div>
-
-    <div class="card" id="task2">
-        <h2><span class="task-badge">2</span> Der Ziffern-Hacker</h2>
-        <p>Original-Code: <strong style="font-size: 1.2rem; background:#eee; padding:5px;">35 781</strong></p>
-        <p>Ändere <strong>genau eine</strong> Ziffer, damit die Zahl passt.</p>
-
-        <div class="question-item">
-            <label>a) durch 2 teilbar:</label><br>
-            <input type="number" id="t2a" placeholder="z.B. 35782">
-            <button class="btn-check" onclick="checkDivisibility('t2a', 2, 35781)">Prüfen</button>
-            <div class="feedback" id="fb-t2a"></div>
-        </div>
-
-        <div class="question-item">
-            <label>b) durch 3 teilbar:</label><br>
-            <input type="number" id="t2b" placeholder="Neue Zahl...">
-            <button class="btn-check" onclick="checkDivisibility('t2b', 3, 35781)">Prüfen</button>
-            <div class="feedback" id="fb-t2b"></div>
-        </div>
-
-        <div class="question-item">
-            <label>c) durch 5 teilbar:</label><br>
-            <input type="number" id="t2c" placeholder="Neue Zahl...">
-            <button class="btn-check" onclick="checkDivisibility('t2c', 5, 35781)">Prüfen</button>
-            <div class="feedback" id="fb-t2c"></div>
-        </div>
-    </div>
-
-    <div class="card">
-        <h2><span class="task-badge">3</span> Das Ausrüstungs-Problem</h2>
-        <p>Es sollen Pakete mit je <strong>4 Gadgets</strong> gepackt werden. Inventar: <strong>142</strong> Stück.</p>
-        
-        <div class="question-item">
-            <p>a) Warum passt 142 nicht?</p>
-            <select id="t3a">
-                <option value="">Bitte wählen...</option>
-                <option value="wrong">Weil 142 eine gerade Zahl ist.</option>
-                <option value="correct">Weil die Endung 42 nicht durch 4 teilbar ist.</option>
-                <option value="wrong">Weil die Quersumme nicht durch 4 teilbar ist.</option>
-            </select>
-            <button class="btn-check" onclick="checkSelect('t3a', 'correct')">Prüfen</button>
-            <div class="feedback" id="fb-t3a"></div>
-        </div>
-
-        <div class="question-item">
-            <p>b) Nenne eine Zahl in der Nähe, die funktioniert (durch 4 teilbar):</p>
-            <input type="number" id="t3b">
-            <button class="btn-check" onclick="checkDivisibilitySimple('t3b', 4, 138, 146)">Prüfen</button>
-            <div class="feedback" id="fb-t3b"></div>
-        </div>
-    </div>
-
-    <div class="card">
-        <h2><span class="task-badge">4</span> Die Abrechnung</h2>
-        <p>Preis pro Person: <strong>15 €</strong> (Muss durch 3 und 5 teilbar sein!)</p>
-        <div class="grid-numbers">
-            <span class="tag">Team A: 410 €</span>
-            <span class="tag">Team B: 360 €</span>
-            <span class="tag">Team C: 445 €</span>
-        </div>
-
-        <div class="question-item">
-            <p>Welcher Betrag ist <strong>sicher falsch</strong>?</p>
-            <select id="t4a">
-                <option value="">Wähle das Team mit dem Fehler...</option>
-                <option value="wrong">Team B (360)</option>
-                <option value="correct1">Team A (410)</option>
-                <option value="correct2">Team C (445)</option>
-            </select>
-            <p><em>Tipp: Es gibt zwei falsche Beträge. Wähle einen davon.</em></p>
-            <button class="btn-check" onclick="checkMultiSelect('t4a', ['correct1', 'correct2'])">Prüfen</button>
-            <div class="feedback" id="fb-t4a"></div>
-        </div>
-
-        <div class="question-item">
-            <p>Rechne den korrekten Betrag für <strong>Team A (28 Personen)</strong> aus:</p>
-            <input type="number" id="t4b" placeholder="Betrag in €">
-            <button class="btn-check" onclick="checkNumber('t4b', 420)">Prüfen</button>
-            <div class="feedback" id="fb-t4b"></div>
-        </div>
-    </div>
-
-    <div class="card">
-        <h2><span class="task-badge">6</span> Endstellen-Profi</h2>
-        <p>Vervollständige die Regel.</p>
-        
-        <div class="question-item">
-            <p>Eine Zahl ist durch <strong>100</strong> teilbar, wenn...</p>
-            <select id="t6a">
-                <option value="">...</option>
-                <option value="wrong">sie gerade ist.</option>
-                <option value="correct">sie auf 00 endet.</option>
-                <option value="wrong">die Quersumme 100 ist.</option>
-            </select>
-            <button class="btn-check" onclick="checkSelect('t6a', 'correct')">Prüfen</button>
-            <div class="feedback" id="fb-t6a"></div>
-        </div>
-
-        <div class="question-item">
-            <p>Eine Zahl ist durch <strong>25</strong> teilbar, wenn sie endet auf:</p>
-            <p>00, 25, 50 oder <input type="number" id="t6b" style="width: 60px;">.</p>
-            <button class="btn-check" onclick="checkNumber('t6b', 75)">Prüfen</button>
-            <div class="feedback" id="fb-t6b"></div>
-        </div>
-    </div>
-
-    <div class="card">
-        <h2><span class="task-badge">8</span> Der Safe-Code</h2>
-        <div class="safe-display">7 3 _ _</div>
-        
-        <div class="question-item">
-            <p>Der Code ist durch <strong>8</strong> teilbar. Gib eine mögliche Lösung an (beginnt mit 73..):</p>
-            <input type="number" id="t8a" placeholder="z.B. 7304">
-            <button class="btn-check" onclick="checkSafeCode('t8a', 8)">Code testen</button>
-            <div class="feedback" id="fb-t8a"></div>
-        </div>
-
-        <div class="question-item">
-            <p>Der Code ist durch <strong>9</strong> teilbar. Gib eine Lösung an:</p>
-            <input type="number" id="t8b" placeholder="z.B. 73...">
-            <button class="btn-check" onclick="checkSafeCode('t8b', 9)">Code testen</button>
-            <div class="feedback" id="fb-t8b"></div>
-        </div>
-    </div>
-
-    <div style="text-align:center;">
-        <h3 class="section-title">Teil 2: Operation Primzahlen</h3>
-    </div>
-
-    <div class="card">
-        <h2><span class="task-badge">9</span> Der Zahlen-Baum</h2>
-        <div class="story-box">
-            "Wir müssen die Zahl <strong>120</strong> zerlegen, bis nur noch Primzahlen übrig sind (die Atome der Mathematik)."<br>
-            Zerlegung: 120 -> 12 · 10 -> ...
-        </div>
-        
-        <div class="question-item">
-            <p>a) Zerlege 120 komplett. Wie viele Primzahlen (Füße) hat der Baum am Ende insgesamt?</p>
-            <input type="number" id="t9a" placeholder="Anzahl der Primzahlen">
-            <button class="btn-check" onclick="checkNumber('t9a', 5)">Prüfen</button>
-            <div class="feedback" id="fb-t9a"></div>
-            <p style="font-size: 0.8rem; color: #666;">(Tipp: 120 = 2 · 2 · 2 · 3 · 5)</p>
-        </div>
-    </div>
-
-    <div class="card">
-        <h2><span class="task-badge">10</span> Agenten-Klassen</h2>
-        <p>Wir klassifizieren Zahlen nach der Anzahl ihrer "Füße" (Primfaktoren).</p>
-        
-        <div class="question-item">
-            <p>a) Nenne eine <strong>"Zweifüßerzahl"</strong> (eine Zahl, die man in genau 2 Primzahlen zerlegen kann, z.B. 2·3=6).</p>
-            <input type="number" id="t10a" placeholder="Deine Zahl">
-            <button class="btn-check" onclick="checkPrimeFactorsAmount('t10a', 2)">Scannen</button>
-            <div class="feedback" id="fb-t10a"></div>
-        </div>
-
-        <div class="question-item">
-            <p>b) Nenne eine <strong>"Dreifüßerzahl"</strong> (genau 3 Primfaktoren, z.B. 2·2·2=8).</p>
-            <input type="number" id="t10b" placeholder="Deine Zahl">
-            <button class="btn-check" onclick="checkPrimeFactorsAmount('t10b', 3)">Scannen</button>
-            <div class="feedback" id="fb-t10b"></div>
-        </div>
-    </div>
-
-    <div class="card">
-        <h2><span class="task-badge">11</span> Enttarnung</h2>
-        <p>Beweise, dass diese Zahlen <strong>keine</strong> Primzahlen sind (sie haben mehr als 2 Teiler).</p>
-        
-        <div class="question-item">
-            <p>a) Warum ist <strong>405</strong> keine Primzahl?</p>
-            <select id="t11a">
-                <option value="">Wähle einen Grund...</option>
-                <option value="correct">Endziffer ist 5 (durch 5 teilbar)</option>
-                <option value="wrong">Weil sie ungerade ist</option>
-                <option value="wrong">Weil sie durch 10 teilbar ist</option>
-            </select>
-            <button class="btn-check" onclick="checkSelect('t11a', 'correct')">Prüfen</button>
-            <div class="feedback" id="fb-t11a"></div>
-        </div>
-
-        <div class="question-item">
-            <p>b) Warum ist <strong>123</strong> keine Primzahl?</p>
-            <select id="t11b">
-                <option value="">Wähle einen Grund...</option>
-                <option value="wrong">Endziffer ist 3</option>
-                <option value="correct">Quersumme ist 6 (durch 3 teilbar)</option>
-                <option value="wrong">Sie ist durch 9 teilbar</option>
-            </select>
-            <button class="btn-check" onclick="checkSelect('t11b', 'correct')">Prüfen</button>
-            <div class="feedback" id="fb-t11b"></div>
-        </div>
-    </div>
-
-    <div class="card">
-        <h2><span class="task-badge">12</span> Das "Eins"-Protokoll</h2>
-        <div class="story-box">
-            Agent X behauptet: "Die Zahl 1 ist auch eine Primzahl!"<br>
-            Agent Y widerspricht: "Nein, das ist verboten!"
-        </div>
-        <div class="question-item">
-            <p>Wer hat recht? Warum ist 1 keine Primzahl?</p>
-            <select id="t12a">
-                <option value="">Wähle...</option>
-                <option value="wrong">Agent X hat recht.</option>
-                <option value="correct">Agent Y: Primzahlen müssen genau ZWEI Teiler haben (1 und sich selbst). Die 1 hat nur einen.</option>
-                <option value="wrong">Agent Y: Weil 1 eine ungerade Zahl ist.</option>
-            </select>
-            <button class="btn-check" onclick="checkSelect('t12a', 'correct')">Prüfen</button>
-            <div class="feedback" id="fb-t12a"></div>
-        </div>
-    </div>
-
-    <div class="card">
-        <h2><span class="task-badge">13</span> Krypto-Rätsel</h2>
-        <p>Identifiziere die gesuchte Zahl.</p>
-
-        <div class="question-item">
-            <p>a) Meine Zahl ist eine Primzahl und ist durch 17 teilbar.</p>
-            <input type="number" id="t13a" placeholder="Lösung">
-            <button class="btn-check" onclick="checkNumber('t13a', 17)">Prüfen</button>
-            <div class="feedback" id="fb-t13a"></div>
-        </div>
-
-        <div class="question-item">
-            <p>b) Meine Zahl ist zweistellig, durch 25 und durch 3 teilbar.</p>
-            <input type="number" id="t13b" placeholder="Lösung">
-            <button class="btn-check" onclick="checkNumber('t13b', 75)">Prüfen</button>
-            <div class="feedback" id="fb-t13b"></div>
-        </div>
-    </div>
-
-     <div class="card">
-        <h2><span class="task-badge">14</span> Stufenzahlen</h2>
-        <p>Wir zerlegen die <strong>10.000</strong> in Primfaktoren.</p>
-        <p>10 = 2 · 5<br>100 = 2 · 2 · 5 · 5</p>
-        
-        <div class="question-item">
-            <p>Wie lautet die verkürzte Schreibweise (Potenzen) für 10.000?</p>
-            <select id="t14a">
-                <option value="">Wähle...</option>
-                <option value="wrong">2³ · 5³</option>
-                <option value="correct">2⁴ · 5⁴</option>
-                <option value="wrong">2⁵ · 5⁵</option>
-            </select>
-            <button class="btn-check" onclick="checkSelect('t14a', 'correct')">Prüfen</button>
-            <div class="feedback" id="fb-t14a"></div>
-        </div>
-    </div>
-
 </div>
 
 <script>
-    let totalScore = 0;
-    // Increased max score due to new tasks
-    const maxScore = 22; 
-    let solvedTasks = new Set(); // Track unique solved tasks to prevent score spamming
+const questions = [
+    // Teilbarkeit durch 2, 5, 10
+    { q: "Ist 458 durch 2 teilbar?", options: ["Ja, weil sie gerade ist", "Nein, weil sie auf 8 endet", "Ja, weil die Quersumme gerade ist"], a: 0 },
+    { q: "Welche Zahl ist durch 5 teilbar?", options: ["152", "305", "401"], a: 1 },
+    { q: "Wann ist eine Zahl durch 10 teilbar?", options: ["Wenn sie durch 2 und 3 teilbar ist", "Wenn sie auf 0 endet", "Wenn die Quersumme 10 ist"], a: 1 },
+    { q: "Ist 1.000 durch 10 teilbar?", options: ["Ja", "Nein"], a: 0 },
+    { q: "Welche Endziffer muss eine Zahl haben, damit sie durch 2 teilbar ist?", options: ["1, 3, 5, 7, 9", "0, 2, 4, 6, 8", "Nur 0"], a: 1 },
+
+    // Teilbarkeit durch 3 und 9 (Quersumme)
+    { q: "Die Quersumme von 123 ist...", options: ["5", "6", "123"], a: 1 },
+    { q: "Ist 123 durch 3 teilbar?", options: ["Ja, weil 6 durch 3 teilbar ist", "Nein, weil sie ungerade ist", "Nein, weil sie auf 3 endet"], a: 0 },
+    { q: "Welche Zahl ist durch 9 teilbar?", options: ["80", "81", "82"], a: 1 },
+    { q: "Ist 405 durch 9 teilbar? (Quersumme prüfen)", options: ["Ja (QS: 9)", "Nein (QS: 8)", "Nein (QS: 40)"], a: 0 },
+    { q: "Die Regel für die 3 lautet:", options: ["Endziffer muss 3 sein", "Quersumme muss durch 3 teilbar sein", "Die Zahl muss gerade sein"], a: 1 },
+
+    // Teilbarkeit durch 4 und 8
+    { q: "Wann ist eine Zahl durch 4 teilbar?", options: ["Wenn die Quersumme durch 4 teilbar ist", "Wenn die letzten zwei Ziffern durch 4 teilbar sind", "Wenn sie gerade ist"], a: 1 },
+    { q: "Ist 124 durch 4 teilbar?", options: ["Ja (24 ist durch 4 teilbar)", "Nein", "Nur an Schaltjahren"], a: 0 },
+    { q: "Ist 318 durch 4 teilbar?", options: ["Ja", "Nein (18 ist nicht durch 4 teilbar)"], a: 1 },
+    { q: "Wann ist eine Zahl durch 8 teilbar?", options: ["Wenn die letzten drei Ziffern durch 8 teilbar sind", "Wenn sie durch 4 und 2 teilbar ist", "Wenn die Quersumme 8 ergibt"], a: 0 },
+    { q: "Welche Zahl ist durch 8 teilbar?", options: ["1.002", "1.008", "1.010"], a: 1 },
+
+    // Teilbarkeit durch 25 und 100
+    { q: "Welche Endung ist für 25 NICHT erlaubt?", options: ["00", "25", "50", "85"], a: 3 },
+    { q: "Ist 1.375 durch 25 teilbar?", options: ["Ja, endet auf 75", "Nein"], a: 0 },
+    { q: "Eine Zahl ist durch 100 teilbar, wenn...", options: ["sie auf 00 endet", "sie auf 50 endet", "sie durch 10 teilbar ist"], a: 0 },
+    { q: "Ist 550 durch 25 teilbar?", options: ["Ja", "Nein"], a: 0 },
+    { q: "Ist 550 durch 100 teilbar?", options: ["Ja", "Nein"], a: 1 },
+
+    // Primzahlen Basics
+    { q: "Wie viele Teiler hat eine Primzahl?", options: ["Keine", "Genau einen (1)", "Genau zwei (1 und sich selbst)"], a: 2 },
+    { q: "Ist 1 eine Primzahl?", options: ["Ja", "Nein, sie hat nur einen Teiler"], a: 1 },
+    { q: "Welches ist die kleinste Primzahl?", options: ["1", "2", "3"], a: 1 },
+    { q: "Ist 9 eine Primzahl?", options: ["Ja", "Nein, 3 ist ein Teiler", "Nein, weil sie ungerade ist"], a: 1 },
+    { q: "Welche dieser Zahlen ist eine Primzahl?", options: ["15", "17", "21"], a: 1 },
+
+    // Logik & Gemischtes
+    { q: "Welche Zahl ist durch 2 UND 5 teilbar?", options: ["15", "20", "25"], a: 1 },
+    { q: "Primfaktorzerlegung von 10 ist...", options: ["2 · 5", "1 · 10", "2 + 8"], a: 0 },
+    { q: "Ist jede gerade Zahl (außer 2) eine zusammengesetzte Zahl?", options: ["Ja, weil sie durch 2 teilbar ist", "Nein"], a: 0 },
+    { q: "Agent X sagt: '51 ist eine Primzahl'. Hat er recht?", options: ["Ja", "Nein, 5+1=6 -> durch 3 teilbar"], a: 1 },
+    { q: "Wie schreibt man 2 · 2 · 2 kurz?", options: ["2²", "2³", "3²"], a: 1 }
+];
+
+function renderQuiz() {
+    const container = document.getElementById('quiz-container');
+    questions.forEach((item, index) => {
+        const card = document.createElement('div');
+        card.className = 'question-card';
+        
+        let optionsHTML = '';
+        item.options.forEach((opt, i) => {
+            optionsHTML += `<div class="option-btn" onclick="selectOption(${index}, ${i}, this)">${opt}</div>`;
+        });
+
+        card.innerHTML = `
+            <div class="question-title">
+                <span><span class="q-number">#${index + 1}</span> ${item.q}</span>
+                <span class="feedback-badge" id="fb-${index}"></span>
+            </div>
+            <div class="options-grid">
+                ${optionsHTML}
+            </div>
+        `;
+        container.appendChild(card);
+    });
+}
+
+const userAnswers = new Array(questions.length).fill(null);
+
+function selectOption(qIndex, optIndex, btn) {
+    userAnswers[qIndex] = optIndex;
+    const parent = btn.parentElement;
+    const allBtns = parent.getElementsByClassName('option-btn');
+    for(let b of allBtns) b.classList.remove('selected');
+    btn.classList.add('selected');
+}
+
+function submitTest() {
+    let score = 0;
+    let answeredCount = 0;
+
+    userAnswers.forEach((ans, index) => {
+        const fbSpan = document.getElementById(`fb-${index}`);
+        const card = fbSpan.closest('.question-card');
+        const correctIndex = questions[index].a;
+
+        if (ans !== null) {
+            answeredCount++;
+            if (ans === correctIndex) {
+                score++;
+                fbSpan.innerText = "✓ Korrekt";
+                fbSpan.className = "feedback-badge correct";
+                fbSpan.style.visibility = "visible";
+                card.style.borderLeftColor = "var(--success)";
+            } else {
+                fbSpan.innerText = "✗ Falsch";
+                fbSpan.className = "feedback-badge wrong";
+                fbSpan.style.visibility = "visible";
+                card.style.borderLeftColor = "var(--error)";
+            }
+        } else {
+            fbSpan.innerText = "✗ Keine Antwort";
+            fbSpan.className = "feedback-badge wrong";
+            fbSpan.style.visibility = "visible";
+            card.style.borderLeftColor = "var(--error)";
+        }
+    });
+
+    document.getElementById('result-box').style.display = 'block';
+    document.getElementById('final-score').innerText = `${score} / ${questions.length}`;
     
-    function updateProgress(taskId) {
-        if(!solvedTasks.has(taskId)) {
-            solvedTasks.add(taskId);
-            totalScore++;
-            let percentage = (totalScore / maxScore) * 100;
-            if(percentage > 100) percentage = 100;
-            document.getElementById('progressBar').style.width = percentage + '%';
-            
-            if(percentage === 100) {
-                alert("MISSION COMPLETE! Hervorragende Arbeit, Agent! Alle Codes geknackt.");
-            }
-        }
-    }
+    const msg = document.getElementById('final-msg');
+    if(score === 30) msg.innerText = "PERFEKT! Agenten-Status: 007";
+    else if(score >= 25) msg.innerText = "Sehr gute Arbeit!";
+    else if(score >= 15) msg.innerText = "Bestanden, aber Training empfohlen.";
+    else msg.innerText = "Mission fehlgeschlagen. Bitte wiederholen.";
 
-    // --- Helper Functions ---
+    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+}
 
-    // Counts how many prime factors a number has (e.g., 12 = 2*2*3 -> 3 factors)
-    function countPrimeFactorsCalc(n) {
-        if (n < 2) return 0;
-        let count = 0;
-        let d = 2;
-        let temp = n;
-        while (d * d <= temp) {
-            while (temp % d === 0) {
-                count++;
-                temp /= d;
-            }
-            d++;
-        }
-        if (temp > 1) count++;
-        return count;
-    }
-
-    // --- Task Logic ---
-
-    // Task 1: True/False Logic
-    function selectTF(btn, value) {
-        let group = btn.parentElement;
-        let buttons = group.getElementsByClassName('tf-btn');
-        for(let b of buttons) b.classList.remove('selected');
-        btn.classList.add('selected');
-        
-        let container = group.parentElement;
-        let isCorrectAnswer = container.getAttribute('data-correct') === 'true';
-        let feedback = container.querySelector('.feedback');
-        
-        // Generate a unique ID for this question block for score tracking
-        let uniqueId = container.innerText.substring(0, 10); 
-
-        if (value === isCorrectAnswer) {
-            feedback.className = "feedback correct";
-            feedback.innerText = "Korrekt! Zugriff gewährt.";
-            updateProgress(uniqueId);
-        } else {
-            feedback.className = "feedback wrong";
-            feedback.innerText = "Fehler! Zugriff verweigert.";
-        }
-    }
-
-    // Task 2: Divisibility with "Change One Digit" check
-    function checkDivisibility(inputId, divisor, originalNum) {
-        let val = document.getElementById(inputId).value;
-        let feedback = document.getElementById('fb-' + inputId);
-        
-        if (!val) {
-            feedback.className = "feedback";
-            feedback.innerText = "Bitte eine Zahl eingeben.";
-            return;
-        }
-
-        let num = parseInt(val);
-        let strVal = val.toString();
-        let strOrig = originalNum.toString();
-        
-        let diffCount = 0;
-        if (strVal.length !== strOrig.length) {
-            diffCount = 100; 
-        } else {
-            for(let i=0; i<strVal.length; i++) {
-                if(strVal[i] !== strOrig[i]) diffCount++;
-            }
-        }
-
-        if (diffCount !== 1) {
-            feedback.className = "feedback wrong";
-            feedback.innerText = "Regel verletzt: Ändere genau EINE Ziffer! (Länge muss gleich bleiben)";
-            return;
-        }
-
-        if (num % divisor === 0) {
-            feedback.className = "feedback correct";
-            feedback.innerText = "Richtig! Die Zahl ist durch " + divisor + " teilbar.";
-            updateProgress(inputId);
-        } else {
-            feedback.className = "feedback wrong";
-            feedback.innerText = "Falsch. " + num + " ist nicht durch " + divisor + " teilbar.";
-        }
-    }
-
-    // Generic Number Check
-    function checkNumber(inputId, correctVal) {
-        let val = parseInt(document.getElementById(inputId).value);
-        let feedback = document.getElementById('fb-' + inputId);
-        
-        if (val === correctVal) {
-            feedback.className = "feedback correct";
-            feedback.innerText = "Exakt!";
-            updateProgress(inputId);
-        } else {
-            feedback.className = "feedback wrong";
-            feedback.innerText = "Leider falsch.";
-        }
-    }
-
-    // Generic Divisibility Check (Task 3b)
-    function checkDivisibilitySimple(inputId, divisor, minRange, maxRange) {
-        let val = parseInt(document.getElementById(inputId).value);
-        let feedback = document.getElementById('fb-' + inputId);
-        
-        if (val % divisor === 0 && val >= minRange && val <= maxRange) {
-            feedback.className = "feedback correct";
-            feedback.innerText = "Gute Wahl!";
-            updateProgress(inputId);
-        } else if (val % divisor === 0) {
-             feedback.className = "feedback wrong";
-            feedback.innerText = "Teilbar, aber nicht 'in der Nähe' (Bereich " + minRange + "-" + maxRange + ").";
-        } else {
-            feedback.className = "feedback wrong";
-            feedback.innerText = "Nicht durch " + divisor + " teilbar.";
-        }
-    }
-
-    // Generic Select Check
-    function checkSelect(selectId, correctValue) {
-        let val = document.getElementById(selectId).value;
-        let feedback = document.getElementById('fb-' + selectId);
-        
-        if (val === correctValue) {
-            feedback.className = "feedback correct";
-            feedback.innerText = "Analyse korrekt.";
-            updateProgress(selectId);
-        } else if (val === "") {
-            feedback.innerText = "";
-        } else {
-            feedback.className = "feedback wrong";
-            feedback.innerText = "Analyse fehlerhaft.";
-        }
-    }
-    
-    // Multi Select Check (Task 4a)
-    function checkMultiSelect(selectId, correctValuesArray) {
-        let val = document.getElementById(selectId).value;
-        let feedback = document.getElementById('fb-' + selectId);
-        
-        if (correctValuesArray.includes(val)) {
-            feedback.className = "feedback correct";
-            feedback.innerText = "Richtig erkannt!";
-            updateProgress(selectId);
-        } else {
-            feedback.className = "feedback wrong";
-            feedback.innerText = "Das ist nicht korrekt.";
-        }
-    }
-
-    // Task 8 Check
-    function checkSafeCode(inputId, divisor) {
-        let valStr = document.getElementById(inputId).value;
-        let val = parseInt(valStr);
-        let feedback = document.getElementById('fb-' + inputId);
-        
-        if (!valStr.startsWith("73") || valStr.length !== 4) {
-             feedback.className = "feedback wrong";
-             feedback.innerText = "Der Code muss mit 73 beginnen und 4 Stellen haben.";
-             return;
-        }
-
-        if (val % divisor === 0) {
-            feedback.className = "feedback correct";
-            feedback.innerText = "Safe geöffnet!";
-            updateProgress(inputId);
-        } else {
-            feedback.className = "feedback wrong";
-            feedback.innerText = "Code abgelehnt (Nicht durch " + divisor + " teilbar).";
-        }
-    }
-
-    // Task 10: Check specific amount of prime factors
-    function checkPrimeFactorsAmount(inputId, targetAmount) {
-        let val = parseInt(document.getElementById(inputId).value);
-        let feedback = document.getElementById('fb-' + inputId);
-        
-        if (isNaN(val) || val <= 1) {
-            feedback.className = "feedback wrong";
-            feedback.innerText = "Ungültige Zahl.";
-            return;
-        }
-
-        let factors = countPrimeFactorsCalc(val);
-
-        if (factors === targetAmount) {
-            feedback.className = "feedback correct";
-            feedback.innerText = "Bestätigt! Die Zahl hat genau " + targetAmount + " Primfaktoren.";
-            updateProgress(inputId);
-        } else {
-            feedback.className = "feedback wrong";
-            feedback.innerText = "Fehler. Deine Zahl hat " + factors + " Primfaktoren, nicht " + targetAmount + ".";
-        }
-    }
+renderQuiz();
 
 </script>
-
 </body>
 </html>
