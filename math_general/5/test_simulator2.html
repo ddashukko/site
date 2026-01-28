@@ -49,6 +49,19 @@
             margin-top: 5px;
         }
 
+        /* Teacher Mode Badge */
+        .teacher-badge {
+            background-color: var(--accent);
+            color: #fff;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            display: none; /* Hidden by default */
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+
         .question-card {
             background-color: var(--card-bg);
             border-radius: var(--border-radius);
@@ -103,6 +116,20 @@
             box-shadow: 0 0 10px var(--primary);
         }
 
+        /* Teacher Mode Styles for Buttons */
+        .teacher-view .option-btn {
+            pointer-events: none; /* Disable clicking */
+            opacity: 0.6;
+        }
+        .teacher-view .option-btn.selected {
+            opacity: 1;
+            border-color: white;
+        }
+        .teacher-view .option-btn.correct-answer {
+            background-color: rgba(0, 184, 148, 0.3) !important;
+            border-color: var(--success) !important;
+        }
+
         .result-section {
             text-align: center;
             margin-top: 40px;
@@ -110,6 +137,7 @@
             background: var(--card-bg);
             border-radius: var(--border-radius);
             display: none;
+            border: 2px solid var(--accent);
         }
 
         .score-display {
@@ -119,11 +147,34 @@
             margin: 20px 0;
         }
 
+        .input-group {
+            margin: 20px auto;
+            max-width: 400px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--text-muted);
+        }
+
+        .name-input {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255,255,255,0.1);
+            border: 2px solid var(--primary);
+            color: white;
+            border-radius: 8px;
+            font-size: 1rem;
+            box-sizing: border-box; 
+        }
+
         .btn-submit {
             display: block;
             width: 100%;
             max-width: 300px;
-            margin: 40px auto;
+            margin: 20px auto;
             padding: 15px;
             font-size: 1.2rem;
             background: linear-gradient(45deg, var(--primary), var(--accent));
@@ -152,12 +203,37 @@
         .correct { color: var(--success); }
         .wrong { color: var(--error); }
 
+        /* Link Box Styles */
+        .link-box {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 8px;
+            word-break: break-all;
+            font-family: monospace;
+            color: var(--success);
+            border: 1px dashed var(--success);
+            display: none;
+        }
+
+        .copy-btn {
+            background: var(--success);
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+
     </style>
 </head>
 <body>
 
-<div class="container">
+<div class="container" id="mainContainer">
     <header>
+        <div class="teacher-badge" id="teacherBadge">🕵️‍♂️ Lehrer-Modus: Bericht-Ansicht</div>
         <h1>Agenten-Test</h1>
         <div class="subtitle">Abschlussprüfung: Teilbarkeit & Primzahlen</div>
     </header>
@@ -165,13 +241,29 @@
     <div id="quiz-container">
     </div>
 
-    <button class="btn-submit" onclick="submitTest()">Geheimdaten senden</button>
+    <div id="submission-area">
+        <div class="input-group">
+            <label>Codename (Dein Name):</label>
+            <input type="text" id="studentName" class="name-input" placeholder="Agent 007...">
+        </div>
+        <button class="btn-submit" onclick="submitTest()">Geheimdaten speichern & Link erstellen</button>
+    </div>
 
     <div class="result-section" id="result-box">
-        <h2>Mission Report</h2>
+        <h2 id="result-title">Mission Report</h2>
         <div class="score-display" id="final-score">0 / 30</div>
         <p id="final-msg"></p>
-        <button class="btn-submit" style="background: var(--primary)" onclick="location.reload()">Neuer Versuch</button>
+        
+        <div id="link-container" style="display:none;">
+            <p><strong>Mission abgeschlossen!</strong></p>
+            <p>Kopiere diesen Link und sende ihn an deinen Führungsoffizier (Lehrer):</p>
+            <div class="link-box" id="shareLink"></div>
+            <button class="copy-btn" onclick="copyLink()">Link kopieren</button>
+        </div>
+
+        <div id="teacher-controls" style="display:none; margin-top:20px;">
+             <button class="btn-submit" style="background: var(--primary)" onclick="resetToStudentMode()">Zurück zum Start (Leerer Test)</button>
+        </div>
     </div>
 </div>
 
@@ -220,15 +312,21 @@ const questions = [
     { q: "Wie schreibt man 2 · 2 · 2 kurz?", options: ["2²", "2³", "3²"], a: 1 }
 ];
 
+let userAnswers = new Array(questions.length).fill(null);
+let isTeacherMode = false;
+
 function renderQuiz() {
     const container = document.getElementById('quiz-container');
+    container.innerHTML = ''; // Clear previous render
+    
     questions.forEach((item, index) => {
         const card = document.createElement('div');
         card.className = 'question-card';
+        card.id = `q-card-${index}`;
         
         let optionsHTML = '';
         item.options.forEach((opt, i) => {
-            optionsHTML += `<div class="option-btn" onclick="selectOption(${index}, ${i}, this)">${opt}</div>`;
+            optionsHTML += `<div class="option-btn" id="btn-${index}-${i}" onclick="selectOption(${index}, ${i})">${opt}</div>`;
         });
 
         card.innerHTML = `
@@ -244,27 +342,52 @@ function renderQuiz() {
     });
 }
 
-const userAnswers = new Array(questions.length).fill(null);
+function selectOption(qIndex, optIndex) {
+    if(isTeacherMode) return; // Read only in teacher mode
 
-function selectOption(qIndex, optIndex, btn) {
     userAnswers[qIndex] = optIndex;
-    const parent = btn.parentElement;
-    const allBtns = parent.getElementsByClassName('option-btn');
-    for(let b of allBtns) b.classList.remove('selected');
-    btn.classList.add('selected');
+    const allBtns = document.querySelectorAll(`#q-card-${qIndex} .option-btn`);
+    allBtns.forEach(b => b.classList.remove('selected'));
+    
+    document.getElementById(`btn-${qIndex}-${optIndex}`).classList.add('selected');
 }
 
 function submitTest() {
-    let score = 0;
-    let answeredCount = 0;
+    const name = document.getElementById('studentName').value.trim();
+    if(!name) {
+        alert("Bitte geben Sie Ihren Codenamen ein! (Будь ласка, введи своє ім'я)");
+        return;
+    }
 
+    calculateResults();
+    
+    // Generate URL
+    generateResultLink(name);
+    
+    // Hide submission area, show link area
+    document.getElementById('submission-area').style.display = 'none';
+    document.getElementById('link-container').style.display = 'block';
+}
+
+function calculateResults() {
+    let score = 0;
+    
     userAnswers.forEach((ans, index) => {
         const fbSpan = document.getElementById(`fb-${index}`);
-        const card = fbSpan.closest('.question-card');
+        const card = document.getElementById(`q-card-${index}`);
         const correctIndex = questions[index].a;
 
+        // Visual Reset first
+        fbSpan.style.visibility = "hidden";
+        card.style.borderLeftColor = "var(--primary)";
+        
+        // Highlight correct answer for teacher (or for feedback)
+        if(isTeacherMode) {
+             const correctBtn = document.getElementById(`btn-${index}-${correctIndex}`);
+             if(correctBtn) correctBtn.classList.add('correct-answer');
+        }
+
         if (ans !== null) {
-            answeredCount++;
             if (ans === correctIndex) {
                 score++;
                 fbSpan.innerText = "✓ Korrekt";
@@ -292,12 +415,93 @@ function submitTest() {
     if(score === 30) msg.innerText = "PERFEKT! Agenten-Status: 007";
     else if(score >= 25) msg.innerText = "Sehr gute Arbeit!";
     else if(score >= 15) msg.innerText = "Bestanden, aber Training empfohlen.";
-    else msg.innerText = "Mission fehlgeschlagen. Bitte wiederholen.";
+    else msg.innerText = "Mission fehlgeschlagen.";
 
-    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    // Scroll to results
+    setTimeout(() => {
+        document.getElementById('result-box').scrollIntoView({behavior: 'smooth'});
+    }, 100);
 }
 
+// --- URL Generation Logic ---
+
+function generateResultLink(name) {
+    // We encode the array of answers and the name into a base64 string
+    const data = {
+        n: name,
+        a: userAnswers
+    };
+    
+    // Convert to JSON string
+    const jsonStr = JSON.stringify(data);
+    // Encode to Base64 (using encodeURIComponent to handle special chars like Cyrillic/German correctly before btoa)
+    const encoded = btoa(unescape(encodeURIComponent(jsonStr)));
+    
+    // Get current URL without parameters
+    const baseUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+    const fullUrl = `${baseUrl}?report=${encoded}`;
+    
+    document.getElementById('shareLink').innerText = fullUrl;
+}
+
+function copyLink() {
+    const linkText = document.getElementById('shareLink').innerText;
+    navigator.clipboard.writeText(linkText).then(() => {
+        alert("Link in die Zwischenablage kopiert!");
+    });
+}
+
+// --- Check for Teacher Mode on Load ---
+
+function checkUrlParams() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const reportData = urlParams.get('report');
+
+    if (reportData) {
+        try {
+            // Decode
+            const jsonStr = decodeURIComponent(escape(atob(reportData)));
+            const data = JSON.parse(jsonStr);
+            
+            if(data.n && data.a) {
+                activateTeacherMode(data.n, data.a);
+            }
+        } catch (e) {
+            console.error("Fehler beim Laden des Berichts:", e);
+        }
+    }
+}
+
+function activateTeacherMode(studentName, studentAnswers) {
+    isTeacherMode = true;
+    userAnswers = studentAnswers;
+    
+    // Update UI
+    document.getElementById('mainContainer').classList.add('teacher-view');
+    document.getElementById('teacherBadge').style.display = 'inline-block';
+    document.getElementById('submission-area').style.display = 'none'; // Hide submit button
+    document.getElementById('teacher-controls').style.display = 'block'; // Show reset
+    document.getElementById('result-title').innerText = `Ergebnis von Agent: ${studentName}`;
+    
+    // Apply answers to UI
+    userAnswers.forEach((ans, qIndex) => {
+        if (ans !== null) {
+            const btn = document.getElementById(`btn-${qIndex}-${ans}`);
+            if(btn) btn.classList.add('selected');
+        }
+    });
+
+    // Run calculation immediately
+    calculateResults();
+}
+
+function resetToStudentMode() {
+    window.location.href = window.location.pathname; // Reload without params
+}
+
+// Init
 renderQuiz();
+checkUrlParams(); // Check if we are in teacher mode
 
 </script>
 </body>
