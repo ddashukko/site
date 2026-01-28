@@ -1,700 +1,778 @@
 <!DOCTYPE html>
 <html lang="de">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Klassenarbeit: Natürliche Zahlen (Gruppe B)</title>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agenten-Training 007: Master Edition</title>
     <style>
-      :root {
-        --paper-color: #fdfbf7;
-        --teacher-red: #c0392b;
-        --correct-green: #27ae60;
-        --bg-correct: #eafaf1;
-        --bg-wrong: #fadbd8;
-      }
-      body {
-        font-family: "Times New Roman", serif;
-        background-color: #555;
-        margin: 0;
-        padding: 20px;
-        display: flex;
-        justify-content: center;
-      }
-      .sheet {
-        background-color: var(--paper-color);
-        width: 210mm;
-        min-height: 297mm;
-        padding: 20mm;
-        box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-        position: relative;
-        box-sizing: border-box;
-        margin-bottom: 20px;
-      }
-      h1,
-      h2,
-      h3 {
-        text-align: center;
-        margin-bottom: 20px;
-        color: #000;
-      }
-      .header-info {
-        display: flex;
-        justify-content: space-between;
-        border-bottom: 2px solid black;
-        padding-bottom: 10px;
-        margin-bottom: 20px;
-        font-weight: bold;
-        font-family: Arial, sans-serif;
-      }
-      .correct-field {
-        border: 2px solid var(--correct-green) !important;
-        background-color: var(--bg-correct) !important;
-        color: var(--correct-green) !important;
-      }
-      .wrong-field {
-        border: 2px solid var(--teacher-red) !important;
-        background-color: var(--bg-wrong) !important;
-        color: var(--teacher-red) !important;
-      }
-      .row-correct {
-        background-color: var(--bg-correct) !important;
-      }
-      .row-wrong {
-        background-color: var(--bg-wrong) !important;
-      }
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-bottom: 20px;
-        background: white;
-        font-family: Arial, sans-serif;
-      }
-      th,
-      td {
-        border: 1px solid black;
-        padding: 8px 4px;
-        text-align: center;
-        vertical-align: middle;
-      }
-      th {
-        background-color: #f0f0f0;
-      }
-      td.question-text {
-        text-align: left;
-        padding-left: 10px;
-        width: 35%;
-        font-weight: bold;
-      }
-      .letter-input {
-        width: 30px;
-        height: 30px;
-        font-size: 1.2rem;
-        text-align: center;
-        text-transform: uppercase;
-        border: 2px solid #2980b9;
-        border-radius: 4px;
-        font-family: "Courier New", monospace;
-        font-weight: bold;
-      }
+        :root {
+            --primary: #6c5ce7;
+            --secondary: #00cec9;
+            --success: #00b894;
+            --error: #d63031;
+            --dark: #2d3436;
+            --bg: #dfe6e9;
+            --card-bg: #ffffff;
+            --section-header: #a29bfe;
+        }
 
-      .task-block {
-        margin-bottom: 25px;
-        padding: 15px;
-        border: 1px solid #999;
-        background: rgba(255, 255, 255, 0.95);
-        border-radius: 5px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--dark);
+            margin: 0;
+            padding-bottom: 50px;
+        }
 
-      .notebook-warning {
-        color: var(--teacher-red);
-        font-weight: bold;
-        font-style: italic;
-        font-size: 0.9rem;
-        margin: 0;
-        text-align: center;
-        padding: 0 10px;
-      }
-
-      .task-input {
-        font-family: "Courier New", monospace;
-        font-size: 1.2rem;
-        padding: 5px;
-        width: 120px;
-        border: none;
-        border-bottom: 2px solid #2c3e50;
-        background: transparent;
-        text-align: right;
-        font-weight: bold;
-      }
-      .nav-buttons {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 40px;
-      }
-      button.nav-btn {
-        padding: 10px 20px;
-        font-size: 16px;
-        cursor: pointer;
-        background-color: #2c3e50;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        margin-left: 10px;
-      }
-      button.nav-btn:hover {
-        background-color: #34495e;
-      }
-      button.check-btn {
-        background-color: #27ae60;
-      }
-
-      .hidden {
-        display: none !important;
-      }
-
-      /* MODAL STYLES */
-      .modal-overlay {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.9);
-        justify-content: center;
-        align-items: center;
-        z-index: 2000;
-      }
-      .modal-box {
-        background: white;
-        padding: 30px;
-        border-radius: 8px;
-        width: 500px;
-        text-align: center;
-        font-family: sans-serif;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-      }
-      .grade-mark {
-        font-size: 4rem;
-        color: var(--teacher-red);
-        font-family: "Brush Script MT", cursive;
-        margin: 20px 0;
-      }
-      .link-area {
-        width: 100%;
-        height: 100px;
-        margin-top: 10px;
-        font-family: monospace;
-        font-size: 0.9rem;
-        padding: 5px;
-      }
-      .teacher-login-container {
-        text-align: center;
-        margin-top: 20%;
-        color: white;
-        font-family: sans-serif;
-      }
-      .teacher-input {
-        padding: 10px;
-        font-size: 1.2rem;
-        border-radius: 4px;
-        border: none;
-        margin-bottom: 10px;
-      }
-    </style>
-  </head>
-  <body>
-    <div
-      id="teacherLoginScreen"
-      class="modal-overlay"
-      style="display: none; background: #333"
-    >
-      <div class="modal-box">
-        <h2>Lehrer-Zugang</h2>
-        <p>Bitte Passwort eingeben, um die Arbeit zu korrigieren:</p>
-        <input
-          type="password"
-          id="teacherPass"
-          class="teacher-input"
-          placeholder="Passwort..."
-        />
-        <br />
-        <button class="nav-btn" onclick="verifyTeacher()">Einloggen</button>
-        <p id="loginError" style="color: red; display: none; margin-top: 10px">
-          Falsches Passwort!
-        </p>
-      </div>
-    </div>
-
-    <div id="studentFinishScreen" class="modal-overlay">
-      <div class="modal-box">
-        <h2>Arbeit beendet!</h2>
-        <p>Deine Antworten wurden gespeichert.</p>
-        <p><strong>Kopiere diesen Link und sende ihn deinem Lehrer:</strong></p>
-        <textarea id="resultLink" class="link-area" readonly></textarea>
-        <button class="nav-btn" onclick="copyLink()">Link kopieren</button>
-      </div>
-    </div>
-
-    <div id="gradingOverlay" class="modal-overlay">
-      <div class="result-box">
-        <h2>Ergebnis (Gruppe B)</h2>
-        <p>Erreichte Punkte: <span id="totalPoints">0</span> / 50</p>
-        <div class="grade-mark" id="finalGrade">Note: ?</div>
-        <div style="text-align: left; margin-top: 20px; font-size: 0.9rem">
-          <p>Seite 1: <span id="scoreP1">0</span> / 10</p>
-          <p>Seite 2: <span id="scoreP2">0</span> / 18</p>
-          <p>Seite 3: <span id="scoreP3">0</span> / 22</p>
-        </div>
-        <button
-          class="nav-btn"
-          onclick="document.getElementById('gradingOverlay').style.display='none'"
-          style="margin-top: 20px"
-        >
-          Blatt ansehen
-        </button>
-      </div>
-    </div>
-
-    <div id="mainContent">
-      <div class="sheet" id="page1">
-        <div class="header-info">
-          <span>Klassenarbeit: Natürliche Zahlen (Gruppe B)</span>
-          <span
-            >Datum:
-            <input
-              type="text"
-              id="dateInput"
-              style="border: none; background: transparent; font-weight: bold"
-          /></span>
-          <span
-            >Name:
-            <input
-              type="text"
-              id="nameInput"
-              style="border: none; background: transparent; font-weight: bold"
-          /></span>
-        </div>
-
-        <h3>1. Aufgabe: Wähle die richtige Lösung. (10 Punkte)</h3>
-        <table>
-          <thead>
-            <tr>
-              <th style="width: 35%">Aufgabe</th>
-              <th style="width: 10%">A</th>
-              <th style="width: 10%">B</th>
-              <th style="width: 10%">C</th>
-              <th style="width: 10%">D</th>
-              <th style="width: 15%; color: #c0392b">Lösung</th>
-            </tr>
-          </thead>
-          <tbody id="table-p1"></tbody>
-        </table>
-        <div class="nav-buttons" style="justify-content: flex-end">
-          <button class="nav-btn" onclick="showPage('page2')">
-            Nächste Seite &rarr;
-          </button>
-        </div>
-      </div>
-
-      <div class="sheet hidden" id="page2">
-        <div class="header-info"><span>Seite 2 (Gruppe B)</span></div>
-        <h3>Schriftliche Rechenverfahren</h3>
-        <p
-          style="
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--dark));
+            color: white;
+            padding: 1.5rem;
             text-align: center;
-            color: var(--teacher-red);
-            font-weight: bold;
-            margin-bottom: 20px;
-            border: 2px solid var(--teacher-red);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .status-bar {
+            background: rgba(255,255,255,0.1);
             padding: 10px;
-          "
-        >
-          ⚠ ACHTUNG: Bitte alle Rechenwege ordentlich im Heft notieren und ein
-          Foto an den Lehrer senden!
-        </p>
-        <p>Trage hier nur das <strong>Endergebnis</strong> ein.</p>
+            border-radius: 20px;
+            margin-top: 10px;
+            display: inline-block;
+            width: 80%;
+            max-width: 600px;
+        }
 
-        <div class="task-block">
-          <label><strong>2. Aufgabe:</strong><br />6.429 + 13.851</label>
-          <p class="notebook-warning">Im Heft rechnen! ➜</p>
-          <div>
-            Ergebnis: <input type="number" id="p2_q1" class="task-input" />
-          </div>
-        </div>
-        <div class="task-block">
-          <label><strong>3. Aufgabe:</strong><br />43.102 - 5.618</label>
-          <p class="notebook-warning">Im Heft rechnen! ➜</p>
-          <div>
-            Ergebnis: <input type="number" id="p2_q2" class="task-input" />
-          </div>
-        </div>
-        <div class="task-block">
-          <label><strong>4. Aufgabe:</strong><br />28.512 : 12</label>
-          <p class="notebook-warning">Im Heft rechnen! ➜</p>
-          <div>
-            Ergebnis: <input type="number" id="p2_q3" class="task-input" />
-          </div>
-        </div>
-        <div class="task-block">
-          <label><strong>5. Aufgabe:</strong><br />2.805 · 143</label>
-          <p class="notebook-warning">Im Heft rechnen! ➜</p>
-          <div>
-            Ergebnis: <input type="number" id="p2_q4" class="task-input" />
-          </div>
-        </div>
+        .progress-container {
+            height: 10px;
+            background-color: rgba(0,0,0,0.3);
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
 
-        <div class="nav-buttons">
-          <button class="nav-btn" onclick="showPage('page1')">
-            &larr; Zurück
-          </button>
-          <button class="nav-btn" onclick="showPage('page3')">
-            Nächste Seite &rarr;
-          </button>
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background-color: var(--secondary);
+            transition: width 0.5s ease;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .section-title {
+            text-align: center;
+            color: var(--dark);
+            margin: 3rem 0 1.5rem 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-bottom: 3px solid var(--primary);
+            display: inline-block;
+            padding-bottom: 5px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border-left: 5px solid var(--primary);
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+        }
+
+        h2 {
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 0;
+        }
+
+        .task-badge {
+            background: var(--primary);
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+
+        .question-item {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px dashed #ccc;
+        }
+
+        .question-item:last-child {
+            border-bottom: none;
+        }
+
+        /* Interactive Elements */
+        input[type="number"], input[type="text"], select {
+            padding: 10px;
+            border: 2px solid #b2bec3;
+            border-radius: 8px;
+            font-size: 1rem;
+            width: 100%;
+            max-width: 200px;
+            transition: 0.3s;
+            background-color: #f9f9f9;
+        }
+
+        input:focus {
+            border-color: var(--primary);
+            outline: none;
+            background-color: #fff;
+        }
+
+        .btn-check {
+            background-color: var(--dark);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-top: 10px;
+            transition: transform 0.2s, background 0.2s;
+        }
+
+        .btn-check:hover {
+            transform: scale(1.05);
+            background-color: var(--primary);
+        }
+
+        .feedback {
+            margin-top: 10px;
+            font-weight: bold;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .feedback.correct {
+            background-color: rgba(0, 184, 148, 0.2);
+            color: var(--success);
+            display: block;
+            border-left: 4px solid var(--success);
+        }
+
+        .feedback.wrong {
+            background-color: rgba(214, 48, 49, 0.2);
+            color: var(--error);
+            display: block;
+            border-left: 4px solid var(--error);
+        }
+
+        /* True/False Buttons */
+        .tf-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 5px;
+        }
+        .tf-btn {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #b2bec3;
+            background: white;
+            cursor: pointer;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+        .tf-btn:hover {
+            background: #f1f2f6;
+        }
+        .tf-btn.selected {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Specific Task Styles */
+        .grid-numbers {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .tag {
+            background: #dfe6e9;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        
+        .safe-display {
+            font-family: 'Courier New', monospace;
+            font-size: 2rem;
+            background: #333;
+            color: #0f0;
+            padding: 10px;
+            border-radius: 5px;
+            display: inline-block;
+            margin-bottom: 10px;
+            letter-spacing: 5px;
+        }
+
+        .story-box {
+            background-color: #fff3cd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-style: italic;
+            border-left: 4px solid #fdcb6e;
+        }
+
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>🕵️‍♂️ Agenten-Akademie</h1>
+    <div class="status-bar">
+        <span>Level: Master of Numbers</span>
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
         </div>
-      </div>
+    </div>
+</header>
 
-      <div class="sheet hidden" id="page3">
-        <div class="header-info"><span>Seite 3 (Gruppe B)</span></div>
-        <h3>6. Aufgabe: Statistische Kennwerte (10 Punkte)</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Aussage</th>
-              <th>Durchschnitt</th>
-              <th>Zentralwert</th>
-              <th>Spannweite</th>
-            </tr>
-          </thead>
-          <tbody id="logicTableBody">
-            <tr id="logicRow1">
-              <td class="question-text">
-                „Ich addiere alle Noten und teile durch die Anzahl.“
-              </td>
-              <td><input type="radio" name="logic1" value="correct" /></td>
-              <td><input type="radio" name="logic1" value="wrong" /></td>
-              <td><input type="radio" name="logic1" value="wrong" /></td>
-            </tr>
-            <tr id="logicRow2">
-              <td class="question-text">
-                „Ich sortiere die Zahlen und suche die Mitte.“
-              </td>
-              <td><input type="radio" name="logic2" value="wrong" /></td>
-              <td><input type="radio" name="logic2" value="correct" /></td>
-              <td><input type="radio" name="logic2" value="wrong" /></td>
-            </tr>
-            <tr id="logicRow3">
-              <td class="question-text">
-                „Die Differenz zwischen Maximum und Minimum.“
-              </td>
-              <td><input type="radio" name="logic3" value="wrong" /></td>
-              <td><input type="radio" name="logic3" value="wrong" /></td>
-              <td><input type="radio" name="logic3" value="correct" /></td>
-            </tr>
-            <tr id="logicRow4">
-              <td class="question-text">
-                „Ein einzelner Ausreißer verändert diesen Wert stark.“
-              </td>
-              <td><input type="radio" name="logic4" value="correct" /></td>
-              <td><input type="radio" name="logic4" value="wrong" /></td>
-              <td><input type="radio" name="logic4" value="wrong" /></td>
-            </tr>
-          </tbody>
-        </table>
-        <hr />
-        <h3>7. Aufgabe: Sachaufgabe (12 Punkte)</h3>
-        <p>85 Schüler, 4 Lehrer. Buskapazität: 6 Personen. Wie viele Busse?</p>
-        <p style="color: var(--teacher-red); font-style: italic">
-          (Lösungsweg im Heft notieren!)
-        </p>
+<div class="container">
 
-        <div class="task-block" style="justify-content: flex-end">
-          <p class="notebook-warning" style="margin-right: 20px">
-            Antwort eingeben ➜
-          </p>
-          <p>
-            Man braucht
-            <input
-              type="number"
-              id="p3_wordproblem"
-              class="task-input"
-              style="width: 50px"
-            />
-            Busse.
-          </p>
-        </div>
-
-        <div class="nav-buttons">
-          <button class="nav-btn" onclick="showPage('page2')">
-            &larr; Zurück
-          </button>
-          <button
-            class="nav-btn"
-            id="finishBtn"
-            onclick="generateTeacherLink()"
-            style="background-color: var(--teacher-red)"
-          >
-            Arbeit abgeben (Link erstellen)
-          </button>
-
-          <div id="teacherControls" style="display: none; gap: 10px">
-            <button class="nav-btn check-btn" onclick="gradeTest()">
-              ✔ Jetzt korrigieren
-            </button>
-          </div>
-        </div>
-      </div>
+    <div style="text-align:center;">
+        <h3 class="section-title">Teil 1: Die Regeln der Teilbarkeit</h3>
     </div>
 
-    <script>
-      // --- ДАНІ ---
-      const p1_data = [
-        { q: "8 · 12 =", opts: ["96", "86", "106", "94"], ans: 0 },
-        { q: "15 + 3 + 7 + 25 =", opts: ["45", "55", "50", "60"], ans: 2 },
-        { q: "428 : 2 =", opts: ["224", "214", "124", "414"], ans: 1 },
-        {
-          q: "Runde auf Tausender: 2.501 ≈",
-          opts: ["2000", "2500", "3000", "2600"],
-          ans: 2,
-        },
-        {
-          q: "Runde auf Zehner: 844 ≈",
-          opts: ["840", "850", "800", "900"],
-          ans: 0,
-        },
-        {
-          q: "Runde auf Hunderter: 12.099 ≈",
-          opts: ["12000", "12100", "12090", "12200"],
-          ans: 1,
-        },
-        {
-          q: "1 € - 25 Cent =",
-          opts: ["85 ct", "65 ct", "75 ct", "55 ct"],
-          ans: 2,
-        },
-        {
-          q: "Der Durchschnitt von 2, 4, 6 ist...",
-          opts: ["3", "4", "5", "6"],
-          ans: 1,
-        },
-        {
-          q: "Zentralwert von 10, 1, 5 ist...",
-          opts: ["1", "5", "10", "6"],
-          ans: 1,
-        },
-        {
-          q: "Spannweite von 2 bis 12 ist...",
-          opts: ["10", "12", "14", "6"],
-          ans: 0,
-        },
-      ];
-      const letters = ["A", "B", "C", "D"];
+    <div class="card" id="task1">
+        <h2><span class="task-badge">1</span> Wahr oder Falsch?</h2>
+        <p>Analysiere die Aussagen. Klicke auf die richtige Antwort.</p>
+        
+        <div class="question-item" data-correct="true">
+            <p>(1) <strong>50 400</strong> ist durch 10 teilbar.</p>
+            <div class="tf-group">
+                <button class="tf-btn" onclick="selectTF(this, true)">Wahr</button>
+                <button class="tf-btn" onclick="selectTF(this, false)">Falsch</button>
+            </div>
+            <div class="feedback"></div>
+        </div>
 
-      // INITIALIZATION
-      const tbody = document.getElementById("table-p1");
-      p1_data.forEach((item, index) => {
-        let row = `<tr><td class="question-text">${item.q}</td>`;
-        item.opts.forEach((opt) => (row += `<td>${opt}</td>`));
-        row += `<td><input type="text" maxlength="1" id="p1_input_${index}" class="letter-input"></td></tr>`;
-        tbody.innerHTML += row;
-      });
+        <div class="question-item" data-correct="true">
+            <p>(2) <strong>31 124</strong> ist durch 4 teilbar.</p>
+            <div class="tf-group">
+                <button class="tf-btn" onclick="selectTF(this, true)">Wahr</button>
+                <button class="tf-btn" onclick="selectTF(this, false)">Falsch</button>
+            </div>
+            <div class="feedback"></div>
+        </div>
 
-      function showPage(pageId) {
-        document
-          .querySelectorAll(".sheet")
-          .forEach((el) => el.classList.add("hidden"));
-        document.getElementById(pageId).classList.remove("hidden");
-        window.scrollTo(0, 0);
-      }
+        <div class="question-item" data-correct="false">
+            <p>(3) <strong>12 345</strong> ist durch 2 teilbar.</p>
+            <div class="tf-group">
+                <button class="tf-btn" onclick="selectTF(this, true)">Wahr</button>
+                <button class="tf-btn" onclick="selectTF(this, false)">Falsch</button>
+            </div>
+            <div class="feedback"></div>
+        </div>
 
-      // --- 1. ЛОГІКА ДЛЯ УЧНЯ ---
-      function generateTeacherLink() {
-        const data = {
-          name: document.getElementById("nameInput").value,
-          date: document.getElementById("dateInput").value,
-          p1: [],
-          p2: [],
-          p3_radio: {},
-          p3_word: document.getElementById("p3_wordproblem").value,
-        };
-        p1_data.forEach((item, index) => {
-          data.p1.push(document.getElementById(`p1_input_${index}`).value);
-        });
-        data.p2.push(document.getElementById("p2_q1").value);
-        data.p2.push(document.getElementById("p2_q2").value);
-        data.p2.push(document.getElementById("p2_q3").value);
-        data.p2.push(document.getElementById("p2_q4").value);
-        ["logic1", "logic2", "logic3", "logic4"].forEach((name) => {
-          const el = document.querySelector(`input[name="${name}"]:checked`);
-          if (el) data.p3_radio[name] = el.value;
-        });
-        const jsonString = JSON.stringify(data);
-        const encoded = btoa(encodeURIComponent(jsonString));
-        const baseUrl = window.location.href.split("?")[0];
-        const finalLink = `${baseUrl}?data=${encoded}`;
-        document.getElementById("resultLink").value = finalLink;
-        document.getElementById("studentFinishScreen").style.display = "flex";
-      }
+        <div class="question-item" data-correct="true">
+            <p>(4) <strong>81 909</strong> ist durch 9 teilbar.</p>
+            <div class="tf-group">
+                <button class="tf-btn" onclick="selectTF(this, true)">Wahr</button>
+                <button class="tf-btn" onclick="selectTF(this, false)">Falsch</button>
+            </div>
+            <div class="feedback"></div>
+        </div>
+    </div>
 
-      function copyLink() {
-        const linkText = document.getElementById("resultLink");
-        linkText.select();
-        document.execCommand("copy");
-        alert("Link kopiert! Sende ihn jetzt an deinen Lehrer.");
-      }
+    <div class="card" id="task2">
+        <h2><span class="task-badge">2</span> Der Ziffern-Hacker</h2>
+        <p>Original-Code: <strong style="font-size: 1.2rem; background:#eee; padding:5px;">35 781</strong></p>
+        <p>Ändere <strong>genau eine</strong> Ziffer, damit die Zahl passt.</p>
 
-      // --- 2. ЛОГІКА ДЛЯ ВЧИТЕЛЯ ---
-      window.onload = function () {
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.has("data")) {
-          document.getElementById("mainContent").style.display = "none";
-          document.getElementById("teacherLoginScreen").style.display = "flex";
+        <div class="question-item">
+            <label>a) durch 2 teilbar:</label><br>
+            <input type="number" id="t2a" placeholder="z.B. 35782">
+            <button class="btn-check" onclick="checkDivisibility('t2a', 2, 35781)">Prüfen</button>
+            <div class="feedback" id="fb-t2a"></div>
+        </div>
+
+        <div class="question-item">
+            <label>b) durch 3 teilbar:</label><br>
+            <input type="number" id="t2b" placeholder="Neue Zahl...">
+            <button class="btn-check" onclick="checkDivisibility('t2b', 3, 35781)">Prüfen</button>
+            <div class="feedback" id="fb-t2b"></div>
+        </div>
+
+        <div class="question-item">
+            <label>c) durch 5 teilbar:</label><br>
+            <input type="number" id="t2c" placeholder="Neue Zahl...">
+            <button class="btn-check" onclick="checkDivisibility('t2c', 5, 35781)">Prüfen</button>
+            <div class="feedback" id="fb-t2c"></div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2><span class="task-badge">3</span> Das Ausrüstungs-Problem</h2>
+        <p>Es sollen Pakete mit je <strong>4 Gadgets</strong> gepackt werden. Inventar: <strong>142</strong> Stück.</p>
+        
+        <div class="question-item">
+            <p>a) Warum passt 142 nicht?</p>
+            <select id="t3a">
+                <option value="">Bitte wählen...</option>
+                <option value="wrong">Weil 142 eine gerade Zahl ist.</option>
+                <option value="correct">Weil die Endung 42 nicht durch 4 teilbar ist.</option>
+                <option value="wrong">Weil die Quersumme nicht durch 4 teilbar ist.</option>
+            </select>
+            <button class="btn-check" onclick="checkSelect('t3a', 'correct')">Prüfen</button>
+            <div class="feedback" id="fb-t3a"></div>
+        </div>
+
+        <div class="question-item">
+            <p>b) Nenne eine Zahl in der Nähe, die funktioniert (durch 4 teilbar):</p>
+            <input type="number" id="t3b">
+            <button class="btn-check" onclick="checkDivisibilitySimple('t3b', 4, 138, 146)">Prüfen</button>
+            <div class="feedback" id="fb-t3b"></div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2><span class="task-badge">4</span> Die Abrechnung</h2>
+        <p>Preis pro Person: <strong>15 €</strong> (Muss durch 3 und 5 teilbar sein!)</p>
+        <div class="grid-numbers">
+            <span class="tag">Team A: 410 €</span>
+            <span class="tag">Team B: 360 €</span>
+            <span class="tag">Team C: 445 €</span>
+        </div>
+
+        <div class="question-item">
+            <p>Welcher Betrag ist <strong>sicher falsch</strong>?</p>
+            <select id="t4a">
+                <option value="">Wähle das Team mit dem Fehler...</option>
+                <option value="wrong">Team B (360)</option>
+                <option value="correct1">Team A (410)</option>
+                <option value="correct2">Team C (445)</option>
+            </select>
+            <p><em>Tipp: Es gibt zwei falsche Beträge. Wähle einen davon.</em></p>
+            <button class="btn-check" onclick="checkMultiSelect('t4a', ['correct1', 'correct2'])">Prüfen</button>
+            <div class="feedback" id="fb-t4a"></div>
+        </div>
+
+        <div class="question-item">
+            <p>Rechne den korrekten Betrag für <strong>Team A (28 Personen)</strong> aus:</p>
+            <input type="number" id="t4b" placeholder="Betrag in €">
+            <button class="btn-check" onclick="checkNumber('t4b', 420)">Prüfen</button>
+            <div class="feedback" id="fb-t4b"></div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2><span class="task-badge">6</span> Endstellen-Profi</h2>
+        <p>Vervollständige die Regel.</p>
+        
+        <div class="question-item">
+            <p>Eine Zahl ist durch <strong>100</strong> teilbar, wenn...</p>
+            <select id="t6a">
+                <option value="">...</option>
+                <option value="wrong">sie gerade ist.</option>
+                <option value="correct">sie auf 00 endet.</option>
+                <option value="wrong">die Quersumme 100 ist.</option>
+            </select>
+            <button class="btn-check" onclick="checkSelect('t6a', 'correct')">Prüfen</button>
+            <div class="feedback" id="fb-t6a"></div>
+        </div>
+
+        <div class="question-item">
+            <p>Eine Zahl ist durch <strong>25</strong> teilbar, wenn sie endet auf:</p>
+            <p>00, 25, 50 oder <input type="number" id="t6b" style="width: 60px;">.</p>
+            <button class="btn-check" onclick="checkNumber('t6b', 75)">Prüfen</button>
+            <div class="feedback" id="fb-t6b"></div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2><span class="task-badge">8</span> Der Safe-Code</h2>
+        <div class="safe-display">7 3 _ _</div>
+        
+        <div class="question-item">
+            <p>Der Code ist durch <strong>8</strong> teilbar. Gib eine mögliche Lösung an (beginnt mit 73..):</p>
+            <input type="number" id="t8a" placeholder="z.B. 7304">
+            <button class="btn-check" onclick="checkSafeCode('t8a', 8)">Code testen</button>
+            <div class="feedback" id="fb-t8a"></div>
+        </div>
+
+        <div class="question-item">
+            <p>Der Code ist durch <strong>9</strong> teilbar. Gib eine Lösung an:</p>
+            <input type="number" id="t8b" placeholder="z.B. 73...">
+            <button class="btn-check" onclick="checkSafeCode('t8b', 9)">Code testen</button>
+            <div class="feedback" id="fb-t8b"></div>
+        </div>
+    </div>
+
+    <div style="text-align:center;">
+        <h3 class="section-title">Teil 2: Operation Primzahlen</h3>
+    </div>
+
+    <div class="card">
+        <h2><span class="task-badge">9</span> Der Zahlen-Baum</h2>
+        <div class="story-box">
+            "Wir müssen die Zahl <strong>120</strong> zerlegen, bis nur noch Primzahlen übrig sind (die Atome der Mathematik)."<br>
+            Zerlegung: 120 -> 12 · 10 -> ...
+        </div>
+        
+        <div class="question-item">
+            <p>a) Zerlege 120 komplett. Wie viele Primzahlen (Füße) hat der Baum am Ende insgesamt?</p>
+            <input type="number" id="t9a" placeholder="Anzahl der Primzahlen">
+            <button class="btn-check" onclick="checkNumber('t9a', 5)">Prüfen</button>
+            <div class="feedback" id="fb-t9a"></div>
+            <p style="font-size: 0.8rem; color: #666;">(Tipp: 120 = 2 · 2 · 2 · 3 · 5)</p>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2><span class="task-badge">10</span> Agenten-Klassen</h2>
+        <p>Wir klassifizieren Zahlen nach der Anzahl ihrer "Füße" (Primfaktoren).</p>
+        
+        <div class="question-item">
+            <p>a) Nenne eine <strong>"Zweifüßerzahl"</strong> (eine Zahl, die man in genau 2 Primzahlen zerlegen kann, z.B. 2·3=6).</p>
+            <input type="number" id="t10a" placeholder="Deine Zahl">
+            <button class="btn-check" onclick="checkPrimeFactorsAmount('t10a', 2)">Scannen</button>
+            <div class="feedback" id="fb-t10a"></div>
+        </div>
+
+        <div class="question-item">
+            <p>b) Nenne eine <strong>"Dreifüßerzahl"</strong> (genau 3 Primfaktoren, z.B. 2·2·2=8).</p>
+            <input type="number" id="t10b" placeholder="Deine Zahl">
+            <button class="btn-check" onclick="checkPrimeFactorsAmount('t10b', 3)">Scannen</button>
+            <div class="feedback" id="fb-t10b"></div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2><span class="task-badge">11</span> Enttarnung</h2>
+        <p>Beweise, dass diese Zahlen <strong>keine</strong> Primzahlen sind (sie haben mehr als 2 Teiler).</p>
+        
+        <div class="question-item">
+            <p>a) Warum ist <strong>405</strong> keine Primzahl?</p>
+            <select id="t11a">
+                <option value="">Wähle einen Grund...</option>
+                <option value="correct">Endziffer ist 5 (durch 5 teilbar)</option>
+                <option value="wrong">Weil sie ungerade ist</option>
+                <option value="wrong">Weil sie durch 10 teilbar ist</option>
+            </select>
+            <button class="btn-check" onclick="checkSelect('t11a', 'correct')">Prüfen</button>
+            <div class="feedback" id="fb-t11a"></div>
+        </div>
+
+        <div class="question-item">
+            <p>b) Warum ist <strong>123</strong> keine Primzahl?</p>
+            <select id="t11b">
+                <option value="">Wähle einen Grund...</option>
+                <option value="wrong">Endziffer ist 3</option>
+                <option value="correct">Quersumme ist 6 (durch 3 teilbar)</option>
+                <option value="wrong">Sie ist durch 9 teilbar</option>
+            </select>
+            <button class="btn-check" onclick="checkSelect('t11b', 'correct')">Prüfen</button>
+            <div class="feedback" id="fb-t11b"></div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2><span class="task-badge">12</span> Das "Eins"-Protokoll</h2>
+        <div class="story-box">
+            Agent X behauptet: "Die Zahl 1 ist auch eine Primzahl!"<br>
+            Agent Y widerspricht: "Nein, das ist verboten!"
+        </div>
+        <div class="question-item">
+            <p>Wer hat recht? Warum ist 1 keine Primzahl?</p>
+            <select id="t12a">
+                <option value="">Wähle...</option>
+                <option value="wrong">Agent X hat recht.</option>
+                <option value="correct">Agent Y: Primzahlen müssen genau ZWEI Teiler haben (1 und sich selbst). Die 1 hat nur einen.</option>
+                <option value="wrong">Agent Y: Weil 1 eine ungerade Zahl ist.</option>
+            </select>
+            <button class="btn-check" onclick="checkSelect('t12a', 'correct')">Prüfen</button>
+            <div class="feedback" id="fb-t12a"></div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2><span class="task-badge">13</span> Krypto-Rätsel</h2>
+        <p>Identifiziere die gesuchte Zahl.</p>
+
+        <div class="question-item">
+            <p>a) Meine Zahl ist eine Primzahl und ist durch 17 teilbar.</p>
+            <input type="number" id="t13a" placeholder="Lösung">
+            <button class="btn-check" onclick="checkNumber('t13a', 17)">Prüfen</button>
+            <div class="feedback" id="fb-t13a"></div>
+        </div>
+
+        <div class="question-item">
+            <p>b) Meine Zahl ist zweistellig, durch 25 und durch 3 teilbar.</p>
+            <input type="number" id="t13b" placeholder="Lösung">
+            <button class="btn-check" onclick="checkNumber('t13b', 75)">Prüfen</button>
+            <div class="feedback" id="fb-t13b"></div>
+        </div>
+    </div>
+
+     <div class="card">
+        <h2><span class="task-badge">14</span> Stufenzahlen</h2>
+        <p>Wir zerlegen die <strong>10.000</strong> in Primfaktoren.</p>
+        <p>10 = 2 · 5<br>100 = 2 · 2 · 5 · 5</p>
+        
+        <div class="question-item">
+            <p>Wie lautet die verkürzte Schreibweise (Potenzen) für 10.000?</p>
+            <select id="t14a">
+                <option value="">Wähle...</option>
+                <option value="wrong">2³ · 5³</option>
+                <option value="correct">2⁴ · 5⁴</option>
+                <option value="wrong">2⁵ · 5⁵</option>
+            </select>
+            <button class="btn-check" onclick="checkSelect('t14a', 'correct')">Prüfen</button>
+            <div class="feedback" id="fb-t14a"></div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    let totalScore = 0;
+    // Increased max score due to new tasks
+    const maxScore = 22; 
+    let solvedTasks = new Set(); // Track unique solved tasks to prevent score spamming
+    
+    function updateProgress(taskId) {
+        if(!solvedTasks.has(taskId)) {
+            solvedTasks.add(taskId);
+            totalScore++;
+            let percentage = (totalScore / maxScore) * 100;
+            if(percentage > 100) percentage = 100;
+            document.getElementById('progressBar').style.width = percentage + '%';
+            
+            if(percentage === 100) {
+                alert("MISSION COMPLETE! Hervorragende Arbeit, Agent! Alle Codes geknackt.");
+            }
         }
-      };
+    }
 
-      function verifyTeacher() {
-        const pass = document.getElementById("teacherPass").value;
-        if (pass === "янчук") {
-          loadStudentData();
+    // --- Helper Functions ---
+
+    // Counts how many prime factors a number has (e.g., 12 = 2*2*3 -> 3 factors)
+    function countPrimeFactorsCalc(n) {
+        if (n < 2) return 0;
+        let count = 0;
+        let d = 2;
+        let temp = n;
+        while (d * d <= temp) {
+            while (temp % d === 0) {
+                count++;
+                temp /= d;
+            }
+            d++;
+        }
+        if (temp > 1) count++;
+        return count;
+    }
+
+    // --- Task Logic ---
+
+    // Task 1: True/False Logic
+    function selectTF(btn, value) {
+        let group = btn.parentElement;
+        let buttons = group.getElementsByClassName('tf-btn');
+        for(let b of buttons) b.classList.remove('selected');
+        btn.classList.add('selected');
+        
+        let container = group.parentElement;
+        let isCorrectAnswer = container.getAttribute('data-correct') === 'true';
+        let feedback = container.querySelector('.feedback');
+        
+        // Generate a unique ID for this question block for score tracking
+        let uniqueId = container.innerText.substring(0, 10); 
+
+        if (value === isCorrectAnswer) {
+            feedback.className = "feedback correct";
+            feedback.innerText = "Korrekt! Zugriff gewährt.";
+            updateProgress(uniqueId);
         } else {
-          document.getElementById("loginError").style.display = "block";
+            feedback.className = "feedback wrong";
+            feedback.innerText = "Fehler! Zugriff verweigert.";
         }
-      }
+    }
 
-      function loadStudentData() {
-        try {
-          const urlParams = new URLSearchParams(window.location.search);
-          const encoded = urlParams.get("data");
-          const jsonString = decodeURIComponent(atob(encoded));
-          const data = JSON.parse(jsonString);
-
-          document.getElementById("teacherLoginScreen").style.display = "none";
-          document.getElementById("mainContent").style.display = "block";
-          document.getElementById("finishBtn").style.display = "none";
-          document.getElementById("teacherControls").style.display = "flex";
-
-          document.getElementById("nameInput").value =
-            data.name + " (Schülerantwort)";
-          document.getElementById("dateInput").value = data.date;
-
-          data.p1.forEach((val, idx) => {
-            const el = document.getElementById(`p1_input_${idx}`);
-            el.value = val;
-            el.readOnly = true;
-          });
-          document.getElementById("p2_q1").value = data.p2[0];
-          document.getElementById("p2_q2").value = data.p2[1];
-          document.getElementById("p2_q3").value = data.p2[2];
-          document.getElementById("p2_q4").value = data.p2[3];
-          for (const [key, val] of Object.entries(data.p3_radio)) {
-            const radio = document.querySelector(
-              `input[name="${key}"][value="${val}"]`
-            );
-            if (radio) radio.checked = true;
-          }
-          document.getElementById("p3_wordproblem").value = data.p3_word;
-          document
-            .querySelectorAll("input")
-            .forEach((i) => (i.readOnly = true));
-          alert("Schülerdaten geladen. Klicken Sie auf 'Jetzt korrigieren'.");
-        } catch (e) {
-          alert("Fehler beim Laden der Daten.");
-          console.error(e);
+    // Task 2: Divisibility with "Change One Digit" check
+    function checkDivisibility(inputId, divisor, originalNum) {
+        let val = document.getElementById(inputId).value;
+        let feedback = document.getElementById('fb-' + inputId);
+        
+        if (!val) {
+            feedback.className = "feedback";
+            feedback.innerText = "Bitte eine Zahl eingeben.";
+            return;
         }
-      }
 
-      // --- 3. ФУНКЦІЯ ПЕРЕВІРКИ ---
-      function gradeTest() {
-        p1_data.forEach((item, index) => {
-          const el = document.getElementById(`p1_input_${index}`);
-          const val = el.value.toUpperCase().trim();
-          el.classList.remove("correct-field", "wrong-field");
-          if (val === letters[item.ans]) el.classList.add("correct-field");
-          else if (val !== "") el.classList.add("wrong-field");
-        });
-
-        checkNumberField("p2_q1", 20280);
-        checkNumberField("p2_q2", 37484);
-        checkNumberField("p2_q3", 2376);
-        checkNumberField("p2_q4", 401115);
-
-        ["logic1", "logic2", "logic3", "logic4"].forEach((name) =>
-          checkLogicRow(name, `logicRow${name.slice(-1)}`)
-        );
-
-        // НОВА ПРАВИЛЬНА ВІДПОВІДЬ: (85+4)/6 = 14.83 -> 15 Busse
-        checkNumberField("p3_wordproblem", 15);
-
-        let points = 0;
-        let p1_points = 0;
-        p1_data.forEach((item, index) => {
-          if (
-            document
-              .getElementById(`p1_input_${index}`)
-              .value.toUpperCase()
-              .trim() === letters[item.ans]
-          )
-            p1_points++;
-        });
-        points += p1_points;
-
-        let p2_points = 0;
-        if (parseInt(document.getElementById("p2_q1").value) === 20280)
-          p2_points += 3;
-        if (parseInt(document.getElementById("p2_q2").value) === 37484)
-          p2_points += 3;
-        if (parseInt(document.getElementById("p2_q3").value) === 2376)
-          p2_points += 6;
-        if (parseInt(document.getElementById("p2_q4").value) === 401115)
-          p2_points += 6;
-        points += p2_points;
-
-        let p3_points = 0;
-        ["logic1", "logic2", "logic3", "logic4"].forEach((name) => {
-          const el = document.querySelector(`input[name="${name}"]:checked`);
-          if (el && el.value === "correct") p3_points += 2.5;
-        });
-        if (parseInt(document.getElementById("p3_wordproblem").value) === 15)
-          p3_points += 12;
-        points += p3_points;
-
-        document.getElementById("totalPoints").innerText = points;
-        document.getElementById("scoreP1").innerText = p1_points;
-        document.getElementById("scoreP2").innerText = p2_points;
-        document.getElementById("scoreP3").innerText = p3_points;
-
-        let grade = 6;
-        if (points >= 45) grade = 1;
-        else if (points >= 38) grade = 2;
-        else if (points >= 30) grade = 3;
-        else if (points >= 20) grade = 4;
-        else if (points >= 10) grade = 5;
-        document.getElementById("finalGrade").innerText = "Note: " + grade;
-
-        document.getElementById("gradingOverlay").style.display = "flex";
-      }
-
-      function checkNumberField(id, correctVal) {
-        const el = document.getElementById(id);
-        el.classList.remove("correct-field", "wrong-field");
-        if (parseInt(el.value) === correctVal)
-          el.classList.add("correct-field");
-        else if (el.value !== "") el.classList.add("wrong-field");
-      }
-      function checkLogicRow(radioName, rowId) {
-        const row = document.getElementById(rowId);
-        const selected = document.querySelector(
-          `input[name="${radioName}"]:checked`
-        );
-        row.classList.remove("row-correct", "row-wrong");
-        if (selected) {
-          if (selected.value === "correct") row.classList.add("row-correct");
-          else row.classList.add("row-wrong");
+        let num = parseInt(val);
+        let strVal = val.toString();
+        let strOrig = originalNum.toString();
+        
+        let diffCount = 0;
+        if (strVal.length !== strOrig.length) {
+            diffCount = 100; 
+        } else {
+            for(let i=0; i<strVal.length; i++) {
+                if(strVal[i] !== strOrig[i]) diffCount++;
+            }
         }
-      }
-    </script>
-  </body>
+
+        if (diffCount !== 1) {
+            feedback.className = "feedback wrong";
+            feedback.innerText = "Regel verletzt: Ändere genau EINE Ziffer! (Länge muss gleich bleiben)";
+            return;
+        }
+
+        if (num % divisor === 0) {
+            feedback.className = "feedback correct";
+            feedback.innerText = "Richtig! Die Zahl ist durch " + divisor + " teilbar.";
+            updateProgress(inputId);
+        } else {
+            feedback.className = "feedback wrong";
+            feedback.innerText = "Falsch. " + num + " ist nicht durch " + divisor + " teilbar.";
+        }
+    }
+
+    // Generic Number Check
+    function checkNumber(inputId, correctVal) {
+        let val = parseInt(document.getElementById(inputId).value);
+        let feedback = document.getElementById('fb-' + inputId);
+        
+        if (val === correctVal) {
+            feedback.className = "feedback correct";
+            feedback.innerText = "Exakt!";
+            updateProgress(inputId);
+        } else {
+            feedback.className = "feedback wrong";
+            feedback.innerText = "Leider falsch.";
+        }
+    }
+
+    // Generic Divisibility Check (Task 3b)
+    function checkDivisibilitySimple(inputId, divisor, minRange, maxRange) {
+        let val = parseInt(document.getElementById(inputId).value);
+        let feedback = document.getElementById('fb-' + inputId);
+        
+        if (val % divisor === 0 && val >= minRange && val <= maxRange) {
+            feedback.className = "feedback correct";
+            feedback.innerText = "Gute Wahl!";
+            updateProgress(inputId);
+        } else if (val % divisor === 0) {
+             feedback.className = "feedback wrong";
+            feedback.innerText = "Teilbar, aber nicht 'in der Nähe' (Bereich " + minRange + "-" + maxRange + ").";
+        } else {
+            feedback.className = "feedback wrong";
+            feedback.innerText = "Nicht durch " + divisor + " teilbar.";
+        }
+    }
+
+    // Generic Select Check
+    function checkSelect(selectId, correctValue) {
+        let val = document.getElementById(selectId).value;
+        let feedback = document.getElementById('fb-' + selectId);
+        
+        if (val === correctValue) {
+            feedback.className = "feedback correct";
+            feedback.innerText = "Analyse korrekt.";
+            updateProgress(selectId);
+        } else if (val === "") {
+            feedback.innerText = "";
+        } else {
+            feedback.className = "feedback wrong";
+            feedback.innerText = "Analyse fehlerhaft.";
+        }
+    }
+    
+    // Multi Select Check (Task 4a)
+    function checkMultiSelect(selectId, correctValuesArray) {
+        let val = document.getElementById(selectId).value;
+        let feedback = document.getElementById('fb-' + selectId);
+        
+        if (correctValuesArray.includes(val)) {
+            feedback.className = "feedback correct";
+            feedback.innerText = "Richtig erkannt!";
+            updateProgress(selectId);
+        } else {
+            feedback.className = "feedback wrong";
+            feedback.innerText = "Das ist nicht korrekt.";
+        }
+    }
+
+    // Task 8 Check
+    function checkSafeCode(inputId, divisor) {
+        let valStr = document.getElementById(inputId).value;
+        let val = parseInt(valStr);
+        let feedback = document.getElementById('fb-' + inputId);
+        
+        if (!valStr.startsWith("73") || valStr.length !== 4) {
+             feedback.className = "feedback wrong";
+             feedback.innerText = "Der Code muss mit 73 beginnen und 4 Stellen haben.";
+             return;
+        }
+
+        if (val % divisor === 0) {
+            feedback.className = "feedback correct";
+            feedback.innerText = "Safe geöffnet!";
+            updateProgress(inputId);
+        } else {
+            feedback.className = "feedback wrong";
+            feedback.innerText = "Code abgelehnt (Nicht durch " + divisor + " teilbar).";
+        }
+    }
+
+    // Task 10: Check specific amount of prime factors
+    function checkPrimeFactorsAmount(inputId, targetAmount) {
+        let val = parseInt(document.getElementById(inputId).value);
+        let feedback = document.getElementById('fb-' + inputId);
+        
+        if (isNaN(val) || val <= 1) {
+            feedback.className = "feedback wrong";
+            feedback.innerText = "Ungültige Zahl.";
+            return;
+        }
+
+        let factors = countPrimeFactorsCalc(val);
+
+        if (factors === targetAmount) {
+            feedback.className = "feedback correct";
+            feedback.innerText = "Bestätigt! Die Zahl hat genau " + targetAmount + " Primfaktoren.";
+            updateProgress(inputId);
+        } else {
+            feedback.className = "feedback wrong";
+            feedback.innerText = "Fehler. Deine Zahl hat " + factors + " Primfaktoren, nicht " + targetAmount + ".";
+        }
+    }
+
+</script>
+
+</body>
 </html>
