@@ -227,6 +227,18 @@ window.lessonsData = [
     author: "Даша",
   },
   {
+    id: "math-5-control-boss",
+    title:
+      "Контрольна з теми: Правила подільності розкладання об'єднання. LVL BOSS",
+    grade: 5,
+    topic: "Математика",
+    link: "math_general/5/test_boss.html",
+    subject_code: "math_general",
+    category: "lesson",
+    author: "Даша",
+  },
+
+  {
     id: "math-5-column-mult",
     title: "Множення чисел у стовпчик",
     grade: 5,

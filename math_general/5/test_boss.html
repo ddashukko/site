@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mathe Boss-Level: Knobelaufgaben</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script
+      id="MathJax-script"
+      async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+    ></script>
+    <style>
+      body {
+        font-family: "Courier New", Courier, monospace;
+        background-color: #222;
+        color: #0f0;
+        padding: 20px;
+        display: flex;
+        justify-content: center;
+      }
+      .sheet {
+        background: #000;
+        width: 210mm;
+        padding: 20mm;
+        border: 2px solid #0f0;
+        box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
+      }
+      h1 {
+        text-align: center;
+        border-bottom: 2px solid #0f0;
+        padding-bottom: 10px;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+      }
+
+      .task-box {
+        border: 1px dashed #0f0;
+        padding: 15px;
+        margin-bottom: 20px;
+        position: relative;
+      }
+      .task-box::before {
+        content: "⚠ EXPERTE";
+        position: absolute;
+        top: -10px;
+        right: 10px;
+        background: #000;
+        padding: 0 5px;
+        font-size: 12px;
+      }
+
+      input {
+        background: #111;
+        border: 1px solid #0f0;
+        color: #0f0;
+        padding: 5px;
+        font-family: inherit;
+        font-size: 18px;
+        text-align: center;
+        width: 100px;
+      }
+      input:focus {
+        outline: none;
+        box-shadow: 0 0 10px #0f0;
+      }
+
+      button {
+        width: 100%;
+        padding: 20px;
+        background: #003300;
+        color: #0f0;
+        border: 2px solid #0f0;
+        font-size: 20px;
+        cursor: pointer;
+        margin-top: 20px;
+        font-weight: bold;
+        text-transform: uppercase;
+      }
+      button:hover {
+        background: #0f0;
+        color: #000;
+      }
+
+      .feedback {
+        margin-top: 10px;
+        font-weight: bold;
+      }
+      .correct-msg {
+        color: #0f0;
+      }
+      .wrong-msg {
+        color: #f00;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="sheet">
+      <h1>BOSS LEVEL: LOGIK & RÄTSEL</h1>
+      <p style="text-align: center; margin-bottom: 30px">
+        "Rechnen kann jeder. Denken ist schwerer."
+      </p>
+
+      <div class="task-box" id="t1">
+        <strong>1. Das Zahlenrätsel</strong><br /><br />
+        Ich denke mir eine Zahl. Wenn ich sie verdopple, dann 10 addiere und das
+        Ergebnis durch 2 teile, erhalte ich 30.<br />
+        Wie heißt meine Zahl?
+        <br /><br />
+        Antwort: <input type="number" id="a1" />
+        <div class="feedback" id="f1"></div>
+      </div>
+
+      <div class="task-box" id="t2">
+        <strong>2. Die PIN-Code Suche</strong><br /><br />
+        Tim hat seinen 3-stelligen Fahrrad-Code vergessen.<br />
+        Er weiß noch:<br />
+        - Die Zahl ist durch 5 teilbar.<br />
+        - Die Quersumme ist 12.<br />
+        - Die erste Ziffer ist doppelt so groß wie die zweite.<br />
+        <br />
+        Wie lautet der Code?
+        <br /><br />
+        Code: <input type="number" id="a2" />
+        <div class="feedback" id="f2"></div>
+      </div>
+
+      <div class="task-box" id="t3">
+        <strong>3. Primzahlen-Jagd</strong><br /><br />
+        Die Zahl <strong>1001</strong> sieht schön aus. Aber sie ist keine
+        Primzahl!<br />
+        Sie ist durch 7, 11 und 13 teilbar.<br />
+        Finde den anderen Teiler: \( 7 \cdot 11 \cdot 13 = 1001 \).<br />
+        Was ergibt \( 1001 : 7 : 11 \)?
+        <br /><br />
+        Ergebnis: <input type="number" id="a3" />
+        <div class="feedback" id="f3"></div>
+      </div>
+
+      <div class="task-box" id="t4">
+        <strong>4. Die Treppe</strong><br /><br />
+        Rechne geschickt (Trick: Gaußsche Summenformel):<br />
+        \( 1 + 2 + 3 + 4 + \dots + 19 + 20 = ? \)
+        <br /><br />
+        Summe: <input type="number" id="a4" />
+        <div class="feedback" id="f4"></div>
+      </div>
+
+      <div class="task-box" id="t5">
+        <strong>5. Teilbarkeit extrem</strong><br /><br />
+        Finde die <strong>kleinste</strong> Zahl, die durch 2, 3, 4, 5 und 6
+        teilbar ist. <br /><br />
+        Zahl: <input type="number" id="a5" />
+        <div class="feedback" id="f5"></div>
+      </div>
+
+      <div class="task-box" id="t6">
+        <strong>6. Logik: Die Bakterien</strong><br /><br />
+        Eine Bakterienkultur verdoppelt sich jede Minute.<br />
+        Um 12:00 Uhr ist das Glas voll.<br />
+        Wann war das Glas genau <strong>halb</strong> voll? <br /><br />
+        Um 11:<input type="number" id="a6" style="width: 50px" /> Uhr.
+        <div class="feedback" id="f6"></div>
+      </div>
+
+      <button onclick="checkBoss()">Code überprüfen</button>
+      <div
+        id="final-score"
+        style="text-align: center; margin-top: 20px; font-size: 24px"
+      ></div>
+    </div>
+
+    <script>
+      function checkBoss() {
+        let score = 0;
+
+        // 1. Rückwärts rechnen: (30 * 2) - 10 = 50 / 2 = 25
+        // Wait: ((x * 2) + 10) / 2 = 30 -> (2x + 10) = 60 -> 2x = 50 -> x = 25
+        if (document.getElementById("a1").value == 25) {
+          document.getElementById("f1").innerHTML = "Richtig!";
+          document.getElementById("f1").className = "feedback correct-msg";
+          score++;
+        } else {
+          document.getElementById("f1").innerHTML = "Falsch! Rechne rückwärts.";
+          document.getElementById("f1").className = "feedback wrong-msg";
+        }
+
+        // 2. Durch 5 teilbar -> endet auf 0 oder 5.
+        // Erste Ziffer = 2 * Zweite.
+        // Wenn Ende 0: x + y + 0 = 12. x = 2y. 2y + y = 12 -> 3y=12 -> y=4. x=8. Code 840.
+        // Wenn Ende 5: x + y + 5 = 12. x + y = 7. 3y = 7 (geht nicht ganzzahlig).
+        // Also 840.
+        if (document.getElementById("a2").value == 840) {
+          document.getElementById("f2").innerHTML = "Genial! (840)";
+          document.getElementById("f2").className = "feedback correct-msg";
+          score++;
+        } else {
+          document.getElementById("f2").innerHTML =
+            "Falsch. Tipp: Die Zahl muss auf 0 oder 5 enden.";
+          document.getElementById("f2").className = "feedback wrong-msg";
+        }
+
+        // 3. 1001 / 7 = 143. 143 / 11 = 13.
+        if (document.getElementById("a3").value == 13) {
+          document.getElementById("f3").innerHTML = "Korrekt.";
+          document.getElementById("f3").className = "feedback correct-msg";
+          score++;
+        } else {
+          document.getElementById("f3").innerHTML = "Leider nein.";
+          document.getElementById("f3").className = "feedback wrong-msg";
+        }
+
+        // 4. (1+20)*10 = 210
+        if (document.getElementById("a4").value == 210) {
+          document.getElementById("f4").innerHTML = "Stark! (Gauß-Trick)";
+          document.getElementById("f4").className = "feedback correct-msg";
+          score++;
+        } else {
+          document.getElementById("f4").innerHTML = "Falsch. 1+20, 2+19...";
+          document.getElementById("f4").className = "feedback wrong-msg";
+        }
+
+        // 5. kgV(2,3,4,5,6) -> 60
+        if (document.getElementById("a5").value == 60) {
+          document.getElementById("f5").innerHTML = "Richtig. Es ist 60.";
+          document.getElementById("f5").className = "feedback correct-msg";
+          score++;
+        } else {
+          document.getElementById("f5").innerHTML =
+            "Falsch. (Tipp: Kleiner als 100)";
+          document.getElementById("f5").className = "feedback wrong-msg";
+        }
+
+        // 6. 11:59 (eine Minute vorher ist es die Hälfte)
+        if (document.getElementById("a6").value == 59) {
+          document.getElementById("f6").innerHTML = "Logisch! 1 Min vorher.";
+          document.getElementById("f6").className = "feedback correct-msg";
+          score++;
+        } else {
+          document.getElementById("f6").innerHTML =
+            "Nein, nicht 30! Denk nach: Verdopplung!";
+          document.getElementById("f6").className = "feedback wrong-msg";
+        }
+
+        let finalDiv = document.getElementById("final-score");
+        finalDiv.innerHTML = "Score: " + score + " / 6";
+        if (score == 6) {
+          finalDiv.style.color = "#0f0";
+          finalDiv.innerHTML += "<br>HACKER STATUS ERREICHT 🕶";
+        } else {
+          finalDiv.style.color = "white";
+        }
+      }
+    </script>
+  </body>
+</html>
