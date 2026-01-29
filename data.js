@@ -855,6 +855,16 @@ window.lessonsData = [
     category: "lesson",
     author: "Соня",
   },
+   {
+    id: "math-6-kulia_konus_cslsindr",
+    title: "Куля, конус, циліндр",
+    grade: 6,
+    topic: "Математика",
+    link: "math_general/6/Вадим/math_6_kulia_konus_cilindr.html",
+    subject_code: "math_general",
+    category: "lesson",
+    author: "Соня",
+  },
   // ==========================================
   // 8 КЛАС (Алгебра - Маринка/Соня) - Автор: Соня
   // ЦІ УРОКИ ТЕПЕР В КІНЦІ СПИСКУ 8 КЛАСУ
