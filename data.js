@@ -217,6 +217,16 @@ window.lessonsData = [
     author: "Даша",
   },
   {
+    id: "math-5-control-sim3",
+    title: "Контрольна з теми: Правила подільності розкладання об'єднання",
+    grade: 5,
+    topic: "Математика",
+    link: "math_general/5/test_gesets.html",
+    subject_code: "math_general",
+    category: "lesson",
+    author: "Даша",
+  },
+  {
     id: "math-5-column-mult",
     title: "Множення чисел у стовпчик",
     grade: 5,
@@ -1011,7 +1021,7 @@ window.lessonsData = [
     category: "lesson",
     author: "Соня",
   },
- // ==========================================
+  // ==========================================
   // 10 КЛАС (Алгебра - Соня) - Автор: Соня
   // ==========================================
   {

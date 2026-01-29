@@ -1,0 +1,665 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Große Klassenarbeit Klasse 5 (45 Aufgaben)</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script
+      id="MathJax-script"
+      async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+    ></script>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #eef2f3;
+        display: flex;
+        justify-content: center;
+        padding: 20px;
+      }
+      .sheet {
+        background: white;
+        width: 210mm;
+        padding: 20mm;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);
+        border-top: 10px solid #2c3e50;
+      }
+      h1 {
+        text-align: center;
+        color: #2c3e50;
+        margin-bottom: 5px;
+      }
+      .subtitle {
+        text-align: center;
+        color: #7f8c8d;
+        margin-bottom: 30px;
+        font-style: italic;
+      }
+
+      h3 {
+        margin-top: 35px;
+        background: #f8f9fa;
+        padding: 8px 15px;
+        border-left: 6px solid #3498db;
+        color: #2c3e50;
+      }
+
+      .question-row {
+        margin-bottom: 8px;
+        padding: 6px;
+        border-bottom: 1px dotted #e0e0e0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 15px;
+      }
+      .question-row:hover {
+        background-color: #fcfcfc;
+      }
+
+      .q-num {
+        font-weight: bold;
+        color: #7f8c8d;
+        width: 35px;
+      }
+      .q-content {
+        flex-grow: 1;
+        margin-right: 15px;
+      }
+
+      input {
+        padding: 4px 8px;
+        border: 1px solid #bdc3c7;
+        border-radius: 4px;
+        text-align: center;
+        font-family: inherit;
+        font-size: 14px;
+        transition: all 0.2s;
+      }
+      input:focus {
+        border-color: #3498db;
+        outline: none;
+        background: #eaf6ff;
+        box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+      }
+
+      .input-xs {
+        width: 40px;
+      }
+      .input-sm {
+        width: 70px;
+      }
+      .input-md {
+        width: 120px;
+      }
+      .input-lg {
+        width: 200px;
+        text-align: left;
+      }
+
+      /* Feedback Styling */
+      .correct {
+        background-color: #d4edda !important;
+        border-color: #28a745 !important;
+        color: #155724;
+      }
+      .wrong {
+        background-color: #f8d7da !important;
+        border-color: #dc3545 !important;
+        color: #721c24;
+      }
+
+      #submit-area {
+        margin-top: 40px;
+        text-align: center;
+      }
+      #submit-btn {
+        width: 100%;
+        padding: 18px;
+        background-color: #2c3e50;
+        color: white;
+        font-size: 18px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: background 0.3s;
+      }
+      #submit-btn:hover {
+        background-color: #34495e;
+      }
+
+      #result-box {
+        display: none;
+        margin-top: 25px;
+        padding: 20px;
+        border: 3px solid #2c3e50;
+        background-color: #fff;
+        text-align: center;
+      }
+      .grade {
+        font-size: 36px;
+        font-weight: bold;
+        display: block;
+        margin: 10px 0;
+      }
+      .stats {
+        font-size: 18px;
+        color: #555;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="sheet">
+      <div
+        style="
+          display: flex;
+          justify-content: space-between;
+          margin-bottom: 20px;
+          font-weight: bold;
+        "
+      >
+        <span
+          >Name:
+          <input
+            type="text"
+            style="
+              border: none;
+              border-bottom: 1px solid #000;
+              width: 180px;
+              text-align: left;
+            "
+        /></span>
+        <span>Klasse: 5</span>
+        <span>Datum: 29.01.2026</span>
+      </div>
+
+      <h1>Klassenarbeit Mathematik</h1>
+      <div class="subtitle">
+        Themen: Wiederholung, Größen, Rechengesetze, Teilbarkeit, Primzahlen
+      </div>
+
+      <h3>I. Wiederholung: Zahlen & Größen (Basics)</h3>
+      <p style="font-size: 14px; color: grey">(Was wir schon können müssen)</p>
+
+      <div class="question-row">
+        <span class="q-num">1.</span>
+        <span class="q-content"
+          >Runde <strong>148</strong> auf Zehner (Z).</span
+        >
+        <input type="number" id="q1" class="input-sm" />
+      </div>
+      <div class="question-row">
+        <span class="q-num">2.</span>
+        <span class="q-content"
+          >Runde <strong>3999</strong> auf Tausender (T).</span
+        >
+        <input type="number" id="q2" class="input-sm" />
+      </div>
+      <div class="question-row">
+        <span class="q-num">3.</span>
+        <span class="q-content"
+          >Wandle um: \( 3 \text{ km} = \dots \text{ m} \)</span
+        >
+        <input type="number" id="q3" class="input-sm" />
+      </div>
+      <div class="question-row">
+        <span class="q-num">4.</span>
+        <span class="q-content"
+          >Wandle um: \( 5000 \text{ g} = \dots \text{ kg} \)</span
+        >
+        <input type="number" id="q4" class="input-sm" />
+      </div>
+      <div class="question-row">
+        <span class="q-num">5.</span>
+        <span class="q-content"
+          >Wandle um: \( 2 \text{ h } 10 \text{ min} = \dots \text{ min}
+          \)</span
+        >
+        <input type="number" id="q5" class="input-sm" />
+      </div>
+      <div class="question-row">
+        <span class="q-num">6.</span>
+        <span class="q-content"
+          >Wie viel Cent sind \( 4{,}50 \text{ €} \)?</span
+        >
+        <input type="number" id="q6" class="input-sm" />
+      </div>
+
+      <h3>II. Rechnen & Vorrangregeln</h3>
+
+      <div class="question-row">
+        <span class="q-num">7.</span>
+        <span class="q-content"
+          >Berechne: \( 15 + 5 \cdot 2 \) (Achtung: Punkt vor Strich!)</span
+        >
+        <input type="number" id="q7" class="input-sm" />
+      </div>
+      <div class="question-row">
+        <span class="q-num">8.</span>
+        <span class="q-content">Berechne: \( (20 - 5) : 3 \)</span>
+        <input type="number" id="q8" class="input-sm" />
+      </div>
+      <div class="question-row">
+        <span class="q-num">9.</span>
+        <span class="q-content"
+          >Berechne im Kopf: \( 12 \cdot 12 \) (Quadratzahl)</span
+        >
+        <input type="number" id="q9" class="input-sm" />
+      </div>
+      <div class="question-row">
+        <span class="q-num">10.</span>
+        <span class="q-content">Schriftlich oder im Kopf: \( 4800 : 60 \)</span>
+        <input type="number" id="q10" class="input-sm" />
+      </div>
+
+      <h3>III. Fachbegriffe & Gesetze</h3>
+      <p style="font-size: 14px">
+        (Kommutativgesetz, Assoziativgesetz, Distributivgesetz, Produkt, Summe)
+      </p>
+
+      <div class="question-row">
+        <span class="q-num">11.</span>
+        <span class="q-content">Wie heißt das Ergebnis einer Addition?</span>
+        <input type="text" id="q11" class="input-md" />
+      </div>
+      <div class="question-row">
+        <span class="q-num">12.</span>
+        <span class="q-content"
+          >Wie heißt das Ergebnis einer Multiplikation?</span
+        >
+        <input type="text" id="q12" class="input-md" />
+      </div>
+      <div class="question-row">
+        <span class="q-num">13.</span>
+        <span class="q-content">Gesetz: \( a + b = b + a \)</span>
+        <input type="text" id="q13" class="input-lg" placeholder="Name..." />
+      </div>
+      <div class="question-row">
+        <span class="q-num">14.</span>
+        <span class="q-content"
+          >Gesetz: \( a \cdot (b + c) = a \cdot b + a \cdot c \)
+          (Ausmultiplizieren)</span
+        >
+        <input type="text" id="q14" class="input-lg" placeholder="Name..." />
+      </div>
+      <div class="question-row">
+        <span class="q-num">15.</span>
+        <span class="q-content"
+          >Gesetz: \( (a+b)+c = a+(b+c) \) (Klammern setzen)</span
+        >
+        <input type="text" id="q15" class="input-lg" placeholder="Name..." />
+      </div>
+
+      <h3>IV. Vorteilhaftes Rechnen</h3>
+      <p>Rechne geschickt! Trage nur das Ergebnis ein.</p>
+
+      <div class="question-row">
+        <span class="q-num">16.</span>
+        <span class="q-content">\( 2 \cdot 37 \cdot 5 \)</span>
+        <input type="number" id="q16" class="input-md" />
+      </div>
+      <div class="question-row">
+        <span class="q-num">17.</span>
+        <span class="q-content">\( 25 \cdot 9 \cdot 4 \)</span>
+        <input type="number" id="q17" class="input-md" />
+      </div>
+      <div class="question-row">
+        <span class="q-num">18.</span>
+        <span class="q-content">\( 125 \cdot 13 \cdot 8 \)</span>
+        <input type="number" id="q18" class="input-md" />
+      </div>
+      <div class="question-row">
+        <span class="q-num">19.</span>
+        <span class="q-content">\( 56 + 18 + 44 \)</span>
+        <input type="number" id="q19" class="input-md" />
+      </div>
+      <div class="question-row">
+        <span class="q-num">20.</span>
+        <span class="q-content">\( 235 + 98 + 5 \)</span>
+        <input type="number" id="q20" class="input-md" />
+      </div>
+      <div class="question-row">
+        <span class="q-num">21.</span>
+        <span class="q-content"
+          >\( 7 \cdot 12 + 7 \cdot 8 \) (Nutze das Distributivgesetz!)</span
+        >
+        <input type="number" id="q21" class="input-md" />
+      </div>
+      <div class="question-row">
+        <span class="q-num">22.</span>
+        <span class="q-content">\( 5 \cdot 34 - 5 \cdot 4 \)</span>
+        <input type="number" id="q22" class="input-md" />
+      </div>
+
+      <h3>V. Teilbarkeit</h3>
+      <p>Antworte mit <strong>ja</strong> oder <strong>nein</strong>.</p>
+
+      <div class="question-row">
+        <span class="q-num">23.</span>
+        <span class="q-content">Ist \( 140 \) durch 2 teilbar?</span>
+        <input type="text" id="q23" class="input-xs" />
+      </div>
+      <div class="question-row">
+        <span class="q-num">24.</span>
+        <span class="q-content">Ist \( 140 \) durch 5 teilbar?</span>
+        <input type="text" id="q24" class="input-xs" />
+      </div>
+      <div class="question-row">
+        <span class="q-num">25.</span>
+        <span class="q-content">Ist \( 140 \) durch 10 teilbar?</span>
+        <input type="text" id="q25" class="input-xs" />
+      </div>
+      <div class="question-row">
+        <span class="q-num">26.</span>
+        <span class="q-content"
+          >Ist \( 140 \) durch 3 teilbar? (Quersumme?)</span
+        >
+        <input type="text" id="q26" class="input-xs" />
+      </div>
+      <div class="question-row">
+        <span class="q-num">27.</span>
+        <span class="q-content">Ist \( 333 \) durch 9 teilbar?</span>
+        <input type="text" id="q27" class="input-xs" />
+      </div>
+      <div class="question-row">
+        <span class="q-num">28.</span>
+        <span class="q-content">Ist \( 918 \) durch 9 teilbar?</span>
+        <input type="text" id="q28" class="input-xs" />
+      </div>
+      <div class="question-row">
+        <span class="q-num">29.</span>
+        <span class="q-content">Ist \( 225 \) durch 25 teilbar?</span>
+        <input type="text" id="q29" class="input-xs" />
+      </div>
+      <div class="question-row">
+        <span class="q-num">30.</span>
+        <span class="q-content">Ist \( 316 \) durch 4 teilbar?</span>
+        <input type="text" id="q30" class="input-xs" />
+      </div>
+
+      <p style="margin-top: 15px">Ergänze die Ziffer, damit es stimmt:</p>
+      <div class="question-row">
+        <span class="q-num">31.</span>
+        <span class="q-content">\( 51\_ \) ist durch 5 teilbar. Ziffer:</span>
+        <input type="number" id="q31" class="input-xs" />
+      </div>
+      <div class="question-row">
+        <span class="q-num">32.</span>
+        <span class="q-content">\( 16\_ \) ist durch 2 teilbar. Ziffer:</span>
+        <input type="number" id="q32" class="input-xs" />
+      </div>
+      <div class="question-row">
+        <span class="q-num">33.</span>
+        <span class="q-content">\( 2\_1 \) ist durch 3 teilbar. Ziffer:</span>
+        <input type="number" id="q33" class="input-xs" />
+      </div>
+      <div class="question-row">
+        <span class="q-num">34.</span>
+        <span class="q-content">\( 13\_ \) ist durch 4 teilbar. Ziffer:</span>
+        <input type="number" id="q34" class="input-xs" />
+      </div>
+
+      <h3>VI. Primzahlen</h3>
+
+      <div class="question-row">
+        <span class="q-num">35.</span>
+        <span class="q-content">Ist 1 eine Primzahl? (ja/nein)</span>
+        <input type="text" id="q35" class="input-xs" />
+      </div>
+      <div class="question-row">
+        <span class="q-num">36.</span>
+        <span class="q-content">Ist 2 eine Primzahl? (ja/nein)</span>
+        <input type="text" id="q36" class="input-xs" />
+      </div>
+      <div class="question-row">
+        <span class="q-num">37.</span>
+        <span class="q-content">Ist 15 eine Primzahl? (ja/nein)</span>
+        <input type="text" id="q37" class="input-xs" />
+      </div>
+      <div class="question-row">
+        <span class="q-num">38.</span>
+        <span class="q-content">Nenne eine Primzahl zwischen 10 und 20.</span>
+        <input type="number" id="q38" class="input-sm" />
+      </div>
+
+      <p style="margin-top: 10px">Zerlege in Primfaktoren:</p>
+      <div class="question-row">
+        <span class="q-num">39.</span>
+        <span class="q-content"
+          >Zerlege <strong>12</strong>: \( 2 \cdot 2 \cdot \dots \)</span
+        >
+        <input type="number" id="q39" class="input-xs" />
+      </div>
+      <div class="question-row">
+        <span class="q-num">40.</span>
+        <span class="q-content"
+          >Zerlege <strong>50</strong>: \( 2 \cdot \dots \cdot \dots \)</span
+        >
+        <input type="text" id="q40" class="input-sm" placeholder="z.B. 5*5" />
+      </div>
+
+      <h3>VII. Sachaufgaben (Knobeln)</h3>
+      <div class="question-row">
+        <span class="q-num">41.</span>
+        <span class="q-content"
+          >Der Lehrer will 32 Schüler in 6er Gruppen einteilen. Geht das auf?
+          (ja/nein)</span
+        >
+        <input type="text" id="q41" class="input-sm" />
+      </div>
+      <div class="question-row">
+        <span class="q-num">42.</span>
+        <span class="q-content"
+          >Wie viele Schüler bleiben beim 6er-Gruppieren übrig?</span
+        >
+        <input type="number" id="q42" class="input-sm" />
+      </div>
+      <div class="question-row">
+        <span class="q-num">43.</span>
+        <span class="q-content"
+          >Eine Ampel wird alle 40 Sekunden grün. Eine andere alle 60 Sekunden.
+          Wann werden sie das erste Mal <strong>gemeinsam</strong> grün?
+          (kgV)</span
+        >
+        <input type="number" id="q43" class="input-sm" placeholder="Sekunden" />
+      </div>
+      <div class="question-row">
+        <span class="q-num">44.</span>
+        <span class="q-content"
+          >Paul hat 5 Packungen Kaugummi à 8 Stück und bekommt noch 3 einzelne
+          dazu. Wie viele hat er?</span
+        >
+        <input type="number" id="q44" class="input-sm" />
+      </div>
+      <div class="question-row">
+        <span class="q-num">45.</span>
+        <span class="q-content"
+          >Wahr oder Falsch: Alle geraden Zahlen sind durch 2 teilbar.
+          (wahr/falsch)</span
+        >
+        <input type="text" id="q45" class="input-md" />
+      </div>
+
+      <div id="submit-area">
+        <button id="submit-btn" onclick="checkTest()">
+          Klassenarbeit abgeben (45 Aufgaben)
+        </button>
+      </div>
+
+      <div id="result-box">
+        <span class="grade" id="final-grade">Note: -</span>
+        <div class="stats">Punkte: <span id="score">0</span> / 45</div>
+        <div id="feedback" style="margin-top: 10px; font-style: italic"></div>
+        <div
+          id="errors"
+          style="color: #c0392b; margin-top: 15px; font-size: 14px"
+        ></div>
+      </div>
+    </div>
+
+    <script>
+      function checkTest() {
+        let score = 0;
+        let incorrectIDs = [];
+        const total = 45;
+
+        // Validation Function
+        function validate(id, validAnswers) {
+          const el = document.getElementById(id);
+          let val = el.value.trim().toLowerCase().replace(",", "."); // Handle comma as decimal
+
+          let isCorrect = false;
+          if (Array.isArray(validAnswers)) {
+            isCorrect = validAnswers.some((ans) => val == ans);
+          } else {
+            isCorrect = val == validAnswers;
+          }
+
+          if (isCorrect) {
+            el.classList.add("correct");
+            el.classList.remove("wrong");
+            score++;
+          } else {
+            el.classList.add("wrong");
+            el.classList.remove("correct");
+            incorrectIDs.push(id.replace("q", ""));
+          }
+        }
+
+        // --- I. Wiederholung ---
+        validate("q1", ["150"]); // 148 round to 10
+        validate("q2", ["4000"]); // 3999 round to 1000
+        validate("q3", ["3000"]); // 3 km = 3000 m
+        validate("q4", ["5"]); // 5000g = 5kg
+        validate("q5", ["130"]); // 2h 10m = 120+10
+        validate("q6", ["450"]); // 4,50 eur = 450 ct
+
+        // --- II. Rechnen ---
+        validate("q7", ["25"]); // 15 + 5*2 = 15+10 = 25 (NOT 40)
+        validate("q8", ["5"]); // (20-5)/3 = 15/3 = 5
+        validate("q9", ["144"]); // 12*12
+        validate("q10", ["80"]); // 4800 / 60 = 80
+
+        // --- III. Begriffe ---
+        validate("q11", ["summe"]);
+        validate("q12", ["produkt"]);
+        validate("q13", ["kommutativgesetz", "vertauschungsgesetz"]);
+        validate("q14", ["distributivgesetz", "verteilungsgesetz"]);
+        validate("q15", ["assoziativgesetz", "verbindungsgesetz"]);
+
+        // --- IV. Vorteilhaft ---
+        validate("q16", ["370"]); // 2*5=10 *37
+        validate("q17", ["900"]); // 25*4=100 *9
+        validate("q18", ["13000"]); // 125*8=1000 *13
+        validate("q19", ["118"]); // 56+44=100 +18
+        validate("q20", ["338"]); // 235+5=240 +98=338 OR 235+98+5
+        validate("q21", ["140"]); // 7*(12+8) = 7*20
+        validate("q22", ["150"]); // 5*(34-4) = 5*30
+
+        // --- V. Teilbarkeit ---
+        let yes = ["ja", "j", "yes", "wahr"];
+        let no = ["nein", "n", "no", "falsch"];
+
+        validate("q23", yes); // 140 / 2
+        validate("q24", yes); // 140 / 5
+        validate("q25", yes); // 140 / 10
+        validate("q26", no); // 140 / 3 (QS=5)
+        validate("q27", yes); // 333 / 9 (QS=9)
+        validate("q28", yes); // 918 / 9 (QS=18)
+        validate("q29", yes); // 225 / 25
+        validate("q30", yes); // 316 / 4 (16 div 4)
+
+        // Digits
+        validate("q31", ["0", "5"]); // 51_ / 5
+        validate("q32", ["0", "2", "4", "6", "8"]); // 16_ / 2
+        validate("q33", ["0", "3", "6", "9"]); // 2_1 / 3 (2+1+x) -> x=0,3,6,9
+        validate("q34", ["2", "6"]); // 13_ / 4 -> 32 or 36
+
+        // --- VI. Primzahlen ---
+        validate("q35", no); // 1 is not prime
+        validate("q36", yes); // 2 is prime
+        validate("q37", no); // 15 is 3*5
+        validate("q38", ["11", "13", "17", "19"]); // primes between 10-20
+        validate("q39", ["3"]); // 12 = 2*2*3
+
+        // 50 = 2 * 5 * 5. Input allows variations like "5*5" or "5 * 5"
+        let q40val = document.getElementById("q40").value.replace(/\s/g, "");
+        if (q40val == "5*5" || q40val == "5·5") {
+          document.getElementById("q40").classList.add("correct");
+          document.getElementById("q40").classList.remove("wrong");
+          score++;
+        } else {
+          document.getElementById("q40").classList.add("wrong");
+          incorrectIDs.push("40");
+        }
+
+        // --- VII. Sachaufgaben ---
+        validate("q41", no); // 32 / 6
+        validate("q42", ["2"]); // Rest 2
+        validate("q43", ["120"]); // LCM 40, 60 = 120
+        validate("q44", ["43"]); // 5*8 + 3
+        validate("q45", yes); // Def gerade Zahlen
+
+        // --- Result Display ---
+        const resultBox = document.getElementById("result-box");
+        const scoreSpan = document.getElementById("score");
+        const gradeSpan = document.getElementById("final-grade");
+        const feedback = document.getElementById("feedback");
+
+        resultBox.style.display = "block";
+        scoreSpan.innerText = score;
+
+        // German Grading Scale (Standard IHK/Gymnasium for 45 pts)
+        // 1: 92% (41-45)
+        // 2: 81% (36-40)
+        // 3: 67% (30-35)
+        // 4: 50% (23-29) - PASS
+        // 5: 30% (14-22)
+        // 6: <30% (0-13)
+
+        let grade = 6;
+        let color = "red";
+
+        if (score >= 41) {
+          grade = 1;
+          color = "#27ae60";
+          feedback.innerText = "Fantastisch! (Дуже добре)";
+        } else if (score >= 36) {
+          grade = 2;
+          color = "#2ecc71";
+          feedback.innerText = "Gut gemacht! (Добре)";
+        } else if (score >= 30) {
+          grade = 3;
+          color = "#f1c40f";
+          feedback.innerText = "Vollkommen okay. (Нормально)";
+        } else if (score >= 23) {
+          grade = 4;
+          color = "#e67e22";
+          feedback.innerText = "Bestanden. (Здано, але є помилки)";
+        } else if (score >= 14) {
+          grade = 5;
+          color = "#e74c3c";
+          feedback.innerText = "Nicht bestanden. (Не здано - треба вчити)";
+        } else {
+          grade = 6;
+          color = "#c0392b";
+          feedback.innerText = "Leider ungenügend. (Дуже погано)";
+        }
+
+        gradeSpan.innerText = "Note: " + grade;
+        gradeSpan.style.color = color;
+
+        if (incorrectIDs.length > 0) {
+          document.getElementById("errors").innerText =
+            "Fehler bei Aufgaben: " + incorrectIDs.join(", ");
+        } else {
+          document.getElementById("errors").innerText = "Keine Fehler!";
+        }
+
+        window.scrollTo(0, document.body.scrollHeight);
+      }
+    </script>
+  </body>
+</html>
