@@ -2,419 +2,389 @@
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Рівняння: Від А до Я | Інтерактивний урок</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Урок: Циліндр та Конус</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
     
     <script>
-        window.MathJax = {
-            tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
-            options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'] },
-            startup: {
-                pageReady: () => {
-                    return MathJax.startup.defaultPageReady().then(() => {
-                        document.getElementById('loader').style.display = 'none';
-                        document.body.classList.add('loaded');
-                    });
-                }
-            }
-        };
+    window.MathJax = {
+      tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+      svg: { fontCache: 'global' }
+    };
     </script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
     <style>
-        :root {
-            --primary: #4f46e5;
-            --success: #10b981;
-            --error: #ef4444;
-            --warning: #f59e0b;
-            --bg-site: #f1f5f9;
-            --bg-card: #ffffff;
-            --text-dark: #1e293b;
-        }
-
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: var(--bg-site);
-            color: var(--text-dark);
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            opacity: 0; /* Приховуємо до завантаження MathJax */
-            transition: opacity 0.3s ease;
-        }
-
-        body.loaded { opacity: 1; }
-
-        #loader {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: white; display: flex; justify-content: center;
-            align-items: center; z-index: 9999;
-        }
-
-        /* Layout */
-        .app-container {
-            display: flex;
-            height: 100vh;
-            width: 100vw;
-            flex-direction: row;
-        }
-
-        /* Панель контенту */
-        .content-panel {
-            flex: 1.2;
-            overflow-y: auto;
-            background: var(--bg-card);
-            padding: 2rem;
-            border-right: 2px solid #e2e8f0;
-            scroll-behavior: smooth;
-        }
-
-        /* Панель дошки */
-        .whiteboard-panel {
-            flex: 0.8;
-            display: flex;
-            flex-direction: column;
-            background: #f8fafc;
-            position: relative;
-        }
-
-        /* Адаптивність для планшетів та смартфонів */
-        @media (max-width: 1024px) {
-            .app-container { flex-direction: column; overflow-y: auto; height: auto; }
-            .content-panel { height: auto; overflow-y: visible; border-right: none; padding: 1rem; }
-            .whiteboard-panel { height: 500px; border-top: 4px solid var(--primary); }
-            body { overflow-y: auto; }
-        }
-
-        /* Елементи інтерфейсу */
-        .header { margin-bottom: 2rem; border-bottom: 3px solid var(--primary); padding-bottom: 1rem; }
-        .block-section { margin-bottom: 3rem; }
-        .section-title { color: var(--primary); font-size: 1.4rem; font-weight: 800; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 10px; }
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
         
-        .task-card {
-            background: #fff;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            transition: transform 0.2s;
+        body { 
+            font-family: 'Nunito', sans-serif; 
+            overflow: hidden; /* Забороняємо скрол всієї сторінки */
+            background-color: #f3f4f6;
         }
-        .task-card:hover { transform: scale(1.01); }
-
-        .equation-display { font-size: 1.5rem; margin-bottom: 1rem; color: #334155; }
-
-        .input-group { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 1rem; }
-        input[type="text"] {
-            padding: 12px; border: 2px solid #cbd5e1; border-radius: 8px;
-            width: 150px; font-size: 1rem; outline: none; transition: 0.2s;
-        }
-        input.correct { border-color: var(--success); background: #f0fdf4; }
-        input.wrong { border-color: var(--error); background: #fef2f2; }
-
-        .btn {
-            padding: 10px 20px; border-radius: 8px; border: none;
-            cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: 0.2s;
-        }
-        .btn-check { background: var(--primary); color: white; }
-        .btn-hint { background: #e2e8f0; color: #475569; }
-        .btn-sol { background: #fef3c7; color: #92400e; }
-        .btn:active { transform: translateY(2px); }
-
-        .info-box {
-            display: none; margin-top: 1rem; padding: 1rem;
-            border-radius: 8px; font-size: 0.95rem; line-height: 1.5;
-            background: #f8fafc; border-left: 4px solid var(--warning);
-        }
-
-        /* Whiteboard Tools */
-        .wb-toolbar {
-            padding: 10px; background: #1e293b; color: white;
-            display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;
-        }
-        .tool-btn {
-            background: #334155; color: white; border: none; padding: 8px 12px;
-            border-radius: 6px; cursor: pointer; font-size: 0.8rem;
-        }
-        .tool-btn.active { background: var(--primary); }
         
-        canvas { flex: 1; background: white; cursor: crosshair; touch-action: none; }
+        /* Кастомний скрол */
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: #f1f1f1; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #c7c7c7; border-radius: 4px; }
+        
+        /* Анімації */
+        .fade-in { animation: fadeIn 0.3s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* Final Result */
-        #result-overlay {
-            position: fixed; top:0; left:0; width:100%; height:100%;
-            background: rgba(15, 23, 42, 0.9); display: none;
-            justify-content: center; align-items: center; z-index: 10000; color: white; text-align: center;
-            padding: 20px;
+        .correct-anim { animation: pulseGreen 0.5s; border-color: #10B981 !important; background-color: #D1FAE5 !important; }
+        @keyframes pulseGreen { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
+
+        .wrong-anim { animation: shakeRed 0.4s; border-color: #EF4444 !important; background-color: #FEE2E2 !important; }
+        @keyframes shakeRed { 0% { transform: translateX(0); } 25% { transform: translateX(-5px); } 50% { transform: translateX(5px); } 75% { transform: translateX(-5px); } 100% { transform: translateX(0); } }
+
+        /* Канвас */
+        #whiteboard { touch-action: none; /* Важливо для малювання пальцем */ }
+        
+        /* Мобільна навігація: ховаємо на десктопі */
+        .mobile-nav { display: flex; }
+        @media (min-width: 768px) {
+            .mobile-nav { display: none; }
+            .desktop-split { display: flex !important; }
+            #task-panel, #board-panel { display: flex !important; width: 50%; height: 100%; }
         }
-
-        details summary { cursor: pointer; font-weight: bold; color: var(--primary); margin-bottom: 1rem; }
     </style>
 </head>
-<body>
+<body class="h-screen flex flex-col md:flex-row relative text-gray-800">
 
-    <div id="loader"><div>⏳ Завантаження математичного всесвіту...</div></div>
-
-    <div class="app-container">
-        <div class="content-panel" id="content-panel">
-            <div class="header">
-                <h1>🏆 Академія Рівнянь</h1>
-                <p>Курс: 1-7 клас | Рівень: Середній | 80 завдань</p>
+    <div id="task-panel" class="w-full md:w-1/2 h-full flex flex-col bg-white md:border-r-2 md:border-gray-200 shadow-xl z-10 pb-16 md:pb-0 transition-all duration-300">
+        
+        <div class="p-4 bg-indigo-600 text-white flex justify-between items-center shadow-md flex-shrink-0">
+            <div>
+                <h1 class="text-lg md:text-xl font-bold leading-tight">Циліндр та Конус</h1>
+                <p class="text-xs md:text-sm opacity-90">Математика 6 клас</p>
             </div>
-
-            <details>
-                <summary>💡 ТЕОРІЯ: Основні правила</summary>
-                <div style="background: #f1f5f9; padding: 15px; border-radius: 10px;">
-                    <ul>
-                        <li>$a + x = b \implies x = b - a$</li>
-                        <li>$a \cdot x = b \implies x = b : a$</li>
-                        <li>При перенесенні через знак $=$ змінюємо знак числа на протилежний.</li>
-                        <li>Спочатку виконуємо дії в дужках або розкриваємо їх.</li>
-                    </ul>
-                </div>
-            </details>
-
-            <div id="tasks-container">
-                </div>
-
-            <button class="btn btn-check" style="width: 100%; padding: 20px; font-size: 1.2rem; margin-top: 30px;" onclick="showFinalResult()">ЗАВЕРШИТИ УРОК</button>
+            <div class="text-right">
+                <div class="text-xs uppercase opacity-75">Рахунок</div>
+                <div class="font-bold text-lg"><span id="score">0</span> / 30</div>
+            </div>
         </div>
 
-        <div class="whiteboard-panel">
-            <div class="wb-toolbar">
-                <button class="tool-btn active" onclick="setTool('pen', this)">✏️ Олівець</button>
-                <button class="tool-btn" onclick="setTool('eraser', this)">🧽 Гумка</button>
-                <button class="tool-btn" onclick="clearCanvas()">🗑️ Очистити</button>
-                <button class="tool-btn" onclick="drawGrid()">🌐 Сітка</button>
-                <button class="tool-btn" onclick="drawAxes()">📈 Осі</button>
-                <button class="tool-btn" onclick="addShape('rect')">⬜ Квадрат</button>
+        <div class="flex-1 overflow-y-auto p-4 md:p-6 custom-scroll bg-gray-50" id="content-area">
+            
+            <div class="mb-6 bg-white p-4 rounded-xl shadow-sm border border-blue-100">
+                <h2 class="text-lg font-bold text-blue-800 mb-2">👋 Привіт!</h2>
+                <p class="text-sm text-gray-600 mb-3">
+                    Урок про фігури обертання. Використовуй $\pi \approx 3.14$.
+                </p>
+                <details class="bg-blue-50 p-3 rounded-lg cursor-pointer">
+                    <summary class="font-bold text-indigo-600 text-sm select-none">🔑 Формули (Натисни)</summary>
+                    <div class="mt-2 text-gray-700 text-sm space-y-1">
+                        <p>$C = 2\pi r$ (довжина кола)</p>
+                        <p>$S = \pi r^2$ (площа круга)</p>
+                        <p>$S_{біч} = 2\pi r h$</p>
+                        <p>$S_{повна} = 2\pi r h + 2\pi r^2$</p>
+                    </div>
+                </details>
             </div>
-            <canvas id="wbCanvas"></canvas>
+
+            <div id="tasks-container" class="space-y-6 pb-4">
+                </div>
+
+            <div id="final-section" class="mt-8 text-center hidden">
+                <h2 class="text-2xl font-bold text-gray-800 mb-2">Урок завершено! 🎉</h2>
+                <div id="final-score-display" class="text-lg mb-4"></div>
+                <p id="final-praise" class="text-indigo-600 font-semibold italic mb-6"></p>
+                <button onclick="location.reload()" class="bg-indigo-600 text-white px-8 py-3 rounded-full shadow-lg hover:bg-indigo-700">Почати спочатку</button>
+            </div>
+            
+            <div class="h-12 md:h-20"></div> </div>
+
+        <div class="p-3 bg-white border-t hidden md:flex justify-between items-center">
+            <span class="text-xs text-gray-500">Використовуй дошку праворуч 👉</span>
+            <button onclick="finishLesson()" class="bg-green-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-green-700 text-sm">
+                Завершити урок
+            </button>
         </div>
     </div>
 
-    <div id="result-overlay">
-        <div>
-            <h1 id="res-grade" style="font-size: 4rem; margin-bottom: 10px;"></h1>
-            <p id="res-motivation" style="font-size: 1.5rem; max-width: 600px;"></p>
-            <button class="btn btn-check" style="margin-top: 30px;" onclick="location.reload()">Спробувати ще раз</button>
+    <div id="board-panel" class="hidden md:flex w-full md:w-1/2 h-full bg-white relative flex-col pb-16 md:pb-0">
+        
+        <div class="absolute top-2 left-2 right-2 bg-white/95 backdrop-blur rounded-xl shadow border border-gray-200 p-2 flex gap-2 justify-center items-center z-20 flex-wrap">
+            <button onclick="setTool('pen')" class="p-2 rounded bg-gray-100 hover:bg-gray-200 active:bg-blue-100 transition" title="Олівець">✏️</button>
+            <button onclick="setTool('eraser')" class="p-2 rounded hover:bg-gray-100 transition" title="Гумка">🧹</button>
+            <div class="w-px h-6 bg-gray-300 mx-1"></div>
+            <button onclick="drawGrid()" class="px-2 py-1 rounded hover:bg-gray-100 text-xs font-bold text-gray-600"># Сітка</button>
+            <button onclick="insertShape('cylinder')" class="px-2 py-1 rounded hover:bg-gray-100 text-xs font-bold text-gray-600">🛢 Циліндр</button>
+            <button onclick="insertShape('cone')" class="px-2 py-1 rounded hover:bg-gray-100 text-xs font-bold text-gray-600">A Конус</button>
+            <div class="w-px h-6 bg-gray-300 mx-1"></div>
+            <button onclick="clearCanvas()" class="p-2 text-red-500 hover:text-red-700 font-bold text-xs">❌</button>
+            <input type="color" id="colorPicker" value="#2563eb" class="w-6 h-6 rounded cursor-pointer border-0 p-0 ml-1">
         </div>
+
+        <canvas id="whiteboard" class="w-full h-full block bg-white cursor-crosshair"></canvas>
     </div>
+
+    <div class="mobile-nav fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 shadow-lg z-50 h-16 justify-around items-center">
+        <button onclick="switchTab('tasks')" id="btn-tasks" class="flex flex-col items-center justify-center w-1/2 h-full text-indigo-600 bg-indigo-50 border-t-2 border-indigo-600 transition-colors">
+            <span class="text-xl">📝</span>
+            <span class="text-xs font-bold">Завдання</span>
+        </button>
+        <button onclick="switchTab('board')" id="btn-board" class="flex flex-col items-center justify-center w-1/2 h-full text-gray-500 transition-colors">
+            <span class="text-xl">🎨</span>
+            <span class="text-xs font-bold">Дошка</span>
+        </button>
+    </div>
+
+    <button onclick="finishLesson()" class="md:hidden fixed bottom-20 right-4 bg-green-500 text-white rounded-full p-3 shadow-lg z-40 opacity-90 hover:opacity-100" title="Завершити">
+        🏁
+    </button>
 
     <script>
-        const tasksData = [
-            { title: "1. Початковий рівень (1-2 клас)", items: [
-                { q: "x + 5 = 12", a: "7", h: "x = 12 - 5", s: "x = 7" },
-                { q: "18 - x = 10", a: "8", h: "x = 18 - 10", s: "x = 8" },
-                { q: "x - 7 = 3", a: "10", h: "x = 3 + 7", s: "x = 10" },
-                { q: "20 + x = 45", a: "25", h: "x = 45 - 20", s: "x = 25" }
-            ]},
-            { title: "2. Множення та ділення (2-3 клас)", items: [
-                { q: "3 \\cdot x = 15", a: "5", h: "x = 15 : 3", s: "x = 5" },
-                { q: "x : 4 = 8", a: "32", h: "x = 8 \\cdot 4", s: "x = 32" },
-                { q: "24 : x = 6", a: "4", h: "x = 24 : 6", s: "x = 4" },
-                { q: "x \\cdot 5 = 50", a: "10", h: "x = 50 : 5", s: "x = 10" }
-            ]},
-            { title: "3. Рівняння на дві дії (3-4 клас)", items: [
-                { q: "2x + 5 = 15", a: "5", h: "2x = 15 - 5", s: "2x = 10 \\implies x = 5" },
-                { q: "18 - 3x = 9", a: "3", h: "3x = 18 - 9", s: "3x = 9 \\implies x = 3" },
-                { q: "(x + 4) \\cdot 2 = 20", a: "6", h: "x + 4 = 20 : 2", s: "x + 4 = 10 \\implies x = 6" },
-                { q: "30 : x + 4 = 10", a: "5", h: "30 : x = 10 - 4", s: "30 : x = 6 \\implies x = 5" }
-            ]},
-            { title: "4. Робота з великими числами (4-5 клас)", items: [
-                { q: "x + 125 = 400", a: "275", h: "400 - 125", s: "x = 275" },
-                { q: "1200 - x = 550", a: "650", h: "1200 - 550", s: "x = 650" },
-                { q: "25 \\cdot x = 500", a: "20", h: "500 : 25", s: "x = 20" },
-                { q: "x : 12 = 144", a: "1728", h: "144 \\cdot 12", s: "x = 1728" }
-            ]},
-            { title: "5. Десяткові дроби (+/-)", items: [
-                { q: "x + 2.5 = 6.7", a: "4.2", h: "6.7 - 2.5", s: "x = 4.2" },
-                { q: "y - 1.24 = 3.16", a: "4.4", h: "3.16 + 1.24", s: "y = 4.4" },
-                { q: "10 - x = 4.55", a: "5.45", h: "10 - 4.55", s: "x = 5.45" },
-                { q: "x + 0.08 = 1.2", a: "1.12", h: "1.2 - 0.08", s: "x = 1.12" }
-            ]},
-            { title: "6. Десяткові дроби (*/:)", items: [
-                { q: "0.5x = 2.5", a: "5", h: "2.5 : 0.5", s: "x = 5" },
-                { q: "x : 0.2 = 10", a: "2", h: "10 \\cdot 0.2", s: "x = 2" },
-                { q: "1.2x = 4.8", a: "4", h: "4.8 : 1.2", s: "x = 4" },
-                { q: "x : 3 = 1.5", a: "4.5", h: "1.5 \\cdot 3", s: "x = 4.5" }
-            ]},
-            { title: "7. Складні рівняння з дужками", items: [
-                { q: "4.2(x - 3.5) = 21", a: "8.5", h: "x - 3.5 = 21 : 4.2", s: "x - 3.5 = 5 \\implies x = 8.5" },
-                { q: "(x + 1.2) : 0.5 = 10", a: "3.8", h: "x + 1.2 = 10 \\cdot 0.5", s: "x + 1.2 = 5 \\implies x = 3.8" },
-                { q: "15.5 - (x + 2.1) = 4.4", a: "9", h: "x + 2.1 = 15.5 - 4.4", s: "x = 9" },
-                { q: "2(x + 1) = 10", a: "4", h: "x + 1 = 5", s: "x = 4" }
-            ]},
-            { title: "8. Задачі на частини", items: [
-                { q: "3x + x = 20", a: "5", h: "4x = 20", s: "x = 5" },
-                { q: "5x - x = 12", a: "3", h: "4x = 12", s: "x = 3" },
-                { q: "x + (x + 5) = 25", a: "10", h: "2x + 5 = 25", s: "x = 10" },
-                { q: "x + 2x + 3x = 60", a: "10", h: "6x = 60", s: "x = 10" }
-            ]},
-            { title: "9. Від’ємні числа (Базовий рівень)", items: [
-                { q: "x + 10 = 2", a: "-8", h: "x = 2 - 10", s: "x = -8" },
-                { q: "x - 5 = -8", a: "-3", h: "x = -8 + 5", s: "x = -3" },
-                { q: "-3 + x = -10", a: "-7", h: "x = -10 + 3", s: "x = -7" },
-                { q: "7 - x = 15", a: "-8", h: "x = 7 - 15", s: "x = -8" }
-            ]},
-            { title: "10. Множення раціональних чисел", items: [
-                { q: "-2x = 12", a: "-6", h: "x = 12 : (-2)", s: "x = -6" },
-                { q: "x : (-3) = 9", a: "-27", h: "x = 9 \\cdot (-3)", s: "x = -27" },
-                { q: "-5x = -25", a: "5", h: "x = -25 : (-5)", s: "x = 5" },
-                { q: "-0.4x = 2", a: "-5", h: "x = 2 : (-0.4)", s: "x = -5" }
-            ]},
-            { title: "11. Пропорції", items: [
-                { q: "\\frac{x}{4} = \\frac{3}{2}", a: "6", h: "2x = 12", s: "x = 6" },
-                { q: "\\frac{5}{x} = \\frac{10}{14}", a: "7", h: "10x = 70", s: "x = 7" },
-                { q: "\\frac{x+1}{3} = \\frac{4}{1}", a: "11", h: "x + 1 = 12", s: "x = 11" },
-                { q: "\\frac{12}{x} = \\frac{4}{5}", a: "15", h: "4x = 60", s: "x = 15" }
-            ]},
-            { title: "12. Розкриття дужок (6 клас)", items: [
-                { q: "2(x - 3) = 10", a: "8", h: "2x - 6 = 10", s: "2x = 16 \\implies x = 8" },
-                { q: "-3(x + 4) = -18", a: "2", h: "-3x - 12 = -18", s: "-3x = -6 \\implies x = 2" },
-                { q: "0.5(4 - x) = 3", a: "-2", h: "2 - 0.5x = 3", s: "x = -2" },
-                { q: "-(x - 5) = 2", a: "3", h: "-x + 5 = 2", s: "x = 3" }
-            ]},
-            { title: "13. Змінна з обох сторін", items: [
-                { q: "5x + 3 = 3x + 11", a: "4", h: "2x = 8", s: "x = 4" },
-                { q: "2x - 7 = 5x + 2", a: "-3", h: "-3x = 9", s: "x = -3" },
-                { q: "10 - x = 2x - 5", a: "5", h: "3x = 15", s: "x = 5" },
-                { q: "4x = 12 - 2x", a: "2", h: "6x = 12", s: "x = 2" }
-            ]},
-            { title: "14. Зведення подібних доданків", items: [
-                { q: "7x - 3x + 2x = 24", a: "4", h: "6x = 24", s: "x = 4" },
-                { q: "1.2x - 0.8x + 5 = 9", a: "10", h: "0.4x = 4", s: "x = 10" },
-                { q: "5(x - 2) + 3x = 22", a: "4", h: "8x - 10 = 22", s: "x = 4" },
-                { q: "10x - (2x + 4) = 12", a: "2", h: "8x - 4 = 12", s: "x = 2" }
-            ]},
-            { title: "15. Лінійні рівняння (7 клас)", items: [
-                { q: "0.2x + 0.5 = 0.7x - 1", a: "3", h: "1.5 = 0.5x", s: "x = 3" },
-                { q: "3(2x-1)-2(x+5)=3", a: "4", h: "4x - 13 = 3", s: "x = 4" },
-                { q: "\\frac{x}{2} + \\frac{x}{3} = 10", a: "12", h: "3x + 2x = 60", s: "x = 12" },
-                { q: "1.5x - 4 = 0.5x + 6", a: "10", h: "x = 10", s: "x = 10" }
-            ]},
-            { title: "16. Рівняння з модулем", items: [
-                { q: "|x| = 5 \\text{ (найм. корінь)}", a: "-5", h: "x = 5 або x = -5", s: "x = -5" },
-                { q: "|x + 2| = 7 \\text{ (найб. корінь)}", a: "5", h: "x+2=7 або x+2=-7", s: "x=5" },
-                { q: "|x| - 3 = 2 \\text{ (додат. корінь)}", a: "5", h: "|x| = 5", s: "x = 5" },
-                { q: "2|x| = 10", a: "5", h: "|x| = 5", s: "x = 5" }
-            ]},
-            { title: "17. Випадки 0x = a", items: [
-                { q: "2(x + 3) = 2x + 6", a: "безліч", h: "6 = 6", s: "Безліч коренів" },
-                { q: "3x - 5 = 3x + 2", a: "немає", h: "0 = 7", s: "Немає коренів" },
-                { q: "x + 5 = x", a: "немає", h: "0 = -5", s: "Немає коренів" },
-                { q: "0 \\cdot x = 0", a: "безліч", h: "0 = 0", s: "Безліч" }
-            ]},
-            { title: "18. Степені", items: [
-                { q: "x \\cdot x^2 = 8", a: "2", h: "x^3 = 8", s: "x = 2" },
-                { q: "x^2 = 49 \\text{ (додат.)}", a: "7", h: "7 \\cdot 7 = 49", s: "x = 7" },
-                { q: "(x - 1)^2 = 0", a: "1", h: "x - 1 = 0", s: "x = 1" },
-                { q: "x^3 = 27", a: "3", h: "3^3 = 27", s: "x = 3" }
-            ]},
-            { title: "19. Системи рівнянь (знайди x)", items: [
-                { q: "x+y=5; x-y=1", a: "3", h: "Додай рівняння", s: "2x = 6 \\implies x = 3" },
-                { q: "y=2x; x+y=9", a: "3", h: "Підстановка", s: "3x = 9 \\implies x = 3" },
-                { q: "x-2y=0; 2x+y=10", a: "4", h: "x = 2y", s: "x = 4" },
-                { q: "x+y=10; y=4", a: "6", h: "10 - 4", s: "x = 6" }
-            ]},
-            { title: "20. Майстер 7-го класу", items: [
-                { q: "\\frac{2x-1}{3} - \\frac{x+2}{4} = 1", a: "4.4", h: "Помнож на 12", s: "x = 4.4" },
-                { q: "3(x-2)^2 = 0", a: "2", h: "x-2 = 0", s: "x = 2" },
-                { q: "2(x+1.5)-3(x-0.5)=2", a: "2.5", h: "Розкрий дужки", s: "x = 2.5" },
-                { q: "|2x-4|=0", a: "2", h: "2x = 4", s: "x = 2" }
-            ]}
-        ];
+        // --- MOBILE TABS LOGIC ---
+        let currentTab = 'tasks';
 
-        let score = 0;
-        const total = 80;
+        function switchTab(tab) {
+            const taskPanel = document.getElementById('task-panel');
+            const boardPanel = document.getElementById('board-panel');
+            const btnTasks = document.getElementById('btn-tasks');
+            const btnBoard = document.getElementById('btn-board');
 
-        // Рендеринг завдань
-        const container = document.getElementById('tasks-container');
-        tasksData.forEach((block, bIdx) => {
-            const section = document.createElement('div');
-            section.className = 'block-section';
-            section.innerHTML = `<div class="section-title"><span>${block.title}</span></div>`;
-            
-            block.items.forEach((item, iIdx) => {
-                const id = `task-${bIdx}-${iIdx}`;
-                const card = document.createElement('div');
-                card.className = 'task-card';
-                card.innerHTML = `
-                    <div class="equation-display">$${item.q}$</div>
-                    <div class="input-group">
-                        <input type="text" id="in-${id}" placeholder="Відповідь" onkeydown="if(event.key==='Enter') check('${id}', '${item.a}')">
-                        <button class="btn btn-check" onclick="check('${id}', '${item.a}')">Перевірити</button>
-                        <button class="btn btn-hint" onclick="toggle('${id}-h')">💡</button>
-                        <button class="btn btn-sol" onclick="toggle('${id}-s')">Рішення</button>
-                    </div>
-                    <div id="${id}-h" class="info-box">Підказка: ${item.h}</div>
-                    <div id="${id}-s" class="info-box" style="border-left-color: var(--success)">Рішення: $${item.s}$</div>
-                `;
-                section.appendChild(card);
-            });
-            container.appendChild(section);
-        });
+            // Якщо ширина екрану велика (desktop), функція нічого не робить або просто ігнорується css
+            if (window.innerWidth >= 768) return;
 
-        function toggle(id) {
-            const el = document.getElementById(id);
-            el.style.display = el.style.display === 'block' ? 'none' : 'block';
+            if (tab === 'tasks') {
+                taskPanel.classList.remove('hidden');
+                taskPanel.classList.add('flex');
+                boardPanel.classList.add('hidden');
+                boardPanel.classList.remove('flex');
+                
+                // Styles for active button
+                btnTasks.classList.add('text-indigo-600', 'bg-indigo-50', 'border-t-2', 'border-indigo-600');
+                btnTasks.classList.remove('text-gray-500');
+                btnBoard.classList.remove('text-indigo-600', 'bg-indigo-50', 'border-t-2', 'border-indigo-600');
+                btnBoard.classList.add('text-gray-500');
+            } else {
+                taskPanel.classList.add('hidden');
+                taskPanel.classList.remove('flex');
+                boardPanel.classList.remove('hidden');
+                boardPanel.classList.add('flex');
+                
+                // Resize canvas because it was hidden
+                resizeCanvas();
+
+                // Styles for active button
+                btnBoard.classList.add('text-indigo-600', 'bg-indigo-50', 'border-t-2', 'border-indigo-600');
+                btnBoard.classList.remove('text-gray-500');
+                btnTasks.classList.remove('text-indigo-600', 'bg-indigo-50', 'border-t-2', 'border-indigo-600');
+                btnTasks.classList.add('text-gray-500');
+            }
+            currentTab = tab;
         }
 
-        function check(id, correct) {
-            const input = document.getElementById(`in-${id}`);
-            const val = input.value.trim().toLowerCase().replace(',', '.');
-            if (val === correct.toLowerCase()) {
-                input.className = 'correct';
-                if(!input.dataset.done) { score++; input.dataset.done = "true"; }
+        // --- DATA: TASKS ---
+        const tasks = [
+            { id: 838, text: "Знайдіть $S_{біч}$ циліндра: $r=3$ см, $h=4$ см. ($\pi \approx 3.14$)", hint: "$S = 2\pi r h$", solution: "$6.28 \\cdot 12 = 75.36$", answer: 75.36 },
+            { id: 839, text: "Площа смужки навколо банки ($r=5, h=3.5$).", hint: "Це бічна поверхня.", solution: "$109.9$", answer: 109.9 },
+            { id: 840, text: "Площа повної поверхні циліндра ($r=1, h=2$).", hint: "$S_{біч} + 2S_{осн}$", solution: "$12.56 + 6.28 = 18.84$", answer: 18.84 },
+            { id: 841, text: "Площа повної поверхні ($r=2, h=3$).", hint: "$2\\pi r(h+r)$", solution: "62.8", answer: 62.8 },
+            { id: 842, text: "Екватор Землі ($R=6400$ км). Округліть до тисяч.", hint: "$C = 2\\pi R$", solution: "40000", answer: 40000 },
+            { id: 843, text: "Розгортка конуса - півкруг ($R=10$). Знайдіть $r$ конуса.", hint: "Довжина дуги = довжині кола основи", solution: "5", answer: 5 },
+            { id: 844, text: "Чи влізе розгортка циліндра ($r=5, h=9$) на аркуш 31x32? (1-Так, 0-Ні)", hint: "Довжина $2\\pi r \\approx 31.4$", solution: "Ні (0)", answer: 0 },
+            { id: 845, text: "Чи вистачить 1кг фарби? ($d=40$см, $h=5$м, витрата 150г/м²). (1-Так, 0-Ні)", hint: "Порахуй площу в метрах", solution: "Так (1)", answer: 1 },
+            { id: 846, text: "Прості числа: $3x - y = 12$. Знайдіть $x$.", hint: "Спробуй $x=5$", solution: "5", answer: 5 },
+            { id: 847, text: "Обчисліть: $(2.7 - 0.9) \\cdot 2\\frac{1}{3}$.", hint: "$1.8 \\cdot 7/3$", solution: "4.2", answer: 4.2 },
+            // Бліц
+            { id: 901, text: "Бліц: $r=10$. Знайдіть довжину кола ($\\pi=3.14$).", hint: "$2\\pi r$", solution: "62.8", answer: 62.8 },
+            { id: 902, text: "Бліц: $r=4$. Площа круга ($\\pi=3$).", hint: "$3 \\cdot 16$", solution: "48", answer: 48 },
+            { id: 903, text: "Бліц: $r=1, h=5$. $S_{біч}$ ($\\pi=3.14$).", hint: "$10 \\cdot 3.14$", solution: "31.4", answer: 31.4 },
+            { id: 904, text: "Бліц: Діаметр 10. Радіус?", hint: "Половина", solution: "5", answer: 5 },
+            { id: 905, text: "Бліц: $2/3$ від 60.", hint: "40", solution: "40", answer: 40 },
+            { id: 906, text: "Бліц: $0.5 \\cdot 0.5$", hint: "0.25", solution: "0.25", answer: 0.25 },
+            { id: 907, text: "Бліц: Фігура обертання прямокутника?", hint: "текстом", solution: "циліндр", answer: "циліндр" },
+            { id: 908, text: "Бліц: $r=2, h=2$. $S_{біч}$ ($\\pi=3$).", hint: "24", solution: "24", answer: 24 },
+            { id: 909, text: "Бліц: 25% від 200.", hint: "50", solution: "50", answer: 50 },
+            { id: 910, text: "Бліц: $3^3 - 7$.", hint: "27-7", solution: "20", answer: 20 },
+            { id: 911, text: "Бліц: Радіус 5. Діаметр?", hint: "10", solution: "10", answer: 10 },
+            { id: 912, text: "Бліц: $150 : 1.5$.", hint: "100", solution: "100", answer: 100 },
+            { id: 913, text: "Бліц: $S_{біч}=20\\pi, h=2$. Радіус?", hint: "5", solution: "5", answer: 5 },
+            { id: 914, text: "Бліц: Кількість основ циліндра.", hint: "2", solution: "2", answer: 2 },
+            { id: 915, text: "Бліц: Розгортка бічної поверхні - це...", hint: "прямокутник", solution: "прямокутник", answer: "прямокутник" },
+            { id: 916, text: "Бліц: $5^2 + 12^2$.", hint: "169", solution: "169", answer: 169 },
+            { id: 917, text: "Бліц: $V=\\pi r^2 h$. $r=3, h=10, \\pi=3$.", hint: "270", solution: "270", answer: 270 },
+            { id: 918, text: "Бліц: $1/2 + 0.5$.", hint: "1", solution: "1", answer: 1 },
+            { id: 919, text: "Бліц: $100 - 35.5$.", hint: "64.5", solution: "64.5", answer: 64.5 },
+            { id: 920, text: "Бліц: Фігура з конуса морозива.", hint: "конус", solution: "конус", answer: "конус" }
+        ];
+
+        let correctAnswers = 0;
+
+        window.onload = function() {
+            renderTasks();
+            setupCanvas();
+            // Handle resize events to switch layout modes if needed
+            window.addEventListener('resize', () => {
+                if(window.innerWidth >= 768) {
+                    document.getElementById('task-panel').style.display = 'flex';
+                    document.getElementById('board-panel').style.display = 'flex';
+                } else {
+                    switchTab(currentTab);
+                }
+                resizeCanvas();
+            });
+        };
+
+        function renderTasks() {
+            const container = document.getElementById('tasks-container');
+            tasks.forEach((task, index) => {
+                const el = document.createElement('div');
+                el.className = "bg-white p-4 rounded-xl shadow-sm border border-gray-100";
+                el.innerHTML = `
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="bg-indigo-100 text-indigo-800 text-xs font-bold px-2 py-1 rounded">№${index + 1}</span>
+                    </div>
+                    <div class="text-gray-800 mb-3 font-medium text-sm md:text-base">${task.text}</div>
+                    
+                    <div class="flex flex-col gap-2">
+                        <div class="flex gap-2 w-full">
+                            <input type="text" id="input-${task.id}" placeholder="Відповідь" class="border border-gray-300 p-2 rounded w-full focus:outline-none focus:border-indigo-500 transition text-sm">
+                            <button onclick="checkTask(${task.id}, '${task.answer}')" class="bg-indigo-600 active:bg-indigo-800 text-white font-bold py-2 px-4 rounded transition text-sm">ОК</button>
+                        </div>
+                        <div class="flex gap-4 text-xs mt-1">
+                            <button onclick="toggleVisibility('hint-${task.id}')" class="text-amber-600 font-semibold">💡 Підказка</button>
+                            <button onclick="toggleVisibility('sol-${task.id}')" class="text-green-600 font-semibold">📝 Розв'язання</button>
+                        </div>
+                    </div>
+                    
+                    <div id="hint-${task.id}" class="hidden mt-2 p-2 bg-yellow-50 text-yellow-800 rounded text-xs italic">${task.hint}</div>
+                    <div id="sol-${task.id}" class="hidden mt-2 p-2 bg-green-50 text-green-800 rounded text-xs"><strong>Відповідь:</strong> ${task.solution}</div>
+                `;
+                container.appendChild(el);
+            });
+            MathJax.typeset();
+        }
+
+        function toggleVisibility(id) {
+            const el = document.getElementById(id);
+            el.classList.toggle('hidden');
+        }
+
+        function checkTask(id, correctVal) {
+            const input = document.getElementById(`input-${id}`);
+            let userVal = input.value.trim().toLowerCase().replace(',', '.');
+            let isCorrect = false;
+
+            if (!isNaN(parseFloat(correctVal))) {
+                if (Math.abs(parseFloat(userVal) - parseFloat(correctVal)) < 0.1) isCorrect = true;
             } else {
-                input.className = 'wrong';
+                if (userVal === correctVal.toString().toLowerCase()) isCorrect = true;
+            }
+
+            input.classList.remove('correct-anim', 'wrong-anim');
+            void input.offsetWidth; 
+
+            if (isCorrect) {
+                input.classList.add('correct-anim');
+                if (!input.disabled) {
+                    correctAnswers++;
+                    updateScore();
+                    input.disabled = true;
+                }
+            } else {
+                input.classList.add('wrong-anim');
             }
         }
 
-        function showFinalResult() {
-            const grade = Math.round((score / total) * 12);
-            document.getElementById('res-grade').innerText = `${grade} / 12`;
-            let msg = score > 60 ? "Ти справжній математичний геній! 🏆" : "Гарний результат! Продовжуй практикуватися. 🚀";
-            document.getElementById('res-motivation').innerText = msg;
-            document.getElementById('result-overlay').style.display = 'flex';
+        function updateScore() {
+            document.getElementById('score').innerText = correctAnswers;
         }
 
-        // WHITEBOARD LOGIC
-        const canvas = document.getElementById('wbCanvas');
+        function finishLesson() {
+            // Switch to tasks view on mobile to see result
+            if(window.innerWidth < 768) switchTab('tasks');
+            
+            const finalDiv = document.getElementById('final-section');
+            const container = document.getElementById('tasks-container');
+            container.style.display = 'none';
+            finalDiv.classList.remove('hidden');
+            finalDiv.classList.add('fade-in');
+            
+            const percent = (correctAnswers / tasks.length) * 100;
+            let praise = percent >= 50 ? "Молодець! Чудова робота! 🚀" : "Ти старався! Наступного разу буде ще краще! 🌱";
+            document.getElementById('final-score-display').innerHTML = `Результат: <strong>${correctAnswers}</strong> з ${tasks.length}`;
+            document.getElementById('final-praise').innerText = praise;
+            document.getElementById('content-area').scrollTop = 0;
+        }
+
+        // --- CANVAS ---
+        const canvas = document.getElementById('whiteboard');
         const ctx = canvas.getContext('2d');
         let painting = false;
         let tool = 'pen';
+        let color = '#2563eb';
 
-        function initCanvas() {
-            canvas.width = canvas.parentElement.offsetWidth;
-            canvas.height = canvas.parentElement.offsetHeight - 50;
-            ctx.lineCap = 'round';
-            ctx.lineWidth = 3;
+        function setupCanvas() {
+            resizeCanvas();
+            
+            // Mouse
+            canvas.addEventListener('mousedown', startPosition);
+            canvas.addEventListener('mouseup', finishedPosition);
+            canvas.addEventListener('mousemove', draw);
+            
+            // Touch
+            canvas.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                startPosition(e.touches[0]);
+            });
+            canvas.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                finishedPosition();
+            });
+            canvas.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+                draw(e.touches[0]);
+            });
+
+            document.getElementById('colorPicker').addEventListener('change', (e) => {
+                color = e.target.value;
+                if(tool === 'eraser') tool = 'pen';
+            });
         }
-        window.addEventListener('resize', initCanvas);
-        initCanvas();
 
-        function setTool(t, btn) {
-            tool = t;
-            document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
+        function resizeCanvas() {
+            const parent = canvas.parentElement;
+            if(parent.clientWidth > 0 && parent.clientHeight > 0) {
+                // Save current drawing
+                const tempCanvas = document.createElement('canvas');
+                const tempCtx = tempCanvas.getContext('2d');
+                tempCanvas.width = canvas.width;
+                tempCanvas.height = canvas.height;
+                tempCtx.drawImage(canvas, 0, 0);
+
+                // Resize
+                canvas.width = parent.clientWidth;
+                canvas.height = parent.clientHeight;
+
+                // Restore drawing
+                ctx.drawImage(tempCanvas, 0, 0);
+            }
         }
 
-        function start(e) { painting = true; draw(e); }
-        function end() { painting = false; ctx.beginPath(); }
-        
+        function startPosition(e) {
+            painting = true;
+            draw(e);
+        }
+
+        function finishedPosition() {
+            painting = false;
+            ctx.beginPath();
+        }
+
         function draw(e) {
             if (!painting) return;
-            ctx.strokeStyle = tool === 'eraser' ? '#f8fafc' : '#1e293b';
-            ctx.lineWidth = tool === 'eraser' ? 30 : 3;
-
             const rect = canvas.getBoundingClientRect();
-            const x = (e.clientX || e.touches[0].clientX) - rect.left;
-            const y = (e.clientY || e.touches[0].clientY) - rect.top;
+            const x = (e.clientX || e.pageX) - rect.left;
+            const y = (e.clientY || e.pageY) - rect.top;
+
+            ctx.lineWidth = tool === 'eraser' ? 25 : 3;
+            ctx.lineCap = 'round';
+            ctx.strokeStyle = tool === 'eraser' ? '#ffffff' : color;
 
             ctx.lineTo(x, y);
             ctx.stroke();
@@ -422,31 +392,43 @@
             ctx.moveTo(x, y);
         }
 
-        canvas.addEventListener('mousedown', start);
-        canvas.addEventListener('mouseup', end);
-        canvas.addEventListener('mousemove', draw);
-        canvas.addEventListener('touchstart', (e) => { e.preventDefault(); start(e); });
-        canvas.addEventListener('touchend', end);
-        canvas.addEventListener('touchmove', (e) => { e.preventDefault(); draw(e); });
-
+        function setTool(t) { tool = t; }
         function clearCanvas() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
         
         function drawGrid() {
-            ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 1;
-            for(let i=0; i<canvas.width; i+=40) { ctx.beginPath(); ctx.moveTo(i,0); ctx.lineTo(i,canvas.height); ctx.stroke(); }
-            for(let i=0; i<canvas.height; i+=40) { ctx.beginPath(); ctx.moveTo(0,i); ctx.lineTo(canvas.width,i); ctx.stroke(); }
+            ctx.beginPath();
+            ctx.strokeStyle = '#e5e7eb';
+            ctx.lineWidth = 1;
+            for (let x = 0; x <= canvas.width; x += 40) { ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); }
+            for (let y = 0; y <= canvas.height; y += 40) { ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); }
+            ctx.stroke();
+            ctx.beginPath();
         }
 
-        function drawAxes() {
-            ctx.strokeStyle = var(--primary); ctx.lineWidth = 2;
-            const midX = canvas.width / 2; const midY = canvas.height / 2;
-            ctx.beginPath(); ctx.moveTo(midX, 0); ctx.lineTo(midX, canvas.height); ctx.stroke();
-            ctx.beginPath(); ctx.moveTo(0, midY); ctx.lineTo(canvas.width, midY); ctx.stroke();
-        }
-
-        function addShape(type) {
-            ctx.strokeStyle = var(--primary); ctx.lineWidth = 2;
-            if(type === 'rect') ctx.strokeRect(50, 50, 100, 100);
+        function insertShape(shape) {
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 3;
+            const cx = canvas.width / 2;
+            const cy = canvas.height / 2;
+            if (shape === 'cylinder') {
+                ctx.beginPath();
+                ctx.ellipse(cx, cy - 60, 40, 15, 0, 0, 2*Math.PI);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.ellipse(cx, cy + 60, 40, 15, 0, 0, 2*Math.PI);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(cx - 40, cy - 60); ctx.lineTo(cx - 40, cy + 60);
+                ctx.moveTo(cx + 40, cy - 60); ctx.lineTo(cx + 40, cy + 60);
+                ctx.stroke();
+            } else if (shape === 'cone') {
+                ctx.beginPath();
+                ctx.ellipse(cx, cy + 60, 40, 15, 0, 0, 2*Math.PI);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(cx - 40, cy + 60); ctx.lineTo(cx, cy - 60); ctx.lineTo(cx + 40, cy + 60);
+                ctx.stroke();
+            }
         }
     </script>
 </body>
