@@ -1021,6 +1021,16 @@ window.lessonsData = [
     category: "lesson",
     author: "Соня",
   },
+   {
+    id: "alg-9-systemi",
+    title: "Системи нерівностей",
+    grade: 9,
+    topic: "Математика",
+    link: "algebra/9/Настя/alg_9_system_nerivnostei.html",
+    subject_code: "algebra",
+    category: "lesson",
+    author: "Соня",
+  },
   // ==========================================
   // 10 КЛАС (Алгебра - Соня) - Автор: Соня
   // ==========================================
