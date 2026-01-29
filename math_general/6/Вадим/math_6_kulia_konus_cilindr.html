@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Урок: Циліндр та Конус</title>
+    <title>Урок: Циліндр та Конус (Повна версія)</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -20,7 +20,7 @@
         
         body { 
             font-family: 'Nunito', sans-serif; 
-            overflow: hidden; /* Забороняємо скрол всієї сторінки */
+            overflow: hidden; 
             background-color: #f3f4f6;
         }
         
@@ -40,7 +40,7 @@
         @keyframes shakeRed { 0% { transform: translateX(0); } 25% { transform: translateX(-5px); } 50% { transform: translateX(5px); } 75% { transform: translateX(-5px); } 100% { transform: translateX(0); } }
 
         /* Канвас */
-        #whiteboard { touch-action: none; /* Важливо для малювання пальцем */ }
+        #whiteboard { touch-action: none; }
         
         /* Мобільна навігація: ховаємо на десктопі */
         .mobile-nav { display: flex; }
@@ -71,7 +71,7 @@
             <div class="mb-6 bg-white p-4 rounded-xl shadow-sm border border-blue-100">
                 <h2 class="text-lg font-bold text-blue-800 mb-2">👋 Привіт!</h2>
                 <p class="text-sm text-gray-600 mb-3">
-                    Урок про фігури обертання. Використовуй $\pi \approx 3.14$.
+                    Сьогодні ми розв'язуємо задачі на площі поверхонь циліндра та конуса. Використовуй $\pi \approx 3.14$.
                 </p>
                 <details class="bg-blue-50 p-3 rounded-lg cursor-pointer">
                     <summary class="font-bold text-indigo-600 text-sm select-none">🔑 Формули (Натисни)</summary>
@@ -146,7 +146,6 @@
             const btnTasks = document.getElementById('btn-tasks');
             const btnBoard = document.getElementById('btn-board');
 
-            // Якщо ширина екрану велика (desktop), функція нічого не робить або просто ігнорується css
             if (window.innerWidth >= 768) return;
 
             if (tab === 'tasks') {
@@ -155,7 +154,6 @@
                 boardPanel.classList.add('hidden');
                 boardPanel.classList.remove('flex');
                 
-                // Styles for active button
                 btnTasks.classList.add('text-indigo-600', 'bg-indigo-50', 'border-t-2', 'border-indigo-600');
                 btnTasks.classList.remove('text-gray-500');
                 btnBoard.classList.remove('text-indigo-600', 'bg-indigo-50', 'border-t-2', 'border-indigo-600');
@@ -166,10 +164,8 @@
                 boardPanel.classList.remove('hidden');
                 boardPanel.classList.add('flex');
                 
-                // Resize canvas because it was hidden
                 resizeCanvas();
 
-                // Styles for active button
                 btnBoard.classList.add('text-indigo-600', 'bg-indigo-50', 'border-t-2', 'border-indigo-600');
                 btnBoard.classList.remove('text-gray-500');
                 btnTasks.classList.remove('text-indigo-600', 'bg-indigo-50', 'border-t-2', 'border-indigo-600');
@@ -178,39 +174,100 @@
             currentTab = tab;
         }
 
-        // --- DATA: TASKS ---
+        // --- DATA: TASKS (FULL TEXT) ---
         const tasks = [
-            { id: 838, text: "Знайдіть $S_{біч}$ циліндра: $r=3$ см, $h=4$ см. ($\pi \approx 3.14$)", hint: "$S = 2\pi r h$", solution: "$6.28 \\cdot 12 = 75.36$", answer: 75.36 },
-            { id: 839, text: "Площа смужки навколо банки ($r=5, h=3.5$).", hint: "Це бічна поверхня.", solution: "$109.9$", answer: 109.9 },
-            { id: 840, text: "Площа повної поверхні циліндра ($r=1, h=2$).", hint: "$S_{біч} + 2S_{осн}$", solution: "$12.56 + 6.28 = 18.84$", answer: 18.84 },
-            { id: 841, text: "Площа повної поверхні ($r=2, h=3$).", hint: "$2\\pi r(h+r)$", solution: "62.8", answer: 62.8 },
-            { id: 842, text: "Екватор Землі ($R=6400$ км). Округліть до тисяч.", hint: "$C = 2\\pi R$", solution: "40000", answer: 40000 },
-            { id: 843, text: "Розгортка конуса - півкруг ($R=10$). Знайдіть $r$ конуса.", hint: "Довжина дуги = довжині кола основи", solution: "5", answer: 5 },
-            { id: 844, text: "Чи влізе розгортка циліндра ($r=5, h=9$) на аркуш 31x32? (1-Так, 0-Ні)", hint: "Довжина $2\\pi r \\approx 31.4$", solution: "Ні (0)", answer: 0 },
-            { id: 845, text: "Чи вистачить 1кг фарби? ($d=40$см, $h=5$м, витрата 150г/м²). (1-Так, 0-Ні)", hint: "Порахуй площу в метрах", solution: "Так (1)", answer: 1 },
-            { id: 846, text: "Прості числа: $3x - y = 12$. Знайдіть $x$.", hint: "Спробуй $x=5$", solution: "5", answer: 5 },
-            { id: 847, text: "Обчисліть: $(2.7 - 0.9) \\cdot 2\\frac{1}{3}$.", hint: "$1.8 \\cdot 7/3$", solution: "4.2", answer: 4.2 },
-            // Бліц
-            { id: 901, text: "Бліц: $r=10$. Знайдіть довжину кола ($\\pi=3.14$).", hint: "$2\\pi r$", solution: "62.8", answer: 62.8 },
-            { id: 902, text: "Бліц: $r=4$. Площа круга ($\\pi=3$).", hint: "$3 \\cdot 16$", solution: "48", answer: 48 },
-            { id: 903, text: "Бліц: $r=1, h=5$. $S_{біч}$ ($\\pi=3.14$).", hint: "$10 \\cdot 3.14$", solution: "31.4", answer: 31.4 },
-            { id: 904, text: "Бліц: Діаметр 10. Радіус?", hint: "Половина", solution: "5", answer: 5 },
-            { id: 905, text: "Бліц: $2/3$ від 60.", hint: "40", solution: "40", answer: 40 },
-            { id: 906, text: "Бліц: $0.5 \\cdot 0.5$", hint: "0.25", solution: "0.25", answer: 0.25 },
-            { id: 907, text: "Бліц: Фігура обертання прямокутника?", hint: "текстом", solution: "циліндр", answer: "циліндр" },
-            { id: 908, text: "Бліц: $r=2, h=2$. $S_{біч}$ ($\\pi=3$).", hint: "24", solution: "24", answer: 24 },
-            { id: 909, text: "Бліц: 25% від 200.", hint: "50", solution: "50", answer: 50 },
-            { id: 910, text: "Бліц: $3^3 - 7$.", hint: "27-7", solution: "20", answer: 20 },
-            { id: 911, text: "Бліц: Радіус 5. Діаметр?", hint: "10", solution: "10", answer: 10 },
-            { id: 912, text: "Бліц: $150 : 1.5$.", hint: "100", solution: "100", answer: 100 },
-            { id: 913, text: "Бліц: $S_{біч}=20\\pi, h=2$. Радіус?", hint: "5", solution: "5", answer: 5 },
-            { id: 914, text: "Бліц: Кількість основ циліндра.", hint: "2", solution: "2", answer: 2 },
-            { id: 915, text: "Бліц: Розгортка бічної поверхні - це...", hint: "прямокутник", solution: "прямокутник", answer: "прямокутник" },
-            { id: 916, text: "Бліц: $5^2 + 12^2$.", hint: "169", solution: "169", answer: 169 },
-            { id: 917, text: "Бліц: $V=\\pi r^2 h$. $r=3, h=10, \\pi=3$.", hint: "270", solution: "270", answer: 270 },
-            { id: 918, text: "Бліц: $1/2 + 0.5$.", hint: "1", solution: "1", answer: 1 },
-            { id: 919, text: "Бліц: $100 - 35.5$.", hint: "64.5", solution: "64.5", answer: 64.5 },
-            { id: 920, text: "Бліц: Фігура з конуса морозива.", hint: "конус", solution: "конус", answer: "конус" }
+            // Original Textbook Tasks
+            {
+                id: 838,
+                text: "Знайдіть площу бічної поверхні циліндра, радіус якого дорівнює 3 см, а висота — 4 см. (Використовуйте $\\pi \\approx 3.14$, запишіть десятковим дробом).",
+                hint: "$S_{біч} = 2\\pi r h$. Підставте $r=3, h=4$.",
+                solution: "$S = 2 \\cdot 3.14 \\cdot 3 \\cdot 4 = 75.36$ см$^2$.",
+                answer: 75.36
+            },
+            {
+                id: 839,
+                text: "Паперова смужка охоплює бічну поверхню консервної банки циліндричної форми. Знайдіть площу смужки, якщо радіус банки дорівнює 5 см, а висота — 3,5 см.",
+                hint: "Це те саме, що площа бічної поверхні. $S = 2\\pi r h$.",
+                solution: "$S = 2 \\cdot 3.14 \\cdot 5 \\cdot 3.5 = 109.9$ см$^2$.",
+                answer: 109.9
+            },
+            {
+                id: 840,
+                text: "Накресліть розгортку циліндра, радіус якого дорівнює 1 см, а висота — 2 см. Знайдіть площу повної поверхні циліндра (вона дорівнює площі розгортки).",
+                hint: "$S_{повна} = S_{біч} + 2S_{осн}$. $S_{осн} = \\pi r^2$.",
+                solution: "$S_{повна} = 12.56 + 2(3.14) = 18.84$ см$^2$.",
+                answer: 18.84
+            },
+            {
+                id: 841,
+                text: "Знайдіть площу повної поверхні циліндра, радіус якого дорівнює 2 см, а висота — 3 см.",
+                hint: "$S = 2\\pi r (h + r)$.",
+                solution: "$S = 2 \\cdot 3.14 \\cdot 2 (3 + 2) = 62.8$.",
+                answer: 62.8
+            },
+            {
+                id: 842,
+                text: "Знайдіть довжину екватора Землі, уважаючи, що радіус Землі дорівнює 6400 км. Результат округліть до тисяч кілометрів (ціле число).",
+                hint: "$C = 2\\pi R$. Округлити до тисяч — це залишити нулі в кінці (наприклад, 30000).",
+                solution: "$C = 2 \\cdot 3.14 \\cdot 6400 = 40192 \\approx 40000$ км.",
+                answer: 40000
+            },
+            {
+                id: 843,
+                text: "Розгорткою бічної поверхні конуса є півкруг, радіус якого дорівнює 10 см. Знайдіть радіус конуса.",
+                hint: "Довжина дуги півкруга дорівнює довжині кола основи конуса.",
+                solution: "Довжина дуги півкруга ($R=10$) = $\\pi \\cdot 10$. Це дорівнює $2\\pi r$. $r = 5$ см.",
+                answer: 5
+            },
+            {
+                id: 844,
+                text: "Чи можна на аркуші паперу розміру 31 см $\\times$ 32 см накреслити розгортку циліндра, радіус якого дорівнює 5 см, а висота — 9 см? (1 - Так, 0 - Ні)",
+                hint: "Обчисліть довжину розгортки бічної поверхні $2\\pi r$.",
+                solution: "Довжина $2\\pi r \\approx 31.4$ см. Це більше за 31 см. Відповідь: Ні (0).",
+                answer: 0
+            },
+            {
+                id: 845,
+                text: "Колона циліндричної форми має діаметр 40 см і висоту 5 м. Чи вистачить 1 кг фарби, щоб пофарбувати бічну поверхню колони, якщо на 1 м$^2$ витрачати 150 г фарби? (1 - Так, 0 - Ні)",
+                hint: "Переведіть все в метри ($d=0.4$ м, $r=0.2$ м). Знайдіть площу.",
+                solution: "Площа $6.28$ м$^2$. Фарби треба $942$ г. $942 < 1000$. Так (1).",
+                answer: 1
+            },
+            {
+                id: 846,
+                text: "Поміркуйте. Знайдіть усі прості числа $x$ та $y$, для яких виконується рівність $3x - y = 12$. Введіть значення $x$.",
+                hint: "Переберіть малі прості числа для $x$ (2, 3, 5, 7...).",
+                solution: "Якщо $x=5$, то $15 - y = 12 \\Rightarrow y=3$. Обидва прості.",
+                answer: 5
+            },
+            {
+                id: 847,
+                text: "Вправи для повторення. Знайдіть значення виразу: $(2,7 - 0,9) \\cdot 2 \\frac{1}{3}$.",
+                hint: "$1.8 \\cdot \\frac{7}{3}$.",
+                solution: "$1.8 \\cdot 2.333... = 4.2$.",
+                answer: 4.2
+            },
+            // Blitz / Extra Tasks
+            { id: 901, text: "Бліц-тест: Знайдіть довжину кола, якщо $r=10$ см (візьміть $\\pi=3.14$).", hint: "$2\\pi r$", solution: "62.8", answer: 62.8 },
+            { id: 902, text: "Бліц-тест: Знайдіть площу круга, якщо $r=4$ ($\\pi \\approx 3$ для простоти).", hint: "$\\pi r^2 = 3 \\cdot 16$", solution: "48", answer: 48 },
+            { id: 903, text: "Бліц-тест: Площа біч. пов. циліндра, де $r=1, h=5$ ($\\pi=3.14$).", hint: "$2\\pi(1)(5)$", solution: "31.4", answer: 31.4 },
+            { id: 904, text: "Бліц-тест: Діаметр кола 10 см. Чому дорівнює радіус?", hint: "Діаметр / 2", solution: "5", answer: 5 },
+            { id: 905, text: "Бліц-тест: Знайдіть $2/3$ від числа 60.", hint: "$60 : 3 \\cdot 2$", solution: "40", answer: 40 },
+            { id: 906, text: "Бліц-тест: Обчисліть $0.5 \\cdot 0.5$.", hint: "0.25", solution: "0.25", answer: 0.25 },
+            { id: 907, text: "Бліц-тест: Яку фігуру утворює обертання прямокутника навколо сторони? (напишіть слово)", hint: "Тема уроку", solution: "циліндр", answer: "циліндр" },
+            { id: 908, text: "Бліц-тест: $r=2, h=2$. Знайдіть $S_{біч}$ (вважаємо $\\pi=3$).", hint: "$2 \\cdot 3 \\cdot 2 \\cdot 2$", solution: "24", answer: 24 },
+            { id: 909, text: "Бліц-тест: Знайдіть 25% від числа 200.", hint: "Це 1/4 частина", solution: "50", answer: 50 },
+            { id: 910, text: "Бліц-тест: Знайдіть значення виразу $3^3 - 7$.", hint: "$27-7$", solution: "20", answer: 20 },
+            { id: 911, text: "Бліц-тест: Радіус 5 см. Чому дорівнює діаметр?", hint: "$r \\cdot 2$", solution: "10", answer: 10 },
+            { id: 912, text: "Бліц-тест: Обчисліть $150 : 1.5$.", hint: "Перенеси кому: $1500 : 15$", solution: "100", answer: 100 },
+            { id: 913, text: "Бліц-тест: Площа бічної поверхні $20\\pi$, висота 2. Знайдіть радіус.", hint: "$20\\pi = 2\\pi r \\cdot 2$", solution: "5", answer: 5 },
+            { id: 914, text: "Бліц-тест: Скільки основ у циліндра?", hint: "Зверху і знизу", solution: "2", answer: 2 },
+            { id: 915, text: "Бліц-тест: Яка фігура є розгорткою бічної поверхні циліндра?", hint: "Прямокутник", solution: "прямокутник", answer: "прямокутник" },
+            { id: 916, text: "Бліц-тест: Обчисліть $5^2 + 12^2$.", hint: "$25+144$", solution: "169", answer: 169 },
+            { id: 917, text: "Бліц-тест: Знайдіть об'єм $V=\\pi r^2 h$, якщо $r=3, h=10, \\pi=3$.", hint: "$3 \\cdot 9 \\cdot 10$", solution: "270", answer: 270 },
+            { id: 918, text: "Бліц-тест: Обчисліть $1/2 + 0.5$.", hint: "1", solution: "1", answer: 1 },
+            { id: 919, text: "Бліц-тест: Обчисліть $100 - 35.5$.", hint: "Стовпчиком", solution: "64.5", answer: 64.5 },
+            { id: 920, text: "Бліц-тест: Яка фігура вийде, якщо обертати прямокутний трикутник навколо катета?", hint: "Схоже на ковпак", solution: "конус", answer: "конус" }
         ];
 
         let correctAnswers = 0;
@@ -237,23 +294,23 @@
                 el.className = "bg-white p-4 rounded-xl shadow-sm border border-gray-100";
                 el.innerHTML = `
                     <div class="flex justify-between items-start mb-2">
-                        <span class="bg-indigo-100 text-indigo-800 text-xs font-bold px-2 py-1 rounded">№${index + 1}</span>
+                        <span class="bg-indigo-100 text-indigo-800 text-xs font-bold px-2 py-1 rounded">№${index + 1} (Завдання ${task.id})</span>
                     </div>
-                    <div class="text-gray-800 mb-3 font-medium text-sm md:text-base">${task.text}</div>
+                    <div class="text-gray-800 mb-3 font-medium text-base leading-relaxed break-words">${task.text}</div>
                     
                     <div class="flex flex-col gap-2">
                         <div class="flex gap-2 w-full">
-                            <input type="text" id="input-${task.id}" placeholder="Відповідь" class="border border-gray-300 p-2 rounded w-full focus:outline-none focus:border-indigo-500 transition text-sm">
-                            <button onclick="checkTask(${task.id}, '${task.answer}')" class="bg-indigo-600 active:bg-indigo-800 text-white font-bold py-2 px-4 rounded transition text-sm">ОК</button>
+                            <input type="text" id="input-${task.id}" placeholder="Ваша відповідь" class="border border-gray-300 p-2 rounded w-full focus:outline-none focus:border-indigo-500 transition text-sm">
+                            <button onclick="checkTask(${task.id}, '${task.answer}')" class="bg-indigo-600 active:bg-indigo-800 text-white font-bold py-2 px-4 rounded transition text-sm whitespace-nowrap">Перевірити</button>
                         </div>
                         <div class="flex gap-4 text-xs mt-1">
-                            <button onclick="toggleVisibility('hint-${task.id}')" class="text-amber-600 font-semibold">💡 Підказка</button>
-                            <button onclick="toggleVisibility('sol-${task.id}')" class="text-green-600 font-semibold">📝 Розв'язання</button>
+                            <button onclick="toggleVisibility('hint-${task.id}')" class="text-amber-600 font-semibold underline">💡 Підказка</button>
+                            <button onclick="toggleVisibility('sol-${task.id}')" class="text-green-600 font-semibold underline">📝 Розв'язання</button>
                         </div>
                     </div>
                     
-                    <div id="hint-${task.id}" class="hidden mt-2 p-2 bg-yellow-50 text-yellow-800 rounded text-xs italic">${task.hint}</div>
-                    <div id="sol-${task.id}" class="hidden mt-2 p-2 bg-green-50 text-green-800 rounded text-xs"><strong>Відповідь:</strong> ${task.solution}</div>
+                    <div id="hint-${task.id}" class="hidden mt-2 p-2 bg-yellow-50 text-yellow-800 rounded text-xs italic border border-yellow-200">${task.hint}</div>
+                    <div id="sol-${task.id}" class="hidden mt-2 p-2 bg-green-50 text-green-800 rounded text-xs border border-green-200"><strong>Відповідь:</strong> ${task.solution}</div>
                 `;
                 container.appendChild(el);
             });
@@ -296,7 +353,6 @@
         }
 
         function finishLesson() {
-            // Switch to tasks view on mobile to see result
             if(window.innerWidth < 768) switchTab('tasks');
             
             const finalDiv = document.getElementById('final-section');
@@ -306,8 +362,13 @@
             finalDiv.classList.add('fade-in');
             
             const percent = (correctAnswers / tasks.length) * 100;
-            let praise = percent >= 50 ? "Молодець! Чудова робота! 🚀" : "Ти старався! Наступного разу буде ще краще! 🌱";
-            document.getElementById('final-score-display').innerHTML = `Результат: <strong>${correctAnswers}</strong> з ${tasks.length}`;
+            let praise = "";
+            if (percent >= 90) praise = "Ти справжній геній математики! Фантастичний результат! 🚀";
+            else if (percent >= 70) praise = "Чудова робота! Ти добре розібрався в темі! 👍";
+            else if (percent >= 50) praise = "Непогано! Але варто ще трохи потренуватися на дошці. 💪";
+            else praise = "Ти старався! Головне — не здаватися і спробувати ще раз. У тебе все вийде! 🌱";
+
+            document.getElementById('final-score-display').innerHTML = `Твій результат: <strong>${correctAnswers}</strong> з ${tasks.length}`;
             document.getElementById('final-praise').innerText = praise;
             document.getElementById('content-area').scrollTop = 0;
         }
@@ -350,18 +411,15 @@
         function resizeCanvas() {
             const parent = canvas.parentElement;
             if(parent.clientWidth > 0 && parent.clientHeight > 0) {
-                // Save current drawing
                 const tempCanvas = document.createElement('canvas');
                 const tempCtx = tempCanvas.getContext('2d');
                 tempCanvas.width = canvas.width;
                 tempCanvas.height = canvas.height;
                 tempCtx.drawImage(canvas, 0, 0);
 
-                // Resize
                 canvas.width = parent.clientWidth;
                 canvas.height = parent.clientHeight;
 
-                // Restore drawing
                 ctx.drawImage(tempCanvas, 0, 0);
             }
         }
