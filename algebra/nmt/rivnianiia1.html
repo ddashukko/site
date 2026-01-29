@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>НМТ 2026: Рівняння та ОДЗ (Mobile Ready)</title>
+    
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #0f172a;
+        }
+
+        * { box-sizing: border-box; }
+
+        body, html {
+            margin: 0; padding: 0;
+            height: 100%; font-family: 'Inter', -apple-system, sans-serif;
+            background-color: var(--bg); color: var(--text);
+        }
+
+        /* АДАПТИВНА СІТКА */
+        .app-wrapper {
+            display: flex;
+            height: 100vh;
+            flex-direction: row; /* Дефолт для десктопа */
+        }
+
+        @media (max-width: 1024px) {
+            .app-wrapper {
+                flex-direction: column; /* Для планшетів і телефонів */
+                height: auto;
+                overflow-y: auto;
+            }
+        }
+
+        /* ЛІВА ЧАСТИНА */
+        .content-side {
+            flex: 1;
+            padding: clamp(15px, 5vw, 40px);
+            overflow-y: auto;
+            border-right: 1px solid #e2e8f0;
+        }
+
+        @media (max-width: 1024px) {
+            .content-side {
+                overflow-y: visible;
+                border-right: none;
+                border-bottom: 2px solid #e2e8f0;
+            }
+        }
+
+        /* ПРАВА ЧАСТИНА (ДОШКА) */
+        .board-side {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: white;
+            min-height: 400px; /* Мінімальна висота на мобайлі */
+        }
+
+        @media (max-width: 1024px) {
+            .board-side {
+                height: 60vh; /* Займає частину екрана при скролі */
+                position: sticky;
+                bottom: 0;
+                box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
+                z-index: 100;
+            }
+        }
+
+        /* КОНТЕНТНІ ЕЛЕМЕНТИ */
+        .nmt-header {
+            background: linear-gradient(90deg, #4f46e5, #818cf8);
+            color: white; padding: 5px 15px; border-radius: 50px;
+            font-size: 0.75rem; font-weight: bold; display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        .theory-card {
+            background: #eef2ff; border-radius: 12px; margin-bottom: 25px;
+        }
+
+        details summary {
+            padding: 15px; cursor: pointer; font-weight: 700; list-style: none;
+        }
+
+        .task-card {
+            background: var(--card); padding: 20px; border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 20px;
+            border: 1px solid #f1f5f9;
+        }
+
+        .input-row {
+            display: flex; gap: 8px; margin-top: 15px; flex-wrap: wrap;
+        }
+
+        input {
+            padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px;
+            flex: 1; min-width: 100px; max-width: 150px;
+        }
+
+        button {
+            padding: 10px 15px; border-radius: 8px; border: none;
+            cursor: pointer; font-weight: 600; font-size: 0.9rem;
+            transition: 0.2s;
+        }
+
+        .btn-check { background: var(--primary); color: white; }
+        .btn-tool { background: #f1f5f9; color: #475569; }
+
+        /* ДОШКА ТА ІНСТРУМЕНТИ */
+        .toolbar {
+            padding: 10px; background: #1e293b;
+            display: flex; gap: 8px; overflow-x: auto;
+        }
+
+        .tool-icon {
+            padding: 8px 12px; background: #334155; color: white;
+            border-radius: 6px; white-space: nowrap; font-size: 0.8rem;
+        }
+
+        .tool-icon.active { background: var(--primary); }
+
+        #whiteboard { flex: 1; touch-action: none; background: #fff; }
+
+        .fb-msg { margin-top: 10px; font-weight: bold; display: none; }
+    </style>
+</head>
+<body>
+
+<div class="app-wrapper">
+    <div class="content-side">
+        <div class="nmt-header">NMT PREP 2026</div>
+        <h1>Лінійні рівняння та ОДЗ</h1>
+        <p><i>Комплексний тренажер для підготовки до іспиту</i></p>
+
+        <details class="theory-card">
+            <summary>📖 Короткий довідник (теорія)</summary>
+            <div style="padding: 15px; font-size: 0.9rem;">
+                <b>1. $ax = b$:</b> Якщо $a=0, b \neq 0$ — коренів нема. Якщо $a=0, b=0$ — безліч.<br>
+                <b>2. ОДЗ:</b> У дробових рівняннях знаменник $\neq 0$. Корені, що обнуляють знаменник, є сторонніми.
+            </div>
+        </details>
+
+        <div id="tasks-mount"></div>
+
+        <div class="task-card" style="text-align: center; border: 2px dashed var(--primary);">
+            <h3>🏁 Завершення</h3>
+            <button class="btn-check" style="width: 100%;" onclick="alert('Урок завершено! Ти — молодець!')">Зберегти прогрес</button>
+        </div>
+    </div>
+
+    <div class="board-side">
+        <div class="toolbar">
+            <button class="tool-icon active" id="pen-btn" onclick="setTool('pen')">✏️ Олівець</button>
+            <button class="tool-icon" id="eraser-btn" onclick="setTool('eraser')">🧼 Гумка</button>
+            <button class="tool-icon" onclick="clearCanvas()">🗑️ Очистити</button>
+            <button class="tool-icon" onclick="drawGrid()">🌐 Сітка</button>
+        </div>
+        <canvas id="whiteboard"></canvas>
+    </div>
+</div>
+
+<script>
+    // ДАНІ (Твої 20 завдань)
+    const sections = [
+        {
+            name: "I. Логіка рівноваги",
+            tasks: [
+                { q: "x + 14 = 30", a: "16", s: "$x = 30 - 14 = 16$" },
+                { q: "x - 9 = -5", a: "4", s: "$x = -5 + 9 = 4$" },
+                { q: "25 - x = 10", a: "15", s: "$x = 25 - 10 = 15$" },
+                { q: "12 + x = 2", a: "-10", s: "$x = 2 - 12 = -10$" },
+                { q: "x - 1.5 = 2", a: "3.5", s: "$x = 2 + 1.5 = 3.5$" }
+            ]
+        },
+        {
+            name: "II. Форма $ax = b$",
+            tasks: [
+                { q: "5x = 45", a: "9", s: "$x = 45 / 5 = 9$" },
+                { q: "-3x = 21", a: "-7", s: "$x = 21 / (-3) = -7$" },
+                { q: "0.2x = 4", a: "20", s: "$4 / 0.2 = 20$" },
+                { q: "0x = 10", a: "немає", s: "0 не може дорівнювати 10." },
+                { q: "0x = 0", a: "безліч", s: "Рівність вірна для будь-якого числа." }
+            ]
+        },
+        {
+            name: "III. ОДЗ та дроби",
+            tasks: [
+                { q: "\\frac{x-5}{x+2} = 0", a: "5", s: "$x-5=0$. ОДЗ: $x \\neq -2$." },
+                { q: "\\frac{2x+6}{x-1} = 0", a: "-3", s: "$2x+6=0 \\Rightarrow x=-3$." },
+                { q: "\\frac{x-4}{x-4} = 0", a: "немає", s: "Чисельник і знаменник 0 при x=4." },
+                { q: "\\frac{x(x-2)}{x} = 0", a: "2", s: "$x=0$ не підходить за ОДЗ." },
+                { q: "\\frac{x^2-9}{x-3} = 0", a: "-3", s: "x=3 — сторонній корінь." }
+            ]
+        },
+        {
+            name: "IV. Параметри (НМТ стиль)",
+            tasks: [
+                { q: "ax = 5. \\text{ При } a = ?", a: "0", s: "Якщо $a=0$, то $0=5$ (коренів нема)." },
+                { q: "(a-2)x = 0. \\text{ Безліч при } a = ?", a: "2", s: "При $a=2$ маємо $0x=0$." },
+                { q: "\\frac{x-3}{x-a} = 0. \\text{ Немає коренів при } a = ?", a: "3", s: "Параметр 'з'їдає' корінь x=3." },
+                { q: "(a+5)x = 7. \\text{ Немає коренів при } a = ?", a: "-5", s: "$a+5=0 \\Rightarrow a=-5$." },
+                { q: "\\frac{x-a}{x-7} = 0. \\text{ Немає коренів при } a = ?", a: "7", s: "Корінь x=a збігається з ОДЗ x=7." }
+            ]
+        }
+    ];
+
+    // Рендер завдань
+    const mount = document.getElementById('tasks-mount');
+    sections.forEach(sec => {
+        const h = document.createElement('h3');
+        h.innerHTML = sec.name;
+        h.style.color = 'var(--primary)';
+        h.style.marginTop = '30px';
+        mount.appendChild(h);
+
+        sec.tasks.forEach((t, i) => {
+            const card = document.createElement('div');
+            card.className = 'task-card';
+            const tid = `t-${Math.random().toString(36).substr(2, 5)}`;
+            card.innerHTML = `
+                <div class="math-q">$${t.q}$</div>
+                <div class="input-row">
+                    <input type="text" id="in-${tid}" placeholder="Відповідь">
+                    <button class="btn-check" onclick="check('${tid}', '${t.a}')">Дізнатись</button>
+                    <button class="btn-tool" onclick="document.getElementById('sol-${tid}').style.display='block'">Розв'язок</button>
+                </div>
+                <div id="fb-${tid}" class="fb-msg"></div>
+                <div id="sol-${tid}" class="fb-msg" style="color:#666; background:#f9f9f9; padding:10px; border-radius:5px;">${t.s}</div>
+            `;
+            mount.appendChild(card);
+        });
+    });
+
+    function check(id, correct) {
+        const val = document.getElementById(`in-${id}`).value.trim().toLowerCase();
+        const fb = document.getElementById(`fb-${id}`);
+        fb.style.display = 'block';
+        if(val === correct.toLowerCase()) {
+            fb.innerHTML = "✅ Правильно!";
+            fb.style.color = "green";
+        } else {
+            fb.innerHTML = "❌ Помилка. Перевір ще раз.";
+            fb.style.color = "red";
+        }
+    }
+
+    // ЛОГІКА ДОШКИ (З ПІДТРИМКОЮ TOUCH)
+    const canvas = document.getElementById('whiteboard');
+    const ctx = canvas.getContext('2d');
+    let isDrawing = false;
+    let currentTool = 'pen';
+
+    function resize() {
+        const parent = canvas.parentElement;
+        canvas.width = parent.clientWidth;
+        canvas.height = parent.clientHeight - 50;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    function getPos(e) {
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return { x: clientX - rect.left, y: clientY - rect.top };
+    }
+
+    function start(e) { isDrawing = true; draw(e); }
+    function end() { isDrawing = false; ctx.beginPath(); }
+
+    function draw(e) {
+        if (!isDrawing) return;
+        e.preventDefault();
+        const { x, y } = getPos(e);
+        
+        ctx.lineWidth = currentTool === 'eraser' ? 30 : 3;
+        ctx.lineCap = 'round';
+        ctx.strokeStyle = currentTool === 'eraser' ? '#ffffff' : '#1e293b';
+
+        ctx.lineTo(x, y);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+    }
+
+    canvas.addEventListener('mousedown', start);
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('mouseup', end);
+    canvas.addEventListener('touchstart', start);
+    canvas.addEventListener('touchmove', draw);
+    canvas.addEventListener('touchend', end);
+
+    function setTool(t) {
+        currentTool = t;
+        document.getElementById('pen-btn').classList.toggle('active', t === 'pen');
+        document.getElementById('eraser-btn').classList.toggle('active', t === 'eraser');
+    }
+
+    function clearCanvas() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
+
+    function drawGrid() {
+        clearCanvas();
+        ctx.strokeStyle = "#f1f5f9";
+        for(let i=0; i<canvas.width; i+=25) { ctx.beginPath(); ctx.moveTo(i,0); ctx.lineTo(i,canvas.height); ctx.stroke(); }
+        for(let i=0; i<canvas.height; i+=25) { ctx.beginPath(); ctx.moveTo(0,i); ctx.lineTo(canvas.width,i); ctx.stroke(); }
+    }
+</script>
+
+</body>
+</html>

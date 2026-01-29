@@ -774,6 +774,16 @@ window.lessonsData = [
     author: "Соня",
   },
   {
+    id: "math-6-riznidii",
+    title: "Тест, різні знаки, різні дії",
+    grade: 6,
+    topic: "Математика",
+    link: "math_general/6/Вадим/math_6_rizniznaki_riznidii.html",
+    subject_code: "math_general",
+    category: "lesson",
+    author: "Соня",
+  },
+  {
     id: "math-6-vadim-03",
     title: "Вадим Урок3",
     grade: 6,
@@ -997,6 +1007,19 @@ window.lessonsData = [
     grade: 9,
     topic: "Математика",
     link: "algebra/9/Настя/Артур.html",
+    subject_code: "algebra",
+    category: "lesson",
+    author: "Соня",
+  },
+ // ==========================================
+  // 10 КЛАС (Алгебра - Соня) - Автор: Соня
+  // ==========================================
+  {
+    id: "nmt-10-yara",
+    title: "Рівняння лінійні",
+    grade: 10,
+    topic: "Математика",
+    link: "algebra/nmt/rivnianiia1.html",
     subject_code: "algebra",
     category: "lesson",
     author: "Соня",
