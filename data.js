@@ -860,7 +860,7 @@ window.lessonsData = [
     title: "Куля, конус, циліндр",
     grade: 6,
     topic: "Математика",
-    link: "math_general/6/Вадим/math_6_kulia_konus_cilindr.html",
+    link: "math_general/6/math_6_kulia_konus_cilindr.html",
     subject_code: "math_general",
     category: "lesson",
     author: "Соня",
