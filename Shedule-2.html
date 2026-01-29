@@ -10,277 +10,374 @@
       rel="stylesheet"
     />
     <style>
-      :root {
-        --bg-color: #f3f4f6;
-        --card-bg: #ffffff;
-        --text-primary: #111827;
-        --text-secondary: #6b7280;
-        --accent-blue: #3b82f6;
-        --accent-blue-light: #eff6ff;
-        --accent-blue-text: #1d4ed8;
-        --accent-green: #10b981;
-        --accent-green-light: #ecfdf5;
-        --accent-green-text: #047857;
-        --accent-orange: #f59e0b;
-        --accent-orange-light: #fffbeb;
-        --accent-orange-text: #b45309;
-        --border-color: #e5e7eb;
-        --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-      }
+  :root {
+    --bg-color: #f3f4f6;
+    --card-bg: #ffffff;
+    --text-primary: #111827;
+    --text-secondary: #6b7280;
+    --accent-blue: #3b82f6;
+    --accent-blue-light: #eff6ff;
+    --accent-blue-text: #1d4ed8;
+    --accent-green: #10b981;
+    --accent-green-light: #ecfdf5;
+    --accent-green-text: #047857;
+    --accent-orange: #f59e0b;
+    --accent-orange-light: #fffbeb;
+    --accent-orange-text: #b45309;
+    --border-color: #e5e7eb;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --highlight-shadow-green: 0 4px 12px rgba(16, 185, 129, 0.2);
+    --highlight-shadow-blue: 0 4px 12px rgba(59, 130, 246, 0.2);
+  }
 
-      body {
-        font-family: "Inter", sans-serif;
-        background-color: var(--bg-color);
-        color: var(--text-primary);
-        margin: 0;
-        padding: 15px;
-        line-height: 1.5;
-      }
+  body {
+    font-family: "Inter", sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    margin: 0;
+    padding: 15px;
+    line-height: 1.5;
+  }
 
-      .container {
-        max-width: 1000px;
-        margin: 0 auto;
-      }
+  .container {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
 
-      .week-status {
-        text-align: center;
-        margin-bottom: 15px;
-        font-size: 0.9rem;
-        color: var(--text-secondary);
-        font-weight: 500;
-      }
-      .week-status span {
-        color: var(--accent-blue);
-        font-weight: 700;
-      }
+  .week-status {
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
 
-      .tabs-nav {
-        display: flex;
-        justify-content: center;
-        margin-bottom: 20px;
-        background: #e5e7eb;
-        padding: 4px;
-        border-radius: 12px;
-        width: fit-content;
-        margin-left: auto;
-        margin-right: auto;
-      }
+  .week-status span {
+    color: var(--accent-blue);
+    font-weight: 700;
+  }
 
-      .tab-btn {
-        padding: 10px 20px;
-        border: none;
-        background: transparent;
-        cursor: pointer;
-        font-family: "Inter", sans-serif;
-        font-weight: 600;
-        font-size: 1rem;
-        color: var(--text-secondary);
-        border-radius: 8px;
-        transition: background 0.2s;
-        min-width: 100px;
-      }
+  .tabs-nav {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    background: #e5e7eb;
+    padding: 4px;
+    border-radius: 12px;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+  }
 
-      .tab-btn.active {
-        background-color: var(--card-bg);
-        color: var(--accent-blue);
-        box-shadow: var(--shadow-sm);
-      }
+  .tab-btn {
+    padding: 10px 20px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-family: "Inter", sans-serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--text-secondary);
+    border-radius: 8px;
+    transition: background 0.2s;
+    min-width: 100px;
+  }
 
-      .tab-content {
-        display: none;
-      }
+  .tab-btn.active {
+    background-color: var(--card-bg);
+    color: var(--accent-blue);
+    box-shadow: var(--shadow-sm);
+  }
 
-      .tab-content.active {
-        display: block;
-      }
+  .tab-content {
+    display: none;
+  }
 
-      .day {
-        background: var(--card-bg);
-        border-radius: 16px;
-        padding: 20px;
-        margin-bottom: 20px;
-        box-shadow: var(--shadow-sm);
-        border: 1px solid var(--border-color);
-      }
+  .tab-content.active {
+    display: block;
+  }
 
-      h2 {
-        margin-top: 0;
-        margin-bottom: 15px;
-        font-size: 1.25rem;
-        color: var(--text-primary);
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
+  .day {
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color);
+    transition: opacity 0.3s ease;
+  }
 
-      h2::before {
-        content: "";
-        display: block;
-        width: 6px;
-        height: 24px;
-        background: var(--accent-blue);
-        border-radius: 3px;
-      }
+  .day.day-passed {
+    opacity: 0.5;
+  }
 
-      table {
-        width: 100%;
-        border-collapse: separate;
-        border-spacing: 0;
-      }
+  h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.25rem;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
 
-      th {
-        text-align: left;
-        padding: 12px 16px;
-        font-size: 0.875rem;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        color: var(--text-secondary);
-        font-weight: 600;
-        border-bottom: 2px solid var(--border-color);
-      }
+  h2::before {
+    content: "";
+    display: block;
+    width: 6px;
+    height: 24px;
+    background: var(--accent-blue);
+    border-radius: 3px;
+  }
 
-      td {
-        padding: 16px;
-        vertical-align: middle;
-        border-bottom: 1px solid var(--border-color);
-        font-size: 0.95rem;
-      }
+  table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+  }
 
-      tr:last-child td {
-        border-bottom: none;
-      }
+  th {
+    text-align: left;
+    padding: 12px 16px;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+    font-weight: 600;
+    border-bottom: 2px solid var(--border-color);
+  }
 
-      .badge {
-        display: inline-flex;
-        align-items: center;
-        padding: 4px 10px;
-        border-radius: 9999px;
-        font-size: 0.75rem;
-        font-weight: 600;
-        text-transform: uppercase;
-      }
+  td {
+    padding: 16px;
+    vertical-align: middle;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.95rem;
+  }
 
-      .lek .badge {
-        background-color: var(--accent-blue-light);
-        color: var(--accent-blue-text);
-      }
-      .pr .badge {
-        background-color: var(--accent-green-light);
-        color: var(--accent-green-text);
-      }
-      .ind .badge {
-        background-color: var(--accent-orange-light);
-        color: var(--accent-orange-text);
-      }
+  tr {
+    transition: all 0.3s ease;
+  }
 
-      .btn-link {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        padding: 6px 14px;
-        background-color: var(--text-primary);
-        color: white;
-        text-decoration: none;
-        border-radius: 8px;
-        font-size: 0.875rem;
-        font-weight: 500;
-      }
+  tr:last-child td {
+    border-bottom: none;
+  }
 
-      .time-cell {
-        font-variant-numeric: tabular-nums;
-        color: var(--text-secondary);
-        white-space: nowrap;
-        font-weight: 500;
-      }
+  tr.passed {
+    opacity: 0.4;
+    filter: grayscale(100%);
+    pointer-events: none;
+  }
 
-      .subject-cell {
-        font-weight: 600;
-        color: var(--text-primary);
-      }
-      .teacher-cell {
-        color: var(--text-secondary);
-      }
+  tr.current {
+    background-color: var(--accent-green-light);
+    box-shadow: var(--highlight-shadow-green);
+    position: relative;
+    z-index: 10;
+    transform: scale(1.01);
+    border-radius: 8px;
+  }
 
-      @media (max-width: 768px) {
-        .day {
-          padding: 15px;
-        }
-        table,
-        thead,
-        tbody,
-        th,
-        td,
-        tr {
-          display: block;
-        }
-        thead tr {
-          display: none;
-        }
-        tr {
-          background: #fff;
-          border: 1px solid var(--border-color);
-          border-radius: 12px;
-          margin-bottom: 15px;
-          padding: 15px;
-          position: relative;
-        }
-        tr.lek {
-          border-left: 5px solid var(--accent-blue);
-        }
-        tr.pr {
-          border-left: 5px solid var(--accent-green);
-        }
-        tr.ind {
-          border-left: 5px solid var(--accent-orange);
-        }
+  tr.current td {
+    border-top: 2px solid var(--accent-green);
+    border-bottom: 2px solid var(--accent-green);
+  }
+  
+  tr.current td:first-child {
+    border-left: 2px solid var(--accent-green);
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+  }
+  
+  tr.current td:last-child {
+    border-right: 2px solid var(--accent-green);
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+  }
 
-        td {
-          border: none;
-          padding: 6px 0;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          text-align: right;
-        }
-        td::before {
-          content: attr(data-label);
-          float: left;
-          font-weight: 600;
-          color: var(--text-secondary);
-          font-size: 0.85rem;
-          margin-right: 15px;
-        }
+  tr.next {
+    background-color: #ffffff;
+    box-shadow: var(--highlight-shadow-blue);
+    position: relative;
+    z-index: 9;
+    transform: scale(1.01);
+    border-radius: 8px;
+  }
 
-        /* Приховуємо рядок типу, бо є кольорова смужка */
-        td[data-label="Тип"] {
-          display: none;
-        }
+  tr.next td {
+    border-top: 2px solid var(--accent-blue);
+    border-bottom: 2px solid var(--accent-blue);
+  }
 
-        .badge {
-          position: absolute;
-          top: 15px;
-          right: 15px;
-        }
+  tr.next td:first-child {
+    border-left: 2px solid var(--accent-blue);
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+  }
 
-        /* КНОПКА - більше не розтягується */
-        .btn-link {
-          width: auto;
-          margin-top: 0;
-        }
+  tr.next td:last-child {
+    border-right: 2px solid var(--accent-blue);
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+  }
 
-        .subject-cell {
-          text-align: left;
-          width: 100%;
-          display: block;
-          margin-top: 4px;
-        }
-        td[data-label="Предмет"] {
-          flex-direction: column;
-          align-items: flex-start;
-          text-align: left;
-        }
-      }
-    </style>
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .lek .badge {
+    background-color: var(--accent-blue-light);
+    color: var(--accent-blue-text);
+  }
+
+  .pr .badge {
+    background-color: var(--accent-green-light);
+    color: var(--accent-green-text);
+  }
+
+  .ind .badge {
+    background-color: var(--accent-orange-light);
+    color: var(--accent-orange-text);
+  }
+
+  .btn-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 14px;
+    background-color: var(--text-primary);
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  .time-cell {
+    font-variant-numeric: tabular-nums;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    font-weight: 500;
+  }
+
+  .subject-cell {
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .teacher-cell {
+    color: var(--text-secondary);
+  }
+
+  @media (max-width: 768px) {
+    .day {
+      padding: 15px;
+    }
+
+    table,
+    thead,
+    tbody,
+    th,
+    td,
+    tr {
+      display: block;
+    }
+
+    thead tr {
+      display: none;
+    }
+
+    tr {
+      background: #fff;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      margin-bottom: 15px;
+      padding: 15px;
+      position: relative;
+    }
+
+    tr.lek {
+      border-left: 5px solid var(--accent-blue);
+    }
+
+    tr.pr {
+      border-left: 5px solid var(--accent-green);
+    }
+
+    tr.ind {
+      border-left: 5px solid var(--accent-orange);
+    }
+
+    tr.current {
+      border: 2px solid var(--accent-green);
+      transform: scale(1.02);
+    }
+    
+    tr.current td {
+      border: none;
+    }
+
+    tr.next {
+      border: 2px solid var(--accent-blue);
+      transform: scale(1.02);
+    }
+
+    tr.next td {
+      border: none;
+    }
+
+    td {
+      border: none;
+      padding: 6px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      text-align: right;
+    }
+
+    td::before {
+      content: attr(data-label);
+      float: left;
+      font-weight: 600;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      margin-right: 15px;
+    }
+
+    td[data-label="Тип"] {
+      display: none;
+    }
+
+    .badge {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+    }
+
+    .btn-link {
+      width: auto;
+      margin-top: 0;
+    }
+
+    .subject-cell {
+      text-align: left;
+      width: 100%;
+      display: block;
+      margin-top: 4px;
+    }
+
+    td[data-label="Предмет"] {
+      flex-direction: column;
+      align-items: flex-start;
+      text-align: left;
+    }
+  }
+</style>
   </head>
   <body>
     <div class="container">
@@ -1510,68 +1607,134 @@
     </div>
 
     <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        try {
-          // Встановлюємо дату початку відліку: 26 січня 2026 року
-          const startDate = new Date(2026, 0, 26); 
-          const now = new Date();
+  document.addEventListener("DOMContentLoaded", function () {
+    const startDate = new Date(2026, 0, 26);
+    
+    function updateSchedule() {
+      const now = new Date();
+      const diffTime = now - startDate;
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+      const adjustedDays = diffDays < 0 ? 0 : diffDays;
+      const weeksPassed = Math.floor(adjustedDays / 7);
+
+      const statusEl = document.getElementById("weekStatus");
+      let activeTabId = "lower";
+
+      if (weeksPassed % 2 === 0) {
+        activeTabId = "upper";
+        statusEl.innerHTML = "Зараз активний: <span>Верхній тиждень</span>";
+      } else {
+        activeTabId = "lower";
+        statusEl.innerHTML = "Зараз активний: <span>Нижній тиждень</span>";
+      }
+
+      openTab(activeTabId);
+      highlightLessons(activeTabId, now);
+    }
+
+    function highlightLessons(tabId, now) {
+      const dayMap = {
+        "Понеділок": 1,
+        "Вівторок": 2,
+        "Середа": 3,
+        "Четвер": 4,
+        "П'ятниця": 5,
+        "Субота": 6,
+        "Неділя": 0
+      };
+
+      const currentDayIndex = now.getDay(); 
+      const container = document.getElementById(tabId);
+      const days = container.getElementsByClassName("day");
+      
+      let nextFound = false;
+
+      for (let day of days) {
+        const title = day.querySelector("h2").innerText.trim();
+        const dayIndex = dayMap[title];
+
+        day.classList.remove("day-passed");
+
+        if (dayIndex < currentDayIndex && dayIndex !== 0) {
+          day.classList.add("day-passed");
+          const rows = day.querySelectorAll("tbody tr");
+          rows.forEach(row => {
+            row.classList.add("passed");
+            row.classList.remove("current", "next");
+          });
+          continue;
+        }
+
+        if (dayIndex > currentDayIndex) {
+          const rows = day.querySelectorAll("tbody tr");
+          rows.forEach(row => {
+            row.classList.remove("passed", "current", "next");
+            if (!nextFound) {
+               row.classList.add("next");
+               nextFound = true;
+            }
+          });
+          continue;
+        }
+
+        if (dayIndex === currentDayIndex) {
+          const rows = day.querySelectorAll("tbody tr");
           
-          // Розрахунок різниці в часі
-          const diffTime = now - startDate;
-          const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-          
-          // Якщо дата в майбутньому (diffDays < 0), вважаємо, що це 0-й тиждень
-          const adjustedDays = diffDays < 0 ? 0 : diffDays;
-          const weeksPassed = Math.floor(adjustedDays / 7);
+          rows.forEach(row => {
+            row.classList.remove("passed", "current", "next");
+            
+            const timeCell = row.querySelector(".time-cell");
+            if (!timeCell) return;
 
-          const statusEl = document.getElementById("weekStatus");
+            const timeText = timeCell.innerText.trim(); 
+            const [startStr, endStr] = timeText.split("-");
+            
+            const startTime = parseTime(startStr, now);
+            const endTime = parseTime(endStr, now);
 
-          // Логіка: 
-          // 26.01 - 01.02 (weeksPassed = 0, парне) -> Верхній
-          // 02.02 - 08.02 (weeksPassed = 1, непарне) -> Нижній
-          
-          if (weeksPassed % 2 === 0) {
-            // ПАРНИЙ ТИЖДЕНЬ (0, 2, 4...) -> ВЕРХНІЙ
-            openTab("upper");
-            statusEl.innerHTML = "Зараз активний: <span>Верхній тиждень</span>";
-          } else {
-            // НЕПАРНИЙ ТИЖДЕНЬ (1, 3, 5...) -> НИЖНІЙ
-            openTab("lower");
-            statusEl.innerHTML = "Зараз активний: <span>Нижній тиждень</span>";
-          }
-        } catch (e) {
-          console.log("Помилка авто-визначення, залишаємо нижній розклад", e);
-        }
-      });
-
-      function openTab(tabName) {
-        var i, tabContent, tabBtns;
-
-        // Приховати всі вкладки
-        tabContent = document.getElementsByClassName("tab-content");
-        for (i = 0; i < tabContent.length; i++) {
-          tabContent[i].classList.remove("active");
-        }
-
-        // Деактивувати всі кнопки
-        tabBtns = document.getElementsByClassName("tab-btn");
-        for (i = 0; i < tabBtns.length; i++) {
-          tabBtns[i].classList.remove("active");
-        }
-
-        // Показати потрібну вкладку
-        const targetTab = document.getElementById(tabName);
-        if (targetTab) {
-            targetTab.classList.add("active");
-        }
-
-        // Активувати потрібну кнопку
-        if (tabName === "upper") {
-          document.getElementById("btn-upper").classList.add("active");
-        } else {
-          document.getElementById("btn-lower").classList.add("active");
+            if (now > endTime) {
+              row.classList.add("passed");
+            } else if (now >= startTime && now <= endTime) {
+              row.classList.add("current");
+              nextFound = true;
+            } else {
+              if (!nextFound) {
+                row.classList.add("next");
+                nextFound = true;
+              }
+            }
+          });
         }
       }
-    </script>
+    }
+
+    function parseTime(timeStr, dateRef) {
+      const [hours, minutes] = timeStr.trim().split(".").map(Number);
+      const newDate = new Date(dateRef);
+      newDate.setHours(hours, minutes, 0, 0);
+      return newDate;
+    }
+
+    function openTab(tabName) {
+      const tabContent = document.getElementsByClassName("tab-content");
+      for (let i = 0; i < tabContent.length; i++) {
+        tabContent[i].classList.remove("active");
+      }
+
+      const tabBtns = document.getElementsByClassName("tab-btn");
+      for (let i = 0; i < tabBtns.length; i++) {
+        tabBtns[i].classList.remove("active");
+      }
+
+      document.getElementById(tabName).classList.add("active");
+      
+      const btnId = tabName === "upper" ? "btn-upper" : "btn-lower";
+      document.getElementById(btnId).classList.add("active");
+    }
+
+    updateSchedule();
+    setInterval(updateSchedule, 60000);
+  });
+</script>
   </body>
 </html>

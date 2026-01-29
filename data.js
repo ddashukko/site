@@ -6,7 +6,7 @@ window.lessonsData = [
   // ==========================================
   {
     id: "math-2-eq-simple",
-    
+
     title: "Прості рівняння з малюнками та без (без переходу через десяток)",
     grade: 2,
     topic: "Арифметика",
@@ -99,6 +99,16 @@ window.lessonsData = [
     author: "Даша",
   },
   {
+    id: "math-2-int",
+    title: "Академія котиків",
+    grade: 2,
+    topic: "Арифметика",
+    link: "math_general/2/3-interesting.html",
+    subject_code: "math_general",
+    category: "lesson",
+    author: "Даша",
+  },
+  {
     id: "math-2-hw-01",
     title: "Домашня1",
     grade: 2,
@@ -108,6 +118,7 @@ window.lessonsData = [
     category: "homework",
     author: "Даша",
   },
+
   {
     id: "math-2-hw-02",
     title: "Домашня2",
@@ -742,7 +753,7 @@ window.lessonsData = [
     category: "lesson",
     author: "Соня",
   },
-   {
+  {
     id: "math-6-vadim-domashnie",
     title: "ДЗ",
     grade: 6,
@@ -826,7 +837,7 @@ window.lessonsData = [
     category: "lesson",
     author: "Соня",
   },
-   {
+  {
     id: "alg-8-sonya-",
     title: "Дз",
     grade: 8,
