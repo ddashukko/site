@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Урок: Циліндр та Конус. Площі поверхонь</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      },
+      svg: {
+        fontCache: 'global'
+      }
+    };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
+        
+        body { font-family: 'Nunito', sans-serif; overflow: hidden; }
+        
+        /* Скролбар для контенту */
+        .custom-scroll::-webkit-scrollbar { width: 8px; }
+        .custom-scroll::-webkit-scrollbar-track { background: #f1f1f1; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #c7c7c7; border-radius: 4px; }
+        .custom-scroll::-webkit-scrollbar-thumb:hover { background: #a0a0a0; }
+
+        /* Анімації */
+        .fade-in { animation: fadeIn 0.5s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .correct-anim { animation: pulseGreen 0.5s; border-color: #10B981 !important; background-color: #D1FAE5 !important; }
+        @keyframes pulseGreen { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
+
+        .wrong-anim { animation: shakeRed 0.4s; border-color: #EF4444 !important; background-color: #FEE2E2 !important; }
+        @keyframes shakeRed { 0% { transform: translateX(0); } 25% { transform: translateX(-5px); } 50% { transform: translateX(5px); } 75% { transform: translateX(-5px); } 100% { transform: translateX(0); } }
+
+        /* Стилі канвасу */
+        #whiteboard { cursor: crosshair; touch-action: none; }
+    </style>
+</head>
+<body class="bg-gray-100 h-screen flex flex-col md:flex-row">
+
+    <div class="w-full md:w-1/2 h-full flex flex-col bg-white border-r-2 border-gray-200 shadow-xl z-10">
+        
+        <div class="p-4 bg-indigo-600 text-white flex justify-between items-center shadow-md">
+            <div>
+                <h1 class="text-xl font-bold">Математика 6 клас</h1>
+                <p class="text-sm opacity-90">Тема: Циліндр, Конус, Куля</p>
+            </div>
+            <div class="text-right">
+                <div class="text-xs uppercase tracking-wide opacity-75">Прогрес</div>
+                <div class="font-bold text-lg"><span id="score">0</span> / 30</div>
+            </div>
+        </div>
+
+        <div class="flex-1 overflow-y-auto p-6 custom-scroll relative" id="content-area">
+            
+            <div class="mb-8 bg-blue-50 p-6 rounded-xl border border-blue-100">
+                <h2 class="text-xl font-bold text-blue-800 mb-3">👋 Привіт, друже!</h2>
+                <p class="text-gray-700 mb-4">
+                    Сьогодні ми дослідимо фігури обертання. Уяви консервну банку (це циліндр) або морозиво у ріжку (це конус). 
+                    Для розрахунків будемо використовувати число $\pi \approx 3.14$.
+                </p>
+                <details class="bg-white p-4 rounded-lg shadow-sm cursor-pointer">
+                    <summary class="font-bold text-indigo-600 select-none">🔑 Основні формули (Натисни)</summary>
+                    <div class="mt-3 text-gray-700 text-sm space-y-2">
+                        <p><strong>Довжина кола:</strong> $C = 2\pi r$</p>
+                        <p><strong>Площа круга:</strong> $S = \pi r^2$</p>
+                        <p><strong>Площа бічної поверхні циліндра:</strong> $S_{біч} = 2\pi r h$ (або $S_{біч} = C \cdot h$)</p>
+                        <p><strong>Площа повної поверхні циліндра:</strong> $S_{повна} = S_{біч} + 2S_{осн}$</p>
+                    </div>
+                </details>
+            </div>
+
+            <div id="tasks-container" class="space-y-8">
+                </div>
+
+            <div id="final-section" class="mt-12 text-center hidden">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">Урок завершено! 🎉</h2>
+                <div id="final-score-display" class="text-xl mb-4"></div>
+                <p id="final-praise" class="text-lg text-indigo-600 font-semibold italic mb-6"></p>
+                <button onclick="location.reload()" class="bg-indigo-600 text-white px-6 py-2 rounded-full hover:bg-indigo-700 transition">Почати спочатку</button>
+            </div>
+
+            <div class="h-20"></div> </div>
+
+        <div class="p-4 bg-gray-50 border-t flex justify-between items-center">
+            <span class="text-xs text-gray-500">Використовуй дошку праворуч для обчислень 👉</span>
+            <button onclick="finishLesson()" class="bg-green-600 text-white px-6 py-2 rounded-lg font-bold shadow-lg hover:bg-green-700 transform hover:scale-105 transition">
+                Завершити урок
+            </button>
+        </div>
+    </div>
+
+    <div class="w-full md:w-1/2 h-full bg-gray-50 relative flex flex-col">
+        
+        <div class="absolute top-4 left-4 right-4 bg-white rounded-xl shadow-lg p-2 flex gap-2 justify-center items-center z-20 flex-wrap">
+            <button onclick="setTool('pen')" class="p-2 rounded hover:bg-gray-100 tool-btn active:bg-gray-200" title="Олівець">✏️</button>
+            <button onclick="setTool('eraser')" class="p-2 rounded hover:bg-gray-100 tool-btn" title="Гумка">🧹</button>
+            <div class="w-px h-6 bg-gray-300 mx-2"></div>
+            <button onclick="drawGrid()" class="p-2 rounded hover:bg-gray-100 text-sm font-bold text-gray-600"># Сітка</button>
+            <button onclick="insertShape('cylinder')" class="p-2 rounded hover:bg-gray-100 text-sm font-bold text-gray-600">🛢 Циліндр</button>
+            <button onclick="insertShape('cone')" class="p-2 rounded hover:bg-gray-100 text-sm font-bold text-gray-600">A Конус</button>
+            <div class="w-px h-6 bg-gray-300 mx-2"></div>
+            <button onclick="clearCanvas()" class="p-2 rounded hover:bg-red-100 text-red-600 font-bold text-sm">Очистити</button>
+            <input type="color" id="colorPicker" value="#2563eb" class="w-8 h-8 rounded cursor-pointer border-0">
+        </div>
+
+        <canvas id="whiteboard" class="w-full h-full bg-white block"></canvas>
+        
+        <div class="absolute bottom-4 right-4 bg-white/80 px-3 py-1 rounded text-xs text-gray-500 pointer-events-none select-none">
+            Малюй тут мишкою або пальцем
+        </div>
+    </div>
+
+    <script>
+        // --- DATA: TASKS ---
+        const tasks = [
+            // User Specified Tasks (10 items)
+            {
+                id: 838,
+                text: "Знайдіть площу бічної поверхні циліндра, радіус якого дорівнює 3 см, а висота — 4 см. (Використовуйте $\\pi \\approx 3.14$, відповідь округліть до сотих, якщо потрібно, або запишіть числом).",
+                hint: "$S_{біч} = 2\\pi r h$. Підставте $r=3, h=4$.",
+                solution: "$S = 2 \\cdot 3.14 \\cdot 3 \\cdot 4 = 6.28 \\cdot 12 = 75.36$ см$^2$.",
+                answer: 75.36
+            },
+            {
+                id: 839,
+                text: "Паперова смужка охоплює бічну поверхню консервної банки. Знайдіть площу смужки, якщо радіус банки 5 см, а висота 3,5 см.",
+                hint: "Це те саме, що площа бічної поверхні. $S = 2\\pi r h$.",
+                solution: "$S = 2 \\cdot 3.14 \\cdot 5 \\cdot 3.5 = 3.14 \\cdot 10 \\cdot 3.5 = 31.4 \\cdot 3.5 = 109.9$ см$^2$.",
+                answer: 109.9
+            },
+            {
+                id: 840,
+                text: "Накресліть (на дошці) розгортку циліндра ($r=1$ см, $h=2$ см). Знайдіть площу <strong>повної</strong> поверхні.",
+                hint: "$S_{повна} = S_{біч} + 2S_{осн}$. $S_{осн} = \\pi r^2$.",
+                solution: "$S_{біч} = 2\\pi(1)(2) = 4\\pi \\approx 12.56$. $S_{осн} = \\pi(1)^2 = 3.14$. $S_{повна} = 12.56 + 2(3.14) = 12.56 + 6.28 = 18.84$.",
+                answer: 18.84
+            },
+            {
+                id: 841,
+                text: "Знайдіть площу повної поверхні циліндра, радіус якого 2 см, а висота 3 см.",
+                hint: "$S = 2\\pi r (h + r)$.",
+                solution: "$S = 2 \\cdot 3.14 \\cdot 2 (3 + 2) = 12.56 \\cdot 5 = 62.8$.",
+                answer: 62.8
+            },
+            {
+                id: 842,
+                text: "Знайдіть довжину екватора Землі (довжина кола), якщо радіус $R=6400$ км. Результат округліть до <strong>тисяч</strong> (введіть ціле число тисяч, наприклад, 40000).",
+                hint: "$C = 2\\pi R$. Округлити до тисяч — це залишити нулі в кінці.",
+                solution: "$C = 2 \\cdot 3.14 \\cdot 6400 = 6.28 \\cdot 6400 = 40192$. Округлюємо до тисяч: 40000 км.",
+                answer: 40000
+            },
+            {
+                id: 843,
+                text: "Розгорткою бічної поверхні конуса є півкруг радіуса 10 см. Знайдіть радіус основи конуса.",
+                hint: "Довжина дуги півкруга дорівнює довжині кола основи конуса. $L_{дуги} = \\pi R_{розгортки}$. $C_{основи} = 2\\pi r_{конуса}$.",
+                solution: "Довжина дуги півкруга ($R=10$) = $\\pi \\cdot 10$. Це дорівнює $2\\pi r$. $10\\pi = 2\\pi r \\Rightarrow r = 5$ см.",
+                answer: 5
+            },
+            {
+                id: 844,
+                text: "Чи можна на аркуші 31х32 см накреслити розгортку циліндра ($r=5$, $h=9$)? Введіть 1 (Так) або 0 (Ні).",
+                hint: "Ширина розгортки: $2\\pi r$. Висота: $h + 2r$ (якщо круги зверху і знизу) або просто порівняйте довжину кола.",
+                solution: "Довжина прямокутника (бічна) = $2\\pi r = 2 \\cdot 3.14 \\cdot 5 = 31.4$ см. Це більше за 31 см (і 32, якщо крутити). Але нам ще треба кола. Навіть лише бічна поверхня має сторону 31.4 см, що не влізе в 31 см по одній стороні, але влізе в 32. Однак, $S_{осн}$ має діаметр 10см. Повна розгортка не влізе. Відповідь: Ні.",
+                answer: 0
+            },
+            {
+                id: 845,
+                text: "Колона: $d=40$ см ($r=0.2$ м), $h=5$ м. Витрата фарби 150 г/м$^2$. Чи вистачить 1 кг фарби? (Введіть 1 - Так, 0 - Ні).",
+                hint: "1. Знайди площу в м$^2$. 2. Помнож на 150. 3. Порівняй з 1000 г.",
+                solution: "$S = 2\\pi r h = 2 \\cdot 3.14 \\cdot 0.2 \\cdot 5 = 6.28$ м$^2$. Фарба: $6.28 \\cdot 150 = 942$ г. $942 < 1000$. Так, вистачить.",
+                answer: 1
+            },
+            {
+                id: 846,
+                text: "Поміркуйте. Знайдіть просте число $x$, для якого $3x - y = 12$ (де $y$ теж просте). Введіть значення $x$.",
+                hint: "Переберіть малі прості числа для $x$ (2, 3, 5, 7...). Пам'ятайте про парність.",
+                solution: "Якщо $x=5$, то $15 - y = 12 \\Rightarrow y=3$. 5 і 3 — прості. Це єдиний розв'язок.",
+                answer: 5
+            },
+            {
+                id: 847,
+                text: "Повторення. Обчисліть: $(2.7 - 0.9) \\cdot 2\\frac{1}{3}$.",
+                hint: "$1.8 \\cdot \\frac{7}{3}$.",
+                solution: "$1.8 = \\frac{18}{10}$. $\\frac{18}{10} \\cdot \\frac{7}{3} = \\frac{6}{10} \\cdot 7 = \\frac{42}{10} = 4.2$.",
+                answer: 4.2
+            },
+            // Generated "Blitz" Tasks (20 items) to reach 30 total
+            // Block 1: Circumference (C = 2*pi*r) - simplified pi=3
+            { id: 901, text: "Бліц: $r=10$. Знайдіть довжину кола (візьміть $\\pi=3.14$).", hint: "$2 \\cdot 3.14 \\cdot 10$", solution: "62.8", answer: 62.8 },
+            { id: 902, text: "Бліц: $r=4$. Знайдіть площу круга ($\\pi=3$).", hint: "$3 \\cdot 4^2$", solution: "48", answer: 48 },
+            { id: 903, text: "Бліц: $r=1$. Площа біч. пов. циліндра, $h=5$ ($\\pi=3.14$).", hint: "$2\\pi(1)(5) = 10\\pi$", solution: "31.4", answer: 31.4 },
+            { id: 904, text: "Бліц: $d=10$. Знайдіть радіус.", hint: "Радіус - це половина діаметра", solution: "5", answer: 5 },
+            { id: 905, text: "Бліц: $2/3$ від 60?", hint: "$60 : 3 \\cdot 2$", solution: "40", answer: 40 },
+            { id: 906, text: "Бліц: $0.5 \\cdot 0.5$", hint: "Половина від 0.5", solution: "0.25", answer: 0.25 },
+            { id: 907, text: "Бліц: Яку фігуру утворює обертання прямокутника навколо сторони?", hint: "Тема уроку", solution: "циліндр", answer: "циліндр" },
+            { id: 908, text: "Бліц: $r=2, h=2$. $S_{біч}$ (при $\\pi=3$).", hint: "$2 \\cdot 3 \\cdot 2 \\cdot 2$", solution: "24", answer: 24 },
+            { id: 909, text: "Бліц: 25% від 200", hint: "Четверта частина", solution: "50", answer: 50 },
+            { id: 910, text: "Бліц: Значення виразу $3^3 - 7$", hint: "$27-7$", solution: "20", answer: 20 },
+            { id: 911, text: "Бліц: Радіус 5 см. Діаметр?", hint: "$r \\cdot 2$", solution: "10", answer: 10 },
+            { id: 912, text: "Бліц: Обчисліть $150 : 1.5$", hint: "Перенеси кому: $1500 : 15$", solution: "100", answer: 100 },
+            { id: 913, text: "Бліц: $S_{біч} = 20\\pi$. $h=2$. Знайдіть $r$.", hint: "$20\\pi = 2\\pi r \\cdot 2$.", solution: "5", answer: 5 },
+            { id: 914, text: "Бліц: Скільки основ у циліндра?", hint: "Зверху і знизу", solution: "2", answer: 2 },
+            { id: 915, text: "Бліц: Розгортка бічної поверхні циліндра - це...", hint: "Фігура на площині", solution: "прямокутник", answer: "прямокутник" },
+            { id: 916, text: "Бліц: $5^2 + 12^2$ (теорема Піфагора?) ні, просто порахуй.", hint: "$25+144$", solution: "169", answer: 169 },
+            { id: 917, text: "Бліц: $h=10, r=3$. Об'єм $V=\\pi r^2 h$ ($\\pi \\approx 3$).", hint: "$3 \\cdot 9 \\cdot 10$", solution: "270", answer: 270 },
+            { id: 918, text: "Бліц: $1/2 + 0.5$.", hint: "1", solution: "1", answer: 1 },
+            { id: 919, text: "Бліц: $100 - 35.5$", hint: "Стовпчиком на дошці", solution: "64.5", answer: 64.5 },
+            { id: 920, text: "Бліц: Яку фігуру утворює обертання прямокутного трикутника навколо катета?", hint: "Схоже на ковпак", solution: "конус", answer: "конус" }
+        ];
+
+        let correctAnswers = 0;
+
+        // --- INIT ---
+        window.onload = function() {
+            renderTasks();
+            setupCanvas();
+        };
+
+        // --- RENDER TASKS ---
+        function renderTasks() {
+            const container = document.getElementById('tasks-container');
+            
+            tasks.forEach((task, index) => {
+                const taskEl = document.createElement('div');
+                taskEl.className = "bg-white p-6 rounded-xl shadow border border-gray-100 task-item";
+                taskEl.innerHTML = `
+                    <div class="flex justify-between items-start mb-3">
+                        <span class="bg-indigo-100 text-indigo-800 text-xs font-bold px-2 py-1 rounded">№${index + 1} (Завд. ${task.id})</span>
+                    </div>
+                    <div class="text-gray-800 text-lg mb-4 font-medium">${task.text}</div>
+                    
+                    <div class="flex flex-col sm:flex-row gap-3 items-center">
+                        <input type="text" id="input-${task.id}" placeholder="Відповідь..." class="border-2 border-gray-200 p-2 rounded w-full sm:w-40 focus:outline-none focus:border-indigo-500 transition">
+                        <button onclick="checkTask(${task.id}, '${task.answer}')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded transition w-full sm:w-auto">Перевірити</button>
+                    </div>
+                    
+                    <div class="mt-4 flex gap-4 text-sm">
+                        <button onclick="toggleVisibility('hint-${task.id}')" class="text-amber-600 hover:text-amber-800 font-semibold underline">💡 Підказка</button>
+                        <button onclick="toggleVisibility('sol-${task.id}')" class="text-green-600 hover:text-green-800 font-semibold underline">📝 Розв'язання</button>
+                    </div>
+                    
+                    <div id="hint-${task.id}" class="hidden mt-2 p-3 bg-yellow-50 text-yellow-800 rounded border border-yellow-200 text-sm italic">
+                        ${task.hint}
+                    </div>
+                    <div id="sol-${task.id}" class="hidden mt-2 p-3 bg-green-50 text-green-800 rounded border border-green-200 text-sm">
+                        <strong>Відповідь:</strong> ${task.solution}
+                    </div>
+                `;
+                container.appendChild(taskEl);
+            });
+            // Re-render math
+            MathJax.typeset();
+        }
+
+        // --- LOGIC ---
+        function toggleVisibility(id) {
+            const el = document.getElementById(id);
+            el.classList.toggle('hidden');
+            el.classList.add('fade-in');
+        }
+
+        function checkTask(id, correctVal) {
+            const input = document.getElementById(`input-${id}`);
+            let userVal = input.value.trim().toLowerCase().replace(',', '.');
+            let isCorrect = false;
+
+            // Handle string vs number comparison
+            if (!isNaN(parseFloat(correctVal))) {
+                // Numeric comparison with epsilon
+                const userNum = parseFloat(userVal);
+                const correctNum = parseFloat(correctVal);
+                if (Math.abs(userNum - correctNum) < 0.1) isCorrect = true;
+            } else {
+                // String comparison
+                if (userVal === correctVal.toString().toLowerCase()) isCorrect = true;
+            }
+
+            // Visual Feedback
+            input.classList.remove('correct-anim', 'wrong-anim');
+            void input.offsetWidth; // trigger reflow
+
+            if (isCorrect) {
+                input.classList.add('correct-anim');
+                correctAnswers++;
+                updateScore();
+                // Disable input after correct
+                input.disabled = true;
+            } else {
+                input.classList.add('wrong-anim');
+            }
+        }
+
+        function updateScore() {
+            document.getElementById('score').innerText = correctAnswers;
+        }
+
+        function finishLesson() {
+            const finalDiv = document.getElementById('final-section');
+            const container = document.getElementById('tasks-container');
+            
+            // Hide tasks, show final
+            container.style.display = 'none';
+            finalDiv.classList.remove('hidden');
+            finalDiv.classList.add('fade-in');
+            
+            // Calculate grade
+            const percent = (correctAnswers / tasks.length) * 100;
+            let praise = "";
+            let grade = "";
+
+            if (percent >= 90) { praise = "Ти справжній геній математики! Фантастичний результат! 🚀"; grade = "12 балів"; }
+            else if (percent >= 70) { praise = "Чудова робота! Ти добре розібрався в темі! 👍"; grade = "9-11 балів"; }
+            else if (percent >= 50) { praise = "Непогано! Але варто ще трохи потренуватися на дошці. 💪"; grade = "6-8 балів"; }
+            else { praise = "Ти старався! Головне — не здаватися і спробувати ще раз. У тебе все вийде! 🌱"; grade = "Спробуй ще!"; }
+
+            document.getElementById('final-score-display').innerHTML = `Твій результат: <strong>${correctAnswers}</strong> з ${tasks.length} <br> <span class="text-gray-500 text-sm">(${grade})</span>`;
+            document.getElementById('final-praise').innerText = praise;
+            
+            // Scroll to top
+            document.getElementById('content-area').scrollTop = 0;
+        }
+
+        // --- WHITEBOARD (CANVAS) ---
+        const canvas = document.getElementById('whiteboard');
+        const ctx = canvas.getContext('2d');
+        let painting = false;
+        let tool = 'pen';
+        let color = '#2563eb';
+
+        function setupCanvas() {
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+            
+            // Mouse Events
+            canvas.addEventListener('mousedown', startPosition);
+            canvas.addEventListener('mouseup', finishedPosition);
+            canvas.addEventListener('mousemove', draw);
+            
+            // Touch Events
+            canvas.addEventListener('touchstart', (e) => {
+                e.preventDefault(); 
+                startPosition(e.touches[0]);
+            });
+            canvas.addEventListener('touchend', (e) => {
+                e.preventDefault(); 
+                finishedPosition();
+            });
+            canvas.addEventListener('touchmove', (e) => {
+                e.preventDefault(); 
+                draw(e.touches[0]);
+            });
+
+            // Color Picker
+            document.getElementById('colorPicker').addEventListener('change', (e) => {
+                color = e.target.value;
+                if(tool === 'eraser') tool = 'pen'; // switch back to pen on color change
+            });
+        }
+
+        function resizeCanvas() {
+            const parent = canvas.parentElement;
+            canvas.width = parent.clientWidth;
+            canvas.height = parent.clientHeight;
+        }
+
+        function startPosition(e) {
+            painting = true;
+            draw(e);
+        }
+
+        function finishedPosition() {
+            painting = false;
+            ctx.beginPath();
+        }
+
+        function draw(e) {
+            if (!painting) return;
+            
+            const rect = canvas.getBoundingClientRect();
+            const x = (e.clientX || e.pageX) - rect.left;
+            const y = (e.clientY || e.pageY) - rect.top;
+
+            ctx.lineWidth = tool === 'eraser' ? 20 : 3;
+            ctx.lineCap = 'round';
+            ctx.strokeStyle = tool === 'eraser' ? '#ffffff' : color;
+
+            ctx.lineTo(x, y);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+        }
+
+        function setTool(t) {
+            tool = t;
+        }
+
+        function clearCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function drawGrid() {
+            ctx.beginPath();
+            ctx.strokeStyle = '#e5e7eb'; // light gray
+            ctx.lineWidth = 1;
+            
+            const step = 40;
+            
+            for (let x = 0; x <= canvas.width; x += step) {
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, canvas.height);
+            }
+            
+            for (let y = 0; y <= canvas.height; y += step) {
+                ctx.moveTo(0, y);
+                ctx.lineTo(canvas.width, y);
+            }
+            
+            ctx.stroke();
+            ctx.beginPath(); // reset for next draw
+        }
+
+        function insertShape(shape) {
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 3;
+            const cx = canvas.width / 2;
+            const cy = canvas.height / 2;
+
+            if (shape === 'cylinder') {
+                // Draw ellipses
+                drawEllipse(cx, cy - 80, 60, 20);
+                drawEllipse(cx, cy + 80, 60, 20);
+                // Draw sides
+                ctx.beginPath();
+                ctx.moveTo(cx - 60, cy - 80);
+                ctx.lineTo(cx - 60, cy + 80);
+                ctx.moveTo(cx + 60, cy - 80);
+                ctx.lineTo(cx + 60, cy + 80);
+                ctx.stroke();
+            } else if (shape === 'cone') {
+                drawEllipse(cx, cy + 80, 60, 20);
+                ctx.beginPath();
+                ctx.moveTo(cx - 60, cy + 80);
+                ctx.lineTo(cx, cy - 80);
+                ctx.lineTo(cx + 60, cy + 80);
+                ctx.stroke();
+            }
+        }
+
+        function drawEllipse(cx, cy, rx, ry) {
+            ctx.beginPath();
+            ctx.ellipse(cx, cy, rx, ry, 0, 0, 2 * Math.PI);
+            ctx.stroke();
+        }
+    </script>
+</body>
+</html>
