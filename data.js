@@ -758,7 +758,7 @@ window.lessonsData = [
     title: "Вадим Урок1",
     grade: 6,
     topic: "Математика",
-    link: "math_general/6/Вадим/Вадим1.html",
+    link: "math_general/6/Вадим/probne.html",
     subject_code: "math_general",
     category: "lesson",
     author: "Соня",
