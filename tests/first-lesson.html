@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тренажер Касира: Метод "Додавання"</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .game-container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .display-board {
+            display: flex;
+            justify-content: space-between;
+            background: #e9ecef;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 2px solid #dee2e6;
+        }
+
+        .display-item {
+            flex: 1;
+        }
+
+        .label {
+            display: block;
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .target-box {
+            background-color: #fff3cd;
+            border: 2px solid #ffeeba;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .current-status {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+        }
+
+        .status-number {
+            font-weight: bold;
+            font-size: 2rem;
+            color: #0056b3;
+        }
+
+        .money-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .money-btn {
+            padding: 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.1s, box-shadow 0.1s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .money-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .btn-coin { background-color: #ffd700; color: #5c4d00; border: 1px solid #d4b100; }
+        .btn-10 { background-color: #ff9999; color: #5c0000; } 
+        .btn-20 { background-color: #99ff99; color: #004d00; }
+        .btn-50 { background-color: #d1b3ff; color: #2a005c; }
+        .btn-100 { background-color: #d6d628; color: #42420a; }
+        .btn-200 { background-color: #ffccef; color: #5c0038; }
+        .btn-500 { background-color: #ffe4b3; color: #5c3a00; }
+
+        .log-area {
+            background: #fafafa;
+            border: 1px solid #ddd;
+            padding: 10px;
+            height: 60px;
+            overflow-y: auto;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-family: monospace;
+            text-align: left;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 15px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            color: white;
+            font-weight: bold;
+        }
+
+        .btn-reset { background-color: #6c757d; }
+        .btn-next { background-color: #28a745; }
+        
+        .message {
+            margin-top: 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            min-height: 1.5em;
+        }
+        
+        .success { color: #28a745; }
+        .error { color: #dc3545; }
+
+    </style>
+</head>
+<body>
+
+<div class="game-container">
+    <h1>🛒 Тренажер: "Даємо здачу"</h1>
+
+    <div class="display-board">
+        <div class="display-item">
+            <span class="label">Ціна товару:</span>
+            <div id="priceDisplay" class="value">0 ₴</div>
+        </div>
+        <div class="display-item" style="border-left: 2px solid #ccc; padding-left: 10px;">
+            <span class="label">Покупець дав:</span>
+            <div id="paymentDisplay" class="value">0 ₴</div>
+        </div>
+    </div>
+
+    <div class="target-box">
+        <div class="label">Рахуємо вголос (докладаємо до ціни):</div>
+        <div class="current-status">
+            Зараз на столі: <span id="currentSumDisplay" class="status-number">0</span> ₴
+        </div>
+        <div style="font-size: 0.9rem; color: #555;">(Треба дійти до суми покупця)</div>
+    </div>
+
+    <div class="money-grid">
+        <button class="money-btn btn-coin" onclick="addMoney(1)">+1 ₴</button>
+        <button class="money-btn btn-coin" onclick="addMoney(2)">+2 ₴</button>
+        <button class="money-btn btn-coin" onclick="addMoney(5)">+5 ₴</button>
+        <button class="money-btn btn-10" onclick="addMoney(10)">+10 ₴</button>
+        <button class="money-btn btn-20" onclick="addMoney(20)">+20 ₴</button>
+        <button class="money-btn btn-50" onclick="addMoney(50)">+50 ₴</button>
+        <button class="money-btn btn-100" onclick="addMoney(100)">+100 ₴</button>
+        <button class="money-btn btn-200" onclick="addMoney(200)">+200 ₴</button>
+        <button class="money-btn btn-500" onclick="addMoney(500)">+500 ₴</button>
+    </div>
+
+    <div class="log-area" id="logArea">
+        Історія додавання:
+    </div>
+
+    <div id="messageArea" class="message"></div>
+
+    <div class="controls">
+        <button class="action-btn btn-reset" onclick="resetRound()">Скинути (почати спочатку)</button>
+        <button class="action-btn btn-next" onclick="newCustomer()">Наступний клієнт</button>
+    </div>
+</div>
+
+<script>
+    let price = 0;
+    let payment = 0;
+    let currentSum = 0;
+    let isFinished = false;
+
+    const priceDisplay = document.getElementById('priceDisplay');
+    const paymentDisplay = document.getElementById('paymentDisplay');
+    const currentSumDisplay = document.getElementById('currentSumDisplay');
+    const messageArea = document.getElementById('messageArea');
+    const logArea = document.getElementById('logArea');
+
+    function getRandomPrice() {
+        return Math.floor(Math.random() * 450) + 10;
+    }
+
+    function getPayment(cost) {
+        const bills = [1000, 500, 200, 100, 50, 20];
+        let pay = 0;
+        
+        const possibleBills = bills.filter(b => b >= cost);
+        
+        if (possibleBills.length > 0 && Math.random() > 0.3) {
+            pay = possibleBills[possibleBills.length - 1]; 
+            if (Math.random() > 0.5 && possibleBills.length > 1) {
+                pay = possibleBills[Math.floor(Math.random() * possibleBills.length)];
+            }
+        } else {
+            pay = Math.ceil(cost / 100) * 100;
+            if (pay === cost) pay += 50; 
+        }
+        
+        if (Math.random() > 0.7) {
+            const smallChange = cost % 10;
+            if (smallChange !== 0) {
+                 pay += smallChange;
+            }
+        }
+
+        if (pay <= cost) pay = cost + 50; 
+
+        return pay;
+    }
+
+    function newCustomer() {
+        price = getRandomPrice();
+        payment = getPayment(price);
+        currentSum = price;
+        isFinished = false;
+
+        priceDisplay.innerText = price + " ₴";
+        paymentDisplay.innerText = payment + " ₴";
+        updateDisplay();
+        
+        messageArea.innerText = "";
+        messageArea.className = "message";
+        logArea.innerHTML = "Початкова ціна: " + price;
+        
+        document.querySelectorAll('.money-btn').forEach(btn => btn.disabled = false);
+    }
+
+    function updateDisplay() {
+        currentSumDisplay.innerText = currentSum;
+        
+        if (currentSum === payment) {
+            messageArea.innerText = "✅ Чудово! Сума зійшлася. Решта видана правильно.";
+            messageArea.className = "message success";
+            isFinished = true;
+            triggerConfetti();
+        } else if (currentSum > payment) {
+            messageArea.innerText = "❌ Ой! Перебір. Ви дали зайві гроші.";
+            messageArea.className = "message error";
+            isFinished = true;
+        } else {
+            messageArea.innerText = "";
+        }
+    }
+
+    function addMoney(amount) {
+        if (isFinished) return;
+
+        currentSum += amount;
+        logArea.innerHTML += ` + ${amount}`;
+        updateDisplay();
+        logArea.scrollTop = logArea.scrollHeight;
+    }
+
+    function resetRound() {
+        currentSum = price;
+        isFinished = false;
+        messageArea.innerText = "";
+        logArea.innerHTML = "Початкова ціна: " + price;
+        updateDisplay();
+    }
+
+    function triggerConfetti() {
+        const colors = ['#f00', '#0f0', '#00f', '#ff0', '#0ff', '#f0f'];
+        const btn = document.querySelector('.btn-next');
+        
+        let originalText = btn.innerText;
+        btn.innerText = "Молодець! Наступний ->";
+        setTimeout(() => {
+            btn.innerText = originalText;
+        }, 2000);
+    }
+
+    newCustomer();
+
+</script>
+
+</body>
+</html>
