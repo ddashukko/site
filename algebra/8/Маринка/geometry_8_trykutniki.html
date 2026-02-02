@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Подібність трикутників: Від 0 до PRO</title>
+
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']], // Дозволяє писати $формула$
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --secondary: #ec4899;
+            --bg-left: #f9fafb;
+            --bg-right: #ffffff;
+            --text-main: #1f2937;
+            --text-light: #6b7280;
+            --success: #10b981;
+            --error: #ef4444;
+            --border: #e5e7eb;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        /* DESKTOP FIRST */
+        body { 
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+            height: 100vh; 
+            overflow: hidden; 
+            display: flex; 
+            color: var(--text-main); 
+        }
+
+        #container { display: flex; width: 100%; height: 100%; }
+        
+        #content-panel {
+            width: 50%;
+            background: var(--bg-left);
+            overflow-y: auto;
+            padding: 2rem;
+            border-right: 2px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        #whiteboard-panel {
+            width: 50%;
+            background: var(--bg-right);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* MOBILE ADAPTATION */
+        @media (max-width: 768px) {
+            body { height: auto; overflow: auto; }
+            #container { flex-direction: column; }
+            #content-panel { width: 100%; height: auto; border-right: none; border-bottom: 2px solid var(--border); padding: 1rem; overflow-y: visible; }
+            #whiteboard-panel { width: 100%; height: 500px; border-top: 4px solid var(--primary); }
+            h1 { font-size: 1.5rem; }
+            h2 { font-size: 1.25rem; }
+        }
+
+        /* TOOLBAR */
+        #toolbar {
+            padding: 10px;
+            background: #fff;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            justify-content: flex-start;
+            overflow-x: auto;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            z-index: 10;
+        }
+
+        #canvas-container {
+            flex-grow: 1;
+            position: relative;
+            cursor: crosshair;
+            background-color: #ffffff;
+            background-image: radial-gradient(#e5e7eb 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        canvas { display: block; width: 100%; height: 100%; }
+
+        /* UI ELEMENTS */
+        h1 { font-size: 2rem; color: var(--primary); margin-bottom: 0.5rem; }
+        h2 { font-size: 1.5rem; color: var(--text-main); margin-top: 1.5rem; margin-bottom: 1rem; border-left: 4px solid var(--secondary); padding-left: 10px; }
+        h3 { font-size: 1.2rem; margin-bottom: 0.5rem; color: #374151; }
+        p { line-height: 1.6; margin-bottom: 1rem; color: #4b5563; }
+        
+        .tag { display: inline-block; padding: 4px 8px; background: #e0e7ff; color: var(--primary); border-radius: 4px; font-size: 0.8rem; font-weight: bold; margin-bottom: 1rem; }
+
+        .theory-block { background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); border: 1px solid var(--border); }
+        .task-card { background: white; padding: 1.5rem; border-radius: 12px; border-left: 5px solid var(--primary); margin-bottom: 1.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        
+        .input-group { display: flex; gap: 10px; margin-top: 10px; align-items: center; flex-wrap: wrap; }
+        input[type="number"], input[type="text"] {
+            padding: 8px 12px; border: 2px solid var(--border); border-radius: 6px; flex-grow: 1; transition: border-color 0.3s;
+        }
+        input:focus { outline: none; border-color: var(--primary); }
+        input.correct { border-color: var(--success); background-color: #ecfdf5; }
+        input.incorrect { border-color: var(--error); background-color: #fef2f2; }
+
+        button {
+            padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.2s; white-space: nowrap;
+        }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); }
+        .btn-tool { background: #f3f4f6; color: var(--text-main); font-size: 0.9rem; flex-shrink: 0; }
+        .btn-tool.active { background: var(--primary); color: white; }
+
+        details { margin-top: 10px; }
+        summary { cursor: pointer; color: var(--primary); font-weight: 500; user-select: none; }
+        .solution-content { background: #f3f4f6; padding: 10px; border-radius: 6px; margin-top: 5px; font-size: 0.9rem; border-left: 3px solid var(--secondary); }
+
+        .lab-container { 
+            background: #111827; border-radius: 12px; padding: 20px; text-align: center; color: white; margin-bottom: 20px;
+        }
+        .svg-visualization { width: 100%; height: 200px; margin: 10px 0; }
+        input[type="range"] { width: 100%; cursor: pointer; }
+
+        #final-test { display: none; }
+        .result-box { text-align: center; padding: 2rem; background: #ecfdf5; border-radius: 12px; border: 2px solid var(--success); display: none; margin-bottom: 2rem;}
+    </style>
+</head>
+<body>
+
+<div id="container">
+    <div id="content-panel">
+        <span class="tag">Геометрія 8 Клас • Рівень: 0 -> PRO</span>
+        <h1>Подібність трикутників: Повний курс</h1>
+        <p>Ласкаво просимо! Сьогодні ми розберемо всі ознаки подібності, навчимося їх бачити та розв'язувати задачі.</p>
+        
+        <div class="lab-container">
+            <h3>🧪 Віртуальна лабораторія</h3>
+            <p>Змінюй коефіцієнт $k$, щоб побачити подібність в дії.</p>
+            <svg id="sim-viz" class="svg-visualization" viewBox="0 0 400 200">
+                </svg>
+            <label>Коефіцієнт $k$: <span id="k-value">1.0</span></label>
+            <input type="range" id="k-slider" min="0.5" max="2.5" step="0.1" value="1">
+        </div>
+
+        <section>
+            <h2>1. Що таке подібність?</h2>
+            <div class="theory-block">
+                <p>Два трикутники називаються <strong>подібними</strong> ($\sim$), якщо їхні відповідні кути рівні, а відповідні сторони пропорційні.</p>
+                $$ \triangle ABC \sim \triangle A_1B_1C_1 $$
+                $$ \frac{AB}{A_1B_1} = \frac{BC}{B_1C_1} = \frac{AC}{A_1C_1} = k $$
+                <p>Число $k$ називається <strong>коефіцієнтом подібності</strong>.</p>
+            </div>
+        </section>
+
+        <div id="tasks-basic"></div>
+
+        <section>
+            <h2>2. Ознаки подібності</h2>
+            
+            <details open>
+                <summary>Ознака 1: За двома кутами (AA)</summary>
+                <div class="theory-block" style="margin-top: 10px;">
+                    <p>Якщо два кути одного трикутника відповідно дорівнюють двом кутам іншого, то такі трикутники подібні.</p>
+                    <svg width="100%" height="100" viewBox="0 0 300 100">
+                        <polygon points="10,90 40,30 90,90" fill="none" stroke="#4f46e5" stroke-width="2"/>
+                        <text x="20" y="85" font-size="10">α</text> <text x="75" y="85" font-size="10">β</text>
+                        <polygon points="150,90 210,10 270,90" fill="none" stroke="#ec4899" stroke-width="2"/>
+                        <text x="165" y="85" font-size="10">α</text> <text x="250" y="85" font-size="10">β</text>
+                    </svg>
+                </div>
+            </details>
+
+            <details>
+                <summary>Ознака 2: За двома сторонами і кутом (SAS)</summary>
+                <div class="theory-block" style="margin-top: 10px;">
+                    <p>Якщо дві сторони одного трикутника пропорційні двом сторонам іншого і кути між ними рівні.</p>
+                    $$ \frac{AB}{A_1B_1} = \frac{AC}{A_1C_1} \text{ та } \angle A = \angle A_1 $$
+                </div>
+            </details>
+
+            <details>
+                <summary>Ознака 3: За трьома сторонами (SSS)</summary>
+                <div class="theory-block" style="margin-top: 10px;">
+                    <p>Якщо три сторони одного трикутника пропорційні трьом сторонам іншого.</p>
+                    $$ \frac{AB}{A_1B_1} = \frac{BC}{B_1C_1} = \frac{AC}{A_1C_1} $$
+                </div>
+            </details>
+        </section>
+
+        <div id="tasks-theorems"></div>
+
+        <section>
+            <h2>3. PRO Рівень: Площі та Периметри</h2>
+            <div class="theory-block">
+                <p>Якщо коефіцієнт подібності дорівнює $k$, то:</p>
+                <ul>
+                    <li>Відношення <strong>периметрів</strong> дорівнює $k$.</li>
+                    <li>Відношення <strong>площ</strong> дорівнює $k^2$.</li>
+                </ul>
+                $$ \frac{P_{ABC}}{P_{A_1B_1C_1}} = k, \quad \frac{S_{ABC}}{S_{A_1B_1C_1}} = k^2 $$
+            </div>
+        </section>
+
+        <div id="tasks-pro"></div>
+
+        <button class="btn-primary" style="width: 100%; padding: 20px; font-size: 1.2rem; margin-top: 2rem;" onclick="startTest()">Почати фінальний тест</button>
+
+        <div id="final-test">
+            <h2>Фінальний тест</h2>
+            <div id="test-container"></div>
+            <button class="btn-primary" style="margin-top: 20px;" onclick="finishLesson()">Завершити урок</button>
+        </div>
+
+        <div id="result-message" class="result-box"></div>
+        <div style="height: 50px;"></div>
+    </div>
+
+    <div id="whiteboard-panel">
+        <div id="toolbar">
+            <button class="btn-tool active" onclick="setTool('pen')" title="Олівець">✏️</button>
+            <button class="btn-tool" onclick="setTool('eraser')" title="Гумка">🧼</button>
+            <input type="color" id="colorPicker" value="#000000">
+            <input type="range" id="lineWidth" min="1" max="10" value="2" title="Товщина">
+            <div style="width: 1px; height: 20px; background: #ddd; margin: 0 5px;"></div>
+            <button class="btn-tool" onclick="drawGrid()" title="Сітка">▦ Сітка</button>
+            <button class="btn-tool" onclick="drawTriangle('acute')" title="Гострокутний">△</button>
+            <button class="btn-tool" onclick="drawTriangle('right')" title="Прямокутний">📐</button>
+            <button class="btn-tool" style="color: red;" onclick="clearCanvas()">🗑 Очистити</button>
+        </div>
+        <div id="canvas-container">
+            <canvas id="board"></canvas>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- DATA ---
+    const tasksBasic = [
+        { id: 'b1', q: "Сторони трикутника 3 см, 4 см, 5 см. Найменша сторона подібного йому трикутника дорівнює 9 см. Знайди коефіцієнт подібності $k$.", a: 3, hint: "$k = \\frac{\\text{сторона нового}}{\\text{сторона старого}}$", sol: "Найменша сторона першого: 3. Найменша другого: 9. $k = 9/3 = 3$." },
+        { id: 'b2', q: "Трикутники подібні з коефіцієнтом $k=2$. Сторона першого 10. Яка відповідна сторона другого, якщо другий більший?", a: 20, hint: "Якщо другий більший, множимо на $k$.", sol: "$10 \\cdot 2 = 20$." },
+        { id: 'b3', q: "У $\\triangle ABC$ $\\angle A = 40^\\circ, \\angle B = 60^\\circ$. У подібному $\\triangle MNK$ знайди $\\angle K$ (відповідний до $\\angle C$).", a: 80, hint: "Сума кутів трикутника $180^\\circ$. Відповідні кути рівні.", sol: "$\\angle C = 180 - (40+60) = 80^\\circ$. Оскільки трикутники подібні, $\\angle K = \\angle C = 80^\\circ$." }
+    ];
+
+    const tasksTheorems = [
+        { id: 't1', q: "Дано $\\triangle ABC$ і $\\triangle A_1B_1C_1$. $\\angle A = \\angle A_1$, $\\angle B = \\angle B_1$. $AB=5, A_1B_1=15, AC=4$. Знайди $A_1C_1$.", a: 12, hint: "Знайди $k$, потім помнож сторону.", sol: "$k = 15/5 = 3$. $A_1C_1 = AC \\cdot 3 = 4 \\cdot 3 = 12$." },
+        { id: 't2', q: "Сторони одного трикутника: 4, 6, 8. Сторони другого: 2, 3, 4. Чи подібні вони? (Введи 1 для 'Так', 0 для 'Ні')", a: 1, hint: "Перевір пропорційність: $4/2 = 6/3 = 8/4$?", sol: "Так, всі відношення дорівнюють 2. Це ознака SSS." },
+        { id: 't3', q: "Тінь від дерева довжиною 12 м, а тінь від людини ростом 1.8 м — 2 м. Знайди висоту дерева (в метрах).", a: 10.8, hint: "Трикутники, утворені об'єктами та їх тінями, подібні.", sol: "Пропорція: $\\frac{x}{1.8} = \\frac{12}{2}$. $x = 1.8 \\cdot 6 = 10.8$." },
+        { id: 't4', q: "У прямокутному трикутнику катети 3 і 4. Гіпотенуза подібного трикутника 25. Знайди периметр подібного трикутника.", a: 60, hint: "Спочатку знайди гіпотенузу першого (Піфагор), потім $k$, потім периметр.", sol: "Гіпотенуза 1-го: $\\sqrt{3^2+4^2}=5$. $k = 25/5 = 5$. Периметр 1-го: $3+4+5=12$. Периметр 2-го: $12 \\cdot 5 = 60$." }
+    ];
+
+    const tasksPro = [
+        { id: 'p1', q: "Сторони двох правильних трикутників відносяться як 1:4. У скільки разів площа другого більша за площу першого?", a: 16, hint: "Відношення площ = $k^2$.", sol: "$k=4$. Відношення площ $4^2 = 16$." },
+        { id: 'p2', q: "Площа $\\triangle ABC = 20$ см$^2$. Середня лінія відтинає від нього трикутник. Яка його площа?", a: 5, hint: "Трикутник, відтятий середньою лінією, подібний з $k=1/2$.", sol: "$k=1/2$, отже площі відносяться як $(1/2)^2 = 1/4$. $20/4 = 5$." },
+        { id: 'p3', q: "Периметри подібних трикутників 15 см і 45 см. Площа меншого 10 см$^2$. Знайди площу більшого.", a: 90, hint: "Знайди $k$ через периметри. Потім площу через $k^2$.", sol: "$k = 45/15 = 3$. Площа більшого = $10 \\cdot 3^2 = 90$." }
+    ];
+
+    const finalTestQs = [
+        { q: "Якщо збільшити сторони трикутника в 3 рази, як зміниться його периметр? (введи число)", a: 3 },
+        { q: "Два кути одного трикутника $50^\\circ$ і $70^\\circ$. Третій кут іншого трикутника $60^\\circ$. Чи можуть вони бути подібними? (1-Так, 0-Ні)", a: 1 },
+        { q: "Відношення площ подібних фігур дорівнює 25. Чому дорівнює коефіцієнт подібності?", a: 5 }
+    ];
+
+    let totalScore = 0;
+    let maxScore = tasksBasic.length + tasksTheorems.length + tasksPro.length + finalTestQs.length;
+
+    function renderTasks(containerId, tasks) {
+        const container = document.getElementById(containerId);
+        tasks.forEach((task, index) => {
+            const card = document.createElement('div');
+            card.className = 'task-card';
+            card.innerHTML = `
+                <h3>Завдання #${index + 1}</h3>
+                <p>${task.q}</p>
+                <div class="input-group">
+                    <input type="number" step="any" id="inp-${task.id}" placeholder="Твоя відповідь...">
+                    <button class="btn-primary" onclick="checkAnswer('${task.id}', ${task.a})">Перевірити</button>
+                </div>
+                <details>
+                    <summary>💡 Підказка</summary>
+                    <p class="solution-content">${task.hint}</p>
+                </details>
+                <details id="sol-${task.id}" style="display:none">
+                    <summary>🗝 Показати розв'язання</summary>
+                    <p class="solution-content">${task.sol}</p>
+                </details>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    function checkAnswer(id, correctVal) {
+        const inp = document.getElementById(`inp-${id}`);
+        const solDetails = document.getElementById(`sol-${id}`);
+        const val = parseFloat(inp.value);
+
+        if (Math.abs(val - correctVal) < 0.1) {
+            inp.classList.remove('incorrect');
+            inp.classList.add('correct');
+            totalScore++;
+        } else {
+            inp.classList.remove('correct');
+            inp.classList.add('incorrect');
+        }
+        solDetails.style.display = 'block';
+        
+        // Re-render math in the opened solution
+        if (window.MathJax) {
+            MathJax.typesetPromise([solDetails]).catch(err => console.log(err));
+        }
+    }
+
+    // --- MAIN INITIALIZATION ---
+    window.onload = function() {
+        renderTasks('tasks-basic', tasksBasic);
+        renderTasks('tasks-theorems', tasksTheorems);
+        renderTasks('tasks-pro', tasksPro);
+        
+        // --- FORCE MATHJAX RENDER AFTER JS INJECTION ---
+        if (window.MathJax) {
+            MathJax.typesetPromise().catch(err => console.log('MathJax error:', err));
+        }
+
+        initLab();
+        initWhiteboard();
+    };
+
+    function initLab() {
+        const svg = document.getElementById('sim-viz');
+        const slider = document.getElementById('k-slider');
+        const kLabel = document.getElementById('k-value');
+
+        function drawSim(k) {
+            svg.innerHTML = '';
+            const p1 = "50,150 100,50 150,150"; 
+            const bx = 50 * k, by = -100 * k;
+            const cx = 100 * k, cy = 0;
+            const startX = 220, startY = 150;
+            const p2 = `${startX},${startY} ${startX + bx},${startY + by} ${startX + cx},${startY}`;
+
+            const t1 = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+            t1.setAttribute("points", p1);
+            t1.setAttribute("fill", "rgba(79, 70, 229, 0.3)");
+            t1.setAttribute("stroke", "#4f46e5");
+            t1.setAttribute("stroke-width", "2");
+
+            const t2 = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+            t2.setAttribute("points", p2);
+            t2.setAttribute("fill", "rgba(236, 72, 153, 0.3)");
+            t2.setAttribute("stroke", "#ec4899");
+            t2.setAttribute("stroke-width", "2");
+
+            const txt = document.createElementNS("http://www.w3.org/2000/svg", "text");
+            txt.setAttribute("x", startX + (50*k));
+            txt.setAttribute("y", startY + 20);
+            txt.setAttribute("text-anchor", "middle");
+            txt.textContent = `k = ${k}`;
+
+            svg.appendChild(t1);
+            svg.appendChild(t2);
+            svg.appendChild(txt);
+        }
+
+        slider.addEventListener('input', (e) => {
+            const val = e.target.value;
+            kLabel.innerText = val;
+            drawSim(val);
+        });
+        drawSim(1.0);
+    }
+
+    function startTest() {
+        document.getElementById('final-test').style.display = 'block';
+        const container = document.getElementById('test-container');
+        container.innerHTML = '';
+        
+        finalTestQs.forEach((q, i) => {
+            const div = document.createElement('div');
+            div.className = 'task-card';
+            div.style.borderLeftColor = '#ec4899';
+            div.innerHTML = `<p><strong>${i+1}.</strong> ${q.q}</p><input type="number" id="test-q-${i}" placeholder="Відповідь">`;
+            container.appendChild(div);
+        });
+        
+        if (window.MathJax) MathJax.typesetPromise().catch(err => console.log(err));
+        document.getElementById('final-test').scrollIntoView({behavior: 'smooth'});
+    }
+
+    function finishLesson() {
+        let testScore = 0;
+        finalTestQs.forEach((q, i) => {
+            const val = parseFloat(document.getElementById(`test-q-${i}`).value);
+            if (Math.abs(val - q.a) < 0.1) testScore++;
+        });
+        const finalScore = totalScore + testScore; 
+        const percent = Math.min(100, Math.round((finalScore / maxScore) * 100));
+        const resBox = document.getElementById('result-message');
+        resBox.style.display = 'block';
+        let msg = "";
+        if (percent > 80) msg = "Ти справжній геометричний ГЕНІЙ! 🚀";
+        else if (percent > 50) msg = "Чудова робота! Ти на правильному шляху! 👍";
+        else msg = "Непогано! Головне — не зупинятися і практикуватися! 💪";
+        resBox.innerHTML = `<h3>Урок завершено!</h3><p style="font-size: 1.5rem; font-weight: bold; color: var(--success);">${percent}%</p><p>${msg}</p><p style="font-size: 0.9rem; margin-top:10px; color:#666">Правильних відповідей (разом з задачами): ${finalScore} / ${maxScore}</p>`;
+        resBox.scrollIntoView({behavior: 'smooth'});
+    }
+
+    let canvas, ctx, painting = false;
+    let tool = 'pen', color = '#000000', lineWidth = 2;
+
+    function initWhiteboard() {
+        const container = document.getElementById('canvas-container');
+        canvas = document.getElementById('board');
+        ctx = canvas.getContext('2d');
+        function resize() { canvas.width = container.offsetWidth; canvas.height = container.offsetHeight; }
+        window.addEventListener('resize', resize);
+        resize();
+        canvas.addEventListener('mousedown', startPosition);
+        canvas.addEventListener('mouseup', finishedPosition);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('touchstart', (e) => { e.preventDefault(); canvas.dispatchEvent(new MouseEvent("mousedown", {clientX: e.touches[0].clientX, clientY: e.touches[0].clientY})); });
+        canvas.addEventListener('touchend', (e) => { canvas.dispatchEvent(new MouseEvent("mouseup", {})); });
+        canvas.addEventListener('touchmove', (e) => { e.preventDefault(); canvas.dispatchEvent(new MouseEvent("mousemove", {clientX: e.touches[0].clientX, clientY: e.touches[0].clientY})); });
+        document.getElementById('colorPicker').addEventListener('change', (e) => color = e.target.value);
+        document.getElementById('lineWidth').addEventListener('change', (e) => lineWidth = e.target.value);
+    }
+    function startPosition(e) { painting = true; draw(e); }
+    function finishedPosition() { painting = false; ctx.beginPath(); }
+    function draw(e) {
+        if (!painting) return;
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left, y = e.clientY - rect.top;
+        ctx.lineWidth = lineWidth; ctx.lineCap = 'round';
+        if (tool === 'eraser') { ctx.globalCompositeOperation = 'destination-out'; ctx.lineWidth = 20; }
+        else { ctx.globalCompositeOperation = 'source-over'; ctx.strokeStyle = color; }
+        ctx.lineTo(x, y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x, y);
+    }
+    function setTool(t) { tool = t; document.querySelectorAll('.btn-tool').forEach(b => b.classList.remove('active')); if(t === 'pen' || t === 'eraser') event.target.classList.add('active'); }
+    function clearCanvas() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
+    function drawGrid() {
+        const w = canvas.width, h = canvas.height, step = 40;
+        ctx.globalCompositeOperation = 'source-over'; ctx.beginPath(); ctx.strokeStyle = '#e5e7eb'; ctx.lineWidth = 1;
+        for (let x = 0; x <= w; x += step) { ctx.moveTo(x, 0); ctx.lineTo(x, h); }
+        for (let y = 0; y <= h; y += step) { ctx.moveTo(0, y); ctx.lineTo(w, y); }
+        ctx.stroke(); ctx.beginPath();
+    }
+    function drawTriangle(type) {
+        ctx.globalCompositeOperation = 'source-over'; ctx.strokeStyle = color; ctx.lineWidth = lineWidth; ctx.beginPath();
+        const cx = canvas.width / 2, cy = canvas.height / 2;
+        if (type === 'acute') { ctx.moveTo(cx, cy - 100); ctx.lineTo(cx - 80, cy + 50); ctx.lineTo(cx + 80, cy + 50); ctx.closePath(); }
+        else if (type === 'right') { ctx.moveTo(cx - 50, cy - 80); ctx.lineTo(cx - 50, cy + 80); ctx.lineTo(cx + 80, cy + 80); ctx.closePath(); }
+        ctx.stroke(); ctx.beginPath();
+    }
+</script>
+</body>
+</html>
