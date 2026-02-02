@@ -866,11 +866,11 @@ window.lessonsData = [
     author: "Соня",
   },
      {
-    id: "math_sofiika_urok",
+    id: "math_sofiika_urok1",
     title: "Дії з різними знаками",
     grade: 6,
     topic: "Математика",
-    link: "math_general/6/sofiika/math_s_minus_plus.html",
+    link: "math_general/6/sofiika7/math_s_minus_plus.html",
     subject_code: "math_general",
     category: "lesson",
     author: "Соня",
