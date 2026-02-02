@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Інтерактивний урок: Від'ємні числа</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <style>
+        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; font-family: 'Segoe UI', sans-serif; }
+        
+        /* Скролбар */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+
+        /* Layout */
+        .split-container { display: flex; height: 100vh; }
+        .left-content { flex: 1; overflow-y: auto; padding: 0; background: #f8fafc; border-right: 1px solid #e2e8f0; }
+        .right-board { flex: 1; position: relative; background: #fff; display: flex; flex-direction: column; }
+
+        /* Стилі контенту */
+        .lesson-block { max-width: 800px; margin: 0 auto; padding: 30px; }
+        .theory-card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); margin-bottom: 25px; border-left: 6px solid #3b82f6; }
+        .example-box { background: #eff6ff; padding: 10px; border-radius: 6px; margin-top: 10px; font-family: monospace; }
+        
+        /* Завдання */
+        .task-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px; margin-bottom: 30px; }
+        .task-item { background: white; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; transition: all 0.2s; }
+        .task-item:hover { border-color: #3b82f6; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        
+        /* Inputs */
+        .answer-input { border: 2px solid #cbd5e1; border-radius: 6px; padding: 5px 10px; width: 80px; text-align: center; font-size: 1.1em; outline: none; transition: 0.3s; }
+        .answer-input:focus { border-color: #3b82f6; }
+        .answer-input.correct { border-color: #22c55e; background: #f0fdf4; color: #15803d; }
+        .answer-input.incorrect { border-color: #ef4444; background: #fef2f2; color: #b91c1c; }
+
+        /* Buttons */
+        .btn-check { background: #3b82f6; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.9em; margin-left: 5px; }
+        .btn-check:hover { background: #2563eb; }
+        .tools-panel { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); background: white; padding: 8px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: flex; gap: 8px; z-index: 10; }
+        .tool-btn { width: 36px; height: 36px; border-radius: 8px; border: 1px solid #e2e8f0; background: white; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2em; transition: 0.2s; }
+        .tool-btn.active { background: #eff6ff; border-color: #3b82f6; color: #3b82f6; }
+        .tool-btn:hover { background: #f1f5f9; }
+
+        /* Negative/Positive visuals */
+        .num-neg { color: #dc2626; font-weight: bold; } /* Червоний для мінуса */
+        .num-pos { color: #16a34a; font-weight: bold; } /* Зелений для плюса */
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .split-container { flex-direction: column-reverse; }
+            .right-board { height: 40vh; flex: none; border-bottom: 2px solid #cbd5e1; }
+            .left-content { height: 60vh; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="split-container">
+    <div class="left-content">
+        <div class="lesson-block">
+            <header class="mb-8">
+                <h1 class="text-3xl font-bold text-gray-800">Математика: Додатні та Від'ємні числа</h1>
+                <p class="text-gray-600 mt-2">Як зрозуміти "мінус" та навчитися ним керувати.</p>
+            </header>
+
+            <section id="block1">
+                <div class="theory-card border-l-purple-500">
+                    <h2 class="text-xl font-bold text-gray-800 mb-3">🧊 Блок 1. Що таке від'ємне число?</h2>
+                    <p class="text-gray-700 mb-3">
+                        Уяви <strong>Термометр</strong>. Є нуль градусів (вода замерзає). 
+                        Все, що тепліше — це <span class="num-pos">Додатні числа (+)</span>. 
+                        Все, що холодніше (мороз) — це <span class="num-neg">Від'ємні числа (-)</span>.
+                    </p>
+                    <p class="text-gray-700 mb-3">
+                        Або уяви <strong>Гроші</strong>:
+                        <ul class="list-disc ml-5 mb-2">
+                            <li><span class="num-pos">+100</span> — у тебе є 100 грн (Прибуток).</li>
+                            <li><span class="num-neg">-100</span> — ти винен другу 100 грн (Борг).</li>
+                        </ul>
+                    </p>
+                    <div class="bg-yellow-50 p-3 rounded border border-yellow-200 text-sm">
+                        <strong>Важливо:</strong> Чим більше число "з мінусом", тим воно менше насправді (більший борг = бідніша людина). <br>
+                        $$-100 < -5$$
+                    </div>
+                </div>
+            </section>
+
+            <section id="block2">
+                <div class="theory-card">
+                    <h2 class="text-xl font-bold text-gray-800 mb-3">⚔️ Блок 2. Додавання чисел (Битва знаків)</h2>
+                    
+                    <h3 class="font-bold text-gray-700 mt-2">Ситуація 1: Друзі (Однакові знаки)</h3>
+                    <p class="text-gray-600 text-sm mb-2">Коли знаки однакові, числа "об'єднуються".</p>
+                    <div class="example-box">
+                        <span class="num-pos">2</span> + <span class="num-pos">3</span> = <span class="num-pos">5</span> (Гроші + Гроші = Багато грошей)<br>
+                        <span class="num-neg">-2</span> + (<span class="num-neg">-3</span>) = <span class="num-neg">-5</span> (Борг + Борг = Великий борг)
+                    </div>
+
+                    <h3 class="font-bold text-gray-700 mt-4">Ситуація 2: Вороги (Різні знаки)</h3>
+                    <p class="text-gray-600 text-sm mb-2">Це війна! Перемагає той, кого більше (більший модуль). Переможець забирає знак.</p>
+                    <div class="example-box">
+                        <span class="num-neg">-7</span> + <span class="num-pos">3</span> = ? <br>
+                        1. Хто сильніший? 7 чи 3? (7 переміг, значить знак буде <span class="num-neg">Мінус</span>).<br>
+                        2. Скільки вижило? 7 - 3 = 4.<br>
+                        Відповідь: <span class="num-neg">-4</span>.
+                    </div>
+                </div>
+
+                <h3 class="font-bold text-gray-800 mb-4">✍️ Практика: Додавання</h3>
+                <div id="tasks-addition" class="task-grid"></div>
+            </section>
+
+            <section id="block3" class="mt-8">
+                <div class="theory-card border-l-red-500">
+                    <h2 class="text-xl font-bold text-gray-800 mb-3">🪄 Блок 3. Віднімання (Магія перетворення)</h2>
+                    <p class="text-gray-700 mb-3">
+                        У математиці <strong>не люблять віднімати</strong> від'ємні числа. Це заплутує.
+                        Тому є правило "Чарівної палички":
+                    </p>
+                    <div class="bg-gray-100 p-3 rounded font-bold text-center text-lg mb-3">
+                        Віднімання замінюємо на додавання протилежного числа.
+                    </div>
+                    
+                    <h3 class="font-bold text-gray-700 text-sm">Приклад 1:</h3>
+                    <div class="example-box">
+                        $$ 5 - (-3) $$ <br>
+                        "Мінус на мінус дає плюс" (ворог мого ворога — мій друг).<br>
+                        $$ 5 + 3 = 8 $$
+                    </div>
+
+                    <h3 class="font-bold text-gray-700 text-sm mt-3">Приклад 2:</h3>
+                    <div class="example-box">
+                        $$ -4 - 6 $$ <br>
+                        Це те саме, що до боргу 4 додати борг 6.<br>
+                        $$ -4 + (-6) = -10 $$
+                    </div>
+                </div>
+
+                <h3 class="font-bold text-gray-800 mb-4">✍️ Практика: Віднімання</h3>
+                <div id="tasks-subtraction" class="task-grid"></div>
+            </section>
+            
+            <section class="mt-12 bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">🎓 Фінальний тест</h2>
+                <div id="quiz-area" class="space-y-4"></div>
+                <button onclick="checkQuiz()" class="mt-6 w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-lg transition">Завершити урок</button>
+            </section>
+
+        </div>
+    </div>
+
+    <div class="right-board">
+        <div class="tools-panel">
+            <button onclick="setTool('pen')" id="tool-pen" class="tool-btn active" title="Ручка">✏️</button>
+            <button onclick="setTool('eraser')" id="tool-eraser" class="tool-btn" title="Гумка">🧹</button>
+            <button onclick="toggleGrid()" id="tool-grid" class="tool-btn" title="Координатна площина">▦</button>
+            <button onclick="clearCanvas()" class="tool-btn text-red-500" title="Очистити">🗑️</button>
+        </div>
+        <canvas id="whiteboard"></canvas>
+    </div>
+</div>
+
+<div id="result-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white p-8 rounded-2xl shadow-2xl max-w-sm w-full text-center">
+        <h3 class="text-2xl font-bold text-gray-800">Твій результат</h3>
+        <div id="final-score" class="text-5xl font-bold text-blue-600 my-4">0/100</div>
+        <p id="final-msg" class="text-gray-600 mb-6">Ти молодець!</p>
+        <button onclick="document.getElementById('result-modal').classList.add('hidden')" class="bg-gray-800 text-white px-6 py-2 rounded-lg">Закрити</button>
+    </div>
+</div>
+
+<script>
+    /* --- ДАНІ ЗАВДАНЬ (25 шт) --- */
+    // 1-13: Додавання, 14-25: Віднімання
+    const tasks = [
+        // Додавання (Однакові знаки)
+        { id: 1, q: "$$-5 + (-3)$$", a: -8, h: "Борг 5 + Борг 3 = ?", sol: "-8" },
+        { id: 2, q: "$$-12 + (-8)$$", a: -20, h: "Склади модулі, постав мінус.", sol: "-20" },
+        { id: 3, q: "$$-1.5 + (-2.5)$$", a: -4, h: "Це як 1 грн 50 коп боргу + 2 грн 50 коп.", sol: "-4" },
+        
+        // Додавання (Різні знаки)
+        { id: 4, q: "$$-10 + 4$$", a: -6, h: "Борг більший за прибуток.", sol: "-6" },
+        { id: 5, q: "$$7 + (-3)$$", a: 4, h: "7 більше за 3. Знак буде +", sol: "4" },
+        { id: 6, q: "$$-20 + 25$$", a: 5, h: "Ти віддав 20 грн боргу, маючи 25.", sol: "5" },
+        { id: 7, q: "$$5.5 + (-2.5)$$", a: 3, h: "Відніми від 5.5 число 2.5", sol: "3" },
+        { id: 8, q: "$$-100 + 1$$", a: -99, h: "Борг зменшився лише на 1.", sol: "-99" },
+        { id: 9, q: "$$0 + (-7)$$", a: -7, h: "Додавання нуля не змінює число.", sol: "-7" },
+        { id: 10, q: "$$15 + (-15)$$", a: 0, h: "Протилежні числа в сумі дають 0.", sol: "0" },
+        
+        // Складніші на додавання
+        { id: 11, q: "$$-8 + 8$$", a: 0, h: "Протилежні числа.", sol: "0" },
+        { id: 12, q: "$$-30 + 10$$", a: -20, h: "Борг 30, віддав 10.", sol: "-20" },
+        { id: 13, q: "$$4.2 + (-6.2)$$", a: -2, h: "6.2 більше за 4.2, результат з мінусом.", sol: "-2" },
+
+        // Віднімання (Основи)
+        { id: 14, q: "$$5 - 8$$", a: -3, h: "5 + (-8). Борг більший.", sol: "-3" },
+        { id: 15, q: "$$10 - 15$$", a: -5, h: "Маленьке мінус велике = мінус.", sol: "-5" },
+        { id: 16, q: "$$-5 - 2$$", a: -7, h: "Це -5 + (-2). Борг росте.", sol: "-7" },
+        { id: 17, q: "$$-10 - 10$$", a: -20, h: "Борг 10 і ще позичив 10.", sol: "-20" },
+        
+        // Віднімання (Мінус на мінус)
+        { id: 18, q: "$$6 - (-4)$$", a: 10, h: "Мінус на мінус дає плюс! 6 + 4", sol: "10" },
+        { id: 19, q: "$$-3 - (-3)$$", a: 0, h: "-3 + 3 = ?", sol: "0" },
+        { id: 20, q: "$$0 - (-5)$$", a: 5, h: "0 + 5", sol: "5" },
+        { id: 21, q: "$$-7 - (-2)$$", a: -5, h: "-7 + 2", sol: "-5" },
+        
+        // Мікс
+        { id: 22, q: "$$2.5 - 3.5$$", a: -1, h: "Різниця 1, знак мінус.", sol: "-1" },
+        { id: 23, q: "$$-0.5 - (-0.5)$$", a: 0, h: "Протилежні числа", sol: "0" },
+        { id: 24, q: "$$100 - (-1)$$", a: 101, h: "100 + 1", sol: "101" },
+        { id: 25, q: "$$-2 - 8$$", a: -10, h: "Борг збільшується.", sol: "-10" }
+    ];
+
+    const quizQuestions = [
+        { q: "Який результат дії -5 + 5?", opts: ["-10", "0", "10"], a: 1 },
+        { q: "Як записати вираз 10 - (-3) простіше?", opts: ["10 - 3", "10 + 3", "-10 - 3"], a: 1 },
+        { q: "Число -100 менше за -1?", opts: ["Так", "Ні", "Вони рівні"], a: 0 },
+        { q: "Якщо від маленького числа відняти велике, результат буде:", opts: ["Додатним", "Від'ємним", "Нулем"], a: 1 }
+    ];
+
+    /* --- ГЕНЕРАЦІЯ HTML --- */
+    function renderTasks() {
+        const addContainer = document.getElementById('tasks-addition');
+        const subContainer = document.getElementById('tasks-subtraction');
+
+        tasks.forEach(task => {
+            const el = document.createElement('div');
+            el.className = 'task-item';
+            el.innerHTML = `
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-sm text-gray-400">#${task.id}</span>
+                    <button class="text-xs text-blue-500 underline" onclick="toggleDetails(${task.id}, 'hint')">Підказка</button>
+                </div>
+                <div class="text-lg font-medium text-center mb-3 text-gray-800">${task.q} = ?</div>
+                <div id="hint-${task.id}" class="hidden text-xs text-gray-600 bg-yellow-50 p-2 rounded mb-2 italic">${task.h}</div>
+                <div class="flex justify-center">
+                    <input type="number" step="0.1" class="answer-input" id="inp-${task.id}">
+                    <button class="btn-check" onclick="checkTask(${task.id})">OK</button>
+                </div>
+                <div id="sol-${task.id}" class="hidden text-center mt-2 text-sm text-green-600 font-bold">Правильно!</div>
+            `;
+
+            if (task.id <= 13) addContainer.appendChild(el);
+            else subContainer.appendChild(el);
+        });
+
+        const quizEl = document.getElementById('quiz-area');
+        quizQuestions.forEach((q, idx) => {
+            let options = q.opts.map((o, i) => 
+                `<label class="inline-flex items-center mr-4 cursor-pointer">
+                    <input type="radio" name="q${idx}" value="${i}" class="form-radio text-indigo-600">
+                    <span class="ml-2">${o}</span>
+                 </label>`
+            ).join('');
+            
+            quizEl.innerHTML += `
+                <div class="border-b pb-3">
+                    <p class="font-semibold text-gray-800 mb-2">${idx + 1}. ${q.q}</p>
+                    <div>${options}</div>
+                </div>`;
+        });
+        
+        MathJax.typeset();
+    }
+
+    function toggleDetails(id, type) {
+        document.getElementById(`${type}-${id}`).classList.toggle('hidden');
+    }
+
+    /* --- ЛОГІКА ПЕРЕВІРКИ --- */
+    let solvedTasks = new Set();
+
+    function checkTask(id) {
+        const task = tasks.find(t => t.id === id);
+        const input = document.getElementById(`inp-${id}`);
+        const userVal = parseFloat(input.value);
+        const solDiv = document.getElementById(`sol-${task.id}`);
+
+        if (isNaN(userVal)) return;
+
+        if (Math.abs(userVal - task.a) < 0.001) {
+            input.classList.add('correct');
+            input.classList.remove('incorrect');
+            solDiv.innerHTML = `✅ ${task.sol}`;
+            solDiv.classList.remove('hidden', 'text-red-500');
+            solDiv.classList.add('text-green-600');
+            solvedTasks.add(id);
+        } else {
+            input.classList.add('incorrect');
+            input.classList.remove('correct');
+            solDiv.innerHTML = "❌ Спробуй ще!";
+            solDiv.classList.remove('hidden', 'text-green-600');
+            solDiv.classList.add('text-red-500');
+        }
+    }
+
+    function checkQuiz() {
+        let score = 0;
+        quizQuestions.forEach((q, idx) => {
+            const selected = document.querySelector(`input[name="q${idx}"]:checked`);
+            if (selected && parseInt(selected.value) === q.a) score++;
+        });
+
+        const taskScore = (solvedTasks.size / tasks.length) * 60; // Макс 60 балів за завдання
+        const quizScore = (score / quizQuestions.length) * 40;   // Макс 40 балів за тест
+        const total = Math.round(taskScore + quizScore);
+
+        document.getElementById('final-score').innerText = `${total}/100`;
+        const msg = total > 80 ? "Фантастично! Ти майстер від'ємних чисел! 🚀" : 
+                    total > 50 ? "Хороший результат! Але треба ще потренуватися. 😉" : "Не здавайся! Повтори теорію і спробуй ще раз. 🌱";
+        document.getElementById('final-msg').innerText = msg;
+        document.getElementById('result-modal').classList.remove('hidden');
+    }
+
+    /* --- WHITEBOARD --- */
+    const canvas = document.getElementById('whiteboard');
+    const ctx = canvas.getContext('2d');
+    let painting = false;
+    let tool = 'pen';
+    let showGrid = false;
+
+    function resize() {
+        canvas.width = canvas.parentElement.clientWidth;
+        canvas.height = canvas.parentElement.clientHeight;
+        if(showGrid) drawGrid();
+    }
+    window.addEventListener('resize', resize);
+    setTimeout(resize, 100);
+
+    function getPos(e) {
+        const r = canvas.getBoundingClientRect();
+        return {
+            x: (e.clientX || e.touches[0].clientX) - r.left,
+            y: (e.clientY || e.touches[0].clientY) - r.top
+        };
+    }
+
+    canvas.addEventListener('mousedown', e => { painting = true; draw(e); });
+    canvas.addEventListener('mouseup', () => { painting = false; ctx.beginPath(); });
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('touchstart', e => { painting = true; draw(e); }, {passive: false});
+    canvas.addEventListener('touchend', () => { painting = false; ctx.beginPath(); });
+    canvas.addEventListener('touchmove', draw, {passive: false});
+
+    function draw(e) {
+        if (!painting) return;
+        e.preventDefault();
+        const {x, y} = getPos(e);
+        
+        ctx.lineWidth = tool === 'eraser' ? 20 : 3;
+        ctx.lineCap = 'round';
+        ctx.strokeStyle = tool === 'eraser' ? '#ffffff' : '#1e40af';
+        
+        ctx.lineTo(x, y);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+    }
+
+    function setTool(t) {
+        tool = t;
+        document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('tool-' + t).classList.add('active');
+    }
+
+    function clearCanvas() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        if(showGrid) drawGrid();
+    }
+
+    function toggleGrid() {
+        showGrid = !showGrid;
+        document.getElementById('tool-grid').classList.toggle('active');
+        clearCanvas(); 
+    }
+
+    function drawGrid() {
+        const step = 40;
+        const w = canvas.width, h = canvas.height;
+        const cx = Math.floor(w / 2 / step) * step; // Центр X
+        const cy = Math.floor(h / 2 / step) * step; // Центр Y
+
+        ctx.strokeStyle = '#e2e8f0';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        
+        for (let x = 0; x <= w; x += step) { ctx.moveTo(x, 0); ctx.lineTo(x, h); }
+        for (let y = 0; y <= h; y += step) { ctx.moveTo(0, y); ctx.lineTo(w, y); }
+        ctx.stroke();
+
+        // Осі
+        ctx.strokeStyle = '#94a3b8';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(0, cy); ctx.lineTo(w, cy); // Ось X
+        ctx.moveTo(cx, 0); ctx.lineTo(cx, h); // Ось Y
+        ctx.stroke();
+
+        // Підписи
+        ctx.fillStyle = '#64748b';
+        ctx.font = '12px sans-serif';
+        ctx.fillText("0", cx - 15, cy + 15);
+        ctx.fillText("x", w - 20, cy - 10);
+        ctx.fillText("y", cx + 10, 20);
+        
+        // Позначки від'ємних
+        ctx.fillStyle = '#ef4444';
+        ctx.fillText("-1", cx - step - 5, cy + 15);
+        ctx.fillText("-1", cx + 10, cy + step + 5);
+    }
+
+    renderTasks();
+</script>
+</body>
+</html>
