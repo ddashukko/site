@@ -846,6 +846,16 @@ window.lessonsData = [
     author: "Соня",
   },
   {
+    id: "math-6-koordinatna_ploscha",
+    title: "Координатна площина",
+    grade: 6,
+    topic: "Математика",
+    link: "math_general/6/Вадим/math_6_koordinat_plosh.html",
+    subject_code: "math_general",
+    category: "lesson",
+    author: "Соня",
+  },
+  {
     id: "math-6-rivniannyia",
     title: "Рівняння",
     grade: 6,
@@ -868,6 +878,16 @@ window.lessonsData = [
      {
     id: "math_sofiika_urok1",
     title: "Дії з різними знаками",
+    grade: 6,
+    topic: "Математика",
+    link: "math_general/6/sofiika7/math_drobi.html",
+    subject_code: "math_general",
+    category: "lesson",
+    author: "Соня",
+  },
+  {
+    id: "math_sofiika_urok1",
+    title: "Дроби повноцінно",
     grade: 6,
     topic: "Математика",
     link: "math_general/6/sofiika7/math_s_minus_plus.html",
