@@ -1,262 +1,170 @@
-<!doctype html>
-<html lang="de">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Arbeitsblatt: Rechengesetze</title>
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Для Сонічки ❤️</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Montserrat:wght@300;700&display=swap');
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background: #1a1a1a; /* Глибокий темний фон для романтики */
+            color: #fff;
+            font-family: 'Montserrat', sans-serif;
+            overflow-x: auto;
+            overflow-y: hidden;
+            display: flex;
+            scroll-snap-type: x mandatory;
+        }
+
+        /* Анімований градієнт на фоні */
+        .bg-gradient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, #450a15 0%, #1a1a1a 100%);
+            z-index: -1;
+        }
+
+        section {
+            min-width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            scroll-snap-align: start;
+            padding: 20px 60px;
+            position: relative;
+        }
+
+        h1 {
+            font-family: 'Caveat', cursive;
+            font-size: 5vw; /* Розмір залежить від ширини екрана */
+            color: #ff4d6d;
+            margin: 0;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 1s ease;
+        }
+
+        section.active h1 {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .heart-main {
+            font-size: 8vw;
+            color: #ff4d6d;
+            animation: pulse 1.5s infinite;
+            margin: 20px 0;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); filter: drop-shadow(0 0 10px #ff4d6d); }
+            50% { transform: scale(1.1); filter: drop-shadow(0 0 30px #ff4d6d); }
+            100% { transform: scale(1); filter: drop-shadow(0 0 10px #ff4d6d); }
+        }
+
+        .hint {
+            position: absolute;
+            right: 40px;
+            bottom: 40px;
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.3);
+            animation: slideHint 2s infinite;
+        }
+
+        @keyframes slideHint {
+            0% { transform: translateX(0); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateX(20px); opacity: 0; }
+        }
+
+        .love-line {
+            width: 0;
+            height: 2px;
+            background: #ff4d6d;
+            transition: width 1.5s ease 0.5s;
+        }
+
+        section.active .love-line {
+            width: 200px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-gradient"></div>
+
+    <section class="active">
+        <h1>Сонічка, це для тебе...</h1>
+        <div class="heart-main">❤️</div>
+        <div class="hint">Гортай вбік →</div>
+    </section>
+
+    <section>
+        <h1>В цьому світі багато прекрасного...</h1>
+        <div class="love-line"></div>
+    </section>
+
+    <section>
+        <h1>Але ніщо не зрівняється з тобою</h1>
+    </section>
+
+    <section>
+        <h1 style="font-size: 7vw;">Я ЛЮБЛЮ ТЕБЕ</h1>
+    </section>
+
+    <section>
+        <h1 style="font-size: 9vw; color: #fff;">БІЛЬШЕ</h1>
+    </section>
+
+    <section>
+        <h1 style="font-size: 9vw; color: #fff;">ЗА</h1>
+    </section>
+
+    <section>
+        <h1 style="font-size: 10vw; text-transform: uppercase;">Все!</h1>
+    </section>
+
+    <section>
+        <h1>Ти — моє натхнення</h1>
+        <div class="heart-main" style="animation-delay: 0.5s;">❤️</div>
+    </section>
 
     <script>
-      MathJax = {
-        tex: {
-          inlineMath: [
-            ["$", "$"],
-            ["\\(", "\\)"],
-          ],
-        },
-      };
+        const sections = document.querySelectorAll('section');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.6 });
+
+        sections.forEach(s => observer.observe(s));
+
+        // Дозволяємо скрол коліщатком миші (горизонтально)
+        window.addEventListener('wheel', (evt) => {
+            evt.preventDefault();
+            window.scrollBy({
+                left: evt.deltaY,
+                behavior: 'smooth'
+            });
+        }, { passive: false });
     </script>
-    <script
-      id="MathJax-script"
-      async
-      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
-    ></script>
-
-    <style>
-      body {
-        font-family: "Times New Roman", Times, serif;
-        line-height: 1.4;
-        color: #000;
-        max-width: 210mm;
-        margin: 0 auto;
-        background: #fff;
-        padding: 20px;
-      }
-
-      /* Заголовок */
-      .header-table {
-        width: 100%;
-        border-bottom: 2px solid #000;
-        padding-bottom: 10px;
-        margin-bottom: 20px;
-        font-family: Arial, sans-serif;
-      }
-
-      .title {
-        font-size: 26px;
-        font-weight: bold;
-        text-align: center;
-        margin-top: 10px;
-      }
-
-      .subtitle {
-        text-align: center;
-        font-size: 16px;
-        margin-bottom: 30px;
-        font-style: italic;
-      }
-
-      /* Стилі завдань */
-      .task-block {
-        margin-bottom: 20px;
-        page-break-inside: avoid;
-      }
-
-      .task-title {
-        font-weight: bold;
-        font-size: 18px;
-        margin-bottom: 8px;
-        font-family: Arial, sans-serif;
-      }
-
-      .answer-line {
-        display: inline-block;
-        border-bottom: 1px dotted #000;
-        width: 100%;
-        height: 20px;
-      }
-
-      .match-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 10px;
-      }
-      .match-table td {
-        padding: 8px;
-        border: 1px solid #aaa;
-        vertical-align: middle;
-      }
-
-      .solutions {
-        page-break-before: always;
-        margin-top: 50px;
-      }
-
-      @media print {
-        @page {
-          margin: 1.5cm;
-        }
-        body {
-          padding: 0;
-        }
-        .no-print {
-          display: none;
-        }
-        a[href]:after {
-          content: none !important;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <div
-      class="no-print"
-      style="text-align: center; margin-bottom: 20px; font-family: Arial"
-    >
-      <p
-        style="
-          background: #d4edda;
-          color: #155724;
-          padding: 10px;
-          border-radius: 5px;
-          border: 1px solid #c3e6cb;
-        "
-      >
-        ✅ <b>Виправлено:</b> Формули тепер відображаються коректно (з
-        крапками).<br />
-        Натисніть <b>Ctrl + P</b> для друку.
-      </p>
-    </div>
-
-    <table class="header-table">
-      <tr>
-        <td style="width: 40%">Name: ____________________</td>
-        <td style="width: 30%; text-align: center">Klasse: ______</td>
-        <td style="width: 30%; text-align: right">Datum: __________</td>
-      </tr>
-    </table>
-
-    <div class="title">Übung: Geschickt rechnen</div>
-    <div class="subtitle">Thema: Rechengesetze & Fachbegriffe</div>
-
-    <div class="task-block">
-      <div class="task-title">1. Welches Gesetz passt?</div>
-      Ordne den Rechnungen das richtige Gesetz zu:
-      <i>Kommutativgesetz (K), Assoziativgesetz (A), Distributivgesetz (D)</i>.
-
-      <table class="match-table">
-        <tr>
-          <td width="5%"><b>a)</b></td>
-          <td width="40%">$19 + 45 = 45 + 19$</td>
-          <td width="55%">Gesetz: __________________</td>
-        </tr>
-        <tr>
-          <td><b>b)</b></td>
-          <td>$5 \cdot (10 + 4) = 50 + 20$</td>
-          <td>Gesetz: __________________</td>
-        </tr>
-        <tr>
-          <td><b>c)</b></td>
-          <td>$(3 \cdot 4) \cdot 2 = 3 \cdot (4 \cdot 2)$</td>
-          <td>Gesetz: __________________</td>
-        </tr>
-      </table>
-    </div>
-
-    <div class="task-block">
-      <div class="task-title">2. Vorteilhaft rechnen</div>
-      Rechne geschickt, indem du Klammern setzt oder Zahlen vertauschst.
-      <br /><br />
-
-      <b>a)</b> $46 + 18 + 54$ <br />
-      <span style="font-size: 0.9em; color: #555">Rechnungsweg:</span>
-      <div class="answer-line"></div>
-      <div class="answer-line" style="margin-top: 5px"></div>
-      <br /><br />
-
-      <b>b)</b> $25 \cdot 13 \cdot 4$ <br />
-      <span style="font-size: 0.9em; color: #555">Rechnungsweg:</span>
-      <div class="answer-line"></div>
-      <div class="answer-line" style="margin-top: 5px"></div>
-    </div>
-
-    <div class="task-block">
-      <div class="task-title">3. Der Zerlege-Trick (Distributivgesetz)</div>
-      Zerlege die große Zahl, um im Kopf zu rechnen. Beispiel: $4 \cdot 12 = 4
-      \cdot (10 + 2)$.
-      <br /><br />
-
-      <b>a)</b> $6 \cdot 105 =$ ____________ $\cdot$ ( ______ + ______ ) <br />
-      $= $ ____________ + ____________ $= $ <b>____________</b> <br /><br />
-
-      <b>b)</b> $8 \cdot 19 =$ ____________ $\cdot$ ( ______ $-$ ______ ) <br />
-      $= $ ____________ $-$ ____________ $= $ <b>____________</b>
-    </div>
-
-    <div class="task-block">
-      <div class="task-title">4. Wahr oder Falsch?</div>
-      Kreuze an.
-      <table class="match-table">
-        <tr>
-          <th>Aussage</th>
-          <th width="15%">Wahr</th>
-          <th width="15%">Falsch</th>
-        </tr>
-        <tr>
-          <td>
-            Das Kommutativgesetz gilt auch beim Minusrechnen ($10-2 = 2-10$).
-          </td>
-          <td style="text-align: center">⬜</td>
-          <td style="text-align: center">⬜</td>
-        </tr>
-        <tr>
-          <td>"$24 : 4$" ist das Gleiche wie "$4 : 24$".</td>
-          <td style="text-align: center">⬜</td>
-          <td style="text-align: center">⬜</td>
-        </tr>
-        <tr>
-          <td>Assoziativgesetz heißt auf Deutsch "Verbindungsgesetz".</td>
-          <td style="text-align: center">⬜</td>
-          <td style="text-align: center">⬜</td>
-        </tr>
-      </table>
-    </div>
-
-    <div class="solutions">
-      <h3
-        style="
-          text-align: center;
-          border-bottom: 2px double black;
-          padding-bottom: 10px;
-        "
-      >
-        Lösungen (Відповіді)
-      </h3>
-
-      <p>
-        <b>1. Gesetze:</b><br />
-        a) Kommutativgesetz (Vertauschungsgesetz)<br />
-        b) Distributivgesetz (Verteilungsgesetz)<br />
-        c) Assoziativgesetz (Verbindungsgesetz)
-      </p>
-
-      <p>
-        <b>2. Vorteilhaft rechnen:</b><br />
-        a) $(46 + 54) + 18 = 100 + 18 = \mathbf{118}$<br />
-        b) $(25 \cdot 4) \cdot 13 = 100 \cdot 13 = \mathbf{1300}$
-      </p>
-
-      <p>
-        <b>3. Zerlege-Trick:</b><br />
-        a) $6 \cdot (100 + 5) = 600 + 30 = \mathbf{630}$<br />
-        b) $8 \cdot (20 - 1) = 160 - 8 = \mathbf{152}$
-      </p>
-
-      <p>
-        <b>4. Wahr oder Falsch:</b><br />
-        1. Falsch (Ergebnis ist unterschiedlich)<br />
-        2. Falsch<br />
-        3. Wahr
-      </p>
-    </div>
-  </body>
+</body>
 </html>
