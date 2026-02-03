@@ -877,7 +877,7 @@ window.lessonsData = [
   },
      {
     id: "math_sofiika_urok1",
-    title: "Дії з різними знаками",
+    title: "Дроби повноцінно",
     grade: 6,
     topic: "Математика",
     link: "math_general/6/sofiika7/math_drobi.html",
@@ -887,7 +887,7 @@ window.lessonsData = [
   },
   {
     id: "math_sofiika_urok1",
-    title: "Дроби повноцінно",
+    title: "плюс мінус пам пам",
     grade: 6,
     topic: "Математика",
     link: "math_general/6/sofiika7/math_s_minus_plus.html",
