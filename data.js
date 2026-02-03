@@ -865,6 +865,16 @@ window.lessonsData = [
     category: "lesson",
     author: "Соня",
   },
+     {
+    id: "math_sofiika_urok1",
+    title: "Дії з різними знаками",
+    grade: 6,
+    topic: "Математика",
+    link: "math_general/6/sofiika7/math_s_minus_plus.html",
+    subject_code: "math_general",
+    category: "lesson",
+    author: "Соня",
+  },
   // ==========================================
   // 8 КЛАС (Алгебра - Маринка/Соня) - Автор: Соня
   // ЦІ УРОКИ ТЕПЕР В КІНЦІ СПИСКУ 8 КЛАСУ
@@ -939,7 +949,16 @@ window.lessonsData = [
     category: "lesson",
     author: "Соня",
   },
-
+  {
+    id: "alg-8-marinka-05",
+    title: "Подібність трикутників",
+    grade: 8,
+    topic: "Математика",
+    link: "algebra/8/Маринка/geometry_8_trykutniki.html",
+    subject_code: "algebra",
+    category: "lesson",
+    author: "Соня",
+  },
   // ==========================================
   // 9 КЛАС (Алгебра - Соня) - Автор: Соня
   // ==========================================

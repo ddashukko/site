@@ -1,262 +1,207 @@
-<!doctype html>
-<html lang="de">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Arbeitsblatt: Rechengesetze</title>
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Моя Сонічка ❤️</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Montserrat:wght@300;600&display=swap');
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background: #fff5f7;
+            color: #4a4a4a;
+            font-family: 'Montserrat', sans-serif;
+            overflow-x: auto;
+            overflow-y: hidden;
+            display: flex;
+            scroll-snap-type: x mandatory;
+        }
+
+        .bg-glow {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% 50%, #ffe5ec 0%, #fff5f7 100%);
+            z-index: -1;
+        }
+
+        section {
+            min-width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            scroll-snap-align: start;
+            padding: 40px;
+            position: relative;
+        }
+
+        h1 {
+            font-family: 'Caveat', cursive;
+            font-size: 6vw;
+            color: #ff4d6d;
+            margin: 10px 0;
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .active h1 {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .kici-kici {
+            font-size: 8vw !important;
+            background: linear-gradient(45deg, #ff4d6d, #ff758f);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .sub-text {
+            font-size: 1.5vw;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #ffb3c1;
+            margin-top: 20px;
+        }
+
+        .cat-icon {
+            font-size: 5vw;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 0 10px rgba(255, 77, 109, 0.3));
+        }
+
+        .floating-elements {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .meow {
+            position: absolute;
+            font-family: 'Caveat', cursive;
+            color: #ff8fa3;
+            font-size: 1.5rem;
+            animation: meowFly 4s linear infinite;
+        }
+
+        @keyframes meowFly {
+            0% { transform: translate(0, 100vh) rotate(0deg); opacity: 0; }
+            20% { opacity: 1; }
+            100% { transform: translate(100px, -10vh) rotate(20deg); opacity: 0; }
+        }
+
+        .hint-right {
+            position: absolute;
+            right: 30px;
+            bottom: 30px;
+            font-size: 2rem;
+            color: #ff4d6d;
+            animation: bounceRight 2s infinite;
+        }
+
+        @keyframes bounceRight {
+            0%, 20%, 50%, 80%, 100% { transform: translateX(0); }
+            40% { transform: translateX(10px); }
+            60% { transform: translateX(5px); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-glow"></div>
+    <div class="floating-elements" id="meowContainer"></div>
+
+    <section class="active">
+        <div class="cat-icon">🐾</div>
+        <h1>Сонічка...</h1>
+        <div class="sub-text">гортай далі, моя хароша</div>
+        <div class="hint-right">➔</div>
+    </section>
+
+    <section>
+        <h1>Ти моя найвкусніша</h1>
+        <div class="sub-text">і найгарніша у світі</div>
+    </section>
+
+    <section>
+        <div class="cat-icon">🐱</div>
+        <h1 class="kici-kici">Кіцичка</h1>
+    </section>
+
+    <section>
+        <h1 class="kici-kici">Кицюнічка</h1>
+    </section>
+
+    <section>
+        <h1 class="kici-kici">Хароша моя!</h1>
+    </section>
+
+    <section>
+        <h1 style="font-size: 10vw;">Няняння ❤️</h1>
+        <div class="sub-text">просто обожнюю тебе</div>
+    </section>
+
+    <section>
+        <h1>Я ЛЮБЛЮ ТЕБЕ</h1>
+        <div class="sub-text">навіть сильніше, ніж можна уявити</div>
+    </section>
+
+    <section>
+        <div class="cat-icon">💖</div>
+        <h1>Ти моє все!</h1>
+        <div class="sub-text">кінець (але моя любов нескінчення чєсна сна)</div>
+    </section>
 
     <script>
-      MathJax = {
-        tex: {
-          inlineMath: [
-            ["$", "$"],
-            ["\\(", "\\)"],
-          ],
-        },
-      };
+        // Відстеження активних секцій
+        const sections = document.querySelectorAll('section');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.6 });
+
+        sections.forEach(s => observer.observe(s));
+
+        // Створення літаючих написів "мур", "мяу" та сердечок
+        function createMeow() {
+            const words = ['мур', 'мяу', '❤️', 'love', 'киця'];
+            const el = document.createElement('div');
+            el.classList.add('meow');
+            el.innerText = words[Math.floor(Math.random() * words.length)];
+            el.style.left = Math.random() * 100 + 'vw';
+            el.style.animationDuration = (Math.random() * 2 + 3) + 's';
+            el.style.fontSize = (Math.random() * 1.5 + 1) + 'rem';
+            
+            document.getElementById('meowContainer').appendChild(el);
+            setTimeout(() => el.remove(), 4000);
+        }
+
+        setInterval(createMeow, 500);
+
+        // Горизонтальний скрол мишкою
+        window.addEventListener('wheel', (evt) => {
+            evt.preventDefault();
+            window.scrollBy({
+                left: evt.deltaY * 2,
+                behavior: 'smooth'
+            });
+        }, { passive: false });
     </script>
-    <script
-      id="MathJax-script"
-      async
-      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
-    ></script>
-
-    <style>
-      body {
-        font-family: "Times New Roman", Times, serif;
-        line-height: 1.4;
-        color: #000;
-        max-width: 210mm;
-        margin: 0 auto;
-        background: #fff;
-        padding: 20px;
-      }
-
-      /* Заголовок */
-      .header-table {
-        width: 100%;
-        border-bottom: 2px solid #000;
-        padding-bottom: 10px;
-        margin-bottom: 20px;
-        font-family: Arial, sans-serif;
-      }
-
-      .title {
-        font-size: 26px;
-        font-weight: bold;
-        text-align: center;
-        margin-top: 10px;
-      }
-
-      .subtitle {
-        text-align: center;
-        font-size: 16px;
-        margin-bottom: 30px;
-        font-style: italic;
-      }
-
-      /* Стилі завдань */
-      .task-block {
-        margin-bottom: 20px;
-        page-break-inside: avoid;
-      }
-
-      .task-title {
-        font-weight: bold;
-        font-size: 18px;
-        margin-bottom: 8px;
-        font-family: Arial, sans-serif;
-      }
-
-      .answer-line {
-        display: inline-block;
-        border-bottom: 1px dotted #000;
-        width: 100%;
-        height: 20px;
-      }
-
-      .match-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 10px;
-      }
-      .match-table td {
-        padding: 8px;
-        border: 1px solid #aaa;
-        vertical-align: middle;
-      }
-
-      .solutions {
-        page-break-before: always;
-        margin-top: 50px;
-      }
-
-      @media print {
-        @page {
-          margin: 1.5cm;
-        }
-        body {
-          padding: 0;
-        }
-        .no-print {
-          display: none;
-        }
-        a[href]:after {
-          content: none !important;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <div
-      class="no-print"
-      style="text-align: center; margin-bottom: 20px; font-family: Arial"
-    >
-      <p
-        style="
-          background: #d4edda;
-          color: #155724;
-          padding: 10px;
-          border-radius: 5px;
-          border: 1px solid #c3e6cb;
-        "
-      >
-        ✅ <b>Виправлено:</b> Формули тепер відображаються коректно (з
-        крапками).<br />
-        Натисніть <b>Ctrl + P</b> для друку.
-      </p>
-    </div>
-
-    <table class="header-table">
-      <tr>
-        <td style="width: 40%">Name: ____________________</td>
-        <td style="width: 30%; text-align: center">Klasse: ______</td>
-        <td style="width: 30%; text-align: right">Datum: __________</td>
-      </tr>
-    </table>
-
-    <div class="title">Übung: Geschickt rechnen</div>
-    <div class="subtitle">Thema: Rechengesetze & Fachbegriffe</div>
-
-    <div class="task-block">
-      <div class="task-title">1. Welches Gesetz passt?</div>
-      Ordne den Rechnungen das richtige Gesetz zu:
-      <i>Kommutativgesetz (K), Assoziativgesetz (A), Distributivgesetz (D)</i>.
-
-      <table class="match-table">
-        <tr>
-          <td width="5%"><b>a)</b></td>
-          <td width="40%">$19 + 45 = 45 + 19$</td>
-          <td width="55%">Gesetz: __________________</td>
-        </tr>
-        <tr>
-          <td><b>b)</b></td>
-          <td>$5 \cdot (10 + 4) = 50 + 20$</td>
-          <td>Gesetz: __________________</td>
-        </tr>
-        <tr>
-          <td><b>c)</b></td>
-          <td>$(3 \cdot 4) \cdot 2 = 3 \cdot (4 \cdot 2)$</td>
-          <td>Gesetz: __________________</td>
-        </tr>
-      </table>
-    </div>
-
-    <div class="task-block">
-      <div class="task-title">2. Vorteilhaft rechnen</div>
-      Rechne geschickt, indem du Klammern setzt oder Zahlen vertauschst.
-      <br /><br />
-
-      <b>a)</b> $46 + 18 + 54$ <br />
-      <span style="font-size: 0.9em; color: #555">Rechnungsweg:</span>
-      <div class="answer-line"></div>
-      <div class="answer-line" style="margin-top: 5px"></div>
-      <br /><br />
-
-      <b>b)</b> $25 \cdot 13 \cdot 4$ <br />
-      <span style="font-size: 0.9em; color: #555">Rechnungsweg:</span>
-      <div class="answer-line"></div>
-      <div class="answer-line" style="margin-top: 5px"></div>
-    </div>
-
-    <div class="task-block">
-      <div class="task-title">3. Der Zerlege-Trick (Distributivgesetz)</div>
-      Zerlege die große Zahl, um im Kopf zu rechnen. Beispiel: $4 \cdot 12 = 4
-      \cdot (10 + 2)$.
-      <br /><br />
-
-      <b>a)</b> $6 \cdot 105 =$ ____________ $\cdot$ ( ______ + ______ ) <br />
-      $= $ ____________ + ____________ $= $ <b>____________</b> <br /><br />
-
-      <b>b)</b> $8 \cdot 19 =$ ____________ $\cdot$ ( ______ $-$ ______ ) <br />
-      $= $ ____________ $-$ ____________ $= $ <b>____________</b>
-    </div>
-
-    <div class="task-block">
-      <div class="task-title">4. Wahr oder Falsch?</div>
-      Kreuze an.
-      <table class="match-table">
-        <tr>
-          <th>Aussage</th>
-          <th width="15%">Wahr</th>
-          <th width="15%">Falsch</th>
-        </tr>
-        <tr>
-          <td>
-            Das Kommutativgesetz gilt auch beim Minusrechnen ($10-2 = 2-10$).
-          </td>
-          <td style="text-align: center">⬜</td>
-          <td style="text-align: center">⬜</td>
-        </tr>
-        <tr>
-          <td>"$24 : 4$" ist das Gleiche wie "$4 : 24$".</td>
-          <td style="text-align: center">⬜</td>
-          <td style="text-align: center">⬜</td>
-        </tr>
-        <tr>
-          <td>Assoziativgesetz heißt auf Deutsch "Verbindungsgesetz".</td>
-          <td style="text-align: center">⬜</td>
-          <td style="text-align: center">⬜</td>
-        </tr>
-      </table>
-    </div>
-
-    <div class="solutions">
-      <h3
-        style="
-          text-align: center;
-          border-bottom: 2px double black;
-          padding-bottom: 10px;
-        "
-      >
-        Lösungen (Відповіді)
-      </h3>
-
-      <p>
-        <b>1. Gesetze:</b><br />
-        a) Kommutativgesetz (Vertauschungsgesetz)<br />
-        b) Distributivgesetz (Verteilungsgesetz)<br />
-        c) Assoziativgesetz (Verbindungsgesetz)
-      </p>
-
-      <p>
-        <b>2. Vorteilhaft rechnen:</b><br />
-        a) $(46 + 54) + 18 = 100 + 18 = \mathbf{118}$<br />
-        b) $(25 \cdot 4) \cdot 13 = 100 \cdot 13 = \mathbf{1300}$
-      </p>
-
-      <p>
-        <b>3. Zerlege-Trick:</b><br />
-        a) $6 \cdot (100 + 5) = 600 + 30 = \mathbf{630}$<br />
-        b) $8 \cdot (20 - 1) = 160 - 8 = \mathbf{152}$
-      </p>
-
-      <p>
-        <b>4. Wahr oder Falsch:</b><br />
-        1. Falsch (Ergebnis ist unterschiedlich)<br />
-        2. Falsch<br />
-        3. Wahr
-      </p>
-    </div>
-  </body>
+</body>
 </html>
