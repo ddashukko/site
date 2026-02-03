@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Для Сонічки ❤️</title>
+    <title>Моя Сонічка ❤️</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Montserrat:wght@300;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Montserrat:wght@300;600&display=swap');
 
         * {
             box-sizing: border-box;
@@ -17,8 +17,8 @@
             padding: 0;
             width: 100%;
             height: 100%;
-            background: #1a1a1a; /* Глибокий темний фон для романтики */
-            color: #fff;
+            background: #fff5f7;
+            color: #4a4a4a;
             font-family: 'Montserrat', sans-serif;
             overflow-x: auto;
             overflow-y: hidden;
@@ -26,14 +26,10 @@
             scroll-snap-type: x mandatory;
         }
 
-        /* Анімований градієнт на фоні */
-        .bg-gradient {
+        .bg-glow {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at center, #450a15 0%, #1a1a1a 100%);
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% 50%, #ffe5ec 0%, #fff5f7 100%);
             z-index: -1;
         }
 
@@ -46,106 +42,131 @@
             align-items: center;
             text-align: center;
             scroll-snap-align: start;
-            padding: 20px 60px;
+            padding: 40px;
             position: relative;
         }
 
         h1 {
             font-family: 'Caveat', cursive;
-            font-size: 5vw; /* Розмір залежить від ширини екрана */
+            font-size: 6vw;
             color: #ff4d6d;
-            margin: 0;
+            margin: 10px 0;
             opacity: 0;
-            transform: translateY(20px);
-            transition: all 1s ease;
+            transform: scale(0.9);
+            transition: all 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        section.active h1 {
+        .active h1 {
             opacity: 1;
-            transform: translateY(0);
+            transform: scale(1);
         }
 
-        .heart-main {
-            font-size: 8vw;
-            color: #ff4d6d;
-            animation: pulse 1.5s infinite;
-            margin: 20px 0;
+        .kici-kici {
+            font-size: 8vw !important;
+            background: linear-gradient(45deg, #ff4d6d, #ff758f);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        @keyframes pulse {
-            0% { transform: scale(1); filter: drop-shadow(0 0 10px #ff4d6d); }
-            50% { transform: scale(1.1); filter: drop-shadow(0 0 30px #ff4d6d); }
-            100% { transform: scale(1); filter: drop-shadow(0 0 10px #ff4d6d); }
+        .sub-text {
+            font-size: 1.5vw;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #ffb3c1;
+            margin-top: 20px;
         }
 
-        .hint {
+        .cat-icon {
+            font-size: 5vw;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 0 10px rgba(255, 77, 109, 0.3));
+        }
+
+        .floating-elements {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .meow {
             position: absolute;
-            right: 40px;
-            bottom: 40px;
-            font-size: 1.2rem;
-            color: rgba(255, 255, 255, 0.3);
-            animation: slideHint 2s infinite;
+            font-family: 'Caveat', cursive;
+            color: #ff8fa3;
+            font-size: 1.5rem;
+            animation: meowFly 4s linear infinite;
         }
 
-        @keyframes slideHint {
-            0% { transform: translateX(0); opacity: 0; }
-            50% { opacity: 1; }
-            100% { transform: translateX(20px); opacity: 0; }
+        @keyframes meowFly {
+            0% { transform: translate(0, 100vh) rotate(0deg); opacity: 0; }
+            20% { opacity: 1; }
+            100% { transform: translate(100px, -10vh) rotate(20deg); opacity: 0; }
         }
 
-        .love-line {
-            width: 0;
-            height: 2px;
-            background: #ff4d6d;
-            transition: width 1.5s ease 0.5s;
+        .hint-right {
+            position: absolute;
+            right: 30px;
+            bottom: 30px;
+            font-size: 2rem;
+            color: #ff4d6d;
+            animation: bounceRight 2s infinite;
         }
 
-        section.active .love-line {
-            width: 200px;
+        @keyframes bounceRight {
+            0%, 20%, 50%, 80%, 100% { transform: translateX(0); }
+            40% { transform: translateX(10px); }
+            60% { transform: translateX(5px); }
         }
     </style>
 </head>
 <body>
 
-    <div class="bg-gradient"></div>
+    <div class="bg-glow"></div>
+    <div class="floating-elements" id="meowContainer"></div>
 
     <section class="active">
-        <h1>Сонічка, це для тебе...</h1>
-        <div class="heart-main">❤️</div>
-        <div class="hint">Гортай вбік →</div>
+        <div class="cat-icon">🐾</div>
+        <h1>Сонічка...</h1>
+        <div class="sub-text">гортай далі, моя радість</div>
+        <div class="hint-right">➔</div>
     </section>
 
     <section>
-        <h1>В цьому світі багато прекрасного...</h1>
-        <div class="love-line"></div>
+        <h1>Ти моя найрідніша</h1>
+        <div class="sub-text">і найгарніша у світі</div>
     </section>
 
     <section>
-        <h1>Але ніщо не зрівняється з тобою</h1>
+        <div class="cat-icon">🐱</div>
+        <h1 class="kici-kici">Кіцичка</h1>
     </section>
 
     <section>
-        <h1 style="font-size: 7vw;">Я ЛЮБЛЮ ТЕБЕ</h1>
+        <h1 class="kici-kici">Кицюнічка</h1>
     </section>
 
     <section>
-        <h1 style="font-size: 9vw; color: #fff;">БІЛЬШЕ</h1>
+        <h1 class="kici-kici">Хароша моя!</h1>
     </section>
 
     <section>
-        <h1 style="font-size: 9vw; color: #fff;">ЗА</h1>
+        <h1 style="font-size: 10vw;">Няняння ❤️</h1>
+        <div class="sub-text">просто обожнюю тебе</div>
     </section>
 
     <section>
-        <h1 style="font-size: 10vw; text-transform: uppercase;">Все!</h1>
+        <h1>Я ЛЮБЛЮ ТЕБЕ</h1>
+        <div class="sub-text">навіть сильніше, ніж можна уявити</div>
     </section>
 
     <section>
-        <h1>Ти — моє натхнення</h1>
-        <div class="heart-main" style="animation-delay: 0.5s;">❤️</div>
+        <div class="cat-icon">💖</div>
+        <h1>Ти моє все!</h1>
+        <div class="sub-text">кінець (але моя любов безкінечна)</div>
     </section>
 
     <script>
+        // Відстеження активних секцій
         const sections = document.querySelectorAll('section');
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -157,11 +178,27 @@
 
         sections.forEach(s => observer.observe(s));
 
-        // Дозволяємо скрол коліщатком миші (горизонтально)
+        // Створення літаючих написів "мур", "мяу" та сердечок
+        function createMeow() {
+            const words = ['мур', 'мяу', '❤️', 'love', 'киця'];
+            const el = document.createElement('div');
+            el.classList.add('meow');
+            el.innerText = words[Math.floor(Math.random() * words.length)];
+            el.style.left = Math.random() * 100 + 'vw';
+            el.style.animationDuration = (Math.random() * 2 + 3) + 's';
+            el.style.fontSize = (Math.random() * 1.5 + 1) + 'rem';
+            
+            document.getElementById('meowContainer').appendChild(el);
+            setTimeout(() => el.remove(), 4000);
+        }
+
+        setInterval(createMeow, 500);
+
+        // Горизонтальний скрол мишкою
         window.addEventListener('wheel', (evt) => {
             evt.preventDefault();
             window.scrollBy({
-                left: evt.deltaY,
+                left: evt.deltaY * 2,
                 behavior: 'smooth'
             });
         }, { passive: false });
