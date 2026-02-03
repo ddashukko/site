@@ -880,7 +880,7 @@ window.lessonsData = [
     title: "Дроби повноцінно",
     grade: 6,
     topic: "Математика",
-    link: "math_general/6/sofiika7/math_drobi.html",
+    link: "math_general/sofiika7/math_drobi.html",
     subject_code: "math_general",
     category: "lesson",
     author: "Соня",
