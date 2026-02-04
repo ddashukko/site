@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Інтерактивний урок: Світ Дробів</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; height: 100vh; overflow: hidden; }
+        .split-container { display: flex; height: 100vh; }
+        .content-area { width: 55%; overflow-y: auto; padding: 2rem; background: white; box-shadow: 2px 0 10px rgba(0,0,0,0.1); }
+        .whiteboard-area { width: 45%; background: #2c3e50; position: relative; display: flex; flex-direction: column; }
+        .canvas-container { flex-grow: 1; position: relative; cursor: crosshair; }
+        #whiteboard { background: white; width: 100%; height: 100%; }
+        .theory-block { border-left: 4px solid #3498db; background: #ebf5fb; padding: 1rem; margin-bottom: 1.5rem; border-radius: 0 8px 8px 0; }
+        .task-card { background: #fff; border: 1px solid #e1e8ed; padding: 1rem; border-radius: 12px; margin-bottom: 1rem; transition: transform 0.2s; }
+        .task-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .correct { border: 2px solid #27ae60 !important; background-color: #eafaf1; }
+        .wrong { border: 2px solid #e74c3c !important; background-color: #fdedec; }
+        .hidden { display: none; }
+        .btn-hint { color: #7f8c8d; font-size: 0.85rem; text-decoration: underline; cursor: pointer; }
+        .btn-hint:hover { color: #34495e; }
+        .tools-panel { padding: 10px; background: #34495e; display: flex; gap: 10px; justify-content: center; }
+        input[type="text"] { border: 1px solid #ccc; border-radius: 4px; padding: 4px 8px; width: 80px; text-align: center; }
+    </style>
+</head>
+<body>
+
+<div class="split-container">
+    <div class="content-area" id="content">
+        <header class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-800">Математична подорож: Дроби</h1>
+            <p class="text-gray-600">Клас: 5-6 | Час: 1 година | Рівень: Середній</p>
+            <div class="mt-4 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+                💡 <strong>Порада:</strong> Використовуй чернетку праворуч для розрахунків!
+            </div>
+        </header>
+
+        <section class="mb-12">
+            <h2 class="text-2xl font-semibold mb-4 text-blue-700">1. Що таке дріб?</h2>
+            <div class="theory-block">
+                Уяви піцу. Дріб — це частина цієї піци. 
+                Верхнє число (\(чисельник\)) показує, скільки шматків ми взяли.
+                Нижнє число (\(знаменник\)) показує, на скільки рівних частин розрізали цілу піцу.
+                <div class="mt-2 flex justify-center">
+                    <svg width="100" height="100" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="45" fill="#ddd" stroke="#333" />
+                        <path d="M50,50 L50,5 A45,45 0 0,1 95,50 Z" fill="#f1c40f" stroke="#333" />
+                    </svg>
+                </div>
+            </div>
+
+            <div id="tasks-basic">
+                <script>
+                    const basicTasks = [
+                        { q: "Запишіть дріб: три восьмих", a: "3/8", h: "Чисельник зверху, знаменник знизу", s: "Три - чисельник, вісім - знаменник: 3/8" },
+                        { q: "Скільки частин у дробі \\(\\frac{5}{12}\\)?", a: "5", h: "Дивись на верхнє число", s: "Чисельник 5 вказує на кількість взятих частин." },
+                        { q: "Який знаменник у дробі \\(\\frac{7}{10}\\)?", a: "10", h: "Дивись на нижнє число", s: "Знаменник знаходиться знизу лінії дробу." },
+                        { q: "Як називається дріб, де чисельник менший за знаменник? (слово)", a: "правильний", h: "Наприклад 1/2, 2/3...", s: "Це правильний дріб." },
+                        { q: "Запишіть число 'одна ціла дві п'ятих' як неправильний дріб", a: "7/5", h: "(1 * 5 + 2) / 5", s: "1*5 + 2 = 7. Отже 7/5" }
+                    ];
+                </script>
+            </div>
+        </section>
+
+        <section class="mb-12">
+            <h2 class="text-2xl font-semibold mb-4 text-blue-700">2. Перетворення в десяткові дроби</h2>
+            <div class="theory-block">
+                Десятковий дріб — це "секретний запис". Якщо знаменник 10, 100 або 1000, ми просто пишемо кому.
+                Наприклад: \(\frac{3}{10} = 0,3\); \(\frac{7}{100} = 0,07\).
+                Якщо знаменник інший — треба поділити чисельник на знаменник "у стовпчик".
+            </div>
+            <div id="tasks-decimal">
+                </div>
+        </section>
+
+        <section class="mb-12">
+            <h2 class="text-2xl font-semibold mb-4 text-blue-700">3. Додавання та віднімання</h2>
+            <div class="theory-block">
+                <strong>Правило 1:</strong> Якщо знаменники однакові, просто додаємо чисельники.
+                <strong>Правило 2:</strong> Якщо різні — шукаємо спільний знаменник (НСК)!
+            </div>
+            <div id="tasks-add-sub">
+                </div>
+        </section>
+
+        <section class="mb-12">
+            <h2 class="text-2xl font-semibold mb-4 text-blue-700">4. Множення та ділення</h2>
+            <div class="theory-block">
+                Множити найпростіше: чисельник на чисельник, знаменник на знаменник.
+                При діленні: перший дріб залишаємо, ставимо множення і <strong>перевертаємо</strong> другий дріб!
+            </div>
+            <div id="tasks-mul-div">
+                </div>
+        </section>
+
+        <section id="final-test-section" class="mt-12 p-6 bg-purple-50 rounded-xl border-2 border-purple-200">
+            <h2 class="text-2xl font-bold mb-4 text-purple-800">🏁 Підсумковий тест</h2>
+            <div id="test-container"></div>
+            <button onclick="finishLesson()" id="finish-btn" class="mt-6 bg-purple-600 text-white px-8 py-3 rounded-full font-bold hover:bg-purple-700 transition">Завершити урок</button>
+        </section>
+
+        <div id="result-modal" class="hidden mt-6 p-6 bg-white border-4 border-green-500 rounded-2xl text-center">
+            <h3 class="text-3xl font-bold text-green-600 mb-2">Чудова робота! 🌟</h3>
+            <p id="final-score" class="text-xl mb-4"></p>
+            <p id="motivation" class="italic text-gray-600"></p>
+        </div>
+    </div>
+
+    <div class="whiteboard-area">
+        <div class="tools-panel">
+            <button onclick="setTool('pencil')" class="bg-blue-500 text-white px-3 py-1 rounded">✏️ Олівець</button>
+            <button onclick="setTool('eraser')" class="bg-gray-500 text-white px-3 py-1 rounded">🧼 Гумка</button>
+            <button onclick="drawGrid()" class="bg-green-600 text-white px-3 py-1 rounded">📏 Сітка</button>
+            <button onclick="drawCircle()" class="bg-yellow-600 text-white px-3 py-1 rounded">⭕ Коло</button>
+            <button onclick="clearCanvas()" class="bg-red-500 text-white px-3 py-1 rounded">🗑️ Очистити</button>
+        </div>
+        <div class="canvas-container">
+            <canvas id="whiteboard"></canvas>
+        </div>
+        <div class="p-2 text-white text-xs text-center opacity-50">Чернетка для твоїх думок</div>
+    </div>
+</div>
+
+<script>
+    // --- ДАНІ ЗАВДАНЬ ---
+    const tasksData = [
+        // Блок 1 вже є в масиві basicTasks (5)
+        { q: "Запишіть \\(\\frac{15}{10}\\) десятковим дробом", a: "1.5", h: "Одна цифра після коми", s: "15 поділити на 10 = 1,5", group: "decimal" },
+        { q: "Запишіть \\(\\frac{4}{100}\\) десятковим дробом", a: "0.04", h: "Дві цифри після коми", s: "0 цілих та 04", group: "decimal" },
+        { q: "Перетворіть \\(\\frac{1}{2}\\) у десятковий", a: "0.5", h: "Помнож і чисельник, і знаменник на 5", s: "5/10 = 0,5", group: "decimal" },
+        { q: "Скільки буде 0,25 у вигляді звичайного дробу? (через /)", a: "1/4", h: "Це 25/100, скороти на 25", s: "25/100 = 1/4", group: "decimal" },
+        { q: "Запишіть \\(\\frac{2}{5}\\) як десятковий", a: "0.4", h: "Зроби знаменник 10", s: "2*2 / 5*2 = 4/10 = 0,4", group: "decimal" },
+        
+        { q: "\\(\\frac{1}{5} + \\frac{2}{5} = ?\\)", a: "3/5", h: "Додай тільки верхні числа", s: "(1+2)/5 = 3/5", group: "add" },
+        { q: "\\(\\frac{7}{9} - \\frac{4}{9} = ?\\)", a: "3/9", h: "Відніми чисельники", s: "3/9 (можна скоротити до 1/3)", group: "add" },
+        { q: "\\(\\frac{1}{2} + \\frac{1}{4} = ?\\)", a: "3/4", h: "Спільний знаменник 4", s: "2/4 + 1/4 = 3/4", group: "add" },
+        { q: "\\(\\frac{1}{3} + \\frac{1}{6} = ?\\)", a: "3/6", h: "Спільний знаменник 6", s: "2/6 + 1/6 = 3/6 або 1/2", group: "add" },
+        { q: "\\(1 - \\frac{1}{3} = ?\\)", a: "2/3", h: "Уяви 1 як 3/3", s: "3/3 - 1/3 = 2/3", group: "add" },
+        { q: "\\(\\frac{5}{12} + \\frac{1}{12} = ?\\) (скоротіть)", a: "1/2", h: "6/12 - на що ділиться?", s: "6/12 = 1/2", group: "add" },
+        { q: "\\(2 + \\frac{1}{2} = ?\\) (неправильним дробом)", a: "5/2", h: "2 це 4/2", s: "4/2 + 1/2 = 5/2", group: "add" },
+        { q: "\\(\\frac{10}{11} - \\frac{1}{11} = ?\\)", a: "9/11", h: "Просте віднімання", s: "9/11", group: "add" },
+        { q: "\\(\\frac{1}{5} + \\frac{1}{2} = ?\\)", a: "7/10", h: "Спільний знаменник 10", s: "2/10 + 5/10 = 7/10", group: "add" },
+        { q: "\\(\\frac{3}{4} - \\frac{1}{2} = ?\\)", a: "1/4", h: "1/2 це 2/4", s: "3/4 - 2/4 = 1/4", group: "add" },
+
+        { q: "\\(\\frac{1}{2} \\cdot \\frac{1}{3} = ?\\)", a: "1/6", h: "Верх на верх, низ на низ", s: "1*1 / 2*3 = 1/6", group: "mul" },
+        { q: "\\(\\frac{2}{5} \\cdot \\frac{3}{4} = ?\\)", a: "6/20", h: "Перемнож числа", s: "6/20 або 3/10", group: "mul" },
+        { q: "\\(5 \\cdot \\frac{1}{5} = ?\\)", a: "1", h: "5 цілих це 5/1", s: "5/5 = 1", group: "mul" },
+        { q: "\\(\\frac{2}{3} \\cdot \\frac{3}{2} = ?\\)", a: "1", h: "Все скорочується", s: "6/6 = 1", group: "mul" },
+        { q: "\\(\\frac{1}{4} \\cdot 4 = ?\\)", a: "1", h: "Чверть від чотирьох", s: "4/4 = 1", group: "mul" },
+        { q: "\\(\\frac{1}{2} : \\frac{1}{2} = ?\\)", a: "1", h: "Число поділити на саме себе", s: "1/2 * 2/1 = 1", group: "mul" },
+        { q: "\\(\\frac{1}{2} : 2 = ?\\)", a: "1/4", h: "Переверни 2/1 у 1/2", s: "1/2 * 1/2 = 1/4", group: "mul" },
+        { q: "\\(\\frac{3}{5} : \\frac{1}{5} = ?\\)", a: "3", h: "Помнож на 5/1", s: "3/5 * 5/1 = 3", group: "mul" },
+        { q: "\\(10 : \\frac{1}{2} = ?\\)", a: "20", h: "Скільки половинок у 10?", s: "10 * 2/1 = 20", group: "mul" },
+        { q: "\\(\\frac{4}{9} : \\frac{2}{3} = ?\\)", a: "12/18", h: "4/9 * 3/2", s: "12/18 або 2/3", group: "mul" }
+    ];
+
+    const testTasks = [
+        { q: "Що більше: \\(\\frac{1}{2}\\) чи 0,6?", a: "0.6", h: "1/2 = 0,5" },
+        { q: "Результат \\(\\frac{1}{3} + \\frac{1}{3} + \\frac{1}{3}\\)", a: "1", h: "3/3" },
+        { q: "Знайдіть \\(\\frac{1}{2}\\) від 100", a: "50", h: "100 поділити на 2" },
+        { q: "Обчисліть: \\(0,5 \\cdot 4\\)", a: "2", h: "Пів копійки на чотири" },
+        { q: "Скільки буде \\(\\frac{2}{3}\\) від 9?", a: "6", h: "(9/3)*2" }
+    ];
+
+    let correctAnswers = 0;
+    let totalTasks = basicTasks.length + tasksData.length + testTasks.length;
+
+    function renderTasks() {
+        const createCard = (task, index, containerId) => {
+            const div = document.createElement('div');
+            div.className = 'task-card';
+            div.innerHTML = `
+                <p class="font-medium mb-2">${task.q}</p>
+                <div class="flex items-center gap-2">
+                    <input type="text" id="ans-${containerId}-${index}" placeholder="...">
+                    <button onclick="checkTask('${task.a}', 'ans-${containerId}-${index}', this)" class="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700">Перевірити</button>
+                </div>
+                <div class="mt-2">
+                    <span class="btn-hint" onclick="toggleVisibility('hint-${containerId}-${index}')">Підказка</span> | 
+                    <span class="btn-hint" onclick="toggleVisibility('sol-${containerId}-${index}')">Розв'язання</span>
+                </div>
+                <p id="hint-${containerId}-${index}" class="hidden text-sm text-gray-500 italic mt-1">💡 ${task.h}</p>
+                <p id="sol-${containerId}-${index}" class="hidden text-sm text-blue-600 font-bold mt-1">✅ ${task.s || 'Дивись підказку'}</p>
+            `;
+            document.getElementById(containerId).appendChild(div);
+        };
+
+        basicTasks.forEach((t, i) => createCard(t, i, 'tasks-basic'));
+        tasksData.filter(t => t.group === 'decimal').forEach((t, i) => createCard(t, i, 'tasks-decimal'));
+        tasksData.filter(t => t.group === 'add').forEach((t, i) => createCard(t, i, 'tasks-add-sub'));
+        tasksData.filter(t => t.group === 'mul').forEach((t, i) => createCard(t, i, 'tasks-mul-div'));
+
+        const testCont = document.getElementById('test-container');
+        testTasks.forEach((t, i) => {
+            const div = document.createElement('div');
+            div.className = 'mb-4 p-3 bg-white rounded shadow-sm';
+            div.innerHTML = `<p class="mb-1">${i+1}. ${t.q}</p><input type="text" id="test-ans-${i}" class="w-full border p-2 rounded">`;
+            testCont.appendChild(div);
+        });
+    }
+
+    function toggleVisibility(id) {
+        const el = document.getElementById(id);
+        el.classList.toggle('hidden');
+    }
+
+    function checkTask(correct, inputId, btn) {
+        const input = document.getElementById(inputId);
+        const val = input.value.trim().replace(',', '.');
+        const card = input.parentElement.parentElement;
+        
+        if (val === correct || (val.includes('/') && eval(val) === eval(correct))) {
+            card.classList.add('correct');
+            card.classList.remove('wrong');
+            btn.disabled = true;
+            btn.innerText = "Вірно!";
+            correctAnswers++;
+        } else {
+            card.classList.add('wrong');
+            setTimeout(() => card.classList.remove('wrong'), 500);
+        }
+    }
+
+    function finishLesson() {
+        let testScore = 0;
+        testTasks.forEach((t, i) => {
+            const val = document.getElementById(`test-ans-${i}`).value.trim().replace(',', '.');
+            if (val === t.a) testScore++;
+        });
+
+        const totalScore = correctAnswers + testScore;
+        const maxScore = totalTasks;
+        const percent = Math.round((totalScore / maxScore) * 100);
+
+        document.getElementById('final-test-section').classList.add('hidden');
+        const result = document.getElementById('result-modal');
+        result.classList.remove('hidden');
+        
+        document.getElementById('final-score').innerText = `Твій результат: ${percent}% (${totalScore} з ${maxScore})`;
+        
+        let motivation = "";
+        if (percent > 80) motivation = "Ти — справжній магістр дробів! Твої знання міцні, як граніт!";
+        else if (percent > 50) motivation = "Гарний результат! Дроби тепер твої друзі, продовжуй у тому ж дусі!";
+        else motivation = "Початок покладено! Головне — не здаватися, ти обов'язково підкориш цю тему!";
+        
+        document.getElementById('motivation').innerText = motivation;
+        result.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // --- ЛОГІКА ДОШКИ (WHITEBOARD) ---
+    const canvas = document.getElementById('whiteboard');
+    const ctx = canvas.getContext('2d');
+    let drawing = false;
+    let tool = 'pencil';
+
+    function resizeCanvas() {
+        canvas.width = canvas.parentElement.clientWidth;
+        canvas.height = canvas.parentElement.clientHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    canvas.addEventListener('mousedown', () => drawing = true);
+    canvas.addEventListener('mouseup', () => { drawing = false; ctx.beginPath(); });
+    canvas.addEventListener('mousemove', draw);
+
+    function setTool(t) { tool = t; }
+
+    function draw(e) {
+        if (!drawing) return;
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        ctx.lineWidth = tool === 'eraser' ? 20 : 3;
+        ctx.lineCap = 'round';
+        ctx.strokeStyle = tool === 'eraser' ? 'white' : '#2c3e50';
+
+        ctx.lineTo(x, y);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+    }
+
+    function clearCanvas() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function drawGrid() {
+        ctx.strokeStyle = '#e0e0e0';
+        ctx.lineWidth = 1;
+        for (let x = 0; x <= canvas.width; x += 30) {
+            ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height);
+        }
+        for (let y = 0; y <= canvas.height; y += 30) {
+            ctx.moveTo(0, y); ctx.lineTo(canvas.width, y);
+        }
+        ctx.stroke();
+    }
+
+    function drawCircle() {
+        ctx.strokeStyle = '#2c3e50';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(canvas.width/2, canvas.height/2, 50, 0, Math.PI * 2);
+        ctx.stroke();
+    }
+
+    // Ініціалізація
+    renderTasks();
+</script>
+
+</body>
+</html>

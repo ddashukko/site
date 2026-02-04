@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Координатна Площина - 6 Клас</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        /* Base Setup */
+        body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+        
+        /* Smooth Entry Animation */
+        .fade-in { animation: fadeIn 0.5s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Input Animations */
+        .shake { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
+        @keyframes shake { 
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+
+        .pop { animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+        /* Hide number input arrows */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+    </style>
+</head>
+<body class="bg-slate-50 h-screen flex flex-col text-slate-800 overflow-hidden">
+
+    <header class="bg-white border-b border-gray-200 px-6 py-3 flex justify-between items-center shadow-sm z-20">
+        <div class="flex items-center gap-3">
+            <div class="bg-indigo-600 text-white rounded-lg w-10 h-10 flex items-center justify-center font-bold text-xl">X</div>
+            <div>
+                <h1 class="font-bold text-lg leading-tight">Координатна площина</h1>
+                <p class="text-xs text-gray-500">6 клас • Інтерактивний тренажер</p>
+            </div>
+        </div>
+        
+        <div class="flex items-center gap-4">
+            <div class="hidden sm:block w-32 h-2.5 bg-gray-200 rounded-full overflow-hidden">
+                <div id="progress-bar" class="h-full bg-green-500 transition-all duration-500" style="width: 0%"></div>
+            </div>
+            <div class="bg-slate-100 border border-slate-200 px-3 py-1 rounded-md font-mono font-bold text-indigo-700">
+                <span id="score-val">0</span> / 30
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 relative overflow-y-auto p-4 flex flex-col items-center justify-center">
+        
+        <div id="view-theory" class="fade-in max-w-3xl w-full bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+            <div class="h-2 bg-indigo-500 w-full"></div>
+            <div class="p-8 md:p-12">
+                <h2 class="text-3xl font-extrabold text-gray-900 mb-6">Як знайти адресу точки? 📍</h2>
+                
+                <div class="flex flex-col md:flex-row gap-8">
+                    <div class="flex-1 space-y-5 text-lg text-gray-600">
+                        <p>Кожна точка на площині має дві координати: <strong>$(x; y)$</strong>.</p>
+                        
+                        <div class="grid grid-cols-1 gap-3">
+                            <div class="flex items-center p-3 bg-blue-50 rounded-lg border border-blue-100">
+                                <div class="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold mr-3">1</div>
+                                <div>
+                                    <span class="block font-bold text-blue-800">Вісь $X$ (Горизонталь)</span>
+                                    <span class="text-sm">Рухайся вправо (+) або вліво (-)</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center p-3 bg-purple-50 rounded-lg border border-purple-100">
+                                <div class="w-8 h-8 bg-purple-500 text-white rounded-full flex items-center justify-center font-bold mr-3">2</div>
+                                <div>
+                                    <span class="block font-bold text-purple-800">Вісь $Y$ (Вертикаль)</span>
+                                    <span class="text-sm">Рухайся вгору (+) або вниз (-)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button onclick="startGame()" class="mt-6 w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-xl shadow-lg transition transform active:scale-95 text-lg">
+                            Почати тренування
+                        </button>
+                    </div>
+
+                    <div class="w-full md:w-1/3 flex justify-center items-center">
+                        <svg viewBox="0 0 200 200" class="w-48 h-48 opacity-90">
+                            <defs>
+                                <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+                                    <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e2e8f0" stroke-width="1"/>
+                                </pattern>
+                            </defs>
+                            <rect width="100%" height="100%" fill="url(#grid)" />
+                            <line x1="100" y1="0" x2="100" y2="200" stroke="#475569" stroke-width="2"/>
+                            <line x1="0" y1="100" x2="200" y2="100" stroke="#475569" stroke-width="2"/>
+                            <path d="M 100 100 L 140 100" stroke="#3b82f6" stroke-width="2" stroke-dasharray="4"/>
+                            <path d="M 140 100 L 140 60" stroke="#a855f7" stroke-width="2" stroke-dasharray="4"/>
+                            <circle cx="140" cy="60" r="5" fill="#ef4444" />
+                            <text x="145" y="55" font-family="monospace" font-size="12" fill="#ef4444">(2; 2)</text>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="view-game" class="hidden w-full max-w-5xl h-full flex-col md:flex-row gap-6 p-2">
+            
+            <div class="flex-1 bg-white rounded-2xl shadow-lg border border-gray-200 relative overflow-hidden flex justify-center items-center min-h-[300px]">
+                <canvas id="gameCanvas" class="block w-full h-full cursor-crosshair"></canvas>
+                
+                <div id="feedback-overlay" class="absolute pointer-events-none opacity-0 scale-50 transition-all duration-300 ease-out z-10 bg-white/90 backdrop-blur-sm px-6 py-3 rounded-2xl shadow-2xl border-2">
+                    <span id="feedback-text" class="text-4xl font-black tracking-wider">ВІРНО!</span>
+                </div>
+            </div>
+
+            <div class="w-full md:w-80 flex flex-col gap-4 shrink-0">
+                
+                <div id="controls-box" class="bg-white p-6 rounded-2xl shadow-lg border border-gray-200">
+                    <h3 class="text-gray-500 font-bold text-xs uppercase tracking-widest mb-4 text-center">Визнач координати точки M</h3>
+                    
+                    <div class="flex items-center justify-center gap-2 mb-6">
+                        <span class="text-2xl font-serif italic text-slate-400">M</span>
+                        <span class="text-2xl text-slate-300">(</span>
+                        
+                        <div class="relative w-20">
+                            <input type="number" id="inpX" placeholder="x" class="w-full p-2 text-center text-xl font-bold bg-blue-50 border-2 border-blue-100 rounded-lg focus:outline-none focus:border-blue-500 transition-colors placeholder-blue-200">
+                            <div class="absolute -bottom-4 left-0 w-full text-center text-[10px] text-blue-400 font-bold">ліво/право</div>
+                        </div>
+                        
+                        <span class="text-2xl text-slate-300 font-bold">;</span>
+                        
+                        <div class="relative w-20">
+                            <input type="number" id="inpY" placeholder="y" class="w-full p-2 text-center text-xl font-bold bg-purple-50 border-2 border-purple-100 rounded-lg focus:outline-none focus:border-purple-500 transition-colors placeholder-purple-200">
+                            <div class="absolute -bottom-4 left-0 w-full text-center text-[10px] text-purple-400 font-bold">вниз/вгору</div>
+                        </div>
+                        
+                        <span class="text-2xl text-slate-300">)</span>
+                    </div>
+
+                    <button onclick="checkAnswer()" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3.5 rounded-xl shadow-md transition active:scale-95 text-lg">
+                        Перевірити
+                    </button>
+                </div>
+
+                <div class="bg-white/80 p-4 rounded-2xl border border-gray-200 text-center">
+                    <button onclick="toggleHint()" class="text-sm font-medium text-indigo-500 hover:text-indigo-700 underline decoration-dotted underline-offset-2">
+                        Потрібна підказка?
+                    </button>
+                    <div id="hint-text" class="hidden mt-2 text-sm text-left bg-yellow-50 text-yellow-800 p-3 rounded-lg border border-yellow-100">
+                        Починай рух від центру (0).<br>
+                        1. Спочатку по лінії $X$ (горизонтально).<br>
+                        2. Потім по лінії $Y$ (вертикально).
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div id="view-result" class="hidden text-center fade-in max-w-md w-full bg-white p-8 rounded-2xl shadow-2xl border border-gray-100">
+            <div class="text-6xl mb-4">🎉</div>
+            <h2 class="text-3xl font-bold text-slate-800 mb-2">Урок завершено!</h2>
+            <p class="text-slate-500 mb-8">Ти успішно пройшов тренажер.</p>
+            
+            <div class="bg-slate-50 p-6 rounded-xl border border-slate-100 mb-8">
+                <div class="text-xs text-slate-400 font-bold uppercase tracking-wider">Результат</div>
+                <div class="text-5xl font-black text-indigo-600 mt-2" id="final-score">30</div>
+                <div class="text-sm text-slate-400 mt-1">правильних відповідей</div>
+            </div>
+
+            <p id="motivational-quote" class="text-lg text-green-600 font-medium italic mb-8">
+                "Математика - це ключ до розуміння всесвіту!"
+            </p>
+
+            <button onclick="location.reload()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-3 rounded-xl transition">
+                Почати заново
+            </button>
+        </div>
+
+    </main>
+
+    <script>
+        // State
+        const GOAL = 30;
+        let score = 0;
+        let targetX = 0, targetY = 0;
+        let isGameRunning = false;
+        let feedbackTimer = null; // Timer variable to fix the overlapping issue
+
+        // DOM Elements
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const inpX = document.getElementById('inpX');
+        const inpY = document.getElementById('inpY');
+        
+        // --- Navigation ---
+        function startGame() {
+            document.getElementById('view-theory').style.display = 'none';
+            const gameView = document.getElementById('view-game');
+            gameView.classList.remove('hidden');
+            gameView.style.display = 'flex'; // Force flex layout
+            
+            isGameRunning = true;
+            setTimeout(() => {
+                resizeCanvas();
+                newRound();
+            }, 50);
+        }
+
+        // --- Game Logic ---
+        function resizeCanvas() {
+            if(!isGameRunning) return;
+            const parent = canvas.parentElement;
+            const dpr = window.devicePixelRatio || 1;
+            
+            canvas.width = parent.clientWidth * dpr;
+            canvas.height = parent.clientHeight * dpr;
+            
+            ctx.scale(dpr, dpr);
+            
+            // Store logical dimensions
+            canvas.logicalW = parent.clientWidth;
+            canvas.logicalH = parent.clientHeight;
+            
+            drawSystem();
+        }
+        window.addEventListener('resize', resizeCanvas);
+
+        function newRound() {
+            // Random coordinates (-8 to 8)
+            targetX = Math.floor(Math.random() * 17) - 8;
+            targetY = Math.floor(Math.random() * 17) - 8;
+
+            inpX.value = '';
+            inpY.value = '';
+            inpX.focus();
+            
+            drawSystem();
+        }
+
+        function drawSystem() {
+            if(!canvas.logicalW) return;
+            const w = canvas.logicalW;
+            const h = canvas.logicalH;
+            const cx = w / 2;
+            const cy = h / 2;
+            const scale = Math.min(w, h) / 20; // Size of one unit
+
+            ctx.clearRect(0, 0, w, h);
+
+            // 1. Grid
+            ctx.strokeStyle = '#e2e8f0';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            for(let i = -10; i <= 10; i++) {
+                // Vertical
+                ctx.moveTo(cx + i * scale, 0); ctx.lineTo(cx + i * scale, h);
+                // Horizontal
+                ctx.moveTo(0, cy + i * scale); ctx.lineTo(w, cy + i * scale);
+            }
+            ctx.stroke();
+
+            // 2. Axes
+            ctx.strokeStyle = '#475569';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(cx, 0); ctx.lineTo(cx, h); // Y
+            ctx.moveTo(0, cy); ctx.lineTo(w, cy); // X
+            ctx.stroke();
+
+            // 3. Ticks & Numbers
+            ctx.fillStyle = '#64748b';
+            ctx.font = '12px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+
+            for(let i = -10; i <= 10; i++) {
+                if(i === 0) continue;
+                // Only show even numbers to avoid clutter
+                if(i % 2 === 0) {
+                    // X Axis
+                    ctx.fillText(i, cx + i * scale, cy + 14);
+                    ctx.beginPath(); ctx.moveTo(cx + i*scale, cy-3); ctx.lineTo(cx + i*scale, cy+3); ctx.stroke();
+                    
+                    // Y Axis
+                    ctx.fillText(i, cx - 14, cy - i * scale);
+                    ctx.beginPath(); ctx.moveTo(cx-3, cy - i*scale); ctx.lineTo(cx+3, cy - i*scale); ctx.stroke();
+                }
+            }
+            
+            // Labels
+            ctx.fillStyle = '#1e293b';
+            ctx.font = 'bold 14px sans-serif';
+            ctx.fillText("X", w - 15, cy - 15);
+            ctx.fillText("Y", cx + 15, 15);
+            ctx.fillText("0", cx - 10, cy + 12);
+
+            // 4. Target Point
+            const px = cx + targetX * scale;
+            const py = cy - targetY * scale;
+
+            // Dashed lines
+            ctx.setLineDash([5, 5]);
+            ctx.strokeStyle = '#ef4444';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.moveTo(px, cy); ctx.lineTo(px, py); ctx.lineTo(cx, py);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Point
+            ctx.beginPath();
+            ctx.arc(px, py, 6, 0, Math.PI * 2);
+            ctx.fillStyle = '#ef4444';
+            ctx.fill();
+            ctx.strokeStyle = 'white';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Label M
+            ctx.fillStyle = '#ef4444';
+            ctx.fillText("M", px + 15, py - 15);
+        }
+
+        // --- Interaction ---
+        function checkAnswer() {
+            const ux = parseInt(inpX.value);
+            const uy = parseInt(inpY.value);
+            const controls = document.getElementById('controls-box');
+
+            if (isNaN(ux) || isNaN(uy)) {
+                controls.classList.add('shake');
+                setTimeout(() => controls.classList.remove('shake'), 400);
+                return;
+            }
+
+            if (ux === targetX && uy === targetY) {
+                // Correct
+                score++;
+                updateScore();
+                showFeedback(true);
+                controls.classList.add('pop');
+                setTimeout(() => controls.classList.remove('pop'), 300);
+                
+                if (score >= GOAL) {
+                    setTimeout(finishGame, 1000);
+                } else {
+                    setTimeout(newRound, 800);
+                }
+            } else {
+                // Wrong
+                showFeedback(false);
+                controls.classList.add('shake');
+                setTimeout(() => controls.classList.remove('shake'), 400);
+            }
+        }
+
+        function showFeedback(isCorrect) {
+            const el = document.getElementById('feedback-overlay');
+            const txt = document.getElementById('feedback-text');
+            
+            // 1. Reset any existing timer
+            if (feedbackTimer) clearTimeout(feedbackTimer);
+
+            // 2. Set Content & Style
+            txt.innerText = isCorrect ? "СУПЕР! 😎" : "ДУМАЙ! 🤔";
+            el.className = `absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
+                            px-6 py-3 rounded-2xl shadow-2xl border-2 z-10 transition-all duration-300 ease-out
+                            ${isCorrect ? 'bg-green-50 border-green-500 text-green-600' : 'bg-red-50 border-red-500 text-red-600'}
+                            opacity-100 scale-100`;
+
+            // 3. Set timer to hide
+            feedbackTimer = setTimeout(() => {
+                el.classList.remove('opacity-100', 'scale-100');
+                el.classList.add('opacity-0', 'scale-50');
+            }, 1000);
+        }
+
+        function updateScore() {
+            document.getElementById('score-val').innerText = score;
+            const pct = (score / GOAL) * 100;
+            document.getElementById('progress-bar').style.width = pct + '%';
+        }
+
+        function toggleHint() {
+            document.getElementById('hint-text').classList.toggle('hidden');
+        }
+
+        function finishGame() {
+            isGameRunning = false;
+            document.getElementById('view-game').style.display = 'none';
+            document.getElementById('view-result').style.display = 'block';
+            document.getElementById('final-score').innerText = score;
+
+            const quotes = [
+                "Твій мозок — це суперкомп'ютер!",
+                "Чудова робота! Координати підкорено!",
+                "Математика любить тебе!"
+            ];
+            document.getElementById('motivational-quote').innerText = quotes[Math.floor(Math.random() * quotes.length)];
+        }
+
+        // Enter key support
+        inpX.addEventListener('keypress', (e) => { if(e.key === 'Enter') inpY.focus(); });
+        inpY.addEventListener('keypress', (e) => { if(e.key === 'Enter') checkAnswer(); });
+
+    </script>
+</body>
+</html>
