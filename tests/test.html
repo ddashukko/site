@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Інтерактивний тест: Геометричні перетворення</title>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:wght@700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
+    />
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"
+    ></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    ></script>
+
+    <style>
+      :root {
+        --primary: #6c5ce7;
+        --success: #00b894;
+        --error: #ff7675;
+        --bg: #f8f9fa;
+        --text: #2d3436;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
+        margin: 0;
+        padding: 40px 20px;
+        display: flex;
+        justify-content: center;
+      }
+
+      .container {
+        background: white;
+        max-width: 800px;
+        width: 100%;
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+      }
+
+      h1 {
+        font-family: "Playfair Display", serif;
+        text-align: center;
+        color: var(--primary);
+        margin-bottom: 30px;
+      }
+
+      .question-card {
+        margin-bottom: 25px;
+        padding: 20px;
+        border: 1px solid #eee;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+      }
+
+      .question-title {
+        font-weight: 600;
+        font-size: 1.1rem;
+        margin-bottom: 15px;
+        display: flex;
+        gap: 10px;
+      }
+
+      .q-number {
+        color: var(--primary);
+        min-width: 25px;
+      }
+
+      .options-group {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .option-label {
+        display: flex;
+        align-items: center;
+        padding: 12px 15px;
+        border: 2px solid #f1f2f6;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .option-label:hover {
+        border-color: var(--primary);
+        background-color: #f8f9fe;
+      }
+
+      input[type="radio"] {
+        margin-right: 12px;
+        accent-color: var(--primary);
+        transform: scale(1.2);
+      }
+
+      /* Стилі результатів */
+      .option-label.correct {
+        background-color: rgba(0, 184, 148, 0.15);
+        border-color: var(--success);
+        color: #00856b;
+        font-weight: 600;
+      }
+
+      .option-label.wrong {
+        background-color: rgba(255, 118, 117, 0.15);
+        border-color: var(--error);
+        color: #d63031;
+        opacity: 0.7;
+      }
+
+      .btn-check {
+        display: block;
+        width: 100%;
+        padding: 15px;
+        background: var(--primary);
+        color: white;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        margin-top: 30px;
+        transition:
+          transform 0.2s,
+          background 0.2s;
+      }
+
+      .btn-check:hover {
+        background: #5649c0;
+        transform: translateY(-2px);
+      }
+
+      #result-box {
+        display: none;
+        margin-top: 30px;
+        padding: 20px;
+        text-align: center;
+        border-radius: 12px;
+        background: #dfe6e9;
+      }
+
+      .score-display {
+        font-family: "Playfair Display", serif;
+        font-size: 2.5rem;
+        color: var(--primary);
+        margin: 10px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Тест: Геометричні перетворення</h1>
+      <div id="quiz-container"></div>
+
+      <button class="btn-check" onclick="checkAnswers()">
+        Перевірити результат
+      </button>
+
+      <div id="result-box">
+        <h2>Ваш результат:</h2>
+        <div class="score-display" id="score">0 / 10</div>
+        <p id="feedback-text"></p>
+        <button
+          class="btn-check"
+          style="background: #2d3436; margin-top: 10px"
+          onclick="location.reload()"
+        >
+          Спробувати ще раз
+        </button>
+      </div>
+    </div>
+
+    <script>
+      // База питань
+      const quizData = [
+        {
+          q: "Яка головна властивість переміщення (руху)?",
+          options: [
+            "Зберігаються кути, але змінюються відстані",
+            "Зберігаються відстані між точками",
+            "Фігура завжди збільшується в 2 рази",
+          ],
+          correct: 1, // Індекс правильної відповіді (0, 1, 2)
+        },
+        {
+          q: "У яку фігуру переходить прямокутний трикутник при переміщенні?",
+          options: [
+            "У рівносторонній трикутник",
+            "У рівний йому прямокутний трикутник",
+            "У прямокутник",
+          ],
+          correct: 1,
+        },
+        {
+          q: "Точки \\( A \\) і \\( A' \\) симетричні відносно точки \\( O \\). Чим є точка \\( O \\) для відрізка \\( AA' \\)?",
+          options: [
+            "Початком відрізка",
+            "Серединою відрізка",
+            "Довільною точкою на відрізку",
+          ],
+          correct: 1,
+        },
+        {
+          q: "Яка з цих фігур має центр симетрії?",
+          options: ["Трапеція (довільна)", "Промінь", "Коло"],
+          correct: 2,
+        },
+        {
+          q: "Знайдіть координати точки, симетричної \\( A(3; -5) \\) відносно початку координат \\( (0;0) \\).",
+          options: ["\\( (-3; 5) \\)", "\\( (-3; -5) \\)", "\\( (3; 5) \\)"],
+          correct: 0,
+        },
+        {
+          q: "Точки \\( A(-2; 4) \\) і \\( B(4; -8) \\) симетричні відносно точки \\( O \\). Знайдіть координати \\( O \\).",
+          options: ["\\( (2; -4) \\)", "\\( (1; -2) \\)", "\\( (6; -12) \\)"],
+          correct: 1,
+        },
+        {
+          q: "Точка \\( A(1; 2) \\) симетрична точці \\( A' \\) відносно центру \\( O(3; 1) \\). Знайдіть \\( A' \\).",
+          options: ["\\( (4; 3) \\)", "\\( (2; -1) \\)", "\\( (5; 0) \\)"],
+          correct: 2,
+        },
+        {
+          q: "Радіус кола дорівнює 7 см. Який радіус у симетричного кола?",
+          options: ["3.5 см", "7 см", "14 см"],
+          correct: 1,
+        },
+        {
+          q: "При симетрії відносно точки пряма \\( a \\) перейшла у пряму \\( b \\). Яке їх розташування?",
+          options: [
+            "Перпендикулярні",
+            "Паралельні або збігаються",
+            "Перетинаються під кутом 45°",
+          ],
+          correct: 1,
+        },
+        {
+          q: "Чи існує переміщення, яке переводить відрізок 4 см у відрізок 5 см?",
+          options: ["Так", "Ні", "Тільки якщо це поворот"],
+          correct: 1,
+        },
+      ];
+
+      const container = document.getElementById("quiz-container");
+
+      // Генерація HTML питань
+      quizData.forEach((item, index) => {
+        const card = document.createElement("div");
+        card.className = "question-card";
+        card.innerHTML = `
+            <div class="question-title">
+                <span class="q-number">${index + 1}.</span>
+                <span>${item.q}</span>
+            </div>
+            <div class="options-group">
+                ${item.options
+                  .map(
+                    (opt, i) => `
+                    <label class="option-label" id="label-${index}-${i}">
+                        <input type="radio" name="q${index}" value="${i}">
+                        <span>${opt}</span>
+                    </label>
+                `,
+                  )
+                  .join("")}
+            </div>
+        `;
+        container.appendChild(card);
+      });
+
+      // Рендеринг формул після додавання в DOM
+      document.addEventListener("DOMContentLoaded", function () {
+        renderMathInElement(document.body, {
+          delimiters: [{ left: "\\(", right: "\\)", display: false }],
+        });
+      });
+
+      function checkAnswers() {
+        let score = 0;
+        const labels = document.querySelectorAll(".option-label");
+
+        // Очищення попередніх стилів
+        labels.forEach((label) => {
+          label.classList.remove("correct", "wrong");
+        });
+
+        quizData.forEach((item, index) => {
+          const selected = document.querySelector(
+            `input[name="q${index}"]:checked`,
+          );
+          const correctLabel = document.getElementById(
+            `label-${index}-${item.correct}`,
+          );
+
+          // Підсвічуємо правильну відповідь зеленим завжди
+          correctLabel.classList.add("correct");
+
+          if (selected) {
+            const answer = parseInt(selected.value);
+            if (answer === item.correct) {
+              score++;
+            } else {
+              // Якщо вибрано неправильно - підсвічуємо червоним
+              document
+                .getElementById(`label-${index}-${answer}`)
+                .classList.add("wrong");
+            }
+          }
+        });
+
+        // Показ результату
+        const resultBox = document.getElementById("result-box");
+        const scoreText = document.getElementById("score");
+        const feedback = document.getElementById("feedback-text");
+
+        scoreText.innerText = `${score} / ${quizData.length}`;
+        resultBox.style.display = "block";
+
+        if (score === 10)
+          feedback.innerText = "🎉 Ідеально! Ти майстер геометрії!";
+        else if (score >= 7)
+          feedback.innerText =
+            "👍 Чудовий результат! Є кілька помилок, переглянь їх.";
+        else feedback.innerText = "🧐 Варто повторити теорію. Спробуй ще раз!";
+
+        // Прокрутка до результату
+        resultBox.scrollIntoView({ behavior: "smooth" });
+      }
+    </script>
+  </body>
+</html>
