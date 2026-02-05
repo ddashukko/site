@@ -766,6 +766,16 @@ window.lessonsData = [
     author: "Соня",
   },
   {
+    id: "math-6-modulseva",
+    title: "Всеволод модуль і тд",
+    grade: 6,
+    topic: "Математика",
+    link: "math_general/6/Вадим/math_6_vseva_module.html",
+    subject_code: "math_general",
+    category: "lesson",
+    author: "Соня",
+  },
+  {
     id: "math-6-vadim-01",
     title: "Вадим Урок1",
     grade: 6,
