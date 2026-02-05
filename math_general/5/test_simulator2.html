@@ -1,598 +1,689 @@
 <!doctype html>
-<html lang="de">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Mathe-Training: Teiler & Vielfache</title>
+​<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Große Klassenarbeit: Natürliche Zahlen & Teilbarkeit</title>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script
+id="MathJax-script"
+async
+src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+></script>
+<style>
+:root {
+--primary: #2c3e50;
+--secondary: #34495e;
+--accent: #2980b9;
+--bg: #f5f6fa;
+--paper: #ffffff;
+--success: #27ae60;
+--error: #c0392b;
+--warning: #f39c12;
+}
+body {
+font-family: "Segoe UI", "Roboto", "Helvetica Neue", Arial, sans-serif;
+background-color: var(--bg);
+color: var(--primary);
+margin: 0;
+padding: 20px;
+line-height: 1.5;
+}
+.container {
+max-width: 900px;
+margin: 0 auto;
+background: var(--paper);
+box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+border-radius: 8px;
+overflow: hidden;
+}
+header {
+background: var(--primary);
+color: white;
+padding: 2rem;
+text-align: center;
+border-bottom: 5px solid var(--accent);
+}
+h1 {
+margin: 0;
+font-size: 2rem;
+text-transform: uppercase;
+letter-spacing: 2px;
+}
+.meta-info {
+display: flex;
+justify-content: space-between;
+padding: 1.5rem 2rem;
+background: #ecf0f1;
+border-bottom: 1px solid #bdc3c7;
+font-weight: bold;
+flex-wrap: wrap;
+gap: 10px;
+}
+.section-header {
+background: #eaf2f8;
+padding: 1rem 2rem;
+border-left: 6px solid var(--accent);
+margin-top: 2rem;
+font-size: 1.2rem;
+font-weight: 700;
+color: var(--secondary);
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+.question-block {
+padding: 0 2rem;
+}
+.row {
+display: flex;
+align-items: center;
+padding: 0.8rem 0;
+border-bottom: 1px dashed #dcdde1;
+transition: background 0.2s;
+}
+.row:hover {
+background-color: #f8f9fa;
+}
+.q-num {
+font-weight: bold;
+color: var(--accent);
+width: 40px;
+flex-shrink: 0;
+}
+.q-text {
+flex-grow: 1;
+padding-right: 15px;
+}
+input[type="text"],
+input[type="number"],
+select {
+padding: 8px 12px;
+border: 2px solid #bdc3c7;
+border-radius: 4px;
+font-size: 1rem;
+transition: all 0.3s;
+width: 140px;
+}
+input:focus,
+select:focus {
+border-color: var(--accent);
+outline: none;
+box-shadow: 0 0 8px rgba(41, 128, 185, 0.2);
+}
+.input-short {
+width: 60px !important;
+text-align: center;
+}
+.input-long {
+width: 250px !important;
+}
+.correct-answer {
+border-color: var(--success) !important;
+background-color: #e8f8f5 !important;
+color: #0e6251;
+}
+.wrong-answer {
+border-color: var(--error) !important;
+background-color: #fdedec !important;
+color: #78281f;
+}
+.solution-display {
+display: none;
+font-size: 0.85rem;
+color: var(--error);
+margin-left: 10px;
+font-weight: bold;
+}
+.controls {
+padding: 3rem 2rem;
+text-align: center;
+background: #ecf0f1;
+margin-top: 2rem;
+}
+button {
+background-color: var(--primary);
+color: white;
+border: none;
+padding: 15px 40px;
+font-size: 1.2rem;
+font-weight: bold;
+border-radius: 6px;
+cursor: pointer;
+transition: transform 0.2s, box-shadow 0.2s;
+box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+}
+button:hover {
+background-color: var(--secondary);
+transform: translateY(-2px);
+}
+#result-modal {
+display: none;
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background: rgba(0, 0, 0, 0.8);
+z-index: 1000;
+justify-content: center;
+align-items: center;
+}
+.result-card {
+background: white;
+padding: 3rem;
+border-radius: 12px;
+text-align: center;
+max-width: 500px;
+width: 90%;
+box-shadow: 0 0 30px rgba(0,0,0,0.5);
+animation: slideIn 0.4s ease-out;
+}
+@keyframes slideIn {
+from { transform: translateY(50px); opacity: 0; }
+to { transform: translateY(0); opacity: 1; }
+}
+.grade-big {
+font-size: 5rem;
+font-weight: 800;
+margin: 10px 0;
+line-height: 1;
+}
+.score-bar {
+height: 10px;
+background: #ecf0f1;
+border-radius: 5px;
+margin: 20px 0;
+overflow: hidden;
+}
+.score-fill {
+height: 100%;
+background: var(--success);
+width: 0%;
+transition: width 1s ease;
+}
+.hint-text {
+font-size: 0.9rem;
+color: #7f8c8d;
+margin-top: 5px;
+}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<h1>Mathematik Klassenarbeit Nr. 1</h1>
+<div style="font-size: 0.9rem; margin-top: 10px; opacity: 0.8">
+Themen: Teilbarkeit, Primzahlen, ggT & kgV, Sachaufgaben
+</div>
+</header>
+ <div class="meta-info">
+    <div>Name: <input type="text" placeholder="Dein Name" style="border:none; border-bottom: 2px solid #bdc3c7; background: transparent;"></div>
+    <div>Klasse: 5/6</div>
+    <div>Zeit: 60 Min.</div>
+    <div>Punkte: <span id="current-points">0</span> / 50</div>
+  </div>
 
-    <link
-      href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&family=Plus+Jakarta+Sans:wght@600;800&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
-    />
-
-    <style>
-      :root {
-        /* Геймерська палітра */
-        --bg-dark: #0f172a; /* Глибокий темний фон */
-        --card-dark: #1e293b; /* Трохи світліший фон карток */
-        --primary-neon: #00e5ff; /* Електричний блакитний */
-        --secondary-neon: #ff5e00; /* Яскравий помаранчевий */
-        --success-neon: #00ff9d; /* Неоновий зелений */
-        --text-light: #e2e8f0; /* Світлий текст */
-        --text-muted: #94a3b8;
-      }
-
-      body {
-        font-family: "Chakra Petch", sans-serif; /* Техно-шрифт */
-        background-color: var(--bg-dark);
-        color: var(--text-light);
-        margin: 0;
-        line-height: 1.7;
-        /* Додаємо фоновий патерн сітки для техно-відчуття */
-        background-image:
-          linear-gradient(rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.9)),
-          url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%231e293b' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-      }
-
-      header {
-        background: rgba(15, 23, 42, 0.8);
-        backdrop-filter: blur(10px);
-        padding: 1.5rem;
-        text-align: center;
-        border-bottom: 2px solid var(--card-dark);
-        position: sticky;
-        top: 0;
-        z-index: 1000;
-      }
-
-      h2,
-      h3,
-      .section-title {
-        font-family:
-          "Plus Jakarta Sans", sans-serif; /* Заголовки більш масивні */
-        text-transform: uppercase;
-        letter-spacing: 1px;
-      }
-
-      .container {
-        max-width: 850px;
-        margin: 2rem auto;
-        padding: 0 1.5rem;
-      }
-
-      .section-title {
-        font-size: 1.8rem;
-        font-weight: 800;
-        margin: 4rem 0 1.5rem;
-        color: var(--primary-neon);
-        text-shadow: 0 0 10px rgba(0, 229, 255, 0.3);
-      }
-
-      /* Стиль карток */
-      .card,
-      .theory-card {
-        background: var(--card-dark);
-        /* Більш різкі кути */
-        border-radius: 12px;
-        padding: 2rem;
-        margin-bottom: 2rem;
-        /* Техно-рамка */
-        border: 2px solid #334155;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-        transition: all 0.3s ease;
-      }
-
-      .card:hover {
-        border-color: var(--primary-neon);
-        box-shadow: 0 0 20px rgba(0, 229, 255, 0.2);
-        transform: translateY(-3px);
-      }
-
-      .theory-card {
-        background: linear-gradient(145deg, var(--card-dark) 0%, #24334a 100%);
-        border-left: 4px solid var(--primary-neon);
-      }
-
-      .theory-card h3 {
-        color: var(--primary-neon);
-        margin-top: 0;
-      }
-
-      .tag {
-        font-size: 0.7rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        padding: 6px 12px;
-        border-radius: 4px;
-        background: #334155;
-        color: var(--primary-neon);
-        margin-bottom: 1rem;
-        display: inline-block;
-        border: 1px solid var(--primary-neon);
-      }
-
-      /* Поля вводу та кнопки */
-      .input-group {
-        display: flex;
-        gap: 12px;
-        margin-top: 1.5rem;
-      }
-
-      input {
-        flex: 1;
-        padding: 1rem;
-        background: var(--bg-dark);
-        border: 2px solid #334155;
-        border-radius: 8px;
-        font-size: 1rem;
-        color: var(--text-light);
-        font-family: "Chakra Petch", sans-serif;
-        transition: all 0.3s;
-      }
-
-      input:focus {
-        outline: none;
-        border-color: var(--primary-neon);
-        box-shadow: 0 0 10px rgba(0, 229, 255, 0.4);
-      }
-
-      button {
-        background: transparent;
-        color: var(--primary-neon);
-        border: 2px solid var(--primary-neon);
-        padding: 0 2rem;
-        border-radius: 8px;
-        font-weight: 700;
-        font-family: "Chakra Petch", sans-serif;
-        cursor: pointer;
-        text-transform: uppercase;
-        transition: all 0.3s;
-      }
-
-      button:hover {
-        background: var(--primary-neon);
-        color: var(--bg-dark);
-        box-shadow: 0 0 15px var(--primary-neon);
-      }
-
-      .feedback {
-        margin-top: 1rem;
-        font-weight: 600;
-        font-size: 0.9rem;
-      }
-      .is-correct {
-        color: var(--success-neon);
-        text-shadow: 0 0 5px var(--success-neon);
-      }
-      .is-wrong {
-        color: var(--secondary-neon);
-        text-shadow: 0 0 5px var(--secondary-neon);
-      }
-
-      /* Прогрес бар у стилі HUD */
-      .progress-bar-container {
-        width: 100%;
-        max-width: 600px;
-        height: 10px;
-        background: #334155;
-        border-radius: 2px;
-        margin: 1rem auto;
-        overflow: hidden;
-        border: 1px solid #475569;
-      }
-
-      #progress-fill {
-        width: 0%;
-        height: 100%;
-        background: linear-gradient(90deg, var(--primary-neon), #0066ff);
-        box-shadow: 0 0 10px var(--primary-neon);
-        transition: width 0.5s ease;
-      }
-
-      /* Кастомізація формул KaTeX під темну тему */
-      .katex {
-        font-size: 1.1em;
-        color: var(--primary-neon);
-      }
-    </style>
-  </head>
-  <body>
-    <header>
-      <h2 style="margin: 0; color: var(--primary-neon)">
-        MATHE-TRAINING OS v.2.0
-      </h2>
-      <div class="progress-bar-container"><div id="progress-fill"></div></div>
-      <div
-        id="status-text"
-        style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted)"
-      >
-        SYSTEM STATUS: 0 / 50
-      </div>
-    </header>
-
-    <div class="container">
-      <div class="section-title">📡 DATENBANK: THEORIE</div>
-
-      <div class="theory-card">
-        <h3>1. Der Teiler und die Teilermenge</h3>
-        <p>
-          Zahlen, durch die man eine andere Zahl <b>ohne Rest</b> teilen kann,
-          nennt man <b>Teiler</b>.
-        </p>
-        <p>
-          Alle Teiler einer Zahl schreibt man in eine <b>Teilermenge</b> $T_n$.
-          Jede Zahl in dieser Menge ist ein <b>Element</b> der Menge.
-        </p>
-        <p>
-          <i>Beispiel für 24:</i><br />
-          $T_{24} = \{1; 2; 3; 4; 6; 8; 12; 24\}$
-        </p>
-      </div>
-
-      <div class="theory-card">
-        <h3>2. Das Vielfache und die Vielfachenmenge</h3>
-        <p>
-          Wenn wir eine Zahl mit immer größeren natürlichen Zahlen
-          multiplizieren (Mal-Reihe), erhalten wir ihre <b>Vielfachen</b>.
-        </p>
-        <p>
-          Die <b>Vielfachenmenge</b> $V_n$ ist unendlich. Das wird durch drei
-          Pünktchen "..." am Ende der Menge verdeutlicht.
-        </p>
-        <p>
-          <i>Beispiel für 4:</i><br />
-          $V_{4} = \{4; 8; 12; 16; ...\}$
-        </p>
-      </div>
-
-      <div class="theory-card">
-        <h3>3. Gemeinsame Teiler (ggT)</h3>
-        <p>
-          Zahlen können <b>gemeinsame Teiler</b> haben. Diese werden oft in der
-          Mitte von zwei sich überschneidenden Kreisen (Venn-Diagramm)
-          dargestellt.
-        </p>
-        <p>
-          Der größte dieser Teiler ist der <b>ggT</b> (größter gemeinsamer
-          Teiler).
-        </p>
-      </div>
-
-      <div class="section-title">⚔️ MISSION: TRAINING</div>
-      <div id="exercise-list"></div>
+  <div class="section-header">
+    <span>I. Kopfrechnen & Rechengesetze</span>
+    <span>10 Punkte</span>
+  </div>
+  <div class="question-block">
+    <div class="row">
+      <span class="q-num">1.</span>
+      <span class="q-text">Berechne: \( 12^2 = \)</span>
+      <input type="number" id="q1" class="input-short" data-ans="144">
     </div>
+    <div class="row">
+      <span class="q-num">2.</span>
+      <span class="q-text">Berechne: \( 2^5 = \)</span>
+      <input type="number" id="q2" class="input-short" data-ans="32">
+    </div>
+    <div class="row">
+      <span class="q-num">3.</span>
+      <span class="q-text">Punkt vor Strich: \( 20 + 4 \cdot 5 = \)</span>
+      <input type="number" id="q3" class="input-short" data-ans="40">
+    </div>
+    <div class="row">
+      <span class="q-num">4.</span>
+      <span class="q-text">Klammer zuerst: \( (100 - 20) : 8 = \)</span>
+      <input type="number" id="q4" class="input-short" data-ans="10">
+    </div>
+    <div class="row">
+      <span class="q-num">5.</span>
+      <span class="q-text">Runde <strong>4.582</strong> auf Hunderter:</span>
+      <input type="number" id="q5" class="input-short" data-ans="4600">
+    </div>
+    <div class="row">
+      <span class="q-num">6.</span>
+      <span class="q-text">Schreibe als Zahl: Drei Millionen Fünftausend:</span>
+      <input type="number" id="q6" data-ans="3005000">
+    </div>
+    <div class="row">
+      <span class="q-num">7.</span>
+      <span class="q-text">Fachbegriff: Wie heißt das Ergebnis der Division?</span>
+      <select id="q7" data-ans="quotient">
+        <option value="">Wählen...</option>
+        <option value="summe">Summe</option>
+        <option value="produkt">Produkt</option>
+        <option value="differenz">Differenz</option>
+        <option value="quotient">Quotient</option>
+      </select>
+    </div>
+    <div class="row">
+      <span class="q-num">8.</span>
+      <span class="q-text">Vorteilhaft rechnen: \( 25 \cdot 17 \cdot 4 = \)</span>
+      <input type="number" id="q8" class="input-short" data-ans="1700">
+    </div>
+    <div class="row">
+      <span class="q-num">9.</span>
+      <span class="q-text">Welches Gesetz ist das? \( a + b = b + a \)</span>
+      <select id="q9" data-ans="k">
+        <option value="">Wählen...</option>
+        <option value="k">Kommutativgesetz</option>
+        <option value="a">Assoziativgesetz</option>
+        <option value="d">Distributivgesetz</option>
+      </select>
+    </div>
+    <div class="row">
+      <span class="q-num">10.</span>
+      <span class="q-text">Restberechnung: \( 44 : 5 = 8 \) Rest ?</span>
+      <input type="number" id="q10" class="input-short" data-ans="4">
+    </div>
+  </div>
 
-    <footer
-      style="
-        text-align: center;
-        padding: 3rem;
-        color: var(--text-muted);
-        font-size: 0.8rem;
-      "
-    >
-      SYSTEM OPERATIONAL &bull; 2026 &bull; MATHE-MODUL
-    </footer>
+  <div class="section-header">
+    <span>II. Teilbarkeitsregeln</span>
+    <span>10 Punkte</span>
+  </div>
+  <div class="question-block">
+    <div class="row">
+      <span class="q-num">11.</span>
+      <span class="q-text">Ist <strong>324</strong> durch <strong>3</strong> teilbar? (Quersumme prüfen)</span>
+      <select id="q11" data-ans="ja">
+        <option value="">...</option>
+        <option value="ja">Ja</option>
+        <option value="nein">Nein</option>
+      </select>
+    </div>
+    <div class="row">
+      <span class="q-num">12.</span>
+      <span class="q-text">Ist <strong>815</strong> durch <strong>5</strong> teilbar?</span>
+      <select id="q12" data-ans="ja">
+        <option value="">...</option>
+        <option value="ja">Ja</option>
+        <option value="nein">Nein</option>
+      </select>
+    </div>
+    <div class="row">
+      <span class="q-num">13.</span>
+      <span class="q-text">Ist <strong>521</strong> durch <strong>2</strong> teilbar?</span>
+      <select id="q13" data-ans="nein">
+        <option value="">...</option>
+        <option value="ja">Ja</option>
+        <option value="nein">Nein</option>
+      </select>
+    </div>
+    <div class="row">
+      <span class="q-num">14.</span>
+      <span class="q-text">Ist <strong>616</strong> durch <strong>4</strong> teilbar? (letzte 2 Stellen)</span>
+      <select id="q14" data-ans="ja">
+        <option value="">...</option>
+        <option value="ja">Ja</option>
+        <option value="nein">Nein</option>
+      </select>
+    </div>
+    <div class="row">
+      <span class="q-num">15.</span>
+      <span class="q-text">Ist <strong>7.200</strong> durch <strong>9</strong> teilbar?</span>
+      <select id="q15" data-ans="ja">
+        <option value="">...</option>
+        <option value="ja">Ja</option>
+        <option value="nein">Nein</option>
+      </select>
+    </div>
+    <div class="row">
+      <span class="q-num">16.</span>
+      <span class="q-text">Ist <strong>130</strong> durch <strong>25</strong> teilbar?</span>
+      <select id="q16" data-ans="nein">
+        <option value="">...</option>
+        <option value="ja">Ja</option>
+        <option value="nein">Nein</option>
+      </select>
+    </div>
+    <div class="row">
+      <span class="q-num">17.</span>
+      <span class="q-text">Ist <strong>120</strong> durch <strong>6</strong> teilbar? (Regel für 2 & 3)</span>
+      <select id="q17" data-ans="ja">
+        <option value="">...</option>
+        <option value="ja">Ja</option>
+        <option value="nein">Nein</option>
+      </select>
+    </div>
+    <div class="row">
+      <span class="q-num">18.</span>
+      <span class="q-text">Ergänze Ziffer: \( 43\_ \) ist durch 5 teilbar (kleinste Ziffer).</span>
+      <input type="number" id="q18" class="input-short" data-ans="0">
+    </div>
+    <div class="row">
+      <span class="q-num">19.</span>
+      <span class="q-text">Ergänze Ziffer: \( 1\_4 \) ist durch 3 teilbar (größte Ziffer).</span>
+      <input type="number" id="q19" class="input-short" data-ans="7">
+      <div class="hint-text" style="margin-left: 10px;">(1+?+4 muss durch 3 teilbar sein)</div>
+    </div>
+    <div class="row">
+      <span class="q-num">20.</span>
+      <span class="q-text">Ist <strong>1000</strong> durch <strong>8</strong> teilbar?</span>
+      <select id="q20" data-ans="ja">
+        <option value="">...</option>
+        <option value="ja">Ja</option>
+        <option value="nein">Nein</option>
+      </select>
+    </div>
+  </div>
 
-    <script
-      defer
-      src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"
-    ></script>
-    <script
-      defer
-      src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
-      onload="startLesson()"
-    ></script>
+  <div class="section-header">
+    <span>III. Primzahlen & Mengenlehre</span>
+    <span>10 Punkte</span>
+  </div>
+  <div class="question-block">
+    <div class="row">
+      <span class="q-num">21.</span>
+      <span class="q-text">Ist <strong>1</strong> eine Primzahl?</span>
+      <select id="q21" data-ans="nein">
+        <option value="">...</option>
+        <option value="ja">Ja</option>
+        <option value="nein">Nein</option>
+      </select>
+    </div>
+    <div class="row">
+      <span class="q-num">22.</span>
+      <span class="q-text">Kleinste gerade Primzahl?</span>
+      <input type="number" id="q22" class="input-short" data-ans="2">
+    </div>
+    <div class="row">
+      <span class="q-num">23.</span>
+      <span class="q-text">Primfaktorenzerlegung von 30 (aufsteigend, z.B. 2*3*...):</span>
+      <input type="text" id="q23" class="input-long" data-ans="2*3*5" placeholder="z.B. 2*3*5">
+    </div>
+    <div class="row">
+      <span class="q-num">24.</span>
+      <span class="q-text">Primfaktorenzerlegung von 16:</span>
+      <input type="text" id="q24" class="input-long" data-ans="2*2*2*2" placeholder="mit * getrennt">
+    </div>
+    <div class="row">
+      <span class="q-num">25.</span>
+      <span class="q-text">Anzahl der Teiler von 20 (\(T_{20}\)):</span>
+      <input type="number" id="q25" class="input-short" data-ans="6">
+      <span class="hint-text" style="margin-left: 10px;">(1,2,4,5,10,20)</span>
+    </div>
+    <div class="row">
+      <span class="q-num">26.</span>
+      <span class="q-text">Nenne eine Primzahl zwischen 40 und 50:</span>
+      <input type="number" id="q26" class="input-short" data-ans="41,43,47">
+    </div>
+    <div class="row">
+      <span class="q-num">27.</span>
+      <span class="q-text">Ist 91 eine Primzahl?</span>
+      <select id="q27" data-ans="nein">
+        <option value="">...</option>
+        <option value="ja">Ja</option>
+        <option value="nein">Nein (7*13)</option>
+      </select>
+    </div>
+    <div class="row">
+      <span class="q-num">28.</span>
+      <span class="q-text">Wahr oder Falsch: Jede natürliche Zahl > 1 hat mindestens zwei Teiler.</span>
+      <select id="q28" data-ans="wahr">
+        <option value="">...</option>
+        <option value="wahr">Wahr</option>
+        <option value="falsch">Falsch</option>
+      </select>
+    </div>
+    <div class="row">
+      <span class="q-num">29.</span>
+      <span class="q-text">Das 5. Vielfache von 7:</span>
+      <input type="number" id="q29" class="input-short" data-ans="35">
+    </div>
+    <div class="row">
+      <span class="q-num">30.</span>
+      <span class="q-text">Größter echter Teiler von 100 (ohne 100 selbst):</span>
+      <input type="number" id="q30" class="input-short" data-ans="50">
+    </div>
+  </div>
 
-    <script>
-      // ДАНІ ЗАЛИШИЛИСЯ БЕЗ ЗМІН
-      const taskData = [
-        {
-          id: 1,
-          title: "Teilermenge",
-          q: "Gib die Menge $T_{45}$ an (kommagetrennt):",
-          a: "1,3,5,9,15,45",
-        },
-        {
-          id: 2,
-          title: "Teilermenge",
-          q: "Gib die Menge $T_{60}$ an:",
-          a: "1,2,3,4,5,6,10,12,15,20,30,60",
-        },
-        {
-          id: 3,
-          title: "Teilermenge",
-          q: "Gib die Menge $T_{72}$ an:",
-          a: "1,2,3,4,6,8,9,12,18,24,36,72",
-        },
-        {
-          id: 4,
-          title: "Vielfache",
-          q: "Erste 4 Elemente von $V_{13}$:",
-          a: "13,26,39,52",
-        },
-        {
-          id: 5,
-          title: "Vielfache",
-          q: "Erste 4 Elemente von $V_{25}$:",
-          a: "25,50,75,100",
-        },
-        {
-          id: 6,
-          title: "Wahr/Falsch",
-          q: "Ist 7 ein Teiler von 84? (ja/nein):",
-          a: "ja",
-        },
-        {
-          id: 7,
-          title: "Wahr/Falsch",
-          q: "Ist 130 ein Vielfaches von 15? (ja/nein):",
-          a: "nein",
-        },
-        {
-          id: 8,
-          title: "Theorie",
-          q: "Was ist der kleinste Teiler jeder Zahl?",
-          a: "1",
-        },
-        {
-          id: 9,
-          title: "Regeln",
-          q: "Ist 435 durch 5 teilbar? (ja/nein):",
-          a: "ja",
-        },
-        {
-          id: 10,
-          title: "Regeln",
-          q: "Ist 918 durch 9 teilbar? (ja/nein):",
-          a: "ja",
-        },
-        {
-          id: 11,
-          title: "Schnittmenge",
-          q: "Schnittmenge der Teiler von 18 und 24:",
-          a: "1,2,3,6",
-        },
-        { id: 12, title: "ggT", q: "Bestimme den $ggT(12, 30)$:", a: "6" },
-        { id: 13, title: "ggT", q: "Bestimme den $ggT(40, 60)$:", a: "20" },
-        { id: 14, title: "kgV", q: "Bestimme das $kgV(6, 8)$:", a: "24" },
-        { id: 15, title: "kgV", q: "Bestimme das $kgV(5, 7)$:", a: "35" },
-        {
-          id: 16,
-          title: "Primzahlen",
-          q: "Wie viele Primzahlen gibt es zwischen 10 und 20?",
-          a: "4",
-        },
-        {
-          id: 17,
-          title: "Logik",
-          q: "Kann man 28 Kinder in 7er-Gruppen teilen? (ja/nein):",
-          a: "ja",
-        },
-        {
-          id: 18,
-          title: "Praxis",
-          q: "42 Bonbons, 6 pro Tüte. Wie viele Tüten?",
-          a: "7",
-        },
-        {
-          id: 19,
-          title: "Bus",
-          q: "Linie A (10m), B (15m). Start 08:00. Nächster Treff (hh:mm):",
-          a: "08:30",
-        },
-        {
-          id: 20,
-          title: "Geometrie",
-          q: "Fläche 20x30. Größte quadratische Fliese (cm):",
-          a: "10",
-        },
-        {
-          id: 21,
-          title: "Minecraft",
-          q: "Mauer 60. Passen 4er Blöcke? (ja/nein):",
-          a: "ja",
-        },
-        {
-          id: 22,
-          title: "Minecraft",
-          q: "Mauer 60. Passen 9er Blöcke? (ja/nein):",
-          a: "nein",
-        },
-        {
-          id: 23,
-          title: "Rätsel",
-          q: "Zahl 20-30, Vielfaches von 3, hat 4 Teiler:",
-          a: "21",
-        },
-        {
-          id: 24,
-          title: "Paare",
-          q: "Partner von 2 bei Teilern von 100 ($2 \\cdot ?$):",
-          a: "50",
-        },
-        {
-          id: 25,
-          title: "Sport",
-          q: "45 Kinder. 3 gleiche Reihen möglich? (ja/nein):",
-          a: "ja",
-        },
-        {
-          id: 26,
-          title: "Mengen",
-          q: "Anzahl Elemente in $V_7 < 50$:",
-          a: "7",
-        },
-        {
-          id: 27,
-          title: "Mengen",
-          q: "Ist 1 ein Teiler von 1000? (ja/nein):",
-          a: "ja",
-        },
-        { id: 28, title: "Mix", q: "Bestimme $ggT(15, 30, 45)$:", a: "15" },
-        { id: 29, title: "Mix", q: "Bestimme $kgV(3, 4, 6)$:", a: "12" },
-        {
-          id: 30,
-          title: "Check",
-          q: "Ist 120 durch 2, 3 und 5 teilbar? (ja/nein):",
-          a: "ja",
-        },
-        {
-          id: 31,
-          title: "Pro",
-          q: "Zerlegung 120 (z.B. 2*2*2*3*5):",
-          a: "2*2*2*3*5",
-        },
-        { id: 32, title: "Einkauf", q: "Packungen 12/18. kgV ist:", a: "36" },
-        {
-          id: 33,
-          title: "Licht",
-          q: "Blinken 4s, 6s, 9s. Zusammen nach (sek):",
-          a: "36",
-        },
-        {
-          id: 34,
-          title: "Zahlen",
-          q: "Ist 6 eine vollkommene Zahl? (ja/nein):",
-          a: "ja",
-        },
-        {
-          id: 35,
-          title: "Rätsel Pro",
-          q: "Zahl < 100, Quersumme 9, Vielfaches von 7:",
-          a: "63",
-        },
-        { id: 36, title: "Bruch", q: "ggT zum Kürzen von $48/72$:", a: "24" },
-        {
-          id: 37,
-          title: "Anzahl",
-          q: "Anzahl Teiler von $2^3 \\cdot 3^2$:",
-          a: "12",
-        },
-        {
-          id: 38,
-          title: "Logik Pro",
-          q: "Ist 1.000.008 durch 9 teilbar? (ja/nein):",
-          a: "ja",
-        },
-        {
-          id: 39,
-          title: "Seiten",
-          q: "Fläche 48. Anzahl ganzzahliger Seitenpaare:",
-          a: "5",
-        },
-        {
-          id: 40,
-          title: "Lauf",
-          q: "Läufer 80s, 90s, 120s. kgV (sek):",
-          a: "720",
-        },
-        {
-          id: 41,
-          title: "Fremd",
-          q: "Sind 8 und 9 teilerfremd? (ja/nein):",
-          a: "ja",
-        },
-        {
-          id: 42,
-          title: "Rest",
-          q: "Zahl, durch 2-6 geteilt mit Rest 1:",
-          a: "61",
-        },
-        { id: 43, title: "Quadrat", q: "Anzahl Teiler der Zahl 16:", a: "5" },
-        {
-          id: 44,
-          title: "Summe",
-          q: "Summe 3 aufeinanderfolgender Zahlen teilbar durch:",
-          a: "3",
-        },
-        {
-          id: 45,
-          title: "Ernte",
-          q: "126 Karotten, 180 Kartoffeln. Max pro Reihe:",
-          a: "18",
-        },
-        { id: 46, title: "Prim", q: "Spiegel-Primzahl von 17:", a: "71" },
-        {
-          id: 47,
-          title: "Formel",
-          q: "$ggT(6,10) \\cdot kgV(6,10) = ?$",
-          a: "60",
-        },
-        {
-          id: 48,
-          title: "Regel Pro",
-          q: "Ist 124 durch 4 teilbar? (ja/nein):",
-          a: "ja",
-        },
-        {
-          id: 49,
-          title: "Schnitt",
-          q: "Gemeinsame Vielfache 4 & 6, Teiler von 60:",
-          a: "12,60",
-        },
-        { id: 50, title: "Ende", q: "Anzahl Teiler einer Primzahl:", a: "2" },
-      ];
+  <div class="section-header">
+    <span>IV. ggT und kgV</span>
+    <span>10 Punkte</span>
+  </div>
+  <div class="question-block">
+    <div class="row">
+      <span class="q-num">31.</span>
+      <span class="q-text">Bestimme \( ggT(12, 18) \):</span>
+      <input type="number" id="q31" class="input-short" data-ans="6">
+    </div>
+    <div class="row">
+      <span class="q-num">32.</span>
+      <span class="q-text">Bestimme \( ggT(20, 50) \):</span>
+      <input type="number" id="q32" class="input-short" data-ans="10">
+    </div>
+    <div class="row">
+      <span class="q-num">33.</span>
+      <span class="q-text">Bestimme \( ggT(13, 17) \) (teilerfremd):</span>
+      <input type="number" id="q33" class="input-short" data-ans="1">
+    </div>
+    <div class="row">
+      <span class="q-num">34.</span>
+      <span class="q-text">Bestimme \( ggT(24, 36) \):</span>
+      <input type="number" id="q34" class="input-short" data-ans="12">
+    </div>
+    <div class="row">
+      <span class="q-num">35.</span>
+      <span class="q-text">Bestimme \( ggT(8, 32) \) (Achtung!):</span>
+      <input type="number" id="q35" class="input-short" data-ans="8">
+    </div>
+    <div class="row">
+      <span class="q-num">36.</span>
+      <span class="q-text">Bestimme \( kgV(4, 6) \):</span>
+      <input type="number" id="q36" class="input-short" data-ans="12">
+    </div>
+    <div class="row">
+      <span class="q-num">37.</span>
+      <span class="q-text">Bestimme \( kgV(5, 7) \):</span>
+      <input type="number" id="q37" class="input-short" data-ans="35">
+    </div>
+    <div class="row">
+      <span class="q-num">38.</span>
+      <span class="q-text">Bestimme \( kgV(10, 15) \):</span>
+      <input type="number" id="q38" class="input-short" data-ans="30">
+    </div>
+    <div class="row">
+      <span class="q-num">39.</span>
+      <span class="q-text">Bestimme \( kgV(3, 4, 5) \):</span>
+      <input type="number" id="q39" class="input-short" data-ans="60">
+    </div>
+    <div class="row">
+      <span class="q-num">40.</span>
+      <span class="q-text">Formel: \( ggT(a,b) \cdot kgV(a,b) = \)</span>
+      <select id="q40" data-ans="prod">
+        <option value="">...</option>
+        <option value="sum">a + b</option>
+        <option value="prod">a · b</option>
+      </select>
+    </div>
+  </div>
 
-      const solved = new Set();
+  <div class="section-header">
+    <span>V. Sachaufgaben (Anwendung)</span>
+    <span>10 Punkte</span>
+  </div>
+  <div class="question-block">
+    <div class="row">
+      <span class="q-num">41.</span>
+      <span class="q-text"><strong>Bus-Aufgabe:</strong> Bus A kommt alle 10 min, Bus B alle 15 min. Beide fahren um 12:00 los. Wann treffen sie sich wieder? (in Minuten)</span>
+      <input type="number" id="q41" class="input-short" data-ans="30">
+    </div>
+    <div class="row">
+      <span class="q-num">42.</span>
+      <span class="q-text"><strong>Fliesen:</strong> Ein Bad ist 240cm x 360cm groß. Wie groß kann eine quadratische Fliese maximal sein (ganze Platten)? (in cm)</span>
+      <input type="number" id="q42" class="input-short" data-ans="120">
+    </div>
+    <div class="row">
+      <span class="q-num">43.</span>
+      <span class="q-text"><strong>Obst verteilen:</strong> 20 Äpfel und 30 Bananen sollen gerecht auf die maximal mögliche Kinderzahl verteilt werden. Wie viele Kinder?</span>
+      <input type="number" id="q43" class="input-short" data-ans="10">
+    </div>
+    <div class="row">
+      <span class="q-num">44.</span>
+      <span class="q-text">Wie viele Bananen bekommt jedes Kind in Aufgabe 43?</span>
+      <input type="number" id="q44" class="input-short" data-ans="3">
+    </div>
+    <div class="row">
+      <span class="q-num">45.</span>
+      <span class="q-text"><strong>Zahnräder:</strong> Rad A hat 12 Zähne, Rad B hat 18. Nach wie vielen "Schritten" stehen sie wieder in Ausgangsposition? (kgV)</span>
+      <input type="number" id="q45" class="input-short" data-ans="36">
+    </div>
+    <div class="row">
+      <span class="q-num">46.</span>
+      <span class="q-text"><strong>Gruppen:</strong> 25 Schüler. Kann man 3er Gruppen bilden ohne Rest?</span>
+      <select id="q46" data-ans="nein">
+        <option value="">...</option>
+        <option value="ja">Ja</option>
+        <option value="nein">Nein</option>
+      </select>
+    </div>
+    <div class="row">
+      <span class="q-num">47.</span>
+      <span class="q-text"><strong>Rest:</strong> Welche Zahl < 20 lässt beim Teilen durch 3, 4 und 5 immer den Rest 0?</span>
+      <input type="number" id="q47" class="input-short" data-ans="0">
+      <span class="hint-text">(Fangfrage: 0 ist durch alles teilbar) - Oder kgV 60 (zu groß). Antwort: 0</span>
+    </div>
+    <div class="row">
+      <span class="q-num">48.</span>
+      <span class="q-text">Ich denke mir eine Zahl. Sie ist Teiler von 12 und Vielfaches von 6.</span>
+      <input type="text" id="q48" class="input-short" data-ans="6,12" placeholder="Zahl?">
+    </div>
+    <div class="row">
+      <span class="q-num">49.</span>
+      <span class="q-text">Schaltjahr: Ein Schaltjahr ist alle 4 Jahre. War 2022 ein Schaltjahr?</span>
+      <select id="q49" data-ans="nein">
+        <option value="">...</option>
+        <option value="ja">Ja</option>
+        <option value="nein">Nein</option>
+      </select>
+    </div>
+    <div class="row">
+      <span class="q-num">50.</span>
+      <span class="q-text"><strong>Logik:</strong> Welche Ziffer muss an die Einerstelle von \(345\dots\), damit die Zahl durch 2, 3 und 5 teilbar ist?</span>
+      <input type="number" id="q50" class="input-short" data-ans="0">
+    </div>
+  </div>
 
-      function startLesson() {
-        const box = document.getElementById("exercise-list");
-        taskData.forEach((t) => {
-          const card = document.createElement("div");
-          card.className = "card";
-          card.innerHTML = `
-                <div class="tag">MISSION ID: ${t.title}</div>
-                <p>${t.q}</p>
-                <div class="input-group">
-                    <input type="text" id="in-${t.id}" placeholder="Eingabe...">
-                    <button onclick="checkTask(${t.id})">SENDEN</button>
-                </div>
-                <div id="fb-${t.id}" class="feedback"></div>
-            `;
-          box.appendChild(card);
-        });
+  <div class="controls">
+    <button onclick="finishTest()">Klassenarbeit abgeben</button>
+  </div>
+</div>
 
-        renderMathInElement(document.body, {
-          delimiters: [
-            { left: "$$", right: "$$", display: true },
-            { left: "$", right: "$", display: false },
-          ],
-        });
+<div id="result-modal">
+  <div class="result-card">
+    <h2>Ergebnis</h2>
+    <div id="final-grade-display" class="grade-big">-</div>
+    <div class="score-bar"><div id="score-fill" class="score-fill"></div></div>
+    <p id="points-text">0 / 50 Punkte</p>
+    <p id="feedback-text" style="font-style: italic; color: #7f8c8d;"></p>
+    <button onclick="closeModal()" style="margin-top: 20px; font-size: 1rem; padding: 10px 20px;">Antworten prüfen</button>
+  </div>
+</div>
+
+<script>
+  function cleanInput(val) {
+    return val.trim().toLowerCase().replace(/\s/g, '').replace(',', '.');
+  }
+
+  function finishTest() {
+    let score = 0;
+    const total = 50;
+
+    for (let i = 1; i <= total; i++) {
+      const input = document.getElementById(`q${i}`);
+      const userVal = cleanInput(input.value);
+      const correctVals = input.dataset.ans.split(',').map(cleanInput);
+
+      // Logic for Q47: The answer 0 is technically correct for <20 but in school context usually kgV is sought which is 60 (too big). 
+      // Let's accept 0.
+      
+      let isCorrect = false;
+      // Check if user answer matches any of the valid answers
+      if (correctVals.includes(userVal) && userVal !== "") {
+        isCorrect = true;
       }
 
-      window.checkTask = function (id) {
-        const val = document
-          .getElementById(`in-${id}`)
-          .value.trim()
-          .toLowerCase()
-          .replace(/\s/g, "");
-        const target = taskData
-          .find((x) => x.id === id)
-          .a.toLowerCase()
-          .replace(/\s/g, "");
-        const fb = document.getElementById(`fb-${id}`);
+      // Special handling for multiplication (order doesn't matter)
+      if (userVal.includes('*')) {
+         const userFactors = userVal.split('*').sort().join('*');
+         const correctFactors = correctVals[0].split('*').sort().join('*');
+         if (userFactors === correctFactors) isCorrect = true;
+      }
 
-        if (val === target) {
-          fb.innerHTML = "✅ KORREKT!";
-          fb.className = "feedback is-correct";
-          solved.add(id);
-        } else {
-          fb.innerHTML = "❌ FEHLER. NEUSTART.";
-          fb.className = "feedback is-wrong";
+      if (isCorrect) {
+        score++;
+        input.classList.add("correct-answer");
+        input.classList.remove("wrong-answer");
+      } else {
+        input.classList.add("wrong-answer");
+        input.classList.remove("correct-answer");
+        
+        // Create or update solution display
+        let sol = input.parentNode.querySelector('.solution-display');
+        if (!sol) {
+            sol = document.createElement('span');
+            sol.className = 'solution-display';
+            input.parentNode.appendChild(sol);
         }
-        updateProgress();
-      };
-
-      function updateProgress() {
-        const p = (solved.size / 50) * 100;
-        document.getElementById("progress-fill").style.width = p + "%";
-        document.getElementById("status-text").innerText =
-          `SYSTEM STATUS: ${solved.size} / 50`;
+        sol.innerText = `Lsg: ${input.dataset.ans.replace(',', ' oder ')}`;
+        sol.style.display = 'inline';
       }
-    </script>
-  </body>
+    }
+    // Calculate German Grade (IHK/School Scale)
+    let grade = 6;
+    let color = "#c0392b";
+    let text = "";
+    
+    // Scale:
+    // 50-48: 1 (Sehr gut)
+    // 47-41: 2 (Gut)
+    // 40-33: 3 (Befriedigend)
+    // 32-25: 4 (Ausreichend - Pass)
+    // 24-12: 5 (Mangelhaft)
+    // <12:   6 (Ungenügend)
+
+    if (score >= 48) { grade = "1+"; color = "#27ae60"; text = "Hervorragend! Du bist ein Mathe-Profi."; }
+    else if (score >= 45) { grade = "1"; color = "#2ecc71"; text = "Sehr gut!"; }
+    else if (score >= 41) { grade = "2"; color = "#2ecc71"; text = "Gute Leistung."; }
+    else if (score >= 33) { grade = "3"; color = "#f1c40f"; text = "Solide Leistung, aber übe noch etwas."; }
+    else if (score >= 25) { grade = "4"; color = "#e67e22"; text = "Bestanden. Das war knapp."; }
+    else if (score >= 12) { grade = "5"; color = "#e74c3c"; text = "Nicht bestanden. Du musst mehr lernen!"; }
+    else { grade = "6"; color = "#c0392b"; text = "Bitte dringend Nachhilfe nehmen."; }
+
+    // Update Modal
+    document.getElementById('final-grade-display').innerText = grade;
+    document.getElementById('final-grade-display').style.color = color;
+    document.getElementById('points-text').innerText = `${score} / 50 Punkte`;
+    document.getElementById('feedback-text').innerText = text;
+    
+    const percentage = (score / total) * 100;
+    document.getElementById('score-fill').style.width = `${percentage}%`;
+    document.getElementById('score-fill').style.backgroundColor = color;
+
+    document.getElementById('result-modal').style.display = 'flex';
+    
+    // Scroll to top to see results if modal is closed
+    window.scrollTo(0,0);
+  }
+
+  function closeModal() {
+    document.getElementById('result-modal').style.display = 'none';
+  }
+</script>
+</body>
 </html>
