@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Системи рівнянь: Метод підстановки | 9 клас</title>
+    
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            options: {
+                enableMenu: false
+            },
+            startup: {
+                ready: () => {
+                    MathJax.startup.defaultReady();
+                }
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #64748b;
+            --accent: #f59e0b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --bg-light: #f8fafc;
+            --white: #ffffff;
+            --text-main: #1e293b;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            color: var(--text-main);
+            overflow: hidden;
+        }
+
+        .main-container {
+            display: flex;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* --- LEFT SIDE: CONTENT --- */
+        .content-side {
+            width: 50%;
+            height: 100%;
+            overflow-y: auto;
+            background-color: var(--white);
+            border-right: 2px solid #e2e8f0;
+            padding: 30px;
+            box-sizing: border-box;
+        }
+
+        .lesson-header {
+            border-bottom: 3px solid var(--primary);
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+        }
+
+        .algorithm-box {
+            background: #f0f7ff;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-left: 5px solid var(--primary);
+        }
+
+        .step {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 12px;
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .step-num {
+            background: var(--primary);
+            color: white;
+            min-width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 15px;
+            font-weight: bold;
+        }
+
+        .task-card {
+            background: var(--white);
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .task-status {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 12px;
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 6px;
+            background: #f1f5f9;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        input {
+            width: 60px;
+            padding: 8px;
+            border: 2px solid #cbd5e1;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        input:focus { border-color: var(--primary); outline: none; }
+
+        .btn {
+            padding: 10px 16px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .btn-check { background: var(--primary); color: white; }
+        .btn-check:hover { background: #1d4ed8; }
+        .btn-hint { background: var(--accent); color: white; font-size: 13px; }
+        .btn-sol { background: var(--secondary); color: white; font-size: 13px; }
+
+        .hint-text, .sol-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .hint-text { background: #fffbeb; border: 1px solid #fef3c7; }
+        .sol-text { background: #f1f5f9; border: 1px solid #e2e8f0; }
+
+        /* --- RIGHT SIDE: WHITEBOARD --- */
+        .board-side {
+            width: 50%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            background: #f8fafc;
+        }
+
+        .toolbar {
+            padding: 12px;
+            background: #1e293b;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .tool-btn {
+            background: #334155;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .tool-btn.active { background: var(--primary); }
+        .tool-btn:hover { background: #475569; }
+
+        .canvas-wrap {
+            flex-grow: 1;
+            margin: 15px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        canvas { cursor: crosshair; display: block; }
+
+        #final-modal {
+            display: none;
+            text-align: center;
+            padding: 50px;
+        }
+
+        .math-expr { font-size: 1.2em; margin: 10px 0; }
+    </style>
+</head>
+<body>
+
+<div class="main-container">
+    <div class="content-side" id="content-scroll">
+        <div id="lesson-view">
+            <header class="lesson-header">
+                <h1 style="margin:0; font-size: 24px;">Системи рівнянь: Метод підстановки</h1>
+                <p style="color: var(--secondary); margin: 5px 0;">Алгебра, 9 клас • 1 година практики</p>
+            </header>
+
+            <section class="algorithm-box">
+                <h3 style="margin-top:0">🚀 Алгоритм розв'язання</h3>
+                <div class="step">
+                    <div class="step-num">1</div>
+                    <div><b>Виразити:</b> З одного рівняння (де зручніше) виразити одну змінну через іншу (наприклад, $x$ через $y$).</div>
+                </div>
+                <div class="step">
+                    <div class="step-num">2</div>
+                    <div><b>Підставити:</b> Підставити одержаний вираз замість цієї змінної у <b>друге</b> рівняння системи.</div>
+                </div>
+                <div class="step">
+                    <div class="step-num">3</div>
+                    <div><b>Розв'язати:</b> Розв'язати отримане рівняння з однією змінною та знайти її значення.</div>
+                </div>
+                <div class="step">
+                    <div class="step-num">4</div>
+                    <div><b>Знайти другу:</b> Підставити знайдене значення у вираз із першого кроку та обчислити другу змінну.</div>
+                </div>
+            </section>
+
+            <div id="tasks-container">
+                </div>
+
+            <div style="padding: 20px; text-align: center;">
+                <button class="btn btn-check" style="width: 100%; font-size: 18px;" onclick="finishLesson()">Завершити урок та отримати оцінку</button>
+            </div>
+        </div>
+
+        <div id="final-modal">
+            <h1 id="result-title">Урок завершено!</h1>
+            <p id="result-score" style="font-size: 24px; font-weight: bold;"></p>
+            <p id="result-msg" style="color: var(--primary); font-size: 18px;"></p>
+            <button class="btn btn-check" onclick="location.reload()">Почати заново</button>
+        </div>
+    </div>
+
+    <div class="board-side">
+        <div class="toolbar">
+            <button class="tool-btn active" id="pen-tool" onclick="setTool('pen')">Олівець</button>
+            <button class="tool-btn" id="eraser-tool" onclick="setTool('eraser')">Гумка</button>
+            <button class="tool-btn" onclick="drawGrid()">Сітка</button>
+            <button class="tool-btn" onclick="drawAxes()">Осі (x,y)</button>
+            <button class="tool-btn" style="background: var(--danger);" onclick="clearCanvas()">Очистити все</button>
+            <span style="color: #94a3b8; font-size: 12px; margin-left: auto;">Чернетка для розрахунків</span>
+        </div>
+        <div class="canvas-wrap" id="canvas-container">
+            <canvas id="whiteboard"></canvas>
+        </div>
+    </div>
+</div>
+
+<script>
+    let score = 0;
+    const totalTasksCount = 20;
+    const solvedTasks = new Set();
+
+    // --- TASK GENERATION ---
+    function generateLesson() {
+        const container = document.getElementById('tasks-container');
+        for (let i = 1; i <= totalTasksCount; i++) {
+            const data = createTask(i);
+            const card = document.createElement('div');
+            card.className = 'task-card';
+            card.id = `card-${i}`;
+            card.innerHTML = `
+                <div class="task-status" id="status-${i}">Очікує</div>
+                <h3>Завдання №${i}</h3>
+                <p>Розв'яжіть систему рівнянь:</p>
+                <div class="math-expr">
+                    $$\\begin{cases} ${data.eq1} \\\\ ${data.eq2} \\end{cases}$$
+                </div>
+                <div class="input-group">
+                    <span>$x =$</span> <input type="number" id="input-x-${i}" step="any">
+                    <span>$y =$</span> <input type="number" id="input-y-${i}" step="any">
+                    <button class="btn btn-check" onclick="checkTask(${i}, ${data.x}, ${data.y})">Перевірити</button>
+                </div>
+                <div id="feedback-${i}" style="margin-bottom: 10px; font-weight: bold;"></div>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn btn-hint" onclick="toggleBlock('hint-${i}')">Підказка</button>
+                    <button class="btn btn-sol" onclick="toggleBlock('sol-${i}')">Розв'язання</button>
+                </div>
+                <div id="hint-${i}" class="hint-text">💡 ${data.hint}</div>
+                <div id="sol-${i}" class="sol-text"><b>Хід думок:</b><br>${data.sol}</div>
+            `;
+            container.appendChild(card);
+        }
+        // Force MathJax to process new elements
+        MathJax.typesetPromise();
+    }
+
+    function createTask(id) {
+        // Generate nice integer coordinates
+        const x = Math.floor(Math.random() * 11) - 5; // -5 to 5
+        const y = Math.floor(Math.random() * 11) - 5; // -5 to 5
+        
+        // Ensure x or y coefficient is 1 in at least one equation for easy substitution
+        const a1 = 1;
+        const b1 = Math.floor(Math.random() * 4) + 1;
+        const c1 = a1 * x + b1 * y;
+
+        const a2 = Math.floor(Math.random() * 3) + 2;
+        const b2 = (Math.random() > 0.5 ? 1 : -1) * (Math.floor(Math.random() * 2) + 1);
+        const c2 = a2 * x + b2 * y;
+
+        const eq1Str = `x ${b1 >= 0 ? '+' : '-'} ${Math.abs(b1)}y = ${c1}`;
+        const eq2Str = `${a2}x ${b2 >= 0 ? '+' : '-'} ${Math.abs(b2)}y = ${c2}`;
+
+        return {
+            x: x, y: y,
+            eq1: eq1Str,
+            eq2: eq2Str,
+            hint: `Виразіть $x$ з першого рівняння: $x = ${c1} ${b1 > 0 ? '-' : '+'} ${Math.abs(b1)}y$. Тепер підставте це у друге рівняння замість $x$.`,
+            sol: `1) $x = ${c1} - ${b1}y$<br>2) $${a2}(${c1} - ${b1}y) ${b2 >= 0 ? '+' : '-'} ${Math.abs(b2)}y = ${c2}$<br>3) $${a2*c1} - ${a2*b1}y ${b2 >= 0 ? '+' : '-'} ${Math.abs(b2)}y = ${c2}$<br>4) Після зведення подібних: $y = ${y}$.<br>5) Тоді $x = ${c1} - ${b1}(${y}) = ${x}$.`
+        };
+    }
+
+    function checkTask(id, correctX, correctY) {
+        const ux = parseFloat(document.getElementById(`input-x-${id}`).value);
+        const uy = parseFloat(document.getElementById(`input-y-${id}`).value);
+        const feedback = document.getElementById(`feedback-${id}`);
+        const status = document.getElementById(`status-${id}`);
+
+        if (ux === correctX && uy === correctY) {
+            feedback.innerText = "✅ Правильно! Молодець!";
+            feedback.style.color = "var(--success)";
+            status.innerText = "Виконано";
+            status.style.background = "#dcfce7";
+            status.style.color = "#166534";
+            if (!solvedTasks.has(id)) {
+                score++;
+                solvedTasks.add(id);
+            }
+        } else {
+            feedback.innerText = "❌ Помилка. Спробуй ще раз або скористайся підказкою.";
+            feedback.style.color = "var(--danger)";
+        }
+    }
+
+    function toggleBlock(id) {
+        const el = document.getElementById(id);
+        el.style.display = el.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function finishLesson() {
+        document.getElementById('lesson-view').style.display = 'none';
+        document.getElementById('final-modal').style.display = 'block';
+        
+        const percent = (score / totalTasksCount) * 100;
+        const mark = Math.round((score / totalTasksCount) * 12);
+        
+        document.getElementById('result-score').innerText = `Твоя оцінка: ${mark} балів (${score} з ${totalTasksCount})`;
+        
+        let msg = "";
+        if (mark >= 10) msg = "Ти справжній експерт! Твої знання систем рівнянь на висоті! 🌟";
+        else if (mark >= 7) msg = "Гарна робота! Ти впевнено володієш методом підстановки. 👍";
+        else msg = "Ти добре постарався! Практика — шлях до успіху, продовжуй у тому ж дусі! 💪";
+        
+        document.getElementById('result-msg').innerText = msg;
+    }
+
+    // --- WHITEBOARD LOGIC ---
+    const canvas = document.getElementById('whiteboard');
+    const ctx = canvas.getContext('2d');
+    let isDrawing = false;
+    let currentTool = 'pen';
+
+    function initCanvas() {
+        const wrap = document.getElementById('canvas-container');
+        canvas.width = wrap.clientWidth;
+        canvas.height = wrap.clientHeight;
+        ctx.lineCap = 'round';
+        ctx.lineWidth = 3;
+    }
+
+    function getMousePos(e) {
+        const rect = canvas.getBoundingClientRect();
+        return {
+            x: e.clientX - rect.left,
+            y: e.clientY - rect.top
+        };
+    }
+
+    canvas.addEventListener('mousedown', (e) => {
+        isDrawing = true;
+        const pos = getMousePos(e);
+        ctx.beginPath();
+        ctx.moveTo(pos.x, pos.y);
+    });
+
+    canvas.addEventListener('mousemove', (e) => {
+        if (!isDrawing) return;
+        const pos = getMousePos(e);
+        ctx.strokeStyle = currentTool === 'eraser' ? '#ffffff' : '#1e293b';
+        ctx.lineWidth = currentTool === 'eraser' ? 25 : 3;
+        ctx.lineTo(pos.x, pos.y);
+        ctx.stroke();
+    });
+
+    canvas.addEventListener('mouseup', () => isDrawing = false);
+
+    function setTool(t) {
+        currentTool = t;
+        document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(t + '-tool').classList.add('active');
+    }
+
+    function clearCanvas() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function drawGrid() {
+        ctx.strokeStyle = '#f1f5f9';
+        ctx.lineWidth = 1;
+        const size = 30;
+        for (let x = 0; x <= canvas.width; x += size) {
+            ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+        }
+        for (let y = 0; y <= canvas.height; y += size) {
+            ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+        }
+    }
+
+    function drawAxes() {
+        ctx.strokeStyle = '#94a3b8';
+        ctx.lineWidth = 2;
+        const midX = canvas.width / 2;
+        const midY = canvas.height / 2;
+        // X
+        ctx.beginPath(); ctx.moveTo(0, midY); ctx.lineTo(canvas.width, midY); ctx.stroke();
+        // Y
+        ctx.beginPath(); ctx.moveTo(midX, 0); ctx.lineTo(midX, canvas.height); ctx.stroke();
+        
+        ctx.fillStyle = "#64748b";
+        ctx.fillText("x", canvas.width - 15, midY - 5);
+        ctx.fillText("y", midX + 5, 15);
+    }
+
+    window.onload = () => {
+        initCanvas();
+        generateLesson();
+    };
+    window.onresize = initCanvas;
+
+</script>
+</body>
+</html>
