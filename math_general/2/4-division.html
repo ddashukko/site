@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Зайчикова Математика: Розкладання</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap');
+
+        body {
+            font-family: 'Fredoka', sans-serif;
+            background-color: #f3e5f5;
+            background-image: radial-gradient(#e1bee7 2px, transparent 2px);
+            background-size: 25px 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        #app {
+            background: white;
+            padding: 20px;
+            border-radius: 35px;
+            box-shadow: 0 15px 30px rgba(156, 39, 176, 0.3);
+            text-align: center;
+            width: 95%;
+            max-width: 600px;
+            border: 5px solid #fff;
+            position: relative;
+        }
+
+        h1 { color: #6a1b9a; margin: 10px 0; font-size: 26px; }
+        p { color: #8e24aa; font-size: 18px; }
+
+        .bunny-mascot {
+            font-size: 70px;
+            display: block;
+            margin-bottom: 10px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        /* Стилі для ТУТОРІАЛУ (Вусики) */
+        .split-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .main-number {
+            font-size: 50px;
+            font-weight: bold;
+            color: #4a148c;
+            background: #e1bee7;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+            z-index: 2;
+        }
+
+        .branches {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            position: relative;
+        }
+
+        /* Лінії вусиків */
+        .branches::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            width: 80px;
+            height: 40px;
+            border-left: 4px solid #ba68c8;
+            border-right: 4px solid #ba68c8;
+            transform: translateX(-50%) skewX(-20deg); 
+            /* Це спрощена імітація ліній */
+        }
+        
+        /* Лінії малюємо через SVG для краси */
+        .svg-lines {
+            position: absolute;
+            top: 30px;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .split-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 2;
+        }
+
+        .split-input {
+            width: 60px;
+            height: 60px;
+            font-size: 28px;
+            text-align: center;
+            border: 3px solid #ab47bc;
+            border-radius: 15px;
+            color: #4a148c;
+            background: #fff;
+            outline: none;
+            transition: all 0.3s;
+        }
+        
+        .split-input:focus { border-color: #7b1fa2; box-shadow: 0 0 10px #e1bee7; }
+        .split-input:disabled { background-color: #f3e5f5; border-color: #ce93d8; color: #888; }
+
+        .split-label {
+            font-size: 14px;
+            color: #8e24aa;
+            margin-top: 5px;
+            font-weight: bold;
+        }
+
+        .step-info {
+            background: #f3e5f5;
+            padding: 10px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 20px;
+            color: #4a148c;
+            font-weight: bold;
+        }
+
+        /* Стилі для гри */
+        .game-problem {
+            font-size: 48px;
+            color: #4a148c;
+            margin: 30px 0;
+            font-weight: bold;
+        }
+
+        input[type="number"]::-webkit-inner-spin-button, 
+        input[type="number"]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+
+        .game-input {
+            width: 100px;
+            font-size: 48px;
+            padding: 5px;
+            border: 4px solid #ab47bc;
+            border-radius: 20px;
+            text-align: center;
+            color: #4a148c;
+            background: white;
+        }
+
+        button {
+            background: linear-gradient(45deg, #ab47bc, #8e24aa);
+            color: white;
+            border: none;
+            padding: 12px 40px;
+            font-size: 22px;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-top: 25px;
+            font-family: 'Fredoka', sans-serif;
+            box-shadow: 0 5px 15px rgba(123, 31, 162, 0.3);
+            transition: transform 0.2s;
+        }
+        button:active { transform: scale(0.95); }
+        button:hover { filter: brightness(1.1); }
+
+        .hidden { display: none !important; }
+
+        .confetti {
+            position: fixed;
+            width: 12px;
+            height: 12px;
+            animation: fall 3s linear forwards;
+            z-index: 100;
+        }
+        @keyframes fall { to { transform: translateY(100vh) rotate(720deg); } }
+
+        .shake { animation: shake 0.4s; }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+        
+        .progress-bar { height: 12px; background: #ce93d8; width: 0%; border-radius: 6px; transition: width 0.3s; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <div id="screen-start">
+        <div class="bunny-mascot">🐰✨</div>
+        <h1>Магічне Розкладання</h1>
+        <p>Ніяких стовпчиків! Будемо розкладати числа як профі.</p>
+        <button onclick="startTutorial()">Почати тренування</button>
+    </div>
+
+    <div id="screen-tutorial" class="hidden">
+        <div style="font-size: 16px; color: #7b1fa2; margin-bottom: 10px;">Тренування: <span id="tut-progress">1</span>/3</div>
+        
+        <div style="font-size: 24px; color: #4a148c; margin-bottom: 20px;">
+            Приклад: <span id="tut-full-problem" style="font-weight: bold;">52 - 27</span>
+        </div>
+
+        <p id="tut-instruction" style="font-size: 18px; color: #d81b60;">Нам не вистачає одиниць! Розклади число 52:</p>
+
+        <div class="split-container">
+            <div class="main-number" id="tut-main-num">52</div>
+            
+            <svg class="svg-lines" width="300" height="60">
+                <line x1="50%" y1="0" x2="25%" y2="60" stroke="#ba68c8" stroke-width="4" />
+                <line x1="50%" y1="0" x2="75%" y2="60" stroke="#ba68c8" stroke-width="4" />
+            </svg>
+
+            <div class="branches">
+                <div class="split-box">
+                    <input type="number" id="input-tens" class="split-input" placeholder="?">
+                    <div class="split-label">Десятки</div>
+                </div>
+                <div class="split-box">
+                    <input type="number" id="input-ones" class="split-input" placeholder="?">
+                    <div class="split-label">Одиниці</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="tut-calc-step" class="hidden step-info">
+            Тепер рахуємо: <span id="calc-text"></span> = <input type="number" id="input-final" class="split-input" style="width: 80px; height: 50px; font-size: 24px;">
+        </div>
+
+        <div class="message" id="tut-msg" style="height: 30px; color: #d81b60; font-weight: bold;"></div>
+        <button onclick="checkTutorial()" id="tut-btn">Перевірити</button>
+    </div>
+
+    <div id="screen-game" class="hidden">
+        <div id="level-badge" style="background:#e1bee7; padding:5px 15px; border-radius:20px; display:inline-block; font-weight:bold; color:#4a148c;">Рівень 1</div>
+        <div class="bunny-mascot" id="game-bunny">🐰🚀</div>
+        
+        <div class="game-problem" id="game-problem-text">42 - 15 = </div>
+        <input type="number" class="game-input" id="game-answer" autocomplete="off">
+        
+        <div id="game-msg" style="height:30px; margin-top:10px; font-weight:bold; color:#d81b60;"></div>
+        <button onclick="checkGame()">Готово</button>
+        
+        <div style="background:#f3e5f5; border-radius:10px; margin-top:20px; overflow:hidden;">
+            <div class="progress-bar" id="game-progress-bar"></div>
+        </div>
+    </div>
+
+    <div id="screen-end" class="hidden">
+        <div class="bunny-mascot">🎉🐰👑</div>
+        <h1>Ти перемогла!</h1>
+        <p>Всі приклади вирішені без стовпчиків!</p>
+        <button onclick="location.reload()">Зіграти ще раз</button>
+    </div>
+</div>
+
+<script>
+    // --- ДАНІ ---
+    // Для туторіалу: показуємо як розкладати Зменшуване (52 -> 40 і 12)
+    const tutorials = [
+        { num: 52, sub: 27, tens: 40, ones: 12 }, // 52 - 27
+        { num: 43, sub: 15, tens: 30, ones: 13 }, // 43 - 15
+        { num: 60, sub: 24, tens: 50, ones: 10 }  // 60 - 24
+    ];
+    
+    let tutIndex = 0;
+    let tutStep = 1; // 1 = Split, 2 = Final Calc
+
+    let gameQuestions = [];
+    let gameIndex = 0;
+    
+    // --- ЛОГІКА ТУТОРІАЛУ ---
+    function startTutorial() {
+        document.getElementById('screen-start').classList.add('hidden');
+        document.getElementById('screen-tutorial').classList.remove('hidden');
+        loadTutorial();
+    }
+
+    function loadTutorial() {
+        let t = tutorials[tutIndex];
+        tutStep = 1;
+        
+        // Оновлення текстів
+        document.getElementById('tut-progress').innerText = tutIndex + 1;
+        document.getElementById('tut-full-problem').innerText = `${t.num} - ${t.sub}`;
+        document.getElementById('tut-main-num').innerText = t.num;
+        document.getElementById('tut-instruction').innerText = `Щоб відняти ${t.sub}, розклади ${t.num} на зручні числа:`;
+        
+        // Скидання полів
+        let iTens = document.getElementById('input-tens');
+        let iOnes = document.getElementById('input-ones');
+        let iFinal = document.getElementById('input-final');
+        
+        iTens.value = ''; iTens.disabled = false; iTens.style.backgroundColor = 'white';
+        iOnes.value = ''; iOnes.disabled = false; iOnes.style.backgroundColor = 'white';
+        iFinal.value = '';
+        
+        document.getElementById('tut-calc-step').classList.add('hidden');
+        document.getElementById('tut-btn').innerText = "Перевірити розкладання";
+        document.getElementById('tut-msg').innerText = "";
+        
+        iTens.focus();
+    }
+
+    function checkTutorial() {
+        let t = tutorials[tutIndex];
+        let msg = document.getElementById('tut-msg');
+        let iTens = document.getElementById('input-tens');
+        let iOnes = document.getElementById('input-ones');
+        
+        if (tutStep === 1) {
+            // Перевіряємо розкладання (наприклад 52 -> 40 і 12)
+            let userTens = parseInt(iTens.value);
+            let userOnes = parseInt(iOnes.value);
+            
+            if (userTens === t.tens && userOnes === t.ones) {
+                // Правильно розклали
+                msg.innerText = "Чудово! Тепер легко відняти.";
+                msg.style.color = "green";
+                
+                iTens.disabled = true; iTens.style.backgroundColor = "#f3e5f5";
+                iOnes.disabled = true; iOnes.style.backgroundColor = "#f3e5f5";
+                
+                // Перехід до фінального підрахунку
+                tutStep = 2;
+                document.getElementById('tut-calc-step').classList.remove('hidden');
+                
+                // Формуємо текст для підрахунку
+                // (40 - 20) + (12 - 7)
+                let subTens = Math.floor(t.sub / 10) * 10;
+                let subOnes = t.sub % 10;
+                // Або простіше: просто покажемо фінальний приклад
+                // Але краще показати логіку: 12 - 7 = 5, 40 - 20 = 20. Разом 25.
+                // Для простоти вводу - просимо лише фінальний результат
+                document.getElementById('calc-text').innerText = `Отже, ${t.num} - ${t.sub}`;
+                
+                document.getElementById('tut-btn').innerText = "Перевірити результат";
+                document.getElementById('input-final').focus();
+            } else {
+                msg.innerText = `Підказка: ${t.num} це ${t.tens} і ${t.ones}`;
+                msg.style.color = "#d81b60";
+                shake(iTens); shake(iOnes);
+            }
+        } else if (tutStep === 2) {
+            // Перевіряємо фінальну відповідь
+            let userFinal = parseInt(document.getElementById('input-final').value);
+            if (userFinal === t.num - t.sub) {
+                spawnConfetti();
+                msg.innerText = "Правильно!";
+                setTimeout(() => {
+                    tutIndex++;
+                    if (tutIndex < tutorials.length) {
+                        loadTutorial();
+                    } else {
+                        startGame();
+                    }
+                }, 1500);
+            } else {
+                msg.innerText = "Спробуй ще раз порахувати.";
+                shake(document.getElementById('input-final'));
+            }
+        }
+    }
+
+    // --- ЛОГІКА ГРИ ---
+    function generateGame() {
+        gameQuestions = [];
+        
+        // Рівень 1 (5 шт): Простіші (до 50)
+        for(let i=0; i<5; i++) {
+            gameQuestions.push(createQ(20, 50, "Рівень 1: Розминка"));
+        }
+        // Рівень 2 (5 шт): Складніші (до 100)
+        for(let i=0; i<5; i++) {
+            gameQuestions.push(createQ(51, 99, "Рівень 2: Майстер"));
+        }
+        // Рівень 3 (5 шт): Круглі (70 - 23)
+        for(let i=0; i<5; i++) {
+            let tens = Math.floor(Math.random()*5)+4; // 40-80
+            let num = tens * 10;
+            let sub = Math.floor(Math.random()*(num-15)) + 11;
+            if(sub%10 === 0) sub += 3; // Щоб не кругле
+            gameQuestions.push({
+                text: `${num} - ${sub} = `,
+                ans: num - sub,
+                lvl: "Рівень 3: Хитрий нуль"
+            });
+        }
+    }
+
+    function createQ(min, max, lvl) {
+        while(true) {
+            let num = Math.floor(Math.random() * (max - min)) + min;
+            let ones = num % 10;
+            if (ones > 6) continue; // Щоб змусити "позичати", беремо малі одиниці (0-6)
+            
+            // Віднімаємо таке число, щоб одиниці були БІЛЬШІ ніж у num
+            let subOnes = Math.floor(Math.random() * (9 - ones)) + ones + 1;
+            let subTens = Math.floor(Math.random() * (Math.floor(num/10) - 1)) + 1;
+            let sub = subTens * 10 + subOnes;
+            
+            if (num - sub > 0) {
+                return { text: `${num} - ${sub} = `, ans: num - sub, lvl: lvl };
+            }
+        }
+    }
+
+    function startGame() {
+        generateGame();
+        document.getElementById('screen-tutorial').classList.add('hidden');
+        document.getElementById('screen-game').classList.remove('hidden');
+        loadGameQuestion();
+    }
+
+    function loadGameQuestion() {
+        let q = gameQuestions[gameIndex];
+        document.getElementById('level-badge').innerText = q.lvl;
+        document.getElementById('game-problem-text').innerText = q.text;
+        document.getElementById('game-answer').value = '';
+        document.getElementById('game-msg').innerText = '';
+        document.getElementById('game-answer').focus();
+        
+        let pct = (gameIndex / gameQuestions.length) * 100;
+        document.getElementById('game-progress-bar').style.width = pct + "%";
+    }
+
+    function checkGame() {
+        let val = parseInt(document.getElementById('game-answer').value);
+        let q = gameQuestions[gameIndex];
+        let bunny = document.getElementById('game-bunny');
+        
+        if (val === q.ans) {
+            spawnConfetti();
+            document.getElementById('game-msg').innerText = "Правильно!";
+            document.getElementById('game-msg').style.color = "green";
+            bunny.innerText = "🐰🥕";
+            
+            setTimeout(() => {
+                gameIndex++;
+                if (gameIndex < gameQuestions.length) {
+                    loadGameQuestion();
+                    bunny.innerText = "🐰🚀";
+                } else {
+                    endGame();
+                }
+            }, 1000);
+        } else {
+            document.getElementById('game-msg').innerText = "Подумай ще. Розклади число!";
+            document.getElementById('game-msg').style.color = "#d81b60";
+            bunny.innerText = "🐰🤔";
+            shake(document.getElementById('game-answer'));
+        }
+    }
+
+    function endGame() {
+        document.getElementById('screen-game').classList.add('hidden');
+        document.getElementById('screen-end').classList.remove('hidden');
+        spawnConfetti(); spawnConfetti();
+    }
+
+    function shake(el) {
+        el.classList.add('shake');
+        setTimeout(() => el.classList.remove('shake'), 400);
+    }
+
+    function spawnConfetti() {
+        for(let i=0; i<20; i++) {
+            let c = document.createElement('div');
+            c.classList.add('confetti');
+            c.style.left = Math.random()*100 + 'vw';
+            c.style.backgroundColor = ['#ba68c8', '#ff4081', '#ffee58'][Math.floor(Math.random()*3)];
+            c.style.animationDuration = (Math.random()*2 + 1) + "s";
+            document.body.appendChild(c);
+            setTimeout(() => c.remove(), 3000);
+        }
+    }
+    
+    // Enter key support
+    document.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            if (!document.getElementById('screen-tutorial').classList.contains('hidden')) checkTutorial();
+            else if (!document.getElementById('screen-game').classList.contains('hidden')) checkGame();
+        }
+    });
+
+</script>
+
+</body>
+</html>
