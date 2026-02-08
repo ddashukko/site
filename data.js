@@ -920,8 +920,8 @@ window.lessonsData = [
     author: "Соня",
   },
    {
-    id: "alg-8-sonya-",
-    title: "Дз",
+    id: "alg-8-sonya-fsr",
+    title: "ФСР",
     grade: 8,
     topic: "Математика",
     link: "algebra/8/Маринка/math7_fsr.html",
