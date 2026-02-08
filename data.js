@@ -919,6 +919,16 @@ window.lessonsData = [
     category: "lesson",
     author: "Соня",
   },
+   {
+    id: "alg-8-sonya-",
+    title: "Дз",
+    grade: 8,
+    topic: "Математика",
+    link: "algebra/8/Маринка/math7_fsr.html",
+    subject_code: "algebra",
+    category: "lesson",
+    author: "Соня",
+  },
   {
     id: "alg-8-sonya-",
     title: "Дз",
