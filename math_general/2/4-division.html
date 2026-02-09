@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Зайчик: Віднімаємо Частинами</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap');
+
+        body {
+            font-family: 'Fredoka', sans-serif;
+            background-color: #e3f2fd;
+            background-image: radial-gradient(#bbdefb 2px, transparent 2px);
+            background-size: 25px 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        #app {
+            background: white;
+            padding: 25px;
+            border-radius: 35px;
+            box-shadow: 0 15px 30px rgba(33, 150, 243, 0.3);
+            text-align: center;
+            width: 95%;
+            max-width: 600px;
+            border: 5px solid #fff;
+            position: relative;
+        }
+
+        h1 { color: #1565c0; margin: 10px 0; font-size: 26px; }
+        p { color: #1976d2; font-size: 18px; }
+
+        .bunny-mascot {
+            font-size: 70px;
+            display: block;
+            margin-bottom: 10px;
+            animation: hop 2s infinite;
+        }
+
+        @keyframes hop {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Стилі для ЛАНЦЮЖКА (Step-by-step) */
+        .chain-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .step-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 32px;
+            color: #0d47a1;
+            background: #e3f2fd;
+            padding: 10px 20px;
+            border-radius: 15px;
+            width: 100%;
+            box-sizing: border-box;
+            transition: all 0.5s;
+            opacity: 0.5; /* Спочатку бліде */
+        }
+
+        .step-row.active {
+            opacity: 1;
+            background: #bbdefb;
+            border: 2px solid #2196f3;
+            transform: scale(1.05);
+        }
+
+        .arrow-down {
+            font-size: 30px;
+            color: #2196f3;
+        }
+
+        input {
+            width: 80px;
+            height: 50px;
+            font-size: 28px;
+            text-align: center;
+            border: 3px solid #64b5f6;
+            border-radius: 12px;
+            color: #0d47a1;
+            background: #fff;
+            outline: none;
+            font-family: 'Fredoka', sans-serif;
+        }
+        
+        input:focus { border-color: #1565c0; background-color: #e3f2fd; }
+        input:disabled { background-color: #f5f5f5; border-color: #cfd8dc; color: #555; }
+
+        button {
+            background: linear-gradient(45deg, #42a5f5, #1e88e5);
+            color: white;
+            border: none;
+            padding: 12px 40px;
+            font-size: 22px;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-top: 25px;
+            font-family: 'Fredoka', sans-serif;
+            box-shadow: 0 5px 15px rgba(33, 150, 243, 0.4);
+            transition: transform 0.2s;
+        }
+        button:active { transform: scale(0.95); }
+        button:hover { filter: brightness(1.1); }
+
+        .hidden { display: none !important; }
+
+        .confetti {
+            position: fixed;
+            width: 12px;
+            height: 12px;
+            background: #ffd700;
+            animation: fall 3s linear forwards;
+            z-index: 100;
+        }
+        @keyframes fall { to { transform: translateY(100vh) rotate(720deg); } }
+
+        .shake { animation: shake 0.4s; }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+        
+        .progress-bar { height: 12px; background: #42a5f5; width: 0%; border-radius: 6px; transition: width 0.3s; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <div id="screen-start">
+        <div class="bunny-mascot">🐰👣</div>
+        <h1>Крокуємо назад</h1>
+        <p>Навчимося віднімати частинами!</p>
+        <p>Спочатку десятки, потім одиниці.</p>
+        <button onclick="startTutorial()">Почати</button>
+    </div>
+
+    <div id="screen-tutorial" class="hidden">
+        <div style="font-size: 16px; color: #1565c0; margin-bottom: 5px;">Приклад <span id="tut-progress">1</span> з 3</div>
+        
+        <h2 id="tut-main-problem" style="margin: 0 0 15px 0; font-size: 36px; color: #0d47a1;">52 - 27</h2>
+        <p style="margin: 0 0 15px 0; font-size: 16px;">Розбиваємо 27 на <b>20</b> і <b>7</b></p>
+
+        <div class="chain-container">
+            <div class="step-row active" id="row-step1">
+                <span id="txt-step1">52 - 20 = </span>
+                <input type="number" id="inp-step1">
+            </div>
+
+            <div class="arrow-down">⬇️</div>
+
+            <div class="step-row" id="row-step2">
+                <span id="txt-step2-start">?</span> 
+                <span id="txt-step2-end"> - 7 = </span>
+                <input type="number" id="inp-step2" disabled>
+            </div>
+        </div>
+
+        <div id="tut-msg" style="height: 30px; color: #d32f2f; font-weight: bold;"></div>
+        <button onclick="checkTutorial()" id="tut-btn">Перевірити</button>
+    </div>
+
+    <div id="screen-game" class="hidden">
+        <div id="level-badge" style="background:#bbdefb; padding:5px 15px; border-radius:20px; display:inline-block; font-weight:bold; color:#0d47a1;">Рівень 1</div>
+        <div class="bunny-mascot" id="game-bunny">🐰🏃</div>
+        
+        <div id="game-problem-text" style="font-size: 48px; color: #0d47a1; margin: 30px 0; font-weight: bold;"></div>
+        
+        <input type="number" id="game-answer" style="width: 120px; font-size: 40px;" autocomplete="off">
+        
+        <div id="game-msg" style="height:30px; margin-top:10px; font-weight:bold; color:#d32f2f;"></div>
+        <button onclick="checkGame()">Готово</button>
+        
+        <div style="background:#e3f2fd; border-radius:10px; margin-top:20px; overflow:hidden;">
+            <div class="progress-bar" id="game-progress-bar"></div>
+        </div>
+    </div>
+
+    <div id="screen-end" class="hidden">
+        <div class="bunny-mascot">🎉🐰🏆</div>
+        <h1>Ти молодець!</h1>
+        <p>Тепер ти вмієш швидко віднімати!</p>
+        <button onclick="location.reload()">Зіграти ще раз</button>
+    </div>
+</div>
+
+<script>
+    // --- ДАНІ ТУТОРІАЛУ ---
+    // Метод: 52 - 27 -> (52 - 20) = 32 -> (32 - 7) = 25
+    const tutorials = [
+        { start: 52, sub: 27, tens: 20, ones: 7, mid: 32, final: 25 },
+        { start: 43, sub: 15, tens: 10, ones: 5, mid: 33, final: 28 },
+        { start: 61, sub: 24, tens: 20, ones: 4, mid: 41, final: 37 }
+    ];
+    
+    let tutIndex = 0;
+    let tutStep = 1; // 1 = First subtract (tens), 2 = Second subtract (ones)
+
+    // --- ЛОГІКА ТУТОРІАЛУ ---
+    function startTutorial() {
+        document.getElementById('screen-start').classList.add('hidden');
+        document.getElementById('screen-tutorial').classList.remove('hidden');
+        loadTutorial();
+    }
+
+    function loadTutorial() {
+        let t = tutorials[tutIndex];
+        tutStep = 1;
+        
+        // Візуалізація
+        document.getElementById('tut-progress').innerText = tutIndex + 1;
+        document.getElementById('tut-main-problem').innerText = `${t.start} - ${t.sub}`;
+        
+        // Крок 1 UI
+        document.getElementById('txt-step1').innerText = `${t.start} - ${t.tens} = `;
+        let i1 = document.getElementById('inp-step1');
+        i1.value = ''; i1.disabled = false; i1.focus();
+        document.getElementById('row-step1').classList.add('active');
+
+        // Крок 2 UI (Скидання)
+        document.getElementById('txt-step2-start').innerText = '?';
+        document.getElementById('txt-step2-end').innerText = ` - ${t.ones} = `;
+        let i2 = document.getElementById('inp-step2');
+        i2.value = ''; i2.disabled = true;
+        document.getElementById('row-step2').classList.remove('active');
+
+        document.getElementById('tut-msg').innerText = "";
+        document.getElementById('tut-btn').innerText = "Перевірити";
+    }
+
+    function checkTutorial() {
+        let t = tutorials[tutIndex];
+        let msg = document.getElementById('tut-msg');
+        let i1 = document.getElementById('inp-step1');
+        let i2 = document.getElementById('inp-step2');
+
+        if (tutStep === 1) {
+            // Перевіряємо перший крок (віднімання десятків)
+            if (parseInt(i1.value) === t.mid) {
+                msg.innerText = "";
+                // Блокуємо перший крок
+                i1.disabled = true;
+                document.getElementById('row-step1').classList.remove('active');
+                
+                // Активуємо другий крок
+                tutStep = 2;
+                document.getElementById('row-step2').classList.add('active');
+                document.getElementById('txt-step2-start').innerText = t.mid; // Підставляємо число
+                i2.disabled = false;
+                i2.focus();
+            } else {
+                msg.innerText = `Спробуй: ${t.start} мінус ${t.tens}`;
+                shake(i1);
+            }
+        } else if (tutStep === 2) {
+            // Перевіряємо другий крок (віднімання одиниць)
+            if (parseInt(i2.value) === t.final) {
+                msg.innerText = "Правильно!";
+                msg.style.color = "green";
+                spawnConfetti();
+                
+                setTimeout(() => {
+                    tutIndex++;
+                    if (tutIndex < tutorials.length) {
+                        loadTutorial();
+                    } else {
+                        startGame();
+                    }
+                }, 1500);
+            } else {
+                msg.innerText = `Тепер ${t.mid} мінус ${t.ones}`;
+                msg.style.color = "#d32f2f";
+                shake(i2);
+            }
+        }
+    }
+
+    // --- ЛОГІКА ГРИ ---
+    let gameQuestions = [];
+    let gameIndex = 0;
+
+    function startGame() {
+        generateGame();
+        document.getElementById('screen-tutorial').classList.add('hidden');
+        document.getElementById('screen-game').classList.remove('hidden');
+        loadGameQuestion();
+    }
+
+    function generateGame() {
+        gameQuestions = [];
+        // Рівень 1
+        for(let i=0; i<5; i++) gameQuestions.push(createQ(20, 50, "Рівень 1"));
+        // Рівень 2
+        for(let i=0; i<5; i++) gameQuestions.push(createQ(51, 99, "Рівень 2"));
+        // Рівень 3 (Круглі)
+        for(let i=0; i<5; i++) {
+            let num = (Math.floor(Math.random()*5)+4)*10;
+            let sub = Math.floor(Math.random()*(num-15)) + 11;
+            if(sub%10===0) sub+=2;
+            gameQuestions.push({t: `${num} - ${sub}`, a: num-sub, l: "Рівень 3", h: `Відніми ${Math.floor(sub/10)*10}, потім ${sub%10}`});
+        }
+    }
+
+    function createQ(min, max, lvl) {
+        while(true) {
+            let num = Math.floor(Math.random() * (max - min)) + min;
+            let ones = num % 10;
+            if (ones > 6) continue; 
+            let sub = Math.floor(Math.random() * (num - 10));
+            // Ensure borrowing needed
+            if ((sub % 10) <= ones) continue;
+            
+            return { 
+                t: `${num} - ${sub}`, 
+                a: num - sub, 
+                l: lvl, 
+                h: `Відніми ${Math.floor(sub/10)*10}, потім ${sub%10}` 
+            };
+        }
+    }
+
+    function loadGameQuestion() {
+        let q = gameQuestions[gameIndex];
+        document.getElementById('level-badge').innerText = q.l;
+        document.getElementById('game-problem-text').innerText = q.t + " = ";
+        document.getElementById('game-answer').value = '';
+        document.getElementById('game-msg').innerText = '';
+        document.getElementById('game-answer').focus();
+        document.getElementById('game-progress-bar').style.width = (gameIndex / gameQuestions.length) * 100 + "%";
+    }
+
+    function checkGame() {
+        let val = parseInt(document.getElementById('game-answer').value);
+        let q = gameQuestions[gameIndex];
+        
+        if (val === q.a) {
+            document.getElementById('game-msg').innerText = "Супер!";
+            document.getElementById('game-msg').style.color = "green";
+            spawnConfetti();
+            setTimeout(() => {
+                gameIndex++;
+                if (gameIndex < gameQuestions.length) loadGameQuestion();
+                else {
+                    document.getElementById('screen-game').classList.add('hidden');
+                    document.getElementById('screen-end').classList.remove('hidden');
+                }
+            }, 1000);
+        } else {
+            document.getElementById('game-msg').innerText = q.h; // Підказка методом частин
+            document.getElementById('game-msg').style.color = "#d32f2f";
+            shake(document.getElementById('game-answer'));
+        }
+    }
+
+    function shake(el) {
+        el.classList.add('shake');
+        setTimeout(() => el.classList.remove('shake'), 400);
+    }
+
+    function spawnConfetti() {
+        for(let i=0; i<20; i++) {
+            let c = document.createElement('div');
+            c.classList.add('confetti');
+            c.style.left = Math.random()*100 + 'vw';
+            c.style.backgroundColor = ['#2196f3', '#ffeb3b', '#e91e63'][Math.floor(Math.random()*3)];
+            c.style.animationDuration = (Math.random()*2 + 1) + "s";
+            document.body.appendChild(c);
+            setTimeout(() => c.remove(), 3000);
+        }
+    }
+
+    document.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            if (!document.getElementById('screen-tutorial').classList.contains('hidden')) checkTutorial();
+            else if (!document.getElementById('screen-game').classList.contains('hidden')) checkGame();
+        }
+    });
+</script>
+
+</body>
+</html>
+

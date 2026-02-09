@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Майстер Формул: 8 Клас</title>
+    
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['\\(', '\\)']],
+                displayMath: [['\\[', '\\]']],
+                processEscapes: true
+            },
+            options: {
+                ignoreHtmlClass: 'tex2jax_ignore',
+                processHtmlClass: 'tex2jax_process'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-light: #e0e7ff;
+            --success: #10b981;
+            --error: #ef4444;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #1e293b;
+            --border: #e2e8f0;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body, html {
+            margin: 0; padding: 0;
+            height: 100%; width: 100%;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow: hidden;
+        }
+
+        .main-layout {
+            display: flex;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* --- CONTENT SIDE --- */
+        .content-area {
+            flex: 1;
+            height: 100%;
+            overflow-y: auto;
+            padding: 20px;
+            border-right: 2px solid var(--border);
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .lesson-box { max-width: 800px; margin: 0 auto; }
+
+        header {
+            background: linear-gradient(135deg, var(--primary), #818cf8);
+            color: white;
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.2);
+        }
+
+        .theory-section {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid var(--border);
+            margin-bottom: 30px;
+        }
+
+        .task-card {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .option-btn {
+            background: var(--bg);
+            border: 2px solid var(--border);
+            padding: 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .option-btn:hover { border-color: var(--primary); background: var(--primary-light); }
+        .option-btn.correct { background: var(--success); color: white; border-color: var(--success); }
+        .option-btn.wrong { background: var(--error); color: white; border-color: var(--error); }
+
+        .btn-action {
+            padding: 10px 18px;
+            border-radius: 10px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-top: 15px;
+            margin-right: 10px;
+        }
+
+        .btn-hint { background: #fef3c7; color: #92400e; }
+        .btn-sol { background: #dcfce7; color: #166534; }
+
+        .hidden-info {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            border-left: 4px solid var(--primary);
+            background: #f1f5f9;
+        }
+
+        /* --- WHITEBOARD SIDE --- */
+        .board-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #cbd5e1;
+            position: relative;
+        }
+
+        .board-toolbar {
+            padding: 15px;
+            background: #1e293b;
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .tool-btn {
+            width: 50px; height: 50px;
+            border-radius: 12px;
+            background: #334155;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tool-btn.active { background: var(--primary); box-shadow: 0 0 10px var(--primary); }
+
+        canvas {
+            flex: 1;
+            background: white;
+            touch-action: none;
+        }
+
+        /* --- MOBILE ADAPTATION --- */
+        @media (max-width: 900px) {
+            .main-layout { flex-direction: column; }
+            .content-area, .board-area { height: 50vh; width: 100%; }
+            .options-grid { grid-template-columns: 1fr; }
+        }
+
+        /* --- RESULTS --- */
+        #final-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255,255,255,0.98);
+            display: none; flex-direction: column;
+            align-items: center; justify-content: center;
+            z-index: 1000; text-align: center; padding: 20px;
+        }
+    </style>
+</head>
+<body class="tex2jax_ignore">
+
+<div class="main-layout">
+    <div class="content-area tex2jax_process">
+        <div class="lesson-box">
+            <header>
+                <h1>🚀 Формули скороченого множення</h1>
+                <p>Інтерактивний тренажер | 8 Клас</p>
+            </header>
+
+            <div class="theory-section">
+                <details>
+                    <summary style="font-weight: bold; cursor: pointer; font-size: 1.2rem;">📖 Відкрити шпаргалку</summary>
+                    <div style="padding-top: 15px;">
+                        <p>1. <strong>Квадрат суми:</strong> \( (a + b)^2 = a^2 + 2 \cdot a \cdot b + b^2 \)</p>
+                        <p>2. <strong>Квадрат різниці:</strong> \( (a - b)^2 = a^2 - 2 \cdot a \cdot b + b^2 \)</p>
+                        <p>3. <strong>Різниця квадратів:</strong> \( (a - b) \cdot (a + b) = a^2 - b^2 \)</p>
+                    </div>
+                </details>
+            </div>
+
+            <div id="tasks-list"></div>
+
+            <button onclick="finishLesson()" style="width: 100%; padding: 20px; background: var(--primary); color: white; border: none; border-radius: 15px; font-size: 1.2rem; font-weight: bold; cursor: pointer; margin-bottom: 50px;">
+                Завершити урок ✨
+            </button>
+        </div>
+    </div>
+
+    <div class="board-area">
+        <div class="board-toolbar">
+            <button class="tool-btn active" id="pen" onclick="setTool('pen')">✏️</button>
+            <button class="tool-btn" id="eraser" onclick="setTool('eraser')">🧽</button>
+            <button class="tool-btn" onclick="clearBoard()">🗑️</button>
+            <button class="tool-btn" onclick="drawGrid()" title="Сітка">📏</button>
+        </div>
+        <canvas id="canvas"></canvas>
+    </div>
+</div>
+
+<div id="final-screen">
+    <h1 style="font-size: 3rem; color: var(--primary);">Урок завершено!</h1>
+    <div id="score-val" style="font-size: 5rem; font-weight: 900; margin: 20px 0;">0/20</div>
+    <p id="praise" style="font-size: 1.5rem; max-width: 600px; color: var(--text);"></p>
+    <button onclick="location.reload()" class="btn-action" style="background: var(--primary); color: white; padding: 15px 40px; font-size: 1.1rem;">Спробувати ще раз</button>
+</div>
+
+<script>
+    const taskData = [
+        { q: "\\( (x + 4)^2 \\)", o: ["\\( x^2 + 8x + 16 \\)", "\\( x^2 + 16 \\)", "\\( x^2 + 4x + 16 \\)", "\\( x^2 + 8x + 8 \\)"], c: 0, h: "Використай \\( a^2 + 2ab + b^2 \\)", s: "\\( x^2 + 2 \\cdot x \\cdot 4 + 4^2 = x^2 + 8x + 16 \\)" },
+        { q: "\\( (a - 3)^2 \\)", o: ["\\( a^2 - 9 \\)", "\\( a^2 - 6a + 9 \\)", "\\( a^2 + 6a + 9 \\)", "\\( a^2 - 3a + 9 \\)"], c: 1, h: "Квадрат різниці має мінус перед подвоєним добутком.", s: "\\( a^2 - 2 \\cdot a \\cdot 3 + 3^2 = a^2 - 6a + 9 \\)" },
+        { q: "\\( (y - 5)(y + 5) \\)", o: ["\\( y^2 - 10 \\)", "\\( y^2 + 25 \\)", "\\( y^2 - 25 \\)", "\\( y^2 - 5y + 25 \\)"], c: 2, h: "Це різниця квадратів: \\( a^2 - b^2 \\)", s: "\\( y^2 - 5^2 = y^2 - 25 \\)" },
+        { q: "\\( (2x + 1)^2 \\)", o: ["\\( 4x^2 + 1 \\)", "\\( 2x^2 + 4x + 1 \\)", "\\( 4x^2 + 4x + 1 \\)", "\\( 4x^2 + 2x + 1 \\)"], c: 2, h: "Не забудь піднести 2x до квадрату повністю: \\( (2x)^2 = 4x^2 \\)", s: "\\( (2x)^2 + 2 \\cdot 2x \\cdot 1 + 1^2 = 4x^2 + 4x + 1 \\)" },
+        { q: "\\( (3a - b)^2 \\)", o: ["\\( 9a^2 - 6ab + b^2 \\)", "\\( 3a^2 - 6ab + b^2 \\)", "\\( 9a^2 + b^2 \\)", "\\( 9a^2 - 3ab + b^2 \\)"], c: 0, h: "Подвоєний добуток: \\( 2 \\cdot 3a \\cdot b \\)", s: "\\( 9a^2 - 6ab + b^2 \\)" },
+        { q: "\\( (m + 10)(m - 10) \\)", o: ["\\( m^2 - 20 \\)", "\\( m^2 - 100 \\)", "\\( m^2 + 100 \\)", "\\( m^2 - 10 \\)"], c: 1, h: "Число 10 у квадраті дорівнює 100.", s: "\\( m^2 - 100 \\)" },
+        { q: "\\( 41^2 \\) (через формулу)", o: ["1601", "1641", "1681", "1701"], c: 2, h: "Подай як \\( (40 + 1)^2 \\)", s: "\\( 40^2 + 2 \\cdot 40 \\cdot 1 + 1^2 = 1600 + 80 + 1 = 1681 \\)" },
+        { q: "\\( 39 \\cdot 41 \\) (зручно)", o: ["1599", "1601", "1589", "1600"], c: 0, h: "Подай як \\( (40 - 1)(40 + 1) \\)", s: "\\( 40^2 - 1^2 = 1600 - 1 = 1599 \\)" },
+        { q: "\\( (x^2 - 2)^2 \\)", o: ["\\( x^4 - 4 \\)", "\\( x^4 - 4x^2 + 4 \\)", "\\( x^4 + 4x^2 + 4 \\)", "\\( x^2 - 4x + 4 \\)"], c: 1, h: "Квадрат квадрата: \\( (x^2)^2 = x^4 \\)", s: "\\( x^4 - 4x^2 + 4 \\)" },
+        { q: "\\( (0.5 + a)^2 \\)", o: ["\\( 0.25 + a^2 \\)", "\\( 0.25 + a + a^2 \\)", "\\( 2.5 + a + a^2 \\)", "\\( 0.5 + a + a^2 \\)"], c: 1, h: "\\( 2 \\cdot 0.5 = 1 \\)", s: "\\( 0.25 + 1a + a^2 \\)" },
+        { q: "\\( (x-y)(x+y)(x^2+y^2) \\)", o: ["\\( x^2 - y^2 \\)", "\\( x^4 + y^4 \\)", "\\( x^4 - y^4 \\)", "\\( (x-y)^4 \\)"], c: 2, h: "Згортай послідовно двічі.", s: "\\( (x^2-y^2)(x^2+y^2) = x^4 - y^4 \\)" },
+        { q: "\\( (2a + 3b)(2a - 3b) \\)", o: ["\\( 4a^2 - 9b^2 \\)", "\\( 2a^2 - 3b^2 \\)", "\\( 4a^2 + 9b^2 \\)", "\\( 4a - 9b \\)"], c: 0, h: "Квадрати обох доданків.", s: "\\( 4a^2 - 9b^2 \\)" },
+        { q: "\\( (x - 1/2)^2 \\)", o: ["\\( x^2 - x + 1/4 \\)", "\\( x^2 - 1/4 \\)", "\\( x^2 - 1/2x + 1/4 \\)", "\\( x^2 + 1/4 \\)"], c: 0, h: "Подвоєний добуток: \\( 2 \\cdot x \\cdot 0.5 = 1x \\)", s: "\\( x^2 - x + 0.25 \\)" },
+        { q: "\\( 99^2 \\)", o: ["9801", "9901", "9899", "9999"], c: 0, h: "\\( (100 - 1)^2 \\)", s: "\\( 10000 - 200 + 1 = 9801 \\)" },
+        { q: "\\( (7 + 2n)^2 \\)", o: ["\\( 49 + 4n^2 \\)", "\\( 49 + 14n + 4n^2 \\)", "\\( 49 + 28n + 4n^2 \\)", "\\( 14 + 28n + 4n \\)"], c: 2, h: "\\( 2 \\cdot 7 \\cdot 2n = 28n \\)", s: "\\( 49 + 28n + 4n^2 \\)" },
+        { q: "\\( (x-3)^2 + 6x \\)", o: ["\\( x^2 + 9 \\)", "\\( x^2 - 9 \\)", "\\( x^2 + 12x + 9 \\)", "\\( x^2 + 6x + 9 \\)"], c: 0, h: "Розкрий квадрат і зведи подібні.", s: "\\( x^2 - 6x + 9 + 6x = x^2 + 9 \\)" },
+        { q: "\\( (a+b)^2 - (a-b)^2 \\)", o: ["\\( 2a^2 + 2b^2 \\)", "\\( 4ab \\)", "\\( 0 \\)", "\\( 2ab \\)"], c: 1, h: "Будь уважним зі знаком мінус перед другими дужками.", s: "\\( (a^2+2ab+b^2) - (a^2-2ab+b^2) = 4ab \\)" },
+        { q: "\\( 52 \\cdot 48 \\)", o: ["2496", "2500", "2504", "2486"], c: 0, h: "\\( (50+2)(50-2) \\)", s: "\\( 2500 - 4 = 2496 \\)" },
+        { q: "\\( (2m - 5n)(2m + 5n) \\)", o: ["\\( 4m^2 - 25n^2 \\)", "\\( 4m^2 + 25n^2 \\)", "\\( 2m^2 - 5n^2 \\)", "\\( 4m - 25n \\)"], c: 0, h: "Різниця квадратів.", s: "\\( 4m^2 - 25n^2 \\)" },
+        { q: "\\( (x+2)^2 - 4(x+1) \\)", o: ["\\( x^2 \\)", "\\( x^2 + 8 \\)", "\\( x^2 + 4 \\)", "\\( x^2 + 8x \\)"], c: 0, h: "Розкрий все і скороти.", s: "\\( x^2+4x+4 - 4x - 4 = x^2 \\)" }
+    ];
+
+    let score = 0;
+    const list = document.getElementById('tasks-list');
+
+    taskData.forEach((task, i) => {
+        const card = document.createElement('div');
+        card.className = 'task-card';
+        card.innerHTML = `
+            <p style="font-size: 1.1rem;"><strong>Завдання ${i+1}:</strong> Спростіть або обчисліть: ${task.q}</p>
+            <div class="options-grid" id="grid-${i}">
+                ${task.o.map((opt, idx) => `
+                    <button class="option-btn" onclick="checkAns(${i}, ${idx}, this)">${opt}</button>
+                `).join('')}
+            </div>
+            <div style="margin-top: 15px;">
+                <button class="btn-action btn-hint" onclick="toggle('hint-${i}')">💡 Підказка</button>
+                <button class="btn-action btn-sol" onclick="toggle('sol-${i}')">🔍 Розв'язання</button>
+            </div>
+            <div id="hint-${i}" class="hidden-info" style="border-color: #fbbf24;">${task.h}</div>
+            <div id="sol-${i}" class="hidden-info" style="border-color: #10b981;">${task.s}</div>
+        `;
+        list.appendChild(card);
+    });
+
+    function checkAns(tIdx, oIdx, btn) {
+        if (taskData[tIdx].locked) return;
+        const correct = taskData[tIdx].c;
+        const grid = document.getElementById(`grid-${tIdx}`);
+        const buttons = grid.querySelectorAll('.option-btn');
+
+        taskData[tIdx].locked = true;
+        if (oIdx === correct) {
+            btn.classList.add('correct');
+            score++;
+        } else {
+            btn.classList.add('wrong');
+            buttons[correct].classList.add('correct');
+        }
+    }
+
+    function toggle(id) {
+        const el = document.getElementById(id);
+        el.style.display = el.style.display === 'block' ? 'none' : 'block';
+        if (window.MathJax) MathJax.typesetPromise();
+    }
+
+    function finishLesson() {
+        const screen = document.getElementById('final-screen');
+        const scoreVal = document.getElementById('score-val');
+        const praise = document.getElementById('praise');
+        
+        screen.style.display = 'flex';
+        scoreVal.innerText = `${score} / ${taskData.length}`;
+        
+        if (score >= 18) praise.innerText = "Неймовірно! Ти — абсолютний майстер скороченого множення! 🏆 Твої знання на висоті!";
+        else if (score >= 12) praise.innerText = "Чудовий результат! Ти добре орієнтуєшся в темі, ще трохи практики — і буде ідеал! 🌟";
+        else praise.innerText = "Гарна спроба! Математика любить наполегливих. Повтори формули та спробуй ще раз, у тебе обов'язково вийде! 💪";
+    }
+
+    // --- CANVAS LOGIC ---
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    let drawing = false;
+    let currentTool = 'pen';
+
+    function resize() {
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    function setTool(tool) {
+        currentTool = tool;
+        document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(tool).classList.add('active');
+    }
+
+    function getPos(e) {
+        const rect = canvas.getBoundingClientRect();
+        const ev = e.touches ? e.touches[0] : e;
+        return { x: ev.clientX - rect.left, y: ev.clientY - rect.top };
+    }
+
+    canvas.addEventListener('mousedown', start);
+    canvas.addEventListener('touchstart', (e) => { e.preventDefault(); start(e); });
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('touchmove', (e) => { e.preventDefault(); draw(e); });
+    canvas.addEventListener('mouseup', stop);
+    canvas.addEventListener('touchend', stop);
+
+    function start(e) {
+        drawing = true;
+        ctx.beginPath();
+        const pos = getPos(e);
+        ctx.moveTo(pos.x, pos.y);
+    }
+
+    function draw(e) {
+        if (!drawing) return;
+        const pos = getPos(e);
+        ctx.lineTo(pos.x, pos.y);
+        ctx.strokeStyle = currentTool === 'eraser' ? '#ffffff' : '#1e293b';
+        ctx.lineWidth = currentTool === 'eraser' ? 30 : 3;
+        ctx.lineCap = 'round';
+        ctx.stroke();
+    }
+
+    function stop() { drawing = false; }
+
+    function clearBoard() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
+
+    function drawGrid() {
+        ctx.strokeStyle = '#e2e8f0';
+        ctx.lineWidth = 1;
+        for(let i=0; i<canvas.width; i+=30) { ctx.beginPath(); ctx.moveTo(i,0); ctx.lineTo(i,canvas.height); ctx.stroke(); }
+        for(let i=0; i<canvas.height; i+=30) { ctx.beginPath(); ctx.moveTo(0,i); ctx.lineTo(canvas.width,i); ctx.stroke(); }
+    }
+</script>
+
+</body>
+</html>
