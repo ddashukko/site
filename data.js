@@ -239,6 +239,16 @@ window.lessonsData = [
   },
 
   {
+    id: "math-5-coordinate",
+    title: "Система координат",
+    grade: 5,
+    topic: "Математика",
+    link: "math_general/5/koordinatesystem.html",
+    subject_code: "math_general",
+    category: "lesson",
+    author: "Даша",
+  },
+  {
     id: "math-5-column-mult",
     title: "Множення чисел у стовпчик",
     grade: 5,
@@ -875,7 +885,7 @@ window.lessonsData = [
     category: "lesson",
     author: "Соня",
   },
-   {
+  {
     id: "math-6-kulia_konus_cslsindr",
     title: "Куля, конус, циліндр",
     grade: 6,
@@ -885,7 +895,7 @@ window.lessonsData = [
     category: "lesson",
     author: "Соня",
   },
-     {
+  {
     id: "math_sofiika_urok1",
     title: "Дроби повноцінно",
     grade: 6,
@@ -919,7 +929,7 @@ window.lessonsData = [
     category: "lesson",
     author: "Соня",
   },
-   {
+  {
     id: "alg-8-sonya-fsr",
     title: "ФСР",
     grade: 8,
@@ -1012,7 +1022,7 @@ window.lessonsData = [
     category: "lesson",
     author: "Соня",
   },
-    {
+  {
     id: "alg-9-system",
     title: "Системи нерівностей",
     grade: 9,
@@ -1122,7 +1132,7 @@ window.lessonsData = [
     category: "lesson",
     author: "Соня",
   },
-   {
+  {
     id: "alg-9-systemi",
     title: "Системи нерівностей",
     grade: 9,

@@ -1,0 +1,805 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Koordinatensystem: Meisterklasse</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary: #54a0ff;
+        --accent: #5f27cd;
+        --success: #10ac84;
+        --error: #ee5253;
+        --bg: #f7f9fc;
+        --text: #2c3e50;
+      }
+
+      body {
+        font-family: "Nunito", sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
+        margin: 0;
+        padding: 30px 20px;
+        display: flex;
+        justify-content: center;
+      }
+
+      .container {
+        max-width: 900px;
+        width: 100%;
+      }
+
+      /* --- STYLES --- */
+      .block {
+        background: white;
+        padding: 30px;
+        border-radius: 20px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        margin-bottom: 40px;
+      }
+
+      h1 {
+        margin-top: 0;
+        color: var(--accent);
+        font-weight: 900;
+        font-size: 2rem;
+        text-align: center;
+      }
+      h2 {
+        color: var(--text);
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+        border-bottom: 2px solid #f1f2f6;
+        padding-bottom: 10px;
+      }
+      h3 {
+        color: var(--primary);
+        margin-top: 0;
+      }
+
+      /* --- THEORIE --- */
+      .key-rule {
+        background: #eef2f7;
+        border-left: 5px solid var(--primary);
+        padding: 20px;
+        border-radius: 8px;
+        font-size: 1.2rem;
+        margin: 20px 0;
+      }
+
+      .terms-box {
+        background: #fff3cd;
+        border: 1px solid #ffeeba;
+        padding: 15px;
+        border-radius: 10px;
+        margin-top: 20px;
+      }
+
+      .term-item {
+        margin-bottom: 5px;
+        font-size: 1.1rem;
+      }
+      .term-de {
+        font-weight: 800;
+        color: #d35400;
+      }
+
+      .axis-info {
+        display: flex;
+        gap: 20px;
+        margin-top: 20px;
+        font-weight: bold;
+        justify-content: center;
+      }
+      .axis-x {
+        color: var(--primary);
+      }
+      .axis-y {
+        color: var(--accent);
+      }
+
+      /* --- GAME AREA --- */
+      .game-area {
+        text-align: center;
+        position: relative;
+      }
+
+      .game-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        font-weight: 700;
+        color: #bdc3c7;
+      }
+
+      .target-coords {
+        font-size: 2.5rem;
+        font-weight: 900;
+        color: var(--accent);
+        background: #f1f2f6;
+        padding: 5px 30px;
+        border-radius: 12px;
+        border: 2px solid #dfe4ea;
+      }
+
+      .canvas-wrap {
+        position: relative;
+        width: 100%;
+        max-width: 500px;
+        margin: 0 auto;
+        aspect-ratio: 1 / 1;
+      }
+
+      canvas {
+        width: 100%;
+        height: 100%;
+        border-radius: 12px;
+        cursor: crosshair;
+        touch-action: none;
+        border: 1px solid #dfe4ea;
+      }
+
+      .feedback {
+        height: 25px;
+        margin-top: 15px;
+        font-weight: 800;
+        font-size: 1.2rem;
+        opacity: 0;
+        transition: opacity 0.2s;
+      }
+      .feedback.show {
+        opacity: 1;
+      }
+      .success-text {
+        color: var(--success);
+      }
+      .error-text {
+        color: var(--error);
+      }
+
+      /* --- DOG CHECKLIST --- */
+      .coord-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 20px;
+        justify-content: center;
+        background: #fdfdfd;
+        padding: 15px;
+        border-radius: 10px;
+        border: 2px dashed #dfe4ea;
+      }
+
+      .coord-item {
+        background: white;
+        padding: 8px 15px;
+        border-radius: 20px;
+        font-weight: bold;
+        font-family: monospace;
+        font-size: 1.1rem;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        border: 2px solid #eee;
+        cursor: pointer;
+        transition: all 0.2s;
+        user-select: none;
+      }
+
+      .coord-item:hover {
+        border-color: var(--primary);
+        transform: translateY(-2px);
+      }
+
+      .coord-item.marked {
+        background-color: #dfe6e9;
+        color: #b2bec3;
+        text-decoration: line-through;
+        border-color: #dfe6e9;
+        transform: none;
+      }
+
+      .coord-item.missing-alert {
+        background-color: #ff7675;
+        color: white;
+        border-color: #d63031;
+        animation: shake 0.5s;
+      }
+
+      @keyframes shake {
+        0% {
+          transform: translateX(0);
+        }
+        25% {
+          transform: translateX(-5px);
+        }
+        50% {
+          transform: translateX(5px);
+        }
+        75% {
+          transform: translateX(-5px);
+        }
+        100% {
+          transform: translateX(0);
+        }
+      }
+
+      .check-btn {
+        background: var(--accent);
+        color: white;
+        border: none;
+        padding: 15px 40px;
+        font-size: 1.2rem;
+        border-radius: 50px;
+        cursor: pointer;
+        font-weight: 800;
+        margin-top: 20px;
+        transition: transform 0.2s;
+        box-shadow: 0 5px 15px rgba(95, 39, 205, 0.3);
+      }
+      .check-btn:hover {
+        transform: scale(1.05);
+        background: #4834d4;
+      }
+
+      /* Result Overlay */
+      .result-screen {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.96);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.5s;
+      }
+      .result-screen.active {
+        opacity: 1;
+        pointer-events: all;
+      }
+      .grade-badge {
+        width: 120px;
+        height: 120px;
+        background: var(--accent);
+        color: white;
+        font-size: 4rem;
+        font-weight: 900;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 15px;
+        box-shadow: 0 8px 20px rgba(95, 39, 205, 0.3);
+      }
+      .restart-btn {
+        background: var(--primary);
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        font-size: 1.1rem;
+        border-radius: 50px;
+        cursor: pointer;
+        font-weight: 700;
+        margin-top: 20px;
+        transition: transform 0.2s;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="block">
+        <h1>Das Koordinatensystem</h1>
+        <p>Jeder Punkt hat eine Adresse <strong>(x; y)</strong>.</p>
+
+        <div class="key-rule">
+          <strong>Die Goldene Regel:</strong><br />
+          Zuerst laufen wir nach <strong>RECHTS</strong> 👉 (x-Achse),<br />
+          dann fahren wir nach <strong>OBEN</strong> 👆 (y-Achse).
+        </div>
+
+        <div class="axis-info">
+          <span class="axis-x">x-Achse (die erste Zahl) — Rechtsachse</span>
+          <span class="axis-y">y-Achse (die zweite Zahl) — Hochachse</span>
+        </div>
+
+        <div class="terms-box">
+          <h3>📚 Wichtige Begriffe (Merk dir das!):</h3>
+          <div class="term-item">
+            <span class="term-de">Der Ursprung</span> = Точка (0;0) — Початок
+            координат
+          </div>
+          <div class="term-item">
+            <span class="term-de">Die x-Achse</span> = Вісь X — (Rechtsachse)
+          </div>
+          <div class="term-item">
+            <span class="term-de">Die y-Achse</span> = Вісь Y — (Hochachse)
+          </div>
+          <div class="term-item">
+            <span class="term-de">Die Koordinaten</span> = Координати (x; y)
+          </div>
+        </div>
+      </div>
+
+      <div class="block game-area">
+        <h2>Level 1: Finde den Punkt</h2>
+
+        <div class="result-screen" id="resultScreen">
+          <div class="grade-badge" id="finalGrade">1</div>
+          <h3 id="finalText">Sehr Gut!</h3>
+          <button class="restart-btn" onclick="restartGame()">
+            Noch einmal spielen
+          </button>
+        </div>
+
+        <div class="game-header">
+          <span>Runde: <span id="roundNum">1</span>/12</span>
+          <div class="target-coords" id="targetVal">(0; 0)</div>
+          <span></span>
+        </div>
+
+        <div class="canvas-wrap">
+          <canvas id="gameCanvas"></canvas>
+        </div>
+        <div class="feedback" id="feedback"></div>
+      </div>
+
+      <div class="block game-area">
+        <h2>Level 2: Boss-Level "Der Künstler" 🎨</h2>
+        <p>
+          Tipp: Klicke auf die Koordinaten in der Liste, um sie durchzustreichen
+          (Checkliste)!
+        </p>
+
+        <div class="coord-list" id="coordList">
+          <div class="coord-item" onclick="toggleText(this)">(2; 12)</div>
+          <div class="coord-item" onclick="toggleText(this)">(3; 9)</div>
+          <div class="coord-item" onclick="toggleText(this)">(3; 2)</div>
+          <div class="coord-item" onclick="toggleText(this)">(6; 2)</div>
+          <div class="coord-item" onclick="toggleText(this)">(6; 6)</div>
+          <div class="coord-item" onclick="toggleText(this)">(10; 5)</div>
+          <div class="coord-item" onclick="toggleText(this)">(11; 2)</div>
+          <div class="coord-item" onclick="toggleText(this)">(14; 2)</div>
+          <div class="coord-item" onclick="toggleText(this)">(12; 9)</div>
+          <div class="coord-item" onclick="toggleText(this)">(11; 18)</div>
+          <div class="coord-item" onclick="toggleText(this)">(13; 16)</div>
+          <div class="coord-item" onclick="toggleText(this)">(14; 18)</div>
+          <div class="coord-item" onclick="toggleText(this)">(15; 15)</div>
+          <div class="coord-item" onclick="toggleText(this)">(18; 11)</div>
+          <div class="coord-item" onclick="toggleText(this)">(18; 8)</div>
+          <div class="coord-item" onclick="toggleText(this)">(15; 7)</div>
+          <div class="coord-item" onclick="toggleText(this)">(10; 9)</div>
+          <div class="coord-item" onclick="toggleText(this)">(5; 9)</div>
+        </div>
+
+        <div class="canvas-wrap">
+          <canvas id="dogCanvas"></canvas>
+        </div>
+
+        <div class="feedback" id="dogFeedback">Punkte gesetzt: 0</div>
+        <button class="check-btn" onclick="checkDog()">PRÜFEN 🐕</button>
+      </div>
+    </div>
+
+    <script>
+      /* =========================================
+       LOGIC BLOCK 2 (FIND THE POINT)
+       ========================================= */
+      const canvas = document.getElementById("gameCanvas");
+      const ctx = canvas.getContext("2d");
+      const targetEl = document.getElementById("targetVal");
+      const roundEl = document.getElementById("roundNum");
+      const feedbackEl = document.getElementById("feedback");
+      const resultScreen = document.getElementById("resultScreen");
+      const finalGradeEl = document.getElementById("finalGrade");
+      const finalTextEl = document.getElementById("finalText");
+
+      const GRID_SIZE = 15;
+      const MAX_ROUNDS = 12;
+      const PADDING = 30;
+
+      let state = {
+        width: 0,
+        height: 0,
+        step: 0,
+        target: { x: 0, y: 0 },
+        round: 1,
+        score: 0,
+        active: true,
+        locked: false,
+        mistakeMade: false,
+      };
+
+      function resize() {
+        const parent = canvas.parentElement;
+        const dpr = window.devicePixelRatio || 1;
+        const rect = parent.getBoundingClientRect();
+        canvas.width = rect.width * dpr;
+        canvas.height = rect.height * dpr;
+        ctx.scale(dpr, dpr);
+        state.width = rect.width;
+        state.height = rect.height;
+        state.step = (state.width - PADDING * 2) / GRID_SIZE;
+        draw();
+      }
+
+      function drawSystem(context, w, h, step, maxVal) {
+        context.clearRect(0, 0, w, h);
+        const p = PADDING;
+
+        context.lineWidth = 1;
+        context.strokeStyle = "#dfe6e9";
+        context.beginPath();
+        for (let i = 0; i <= maxVal; i++) {
+          let x = p + i * step;
+          context.moveTo(x, p);
+          context.lineTo(x, h - p);
+          let y = h - p - i * step;
+          context.moveTo(p, y);
+          context.lineTo(w - p, y);
+        }
+        context.stroke();
+
+        context.lineWidth = 2;
+        context.strokeStyle = "#2d3436";
+        context.beginPath();
+        context.moveTo(p, h - p);
+        context.lineTo(w - p + 10, h - p);
+        context.moveTo(p, h - p);
+        context.lineTo(p, p - 10);
+        context.stroke();
+
+        context.fillStyle = "#636e72";
+        context.font = "bold 12px Nunito";
+        context.textAlign = "center";
+        context.textBaseline = "middle";
+        for (let i = 0; i <= maxVal; i++) {
+          if (w < 400 && i % 2 !== 0 && i !== maxVal) continue;
+          let x = p + i * step;
+          context.fillText(i, x, h - p + 15);
+          let y = h - p - i * step;
+          context.textAlign = "right";
+          context.fillText(i, p - 8, y);
+          context.textAlign = "center";
+        }
+
+        context.font = "bold 16px Nunito";
+        context.fillStyle = "#54a0ff";
+        context.fillText("x", w - p, h - p + 15);
+        context.fillStyle = "#5f27cd";
+        context.fillText("y", p, p - 15);
+      }
+
+      function draw() {
+        drawSystem(ctx, state.width, state.height, state.step, GRID_SIZE);
+      }
+
+      function drawDot(context, gx, gy, color, step, h) {
+        let x = PADDING + gx * step;
+        let y = h - PADDING - gy * step;
+        context.beginPath();
+        context.arc(x, y, step * 0.35, 0, Math.PI * 2);
+        context.fillStyle = color;
+        context.fill();
+        context.strokeStyle = "#fff";
+        context.lineWidth = 2;
+        context.stroke();
+      }
+
+      function nextRound() {
+        if (state.round > MAX_ROUNDS) {
+          endGame();
+          return;
+        }
+        let nx, ny;
+        do {
+          nx = Math.floor(Math.random() * (GRID_SIZE + 1));
+          ny = Math.floor(Math.random() * (GRID_SIZE + 1));
+        } while (nx === state.target.x && ny === state.target.y);
+        state.target = { x: nx, y: ny };
+        state.mistakeMade = false;
+        state.locked = false;
+        targetEl.innerText = `(${nx}; ${ny})`;
+        roundEl.innerText = state.round;
+        feedbackEl.className = "feedback";
+        draw();
+      }
+
+      function handleInput(clientX, clientY) {
+        if (!state.active || state.locked) return;
+        const rect = canvas.getBoundingClientRect();
+        const gx = Math.round((clientX - rect.left - PADDING) / state.step);
+        const gy = Math.round(
+          (state.height - PADDING - (clientY - rect.top)) / state.step,
+        );
+        if (gx < 0 || gx > GRID_SIZE || gy < 0 || gy > GRID_SIZE) return;
+
+        draw();
+        if (gx === state.target.x && gy === state.target.y) {
+          drawDot(ctx, gx, gy, "#10ac84", state.step, state.height);
+          feedbackEl.innerText = "Richtig!";
+          feedbackEl.className = "feedback show success-text";
+          if (!state.mistakeMade) state.score++;
+          state.locked = true;
+          state.round++;
+          setTimeout(nextRound, 1000);
+        } else {
+          drawDot(ctx, gx, gy, "#ee5253", state.step, state.height);
+          feedbackEl.innerText = `Das ist (${gx}; ${gy}). Versuch es noch einmal!`;
+          feedbackEl.className = "feedback show error-text";
+          state.mistakeMade = true;
+        }
+      }
+
+      function endGame() {
+        state.active = false;
+        const ratio = state.score / MAX_ROUNDS;
+        let grade, text, color;
+        // German Grading System
+        if (ratio >= 0.9) {
+          grade = 1;
+          text = "Sehr gut!";
+          color = "#10ac84";
+        } else if (ratio >= 0.75) {
+          grade = 2;
+          text = "Gut";
+          color = "#1dd1a1";
+        } else if (ratio >= 0.6) {
+          grade = 3;
+          text = "Befriedigend";
+          color = "#feca57";
+        } else if (ratio >= 0.5) {
+          grade = 4;
+          text = "Ausreichend";
+          color = "#ff9f43";
+        } else if (ratio >= 0.25) {
+          grade = 5;
+          text = "Mangelhaft";
+          color = "#ff6b6b";
+        } else {
+          grade = 6;
+          text = "Ungenügend";
+          color = "#ee5253";
+        }
+
+        finalGradeEl.innerText = grade;
+        finalGradeEl.style.background = color;
+        finalTextEl.innerText = text;
+        resultScreen.classList.add("active");
+      }
+
+      function restartGame() {
+        state.round = 1;
+        state.score = 0;
+        state.active = true;
+        resultScreen.classList.remove("active");
+        nextRound();
+      }
+
+      canvas.addEventListener("pointerdown", (e) =>
+        handleInput(e.clientX, e.clientY),
+      );
+
+      /* =========================================
+       LOGIC BLOCK 3 (THE DOG)
+       ========================================= */
+      const dogCanvas = document.getElementById("dogCanvas");
+      const dogCtx = dogCanvas.getContext("2d");
+      const dogFeedback = document.getElementById("dogFeedback");
+
+      const DOG_GRID_SIZE = 20;
+      const dogTargets = [
+        { x: 2, y: 12 },
+        { x: 3, y: 9 },
+        { x: 3, y: 2 },
+        { x: 6, y: 2 },
+        { x: 6, y: 6 },
+        { x: 10, y: 5 },
+        { x: 11, y: 2 },
+        { x: 14, y: 2 },
+        { x: 12, y: 9 },
+        { x: 11, y: 18 },
+        { x: 13, y: 16 },
+        { x: 14, y: 18 },
+        { x: 15, y: 15 },
+        { x: 18, y: 11 },
+        { x: 18, y: 8 },
+        { x: 15, y: 7 },
+        { x: 10, y: 9 },
+        { x: 5, y: 9 },
+      ];
+
+      let dogState = {
+        width: 0,
+        height: 0,
+        step: 0,
+        userPoints: [],
+        isSolved: false,
+      };
+
+      function resizeDog() {
+        const parent = dogCanvas.parentElement;
+        const dpr = window.devicePixelRatio || 1;
+        const rect = parent.getBoundingClientRect();
+        dogCanvas.width = rect.width * dpr;
+        dogCanvas.height = rect.height * dpr;
+        dogCtx.scale(dpr, dpr);
+        dogState.width = rect.width;
+        dogState.height = rect.height;
+        dogState.step = (dogState.width - PADDING * 2) / DOG_GRID_SIZE;
+        drawDogGrid();
+      }
+
+      function toggleText(element) {
+        if (dogState.isSolved) return;
+        element.classList.toggle("marked");
+      }
+
+      function drawDogGrid() {
+        drawSystem(
+          dogCtx,
+          dogState.width,
+          dogState.height,
+          dogState.step,
+          DOG_GRID_SIZE,
+        );
+
+        dogState.userPoints.forEach((p) => {
+          let color = "#54a0ff";
+          if (p.error) color = "#ee5253";
+          if (p.isMissing) color = "#ee5253";
+          if (dogState.isSolved) color = "#10ac84";
+
+          drawDot(dogCtx, p.x, p.y, color, dogState.step, dogState.height);
+        });
+
+        if (dogState.isSolved) {
+          connectDogLines();
+        }
+      }
+
+      function toggleDogPoint(clientX, clientY) {
+        if (dogState.isSolved) return;
+
+        const rect = dogCanvas.getBoundingClientRect();
+        const gx = Math.round((clientX - rect.left - PADDING) / dogState.step);
+        const gy = Math.round(
+          (dogState.height - PADDING - (clientY - rect.top)) / dogState.step,
+        );
+
+        if (gx < 0 || gx > DOG_GRID_SIZE || gy < 0 || gy > DOG_GRID_SIZE)
+          return;
+
+        // Clean up ghosts
+        dogState.userPoints = dogState.userPoints.filter((p) => !p.isMissing);
+
+        const existingIndex = dogState.userPoints.findIndex(
+          (p) => p.x === gx && p.y === gy,
+        );
+
+        if (existingIndex !== -1) {
+          dogState.userPoints.splice(existingIndex, 1);
+        } else {
+          dogState.userPoints.push({ x: gx, y: gy, error: false });
+        }
+
+        dogFeedback.innerText = `Punkte gesetzt: ${dogState.userPoints.length} von ${dogTargets.length}`;
+        dogFeedback.className = "feedback";
+
+        const textItems = document.querySelectorAll(".coord-item");
+        textItems.forEach((el) => el.classList.remove("missing-alert"));
+
+        drawDogGrid();
+      }
+
+      function checkDog() {
+        if (dogState.isSolved) return;
+
+        dogState.userPoints = dogState.userPoints.filter((p) => !p.isMissing);
+        dogState.userPoints.forEach((p) => (p.error = true));
+
+        const textItems = document.querySelectorAll(".coord-item");
+        textItems.forEach((el) => el.classList.remove("missing-alert"));
+
+        let correctCount = 0;
+        let hasErrors = false;
+
+        dogState.userPoints.forEach((up) => {
+          const isTarget = dogTargets.some((t) => t.x === up.x && t.y === up.y);
+          if (isTarget) {
+            up.error = false;
+            correctCount++;
+          } else {
+            hasErrors = true;
+          }
+        });
+
+        // Find missing points
+        dogTargets.forEach((target, index) => {
+          const isPlotted = dogState.userPoints.some(
+            (p) => p.x === target.x && p.y === target.y,
+          );
+
+          if (!isPlotted) {
+            dogState.userPoints.push({
+              x: target.x,
+              y: target.y,
+              error: true,
+              isMissing: true,
+            });
+            hasErrors = true;
+
+            if (textItems[index]) {
+              textItems[index].classList.remove("marked");
+              textItems[index].classList.add("missing-alert");
+            }
+          }
+        });
+
+        const totalPlaced = dogState.userPoints.filter(
+          (p) => !p.isMissing,
+        ).length;
+
+        if (
+          correctCount === dogTargets.length &&
+          !hasErrors &&
+          totalPlaced === dogTargets.length
+        ) {
+          dogState.isSolved = true;
+          dogFeedback.innerText = "SUPER! DU BIST EIN ECHTER KÜNSTLER! 🎨";
+          dogFeedback.className = "feedback show success-text";
+        } else {
+          dogFeedback.innerText =
+            "Es gibt Fehler oder fehlende Punkte (rot). Korrigiere sie!";
+          dogFeedback.className = "feedback show error-text";
+        }
+        drawDogGrid();
+      }
+
+      function connectDogLines() {
+        const ctx = dogCtx;
+        const step = dogState.step;
+        const h = dogState.height;
+
+        ctx.beginPath();
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = "#5f27cd";
+
+        const startX = PADDING + dogTargets[0].x * step;
+        const startY = h - PADDING - dogTargets[0].y * step;
+
+        ctx.moveTo(startX, startY);
+
+        for (let i = 1; i < dogTargets.length; i++) {
+          const tx = PADDING + dogTargets[i].x * step;
+          const ty = h - PADDING - dogTargets[i].y * step;
+          ctx.lineTo(tx, ty);
+        }
+
+        ctx.lineTo(startX, startY);
+        ctx.stroke();
+      }
+
+      dogCanvas.addEventListener("pointerdown", (e) =>
+        toggleDogPoint(e.clientX, e.clientY),
+      );
+
+      /* --- INIT --- */
+      window.addEventListener("resize", () => {
+        resize();
+        resizeDog();
+      });
+      resize();
+      resizeDog();
+      nextRound();
+    </script>
+  </body>
+</html>
