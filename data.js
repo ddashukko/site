@@ -780,7 +780,7 @@ window.lessonsData = [
     title: "Порівняння, різні дії",
     grade: 6,
     topic: "Математика",
-    link: "math_general/6/Vsevolod/11.02",
+    link: "math_general/6/Vsevolod/11.02.html",
     subject_code: "math_general",
     category: "lesson",
     author: "Соня",
