@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Математика 6 клас: Великий Практикум</title>
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>window.MathJax = { tex: { inlineMath: [['$', '$']] }, svg: { fontCache: 'global' } };</script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        :root { --primary: #6366f1; --bg-page: #f3f4f6; --text-main: #1f2937; --success: #22c55e; --warn: #f59e0b; }
+        body { margin: 0; font-family: 'Nunito', sans-serif; height: 100vh; display: flex; overflow: hidden; background: var(--bg-page); color: var(--text-main); }
+
+        /* ЛІВА ПАНЕЛЬ */
+        .left-panel { flex: 6; background: var(--bg-page); padding: 30px; overflow-y: auto; position: relative; z-index: 10; transition: 0.3s; }
+        .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        h2 { margin: 0; font-weight: 800; font-size: 26px; color: var(--primary); }
+        .toggle-btn { background: white; border: none; width: 40px; height: 40px; border-radius: 50%; box-shadow: 0 4px 10px rgba(0,0,0,0.1); cursor: pointer; color: var(--primary); transition: 0.2s; }
+        .toggle-btn:hover { transform: scale(1.1); background: var(--primary); color: white; }
+
+        /* КАРТКИ */
+        .task-card { background: white; border-radius: 20px; padding: 25px; margin-bottom: 25px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); border-left: 6px solid var(--primary); }
+        .theory-card { background: white; border-radius: 20px; padding: 25px; margin-bottom: 25px; border: 2px dashed #cbd5e1; position: relative; }
+        .theory-badge { background: #e0e7ff; color: var(--primary); padding: 5px 12px; border-radius: 12px; font-weight: 700; font-size: 12px; display: inline-block; margin-bottom: 10px; }
+        
+        .theory-content { line-height: 1.6; font-size: 16px; color: #374151; }
+        .theory-content b { color: var(--primary); }
+
+        /* ДОПОМОГА */
+        .help-btns { margin-top: 15px; display: flex; gap: 10px; }
+        .help-btn { background: transparent; border: 1px solid #d1d5db; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-weight: 700; color: #6b7280; font-size: 13px; transition: 0.2s; }
+        .help-btn:hover { background: #f3f4f6; color: var(--text-main); }
+        .hidden-content { display: none; margin-top: 15px; padding: 15px; border-radius: 12px; font-size: 15px; line-height: 1.5; animation: slideDown 0.3s ease-out; }
+        .hint-box { background: #fffbeb; border: 1px solid #fcd34d; color: #92400e; }
+        .sol-box { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ЕЛЕМЕНТИ */
+        input[type="text"] { padding: 10px 15px; border: 2px solid #e5e7eb; border-radius: 10px; font-size: 18px; outline: none; width: 60%; transition: 0.2s; }
+        input:focus { border-color: var(--primary); }
+        .check-btn { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 10px; font-weight: 700; cursor: pointer; margin-left: 10px; }
+        
+        .choice-btn { width: 100%; padding: 12px; margin-top: 8px; background: white; border: 2px solid #e5e7eb; border-radius: 10px; text-align: left; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .choice-btn:hover { background: #f9fafb; border-color: var(--primary); }
+
+        .match-row { display: flex; justify-content: space-between; gap: 10px; margin-top: 15px; }
+        .match-col { width: 48%; display: flex; flex-direction: column; gap: 8px; }
+        .match-item { background: white; border: 2px solid #e5e7eb; padding: 12px; border-radius: 10px; text-align: center; cursor: pointer; font-weight: 700; transition: 0.2s; user-select: none; }
+        .match-item:hover { transform: translateY(-2px); border-color: #94a3b8; }
+        
+        /* Стилі для пар */
+        .selected { background: #e0e7ff; border-color: var(--primary); color: var(--primary); transform: scale(1.02); }
+        .solved { cursor: default; opacity: 1; font-weight: 800; border-width: 2px; }
+        .wrong-choice { background-color: #fee2e2 !important; border-color: #dc2626 !important; color: #b91c1c !important; animation: shake 0.4s; }
+        
+        @keyframes shake { 0%, 100% {transform: translateX(0);} 25% {transform: translateX(-5px);} 75% {transform: translateX(5px);} }
+
+        .msg { font-weight: 800; margin-top: 15px; display: none; }
+        .correct { color: var(--success); } .wrong { color: #dc2626; }
+
+        /* ТЕСТ */
+        .test-section { margin-top: 50px; border-top: 3px dashed #cbd5e1; padding-top: 30px; padding-bottom: 50px; }
+        .test-card { background: #fff; padding: 20px; border-radius: 16px; margin-bottom: 15px; border: 1px solid #e5e7eb; }
+        .test-opt { display: block; padding: 10px; margin-top: 8px; border: 2px solid #f3f4f6; border-radius: 10px; cursor: pointer; transition: 0.2s; }
+        .test-opt:hover { background: #f9fafb; border-color: #d1d5db; }
+        input[type="radio"] { display: none; }
+        input[type="radio"]:checked + span { background: var(--primary); color: white; border-color: var(--primary); display: block; padding: 10px; border-radius: 8px; }
+
+        .finish-btn { width: 100%; padding: 20px; background: #10b981; color: white; border: none; border-radius: 16px; font-size: 20px; font-weight: 800; margin-top: 30px; cursor: pointer; transition: 0.2s; }
+        .finish-btn:hover { background: #059669; transform: translateY(-2px); }
+
+        /* ПРАВА ПАНЕЛЬ */
+        .right-panel { flex: 4; background: white; position: relative; cursor: crosshair; border-left: 1px solid #e5e7eb; touch-action: none; transition: 0.3s; }
+        .toolbar { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); background: white; padding: 8px; border-radius: 16px; display: flex; gap: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 1px solid #f3f4f6; }
+        .tool { width: 40px; height: 40px; border: none; background: #f8fafc; border-radius: 10px; color: #64748b; font-size: 16px; cursor: pointer; }
+        .tool.active { background: var(--primary); color: white; transform: scale(1.1); }
+        
+        @media (max-width: 768px) { body { flex-direction: column; } .left-panel { flex: none; height: 55%; } .right-panel { flex: none; height: 45%; } .toggle-btn { display: none; } }
+        .full-width { flex: 100% !important; } .hidden-panel { flex: 0 !important; width: 0 !important; overflow: hidden; opacity: 0; }
+    </style>
+</head>
+<body>
+
+    <div class="left-panel" id="taskPanel">
+        <div class="header-row">
+            <h2 id="lesson-title">Урок</h2>
+            <button class="toggle-btn" onclick="toggleLayout()" title="На весь екран"><i class="fas fa-expand-alt"></i></button>
+        </div>
+
+        <div id="tasks-area"></div>
+        
+        <div class="test-section" id="test-area">
+            <div style="font-size: 24px; font-weight: 800; color: #4b5563; margin-bottom: 20px;">
+                <i class="fas fa-graduation-cap"></i> Фінальний Тест
+            </div>
+            <div id="test-questions"></div>
+            <button class="finish-btn" onclick="checkTest()">Перевірити тест</button>
+            <div id="test-result" style="text-align:center; font-size:22px; font-weight:800; margin-top:20px; color:var(--primary);"></div>
+        </div>
+    </div>
+
+    <div class="right-panel" id="boardPanel">
+        <div class="toolbar">
+            <button class="tool active" onclick="setTool('pen', this)"><i class="fas fa-pen"></i></button>
+            <button class="tool" onclick="setTool('eraser', this)"><i class="fas fa-eraser"></i></button>
+            <button class="tool" onclick="clearBoard()"><i class="fas fa-trash"></i></button>
+        </div>
+        <canvas id="board"></canvas>
+    </div>
+
+<script>
+    // ==========================================
+    // 📚 КОНФІГУРАЦІЯ УРОКУ
+    // ==========================================
+    const config = {
+        title: "Математика 6: Великий Практикум",
+        
+        tasks: [
+            // --- РОЗДІЛ 1: МОДУЛЬ ЧИСЛА ---
+            {
+                type: 'theory',
+                title: "1. Модуль числа",
+                content: "Модуль — це відстань від початку відліку до точки. Відстань не може бути від'ємною!<br>$$|-5| = 5, \\quad |5| = 5, \\quad |0| = 0$$"
+            },
+            {
+                id: 1, type: 'input',
+                question: "Чому дорівнює модуль числа -17?",
+                answer: "17",
+                hint: "Модуль «з'їдає» мінус.",
+                solution: "$|-17| = 17$."
+            },
+            {
+                id: 2, type: 'input',
+                question: "Обчисли: $|-10| + |-5|$",
+                answer: "15",
+                hint: "Знайди модуль кожного числа окремо, а потім додай.",
+                solution: "$10 + 5 = 15$."
+            },
+            {
+                id: 3, type: 'match',
+                question: "З'єднай вираз і відповідь:",
+                pairs: [
+                    { left: "|-8|", right: "8" },
+                    { left: "-(-5)", right: "5" },
+                    { left: "|0|", right: "0" }
+                ],
+                hint: "Модуль завжди додатний. Два мінуси підряд дають плюс.",
+                solution: "$|-8|=8$, $-(-5)=5$."
+            },
+            {
+                id: 4, type: 'choice',
+                question: "Розв'яжи рівняння $|x| = -3$.",
+                options: ["3", "-3", "Немає коренів"],
+                correct: 2,
+                hint: "Чи може відстань бути від'ємною?",
+                solution: "Модуль не може дорівнювати від'ємному числу."
+            },
+            {
+                id: 5, type: 'input',
+                question: "Обчисли: $|-4| \\cdot |-1.5|$",
+                answer: "6",
+                hint: "4 помножити на 1.5",
+                solution: "$4 \\cdot 1.5 = 6$."
+            },
+            {
+                id: 6, type: 'input',
+                question: "Знайди значення виразу $2|x| + 5$, якщо $x = -3$.",
+                answer: "11",
+                hint: "Підстав -3 замість x. Спочатку модуль, потім множення.",
+                solution: "$2 \\cdot |-3| + 5 = 2 \\cdot 3 + 5 = 6 + 5 = 11$."
+            },
+            {
+                id: 7, type: 'choice',
+                question: "Яка рівність правильна?",
+                options: ["|5| = -5", "|-5| = -5", "|-5| = 5"],
+                correct: 2,
+                solution: "Модуль завжди додатний або 0."
+            },
+            {
+                id: 8, type: 'match',
+                question: "Знайди модулі чисел:",
+                pairs: [
+                    { left: "|-100|", right: "100" },
+                    { left: "|-0.1|", right: "0.1" },
+                    { left: "|1/2|", right: "1/2" }
+                ],
+                hint: "Просто прибирай знаки мінус.",
+                solution: "Всі числа стають додатними."
+            },
+            {
+                id: 9, type: 'input',
+                question: "Обчисли: $|-36| : |-9|$",
+                answer: "4",
+                hint: "36 поділити на 9.",
+                solution: "$36 : 9 = 4$."
+            },
+            {
+                id: 10, type: 'input',
+                question: "Розв'яжи рівняння $|x| = 12$ (менший корінь)",
+                answer: "-12",
+                hint: "Є два числа: 12 і -12. Яке менше?",
+                solution: "-12 менше за 12."
+            },
+
+            // --- РОЗДІЛ 2: ПОРІВНЯННЯ ЧИСЕЛ ---
+            {
+                type: 'theory',
+                title: "2. Порівняння чисел",
+                content: "<b>Правило:</b> Будь-яке додатне число більше за від'ємне. З двох від'ємних більшим є те, яке <b>ближче до нуля</b> (має менший модуль)."
+            },
+            {
+                id: 11, type: 'choice',
+                question: "Що більше: -15 чи -5?",
+                options: ["-15", "-5", "Рівні"],
+                correct: 1,
+                hint: "Згадай температуру: де тепліше?",
+                solution: "-5 тепліше (більше), ніж -15."
+            },
+            {
+                id: 12, type: 'input',
+                question: "Постав знак < або > : -100 ... 1",
+                answer: "<",
+                hint: "Від'ємне завжди менше додатного.",
+                solution: "-100 < 1."
+            },
+            {
+                id: 13, type: 'input',
+                question: "Постав знак < або > : -2.5 ... -2.6",
+                answer: ">",
+                hint: "Дивись, яке число ближче до нуля. 2.5 менше за 2.6, тому -2.5 більше.",
+                solution: "-2.5 > -2.6"
+            },
+            {
+                id: 14, type: 'match',
+                question: "Порівняй числа:",
+                pairs: [
+                    { left: "0 ... -5", right: ">" },
+                    { left: "-10 ... -3", right: "<" },
+                    { left: "-1 ... -1.0", right: "=" }
+                ],
+                hint: "Нуль завжди більший за від'ємні числа.",
+                solution: "0 > -5; -10 < -3 (бо 10 > 3, а ми в мінусах)."
+            },
+            {
+                id: 15, type: 'choice',
+                question: "Яке з цих чисел найбільше?",
+                options: ["-10", "-1", "-100"],
+                correct: 1,
+                hint: "Яке число стоїть найправіше на прямій?",
+                solution: "-1 найближче до нуля зліва."
+            },
+            {
+                id: 16, type: 'input',
+                question: "Запиши ціле число, яке лежить між -2 і 0",
+                answer: "-1",
+                hint: "Тільки одне число.",
+                solution: "-1 знаходиться між -2 і 0."
+            },
+            {
+                id: 17, type: 'choice',
+                question: "Порівняй: $|-5|$ і $-5$",
+                options: ["| -5 | > -5", "| -5 | < -5", "Рівні"],
+                correct: 0,
+                hint: "Обчисли модуль зліва. 5 і -5.",
+                solution: "$5 > -5$."
+            },
+            {
+                id: 18, type: 'input',
+                question: "Постав знак <, > або = : -0.01 ... -0.001",
+                answer: "<",
+                hint: "0.001 ближче до нуля.",
+                solution: "-0.01 < -0.001"
+            },
+
+            // --- РОЗДІЛ 3: ДОДАВАННЯ (ОДНАКОВІ ЗНАКИ) ---
+            {
+                type: 'theory',
+                title: "3. Сума чисел з однаковими знаками",
+                content: "Якщо знаки однакові — ми <b>додаємо</b> модулі і ставимо спільний знак.<br>$-2 + (-3) = -5$ (борг плюс борг)."
+            },
+            {
+                id: 19, type: 'input',
+                question: "Обчисли: $-20 + (-30)$",
+                answer: "-50",
+                hint: "Склади 20 і 30, постав мінус.",
+                solution: "-(20 + 30) = -50."
+            },
+            {
+                id: 20, type: 'input',
+                question: "Обчисли: $-136 + (-68)$",
+                answer: "-204",
+                hint: "Склади 136 і 68, постав мінус.",
+                solution: "-(136 + 68) = -204."
+            },
+            {
+                id: 21, type: 'choice',
+                question: "Обчисли: $-1.5 + (-2.5)$",
+                options: ["-3", "-4", "-3.5"],
+                correct: 1,
+                hint: "1.5 + 2.5 = 4.",
+                solution: "-4."
+            },
+            {
+                id: 22, type: 'input',
+                question: "Знайди суму: $-11 + (-11)$",
+                answer: "-22",
+                solution: "-(11+11) = -22."
+            },
+            {
+                id: 23, type: 'match',
+                question: "З'єднай приклад з результатом:",
+                pairs: [
+                    { left: "-1 + (-2)", right: "-3" },
+                    { left: "-10 + (-10)", right: "-20" },
+                    { left: "-0.5 + (-0.5)", right: "-1" }
+                ],
+                hint: "Борг збільшується.",
+                solution: "Просто додаємо числа і лишаємо мінус."
+            },
+            {
+                id: 24, type: 'input',
+                question: "Обчисли: $-150 + (-50) + (-200)$",
+                answer: "-400",
+                hint: "Все складаємо.",
+                solution: "-(150+50+200) = -400."
+            },
+            {
+                id: 25, type: 'input',
+                question: "Обчисли: $-7.1 + (-2.9)$",
+                answer: "-10",
+                solution: "-(7.1 + 2.9) = -10."
+            },
+
+            // --- РОЗДІЛ 4: РІЗНІ ЗНАКИ ---
+            {
+                type: 'theory',
+                title: "4. Додавання чисел з РІЗНИМИ знаками",
+                content: `<b>Це найважливіше правило!</b><br>
+                        Щоб додати числа з різними знаками:<br>
+                        1. Знайди модулі чисел.<br>
+                        2. Від <b>більшого</b> модуля відніми <b>менший</b>.<br>
+                        3. Постав знак того числа, модуль якого був більшим.<br>
+                        <br>
+                        <b>Приклад:</b> $-10 + 7$<br>
+                        Модулі: 10 і 7. Більший 10. Знак біля нього (-).<br>
+                        Віднімаємо: $10 - 7 = 3$.<br>
+                        Результат: $-3$.`
+            },
+            {
+                id: 26, type: 'input',
+                question: "Обчисли: $-10 + 15$",
+                answer: "5",
+                hint: "15 більше за 10. Знак буде (+). Відніми 15 - 10.",
+                solution: "$15 - 10 = 5$. Знак плюс."
+            },
+            {
+                id: 27, type: 'input',
+                question: "Обчисли: $5 + (-8)$",
+                answer: "-3",
+                hint: "8 більше за 5. Знак буде (-). Відніми 8 - 5.",
+                solution: "$8 - 5 = 3$. Ставимо мінус -> -3."
+            },
+            {
+                id: 28, type: 'choice',
+                question: "Який буде знак суми: $-50 + 30$?",
+                options: ["Плюс (+)", "Мінус (-)"],
+                correct: 1,
+                hint: "Число 50 більше за 30, і воно з мінусом.",
+                solution: "Модуль -50 більший, тому перемагає мінус."
+            },
+            {
+                id: 29, type: 'match',
+                question: "З'єднай приклад і відповідь:",
+                pairs: [
+                    { left: "-10 + 2", right: "-8" },
+                    { left: "10 + (-2)", right: "8" },
+                    { left: "-5 + 5", right: "0" }
+                ],
+                hint: "Протилежні числа в сумі дають 0.",
+                solution: "Різні знаки -> віднімаємо."
+            },
+            {
+                id: 30, type: 'input',
+                question: "Обчисли: $-100 + 1$",
+                answer: "-99",
+                hint: "100 - 1 = 99. Який знак?",
+                solution: "Мінус перемагає. -99."
+            },
+            {
+                id: 31, type: 'input',
+                question: "Скільки буде: $-4.5 + 5.5$",
+                answer: "1",
+                hint: "5.5 більше за 4.5. Відніми.",
+                solution: "$5.5 - 4.5 = 1$."
+            },
+            {
+                id: 32, type: 'input',
+                question: "Обчисли: $12 + (-20)$",
+                answer: "-8",
+                solution: "$20 - 12 = 8$. Знак мінус."
+            },
+            {
+                id: 33, type: 'choice',
+                question: "Результат $-7 + 10$ буде:",
+                options: ["Додатним", "Від'ємним", "Нулем"],
+                correct: 0,
+                solution: "10 > 7, тому додатним."
+            },
+            {
+                id: 34, type: 'input',
+                question: "Обчисли: $-0.6 + 0.2$",
+                answer: "-0.4",
+                hint: "0.6 - 0.2 = 0.4. Не забудь знак.",
+                solution: "-0.4"
+            },
+            {
+                id: 35, type: 'match',
+                question: "Складніші приклади:",
+                pairs: [
+                    { left: "-25 + 30", right: "5" },
+                    { left: "-30 + 25", right: "-5" },
+                    { left: "-25 + (-5)", right: "-30" }
+                ],
+                hint: "Уважно дивись на знаки! У третьому прикладі знаки ОДНАКОВІ.",
+                solution: "Увага на останній приклад: там додавання однакових знаків (-30)."
+            },
+            {
+                id: 36, type: 'input',
+                question: "Розв'яжи: $x + 5 = 2$. Чому дорівнює x?",
+                answer: "-3",
+                hint: "Щоб знайти невідомий доданок, від суми відніми відомий: $2 - 5$.",
+                solution: "$x = 2 - 5$. Зменшуване менше від'ємника -> буде мінус. -3."
+            },
+            {
+                id: 37, type: 'input',
+                question: "Температура була -5, стала на 7 градусів вищою. Яка стала?",
+                answer: "2",
+                hint: "Вища = додати. $-5 + 7$.",
+                solution: "2 градуси тепла."
+            },
+            {
+                id: 38, type: 'input',
+                question: "Сума протилежних чисел ($7$ і $-7$) дорівнює...",
+                answer: "0",
+                solution: "Завжди нуль."
+            },
+            {
+                id: 39, type: 'choice',
+                question: "Обчисли: $-1 + \\frac{1}{2}$",
+                options: ["-1.5", "-0.5", "0.5"],
+                correct: 1,
+                hint: "Уяви: ти винен гривню, віддав 50 копійок.",
+                solution: "-0.5"
+            },
+            {
+                id: 40, type: 'input',
+                question: "Обчисли: $|-5| + (-3)$",
+                answer: "2",
+                hint: "Спочатку модуль! $|-5|=5$. Потім $5 + (-3)$.",
+                solution: "5 - 3 = 2."
+            },
+            {
+                id: 41, type: 'input',
+                question: "Обчисли: $-15 + 15 + (-4)$",
+                answer: "-4",
+                hint: "-15 і 15 знищуються.",
+                solution: "0 + (-4) = -4."
+            },
+            {
+                id: 42, type: 'input',
+                question: "Знайди суму всіх цілих чисел від -4 до 3",
+                answer: "-4",
+                hint: "Додай числа: -4 + (-3) + ... Протилежні скороти!",
+                solution: "-3 і 3, -2 і 2, -1 і 1 - скорочуються. Залишається -4."
+            }
+        ],
+
+        // --- ФІНАЛЬНИЙ ТЕСТ ---
+        finalTest: [
+            {
+                question: "Модуль числа - це...",
+                options: ["Саме число", "Відстань до нуля", "Від'ємне число"],
+                correct: 1
+            },
+            {
+                question: "Сума двох від'ємних чисел завжди:",
+                options: ["Додатна", "Від'ємна", "Нуль"],
+                correct: 1
+            },
+            {
+                question: "Обчисли: $-8 + 12$",
+                options: ["-4", "4", "-20"],
+                correct: 1
+            },
+            {
+                question: "Обчисли: $5 + (-10)$",
+                options: ["-5", "5", "-15"],
+                correct: 0
+            },
+            {
+                question: "Яка сума більша: $-10+2$ чи $-5+(-4)$?",
+                options: ["Перша (-8)", "Друга (-9)", "Рівні"],
+                correct: 0
+            },
+            {
+                question: "Корінь рівняння $x + 10 = 0$:",
+                options: ["10", "0", "-10"],
+                correct: 2
+            },
+            {
+                question: "Результат дії $|-5| - |-2|$:",
+                options: ["-7", "3", "-3"],
+                correct: 1
+            },
+            {
+                question: "Число -3.5 розташоване між цілими числами:",
+                options: ["-3 і -2", "-4 і -3", "-5 і -4"],
+                correct: 1
+            }
+        ]
+    };
+
+    // ==========================================
+    // ⚙️ СИСТЕМНИЙ КОД
+    // ==========================================
+    document.getElementById('lesson-title').innerText = config.title;
+    const area = document.getElementById('tasks-area');
+
+    config.tasks.forEach(t => {
+        const div = document.createElement('div');
+        if (t.type === 'theory') {
+            div.className = 'theory-card';
+            div.innerHTML = `<span class="theory-badge">ТЕОРІЯ</span><h3>${t.title}</h3><div class="theory-content">${t.content}</div>`;
+        } else {
+            div.className = 'task-card';
+            div.dataset.id = t.id;
+            
+            let html = `<p style="font-weight:800; font-size: 20px; color: #1e293b; margin-bottom: 15px;">${t.question}</p>`;
+
+            if (t.type === 'input') {
+                html += `<div style="display:flex;"><input type="text" id="in-${t.id}" placeholder="?"><button class="check-btn" onclick="checkInput(${t.id}, '${t.answer}')">OK</button></div>`;
+            } 
+            else if (t.type === 'choice') {
+                t.options.forEach((opt, idx) => { html += `<button class="choice-btn" id="btn-${t.id}-${idx}" onclick="checkChoice(${t.id}, ${idx}, ${t.correct})">${opt}</button>`; });
+            } 
+            else if (t.type === 'match') {
+                let r = [...t.pairs].sort(()=>Math.random()-0.5);
+                html += `<div id="match-${t.id}" data-pairs='${JSON.stringify(t.pairs)}'>
+                    <div class="match-row">
+                        <div class="match-col">${t.pairs.map(p=>`<div class="match-item" onclick="matchClick(${t.id},'L','${p.left}',this)">${p.left}</div>`).join('')}</div>
+                        <div class="match-col">${r.map(p=>`<div class="match-item" onclick="matchClick(${t.id},'R','${p.right}',this)">${p.right}</div>`).join('')}</div>
+                    </div>
+                </div>`;
+            }
+
+            html += `<div id="msg-${t.id}" class="msg"></div>`;
+
+            if (t.hint || t.solution) {
+                html += `<div class="help-btns">`;
+                if (t.hint) html += `<button class="help-btn" onclick="toggle('h-${t.id}')"><i class="far fa-lightbulb"></i> Підказка</button>`;
+                if (t.solution) html += `<button class="help-btn" onclick="toggle('s-${t.id}')"><i class="fas fa-pencil-alt"></i> Розв'язання</button>`;
+                html += `</div>`;
+                if (t.hint) html += `<div id="h-${t.id}" class="hidden-content hint-box"><b>Підказка:</b> ${t.hint}</div>`;
+                if (t.solution) html += `<div id="s-${t.id}" class="hidden-content sol-box"><b>Розв'язання:</b> ${t.solution}</div>`;
+            }
+            div.innerHTML = html;
+        }
+        area.appendChild(div);
+    });
+
+    const testArea = document.getElementById('test-questions');
+    config.finalTest.forEach((q, i) => {
+        let h = `<div class="test-card"><p style="font-weight:700;">${i+1}. ${q.question}</p>`;
+        q.options.forEach((opt, j) => h += `<label class="test-opt"><input type="radio" name="q${i}" value="${j}"><span>${opt}</span></label>`);
+        testArea.innerHTML += h + `</div>`;
+    });
+
+    function toggle(id) { const el=document.getElementById(id); el.style.display=(el.style.display==='block')?'none':'block'; }
+
+    window.checkInput = (id, cor) => {
+        const val = document.getElementById(`in-${id}`).value.trim();
+        setStatus(id, val === cor);
+    };
+
+    window.checkChoice = (id, i, cor) => {
+        document.querySelectorAll(`[id^="btn-${id}-"]`).forEach(b => b.style.background = 'white');
+        const btn = document.getElementById(`btn-${id}-${i}`);
+        if (i === cor) { btn.style.background = '#dcfce7'; setStatus(id, true); }
+        else { btn.style.background = '#fee2e2'; setStatus(id, false); }
+    };
+
+    // --- ПАЛІТРА КОЛЬОРІВ ДЛЯ ПАР ---
+    const matchColors = [
+        { bg: '#dbeafe', border: '#3b82f6', text: '#1e3a8a' }, // Блакитний
+        { bg: '#dcfce7', border: '#22c55e', text: '#14532d' }, // Зелений
+        { bg: '#ffedd5', border: '#f97316', text: '#7c2d12' }, // Помаранчевий
+        { bg: '#f3e8ff', border: '#a855f7', text: '#581c87' }, // Фіолетовий
+        { bg: '#fce7f3', border: '#ec4899', text: '#831843' }, // Рожевий
+        { bg: '#fef9c3', border: '#eab308', text: '#713f12' }  // Жовтий
+    ];
+
+    let sL = null, sR = null;
+
+    window.matchClick = (id, side, val, el) => {
+        if (el.classList.contains('solved')) return;
+
+        if (side === 'L') {
+            if (sL) sL.el.classList.remove('selected');
+            sL = { val, el };
+        } else {
+            if (sR) sR.el.classList.remove('selected');
+            sR = { val, el };
+        }
+        el.classList.add('selected');
+
+        if (sL && sR) {
+            const container = document.getElementById(`match-${id}`);
+            const pairs = JSON.parse(container.dataset.pairs);
+            const isMatch = pairs.some(p => p.left === sL.val && p.right === sR.val);
+
+            if (isMatch) {
+                // Колір для пари
+                const solvedCount = container.querySelectorAll('.solved').length / 2;
+                const colorTheme = matchColors[solvedCount % matchColors.length];
+
+                [sL.el, sR.el].forEach(item => {
+                    item.classList.remove('selected');
+                    item.classList.add('solved');
+                    item.style.backgroundColor = colorTheme.bg;
+                    item.style.borderColor = colorTheme.border;
+                    item.style.color = colorTheme.text;
+                    item.style.transform = "scale(1.05)";
+                    setTimeout(() => item.style.transform = "scale(1)", 200);
+                });
+
+                if (container.querySelectorAll('.solved').length === pairs.length * 2) setStatus(id, true);
+
+            } else {
+                // Помилка
+                sL.el.classList.add('wrong-choice'); sR.el.classList.add('wrong-choice');
+                setTimeout(() => {
+                    sL.el.classList.remove('selected', 'wrong-choice');
+                    sR.el.classList.remove('selected', 'wrong-choice');
+                    sL = null; sR = null;
+                }, 500);
+                return;
+            }
+            sL = null; sR = null;
+        }
+    };
+
+    function setStatus(id, ok) {
+        const msg = document.getElementById(`msg-${id}`);
+        msg.style.display = 'block';
+        msg.innerHTML = ok ? "Супер! 🎉" : "Спробуй ще 🧐";
+        msg.className = ok ? "msg correct" : "msg wrong";
+    }
+
+    window.checkTest = () => {
+        let score = 0;
+        config.finalTest.forEach((q, i) => {
+            const el = document.querySelector(`input[name="q${i}"]:checked`);
+            const card = document.querySelectorAll('.test-card')[i];
+            card.style.border = "1px solid #e5e7eb";
+            if (el) {
+                if (parseInt(el.value) === q.correct) { score++; card.style.border = "2px solid #22c55e"; }
+                else { card.style.border = "2px solid #dc2626"; }
+            }
+        });
+        document.getElementById('test-result').innerText = `Результат: ${score} / ${config.finalTest.length}`;
+    };
+
+    // Layout & Board
+    let full = false;
+    window.toggleLayout = () => {
+        full = !full;
+        document.getElementById('taskPanel').classList.toggle('full-width', full);
+        document.getElementById('boardPanel').classList.toggle('hidden-panel', full);
+        setTimeout(resize, 350);
+    };
+
+    const canvas = document.getElementById('board'); const ctx = canvas.getContext('2d');
+    let paint = false, tool = 'pen';
+    function resize() { canvas.width = canvas.parentElement.offsetWidth; canvas.height = canvas.parentElement.offsetHeight; }
+    window.addEventListener('resize', resize); setTimeout(resize, 100);
+    function pos(e) { const r = canvas.getBoundingClientRect(); if(e.touches) return {x:e.touches[0].clientX-r.left, y:e.touches[0].clientY-r.top}; return {x:e.clientX-r.left, y:e.clientY-r.top}; }
+    function start(e) { e.preventDefault(); paint=true; draw(e); }
+    function end(e) { e.preventDefault(); paint=false; ctx.beginPath(); }
+    function draw(e) { if(!paint) return; e.preventDefault(); let p=pos(e); ctx.lineWidth=tool==='pen'?3:25; ctx.lineCap='round'; ctx.strokeStyle=tool==='pen'?'#6366f1':'white'; ctx.lineTo(p.x,p.y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(p.x,p.y); }
+
+    canvas.addEventListener('mousedown', start); canvas.addEventListener('mouseup', end); canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('touchstart', start, {passive:false}); canvas.addEventListener('touchend', end); canvas.addEventListener('touchmove', draw, {passive:false});
+    window.setTool = (t,btn) => { tool=t; document.querySelectorAll('.tool').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); };
+    window.clearBoard = () => ctx.clearRect(0,0,canvas.width,canvas.height);
+</script>
+</body>
+</html>
