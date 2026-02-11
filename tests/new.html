@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Тест: Тотожні перетворення (Варіант 2)</title>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f4f7f6;
+        margin: 0;
+        padding: 20px;
+        color: #333;
+      }
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: #fff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      }
+      h1 {
+        text-align: center;
+        color: #2c3e50;
+        margin-bottom: 30px;
+      }
+      .question-card {
+        background: #fafafa;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+      }
+      .question-text {
+        font-size: 1.2em;
+        margin-bottom: 15px;
+        font-weight: 600;
+      }
+      .options {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      .option-label {
+        display: flex;
+        align-items: center;
+        padding: 10px 15px;
+        background: #fff;
+        border: 2px solid #ddd;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .option-label:hover {
+        border-color: #3498db;
+        background: #f0f8ff;
+      }
+      .option-label input {
+        margin-right: 10px;
+      }
+      button {
+        display: block;
+        width: 100%;
+        padding: 15px;
+        background-color: #27ae60;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 1.1em;
+        cursor: pointer;
+        margin-top: 20px;
+        transition: background 0.3s;
+      }
+      button:hover {
+        background-color: #219150;
+      }
+      #result {
+        margin-top: 30px;
+        text-align: center;
+        display: none;
+      }
+      .score-circle {
+        width: 150px;
+        height: 150px;
+        background: #2c3e50;
+        color: #fff;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        font-size: 2.5em;
+        font-weight: bold;
+      }
+      .feedback {
+        font-size: 1.2em;
+      }
+      .math {
+        font-family: "Times New Roman", Times, serif;
+        font-style: italic;
+      }
+      @media (max-width: 600px) {
+        .options {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>§ 18. Перевірка знань (Нові завдання)</h1>
+      <form id="quizForm">
+        <div id="questions-container"></div>
+        <button type="button" onclick="checkAnswers()">Завершити тест</button>
+      </form>
+
+      <div id="result">
+        <div class="score-circle" id="scoreValue">0/12</div>
+        <p class="feedback" id="feedbackText"></p>
+        <button
+          onclick="location.reload()"
+          style="background-color: #3498db; margin-top: 15px"
+        >
+          Спробувати ще раз
+        </button>
+      </div>
+    </div>
+
+    <script>
+      const quizData = [
+        {
+          q: "Обчисліть: 7√2 + 3√2",
+          a: [
+            { text: "10√2", correct: true },
+            { text: "10√4", correct: false },
+            { text: "21√2", correct: false },
+            { text: "10", correct: false },
+          ],
+        },
+        {
+          q: "Обчисліть: 9√7 - 5√7",
+          a: [
+            { text: "4√7", correct: true },
+            { text: "4", correct: false },
+            { text: "14√7", correct: false },
+            { text: "√7", correct: false },
+          ],
+        },
+        {
+          q: "Подайте у вигляді кореня: √5 · √3",
+          a: [
+            { text: "√15", correct: true },
+            { text: "√8", correct: false },
+            { text: "15", correct: false },
+            { text: "2√5", correct: false },
+          ],
+        },
+        {
+          q: "Спростіть вираз: √2 · √18",
+          a: [
+            { text: "6", correct: true },
+            { text: "√20", correct: false },
+            { text: "36", correct: false },
+            { text: "2√18", correct: false },
+          ],
+        },
+        {
+          q: "Винесіть множник з-під знака кореня: √27",
+          a: [
+            { text: "3√3", correct: true },
+            { text: "9√3", correct: false },
+            { text: "3√9", correct: false },
+            { text: "3", correct: false },
+          ],
+        },
+        {
+          q: "Винесіть множник з-під знака кореня: √50",
+          a: [
+            { text: "5√2", correct: true },
+            { text: "2√5", correct: false },
+            { text: "25√2", correct: false },
+            { text: "10", correct: false },
+          ],
+        },
+        {
+          q: "Винесіть множник і спростіть: 0.5√24",
+          a: [
+            { text: "√6", correct: true },
+            { text: "2√6", correct: false },
+            { text: "0.5√6", correct: false },
+            { text: "6", correct: false },
+          ],
+        },
+        {
+          q: "Внесіть множник під знак кореня: 3√5",
+          a: [
+            { text: "√45", correct: true },
+            { text: "√15", correct: false },
+            { text: "√75", correct: false },
+            { text: "15", correct: false },
+          ],
+        },
+        {
+          q: "Внесіть множник під знак кореня: -2√3",
+          a: [
+            { text: "-√12", correct: true },
+            { text: "√12", correct: false },
+            { text: "√-12", correct: false },
+            { text: "-√6", correct: false },
+          ],
+        },
+        {
+          q: "Спростіть вираз: √12 + √75 - √48",
+          a: [
+            { text: "3√3", correct: true },
+            { text: "5√3", correct: false },
+            { text: "√39", correct: false },
+            { text: "0", correct: false },
+          ],
+        },
+        {
+          q: "Виконайте множення: √2(√8 + √18)",
+          a: [
+            { text: "10", correct: true },
+            { text: "√52", correct: false },
+            { text: "4√2", correct: false },
+            { text: "8", correct: false },
+          ],
+        },
+        {
+          q: "Виконайте дії: (√7 - 2)(√7 + 2)",
+          a: [
+            { text: "3", correct: true },
+            { text: "11", correct: false },
+            { text: "√7", correct: false },
+            { text: "5", correct: false },
+          ],
+        },
+      ];
+
+      function renderQuestions() {
+        const container = document.getElementById("questions-container");
+        quizData.forEach((item, index) => {
+          const card = document.createElement("div");
+          card.className = "question-card";
+
+          let optionsHtml = "";
+          // Перемішування варіантів відповідей
+          const shuffledAnswers = [...item.a].sort(() => Math.random() - 0.5);
+
+          shuffledAnswers.forEach((option) => {
+            optionsHtml += `
+                    <label class="option-label">
+                        <input type="radio" name="q${index}" value="${option.correct}">
+                        <span class="math">${option.text}</span>
+                    </label>
+                `;
+          });
+
+          card.innerHTML = `
+                <div class="question-text">${index + 1}. <span class="math">${item.q}</span></div>
+                <div class="options">
+                    ${optionsHtml}
+                </div>
+            `;
+          container.appendChild(card);
+        });
+      }
+
+      function checkAnswers() {
+        let score = 0;
+        const total = quizData.length;
+
+        quizData.forEach((item, index) => {
+          const options = document.getElementsByName(`q${index}`);
+          options.forEach((opt) => {
+            if (opt.checked && opt.value === "true") {
+              score++;
+            }
+            opt.disabled = true;
+          });
+
+          const card = options[0].closest(".question-card");
+          const isCorrect = Array.from(options).some(
+            (o) => o.checked && o.value === "true",
+          );
+
+          if (isCorrect) {
+            card.style.border = "2px solid #27ae60";
+            card.style.backgroundColor = "#e8f8f5";
+          } else {
+            card.style.border = "2px solid #c0392b";
+            card.style.backgroundColor = "#fdedec";
+
+            const correctText = item.a.find((a) => a.correct).text;
+            const correctDiv = document.createElement("div");
+            correctDiv.style.color = "#c0392b";
+            correctDiv.style.marginTop = "10px";
+            correctDiv.style.fontWeight = "bold";
+            correctDiv.innerHTML = `Правильна відповідь: <span class="math">${correctText}</span>`;
+            card.appendChild(correctDiv);
+          }
+        });
+
+        const form = document.getElementById("quizForm");
+        const result = document.getElementById("result");
+        const scoreValue = document.getElementById("scoreValue");
+        const feedbackText = document.getElementById("feedbackText");
+
+        form.querySelector("button").style.display = "none";
+        result.style.display = "block";
+        scoreValue.textContent = `${score}/${total}`;
+
+        let feedback = "";
+        if (score === total)
+          feedback = "Чудово! Ти повністю розібралася в темі!";
+        else if (score >= total * 0.7)
+          feedback = "Дуже добре! Є розуміння, але будь уважніша.";
+        else if (score >= total * 0.4)
+          feedback = "Непогано, але варто повторити формули.";
+        else feedback = "Треба ще повчити правила і спробувати знову.";
+
+        feedbackText.textContent = feedback;
+
+        window.scrollTo({
+          top: document.body.scrollHeight,
+          behavior: "smooth",
+        });
+      }
+
+      renderQuestions();
+    </script>
+  </body>
+</html>
