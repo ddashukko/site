@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Тренажер: Осьова Симетрія (9 клас)</title>
+    <style>
+      :root {
+        --primary: #4f46e5;
+        --success: #10b981;
+        --error: #ef4444;
+        --bg: #f3f4f6;
+        --surface: #ffffff;
+      }
+
+      body {
+        font-family: "Segoe UI", system-ui, sans-serif;
+        background-color: var(--bg);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+        padding: 20px;
+      }
+
+      .container {
+        display: flex;
+        gap: 30px;
+        background: var(--surface);
+        padding: 30px;
+        border-radius: 20px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        max-width: 1000px;
+        width: 100%;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .info-panel {
+        flex: 1;
+        min-width: 300px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      h1 {
+        color: #1f2937;
+        margin-bottom: 10px;
+        font-size: 1.8rem;
+      }
+
+      .status-bar {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        font-weight: 600;
+        color: #6b7280;
+      }
+
+      .question-box {
+        background: #e0e7ff;
+        border-left: 5px solid var(--primary);
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+      }
+
+      .question-text {
+        font-size: 1.2rem;
+        color: #374151;
+        margin-bottom: 10px;
+      }
+
+      .hint {
+        font-size: 0.9rem;
+        color: #6b7280;
+        font-style: italic;
+      }
+
+      canvas {
+        background: #fff;
+        border: 2px solid #e5e7eb;
+        border-radius: 12px;
+        cursor: crosshair;
+        box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.02);
+      }
+
+      .feedback {
+        height: 50px;
+        display: flex;
+        align-items: center;
+        font-weight: bold;
+        font-size: 1.1rem;
+      }
+
+      .feedback.success {
+        color: var(--success);
+      }
+      .feedback.error {
+        color: var(--error);
+      }
+
+      button {
+        background: var(--primary);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        font-size: 1rem;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: opacity 0.2s;
+        display: none;
+        align-self: flex-start;
+      }
+
+      button:hover {
+        opacity: 0.9;
+      }
+
+      .result-screen {
+        text-align: center;
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container" id="game-container">
+      <div class="info-panel">
+        <h1>Геометрія: Симетрія</h1>
+        <div class="status-bar">
+          <span id="progress">Питання: 1/30</span>
+          <span id="score">Рахунок: 0</span>
+        </div>
+
+        <div class="question-box">
+          <div class="question-text" id="q-text">Завантаження...</div>
+          <div class="hint" id="q-hint"></div>
+        </div>
+
+        <div class="feedback" id="feedback"></div>
+        <button id="next-btn" onclick="nextQuestion()">Наступне питання</button>
+      </div>
+
+      <canvas id="gridCanvas" width="400" height="400"></canvas>
+    </div>
+
+    <div class="container result-screen" id="result-container">
+      <h1>Тест завершено!</h1>
+      <p style="font-size: 1.5rem; margin: 20px 0">
+        Твій результат: <span id="final-score"></span>/30
+      </p>
+      <button style="display: inline-block" onclick="location.reload()">
+        Спробувати ще раз
+      </button>
+    </div>
+
+    <script>
+      const canvas = document.getElementById("gridCanvas");
+      const ctx = canvas.getContext("2d");
+
+      // Config
+      const gridSize = 20;
+      const axisColor = "#374151";
+      const gridColor = "#e5e7eb";
+      const width = canvas.width;
+      const height = canvas.height;
+      const centerX = width / 2;
+      const centerY = height / 2;
+
+      let currentQIndex = 0;
+      let score = 0;
+      let isAnswered = false;
+
+      // Генерація 30 питань
+      // Типи: 'Ox' (вісь X), 'Oy' (вісь Y), 'O' (початок координат)
+      const questions = [
+        // Блок 1: Симетрія відносно Ox
+        {
+          p: { x: 3, y: 5 },
+          type: "Ox",
+          text: "Знайди точку, симетричну A(3; 5) відносно осі Ox",
+        },
+        {
+          p: { x: -4, y: 2 },
+          type: "Ox",
+          text: "Знайди точку, симетричну B(-4; 2) відносно осі Ox",
+        },
+        {
+          p: { x: 6, y: -3 },
+          type: "Ox",
+          text: "Побудуй точку, симетричну C(6; -3) відносно осі абсцис",
+        },
+        {
+          p: { x: -2, y: -5 },
+          type: "Ox",
+          text: "Відобрази точку D(-2; -5) симетрично відносно осі Ox",
+        },
+        {
+          p: { x: 5, y: 0 },
+          type: "Ox",
+          text: "Знайди точку, симетричну E(5; 0) відносно осі Ox",
+        }, // На осі
+        {
+          p: { x: 0, y: 4 },
+          type: "Ox",
+          text: "Знайди образ точки F(0; 4) при симетрії відносно Ox",
+        },
+        {
+          p: { x: 2, y: 2 },
+          type: "Ox",
+          text: "Симетрія відносно осі Ox для точки G(2; 2)",
+        },
+        {
+          p: { x: -5, y: 4 },
+          type: "Ox",
+          text: "Куди перейде точка H(-5; 4) при відображенні відносно Ox?",
+        },
+        {
+          p: { x: 7, y: -1 },
+          type: "Ox",
+          text: "Знайди точку, симетричну K(7; -1) відносно осі Ox",
+        },
+        {
+          p: { x: -3, y: -3 },
+          type: "Ox",
+          text: "Знайди симетричну точку до L(-3; -3) відносно Ox",
+        },
+
+        // Блок 2: Симетрія відносно Oy
+        {
+          p: { x: 4, y: 6 },
+          type: "Oy",
+          text: "Знайди точку, симетричну M(4; 6) відносно осі Oy",
+        },
+        {
+          p: { x: -3, y: 5 },
+          type: "Oy",
+          text: "Побудуй точку, симетричну N(-3; 5) відносно осі ординат",
+        },
+        {
+          p: { x: 2, y: -4 },
+          type: "Oy",
+          text: "Відобрази точку P(2; -4) симетрично відносно осі Oy",
+        },
+        {
+          p: { x: -5, y: -2 },
+          type: "Oy",
+          text: "Знайди образ точки Q(-5; -2) при симетрії відносно Oy",
+        },
+        {
+          p: { x: 0, y: -5 },
+          type: "Oy",
+          text: "Знайди точку, симетричну R(0; -5) відносно осі Oy",
+        }, // На осі
+        {
+          p: { x: -6, y: 0 },
+          type: "Oy",
+          text: "Куди перейде точка S(-6; 0) при симетрії відносно Oy?",
+        },
+        {
+          p: { x: 3, y: 3 },
+          type: "Oy",
+          text: "Симетрія відносно осі Oy для точки T(3; 3)",
+        },
+        {
+          p: { x: 1, y: -7 },
+          type: "Oy",
+          text: "Знайди точку, симетричну U(1; -7) відносно Oy",
+        },
+        {
+          p: { x: -2, y: 8 },
+          type: "Oy",
+          text: "Відобрази точку V(-2; 8) відносно осі ординат",
+        },
+        {
+          p: { x: 5, y: 5 },
+          type: "Oy",
+          text: "Знайди точку, симетричну W(5; 5) відносно осі Oy",
+        },
+
+        // Блок 3: Центральна симетрія (початок координат)
+        {
+          p: { x: 3, y: 4 },
+          type: "O",
+          text: "Знайди точку, симетричну A(3; 4) відносно початку координат",
+        },
+        {
+          p: { x: -2, y: 6 },
+          type: "O",
+          text: "Побудуй точку, симетричну B(-2; 6) відносно точки (0;0)",
+        },
+        {
+          p: { x: 5, y: -3 },
+          type: "O",
+          text: "Центральна симетрія відносно початку координат для C(5; -3)",
+        },
+        {
+          p: { x: -4, y: -4 },
+          type: "O",
+          text: "Куди перейде точка D(-4; -4) при симетрії відносно початку координат?",
+        },
+        {
+          p: { x: 6, y: 0 },
+          type: "O",
+          text: "Знайди точку, симетричну E(6; 0) відносно початку координат",
+        },
+        {
+          p: { x: 0, y: 3 },
+          type: "O",
+          text: "Знайди образ точки F(0; 3) при центральній симетрії",
+        },
+        {
+          p: { x: 1, y: 1 },
+          type: "O",
+          text: "Симетрія відносно початку координат для G(1; 1)",
+        },
+        {
+          p: { x: -7, y: 2 },
+          type: "O",
+          text: "Знайди точку, симетричну H(-7; 2) відносно (0;0)",
+        },
+        {
+          p: { x: 3, y: -6 },
+          type: "O",
+          text: "Відобрази точку K(3; -6) відносно початку координат",
+        },
+        {
+          p: { x: 0, y: 0 },
+          type: "O",
+          text: "Знайди точку, симетричну точці (0; 0) відносно початку координат",
+        },
+      ];
+
+      function toCanvas(x, y) {
+        return {
+          x: centerX + x * gridSize,
+          y: centerY - y * gridSize,
+        };
+      }
+
+      function toGrid(canvasX, canvasY) {
+        return {
+          x: Math.round((canvasX - centerX) / gridSize),
+          y: Math.round((centerY - canvasY) / gridSize),
+        };
+      }
+
+      function drawGrid() {
+        ctx.clearRect(0, 0, width, height);
+        ctx.lineWidth = 1;
+
+        // Сітка
+        ctx.strokeStyle = gridColor;
+        ctx.beginPath();
+        for (let i = 0; i <= width; i += gridSize) {
+          ctx.moveTo(i, 0);
+          ctx.lineTo(i, height);
+          ctx.moveTo(0, i);
+          ctx.lineTo(width, i);
+        }
+        ctx.stroke();
+
+        // Осі
+        ctx.strokeStyle = axisColor;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(centerX, 0);
+        ctx.lineTo(centerX, height); // Y
+        ctx.moveTo(0, centerY);
+        ctx.lineTo(width, centerY); // X
+        ctx.stroke();
+
+        // Стрілки та підписи
+        ctx.font = "12px Arial";
+        ctx.fillStyle = "#000";
+        ctx.fillText("y", centerX + 5, 15);
+        ctx.fillText("x", width - 15, centerY - 5);
+        ctx.fillText("0", centerX + 2, centerY + 15);
+      }
+
+      function drawPoint(x, y, color, label = "") {
+        const pos = toCanvas(x, y);
+        ctx.beginPath();
+        ctx.arc(pos.x, pos.y, 5, 0, Math.PI * 2);
+        ctx.fillStyle = color;
+        ctx.fill();
+
+        if (label) {
+          ctx.fillStyle = "#000";
+          ctx.font = "bold 14px Arial";
+          ctx.fillText(label, pos.x + 8, pos.y - 8);
+        }
+      }
+
+      function getTargetPoint(p, type) {
+        if (type === "Ox") return { x: p.x, y: -p.y };
+        if (type === "Oy") return { x: -p.x, y: p.y };
+        if (type === "O") return { x: -p.x, y: -p.y };
+        return { x: 0, y: 0 };
+      }
+
+      function loadQuestion() {
+        isAnswered = false;
+        document.getElementById("feedback").textContent = "";
+        document.getElementById("next-btn").style.display = "none";
+
+        const q = questions[currentQIndex];
+        document.getElementById("q-text").textContent = q.text;
+        document.getElementById("progress").textContent =
+          `Питання: ${currentQIndex + 1}/${questions.length}`;
+
+        let hint = "";
+        if (q.type === "Ox")
+          hint = "Підказка: При симетрії відносно Ox змінюється знак Y.";
+        if (q.type === "Oy")
+          hint = "Підказка: При симетрії відносно Oy змінюється знак X.";
+        if (q.type === "O")
+          hint =
+            "Підказка: При симетрії відносно (0;0) змінюються обидва знаки.";
+        document.getElementById("q-hint").textContent = hint;
+
+        drawGrid();
+        drawPoint(q.p.x, q.p.y, "#4f46e5", "A"); // Дана точка
+      }
+
+      canvas.addEventListener("mousedown", function (e) {
+        if (isAnswered) return;
+
+        const rect = canvas.getBoundingClientRect();
+        const clickX = e.clientX - rect.left;
+        const clickY = e.clientY - rect.top;
+
+        const gridPos = toGrid(clickX, clickY);
+        const q = questions[currentQIndex];
+        const target = getTargetPoint(q.p, q.type);
+
+        isAnswered = true;
+
+        if (gridPos.x === target.x && gridPos.y === target.y) {
+          score++;
+          document.getElementById("score").textContent = `Рахунок: ${score}`;
+          document.getElementById("feedback").textContent =
+            "Правильно! Молодець.";
+          document.getElementById("feedback").className = "feedback success";
+          drawPoint(target.x, target.y, "#10b981", "B"); // Зелена
+        } else {
+          document.getElementById("feedback").textContent =
+            `Помилка. Правильна точка: (${target.x}; ${target.y})`;
+          document.getElementById("feedback").className = "feedback error";
+          drawPoint(gridPos.x, gridPos.y, "#ef4444"); // Червона (помилка)
+          drawPoint(target.x, target.y, "#10b981", "B"); // Зелена (правильна)
+        }
+
+        document.getElementById("next-btn").style.display = "block";
+      });
+
+      function nextQuestion() {
+        currentQIndex++;
+        if (currentQIndex < questions.length) {
+          loadQuestion();
+        } else {
+          document.getElementById("game-container").style.display = "none";
+          document.getElementById("result-container").style.display = "block";
+          document.getElementById("final-score").textContent = score;
+        }
+      }
+
+      // Start
+      loadQuestion();
+    </script>
+  </body>
+</html>
