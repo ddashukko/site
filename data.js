@@ -795,6 +795,16 @@ window.lessonsData = [
     category: "lesson",
     author: "Соня",
   },
+   {
+    id: "math-6-rozkrittia_duzhok",
+    title: "Розкриття дужок",
+    grade: 6,
+    topic: "Математика",
+    link: "math_general/6/Вадим/domash.html",
+    subject_code: "math_general",
+    category: "lesson",
+    author: "Соня",
+  },
   {
     id: "math-6-diiseva",
     title: "Порівняння, різні дії",
