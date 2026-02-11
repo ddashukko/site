@@ -2,312 +2,335 @@
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Системи рівнянь: Метод підстановки</title>
-    
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
-    
-    <script>window.MathJax = { tex: { inlineMath: [['$', '$']] }, svg: { fontCache: 'global' } };</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Системи рівнянь</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-
+    
     <style>
-        :root { --primary: #2563eb; --bg-page: #f1f5f9; --text-main: #1e293b; --success: #10b981; --warn: #f59e0b; }
-        body { margin: 0; font-family: 'Nunito', sans-serif; height: 100vh; display: flex; overflow: hidden; background: var(--bg-page); color: var(--text-main); }
-
-        /* ЛІВА ПАНЕЛЬ */
-        .left-panel { flex: 6; background: var(--bg-page); padding: 30px; overflow-y: auto; position: relative; z-index: 10; transition: 0.3s; }
-        .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-        h2 { margin: 0; font-weight: 800; font-size: 26px; color: var(--primary); }
-        .toggle-btn { background: white; border: none; width: 40px; height: 40px; border-radius: 50%; box-shadow: 0 4px 10px rgba(0,0,0,0.1); cursor: pointer; color: var(--primary); transition: 0.2s; }
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
+        body { font-family: 'Nunito', sans-serif; background-color: #f3f4f6; }
         
-        /* АЛГОРИТМ (З твого коду) */
-        .algorithm-card { background: white; border-radius: 20px; padding: 25px; margin-bottom: 25px; border-left: 6px solid var(--warn); box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-        .step { display: flex; align-items: flex-start; margin-bottom: 12px; background: #f8fafc; padding: 10px; border-radius: 10px; }
-        .step-num { background: var(--primary); color: white; min-width: 24px; height: 24px; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-right: 12px; font-weight: bold; font-size: 14px; }
+        /* Адаптивна висота для десктопа */
+        @media (min-width: 768px) {
+            .main-container { height: calc(100vh - 64px); overflow: hidden; }
+        }
 
-        /* ЗАВДАННЯ */
-        .task-card { background: white; border-radius: 20px; padding: 25px; margin-bottom: 25px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); border-left: 6px solid var(--primary); position: relative; }
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .custom-scroll::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        .task-card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); border-left: 5px solid #6366f1; transition: transform 0.2s; }
+        .step-box { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 15px; margin-top: 10px; display: none; }
+        .step-box.active { display: block; animation: fadeIn 0.4s ease-out; }
         
-        /* ІНПУТИ ДЛЯ СИСТЕМ */
-        .input-row { display: flex; align-items: center; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
-        .var-label { font-weight: 800; font-size: 18px; color: var(--primary); }
-        input[type="number"] { padding: 10px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 18px; outline: none; width: 80px; text-align: center; transition: 0.2s; -moz-appearance: textfield; }
-        input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-        input:focus { border-color: var(--primary); background: #eff6ff; }
+        .correct { border-color: #10b981 !important; background-color: #ecfdf5 !important; ring: 2px solid #10b981; }
+        .incorrect { border-color: #ef4444 !important; background-color: #fef2f2 !important; animation: shake 0.3s; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
         
-        .check-btn { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 10px; font-weight: 700; cursor: pointer; transition: 0.2s; margin-left: auto; }
-        .check-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); }
+        .memory-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; width: 140px; margin: 0 auto; }
+        .memory-cell { aspect-ratio: 1/1; background: #e5e7eb; border-radius: 6px; cursor: pointer; transition: all 0.2s; }
+        .memory-cell.active { background: #6366f1; transform: scale(0.95); }
 
-        /* ПІДКАЗКИ */
-        .help-btns { margin-top: 15px; display: flex; gap: 10px; }
-        .help-btn { background: transparent; border: 1px solid #cbd5e1; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-weight: 700; color: #64748b; font-size: 13px; transition: 0.2s; }
-        .help-btn:hover { background: #f1f5f9; color: var(--text-main); }
-        .hidden-content { display: none; margin-top: 15px; padding: 15px; border-radius: 12px; font-size: 15px; line-height: 1.5; animation: slideDown 0.3s ease-out; }
-        .hint-box { background: #fffbeb; border: 1px solid #fcd34d; color: #92400e; }
-        .sol-box { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e3a8a; }
-        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .msg { font-weight: 800; margin-top: 15px; display: none; font-size: 16px; }
-        .correct { color: var(--success); } .wrong { color: #dc2626; }
-
-        /* ФІНІШ */
-        .finish-btn { width: 100%; padding: 20px; background: #10b981; color: white; border: none; border-radius: 16px; font-size: 20px; font-weight: 800; margin-top: 30px; cursor: pointer; transition: 0.2s; }
-        .finish-btn:hover { background: #059669; transform: translateY(-2px); }
-
-        /* МОДАЛКА */
-        #final-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; }
-        .modal-content { background: white; padding: 40px; border-radius: 24px; text-align: center; max-width: 400px; animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-
-        /* ПРАВА ПАНЕЛЬ (ДОШКА) */
-        .right-panel { flex: 4; background: white; position: relative; cursor: crosshair; border-left: 1px solid #e2e8f0; touch-action: none; transition: 0.3s; }
-        .toolbar { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); background: white; padding: 8px; border-radius: 16px; display: flex; gap: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 1px solid #f1f5f9; }
-        .tool { width: 40px; height: 40px; border: none; background: #f8fafc; border-radius: 10px; color: #64748b; font-size: 16px; cursor: pointer; transition: 0.2s; }
-        .tool:hover { background: #e2e8f0; }
-        .tool.active { background: var(--primary); color: white; transform: scale(1.1); }
-        
-        @media (max-width: 768px) { body { flex-direction: column; } .left-panel { flex: none; height: 60%; } .right-panel { flex: none; height: 40%; } .toggle-btn { display: none; } }
-        .full-width { flex: 100% !important; } .hidden-panel { flex: 0 !important; width: 0 !important; overflow: hidden; opacity: 0; }
+        /* Стиль вибраного кольору */
+        .color-btn.selected { ring: 3px offset 2px #6366f1; transform: scale(1.1); }
     </style>
 </head>
-<body>
+<body class="flex flex-col h-screen">
 
-    <div id="final-modal">
-        <div class="modal-content">
-            <div style="font-size: 60px;">🏆</div>
-            <h2 id="result-title" style="margin-bottom: 10px;">Урок завершено!</h2>
-            <p id="result-score" style="font-size: 20px; font-weight: bold; color: var(--primary);"></p>
-            <p id="result-msg" style="color: #64748b; margin-bottom: 30px;"></p>
-            <button class="check-btn" onclick="location.reload()" style="width: 100%;">Почати заново</button>
+    <header class="bg-indigo-600 text-white p-4 flex justify-between items-center shadow-lg z-20">
+        <div class="flex items-center gap-3">
+            <h1 class="text-lg md:text-xl font-bold">Алгебра 7-9 клас</h1>
+            <span class="hidden sm:inline bg-indigo-500 px-2 py-1 rounded text-xs uppercase tracking-wider">Метод підстановки</span>
         </div>
-    </div>
+        <div class="text-sm font-mono bg-indigo-700 px-4 py-1.5 rounded-full border border-indigo-400" id="score-display">Бали: 0</div>
+    </header>
 
-    <div class="left-panel" id="taskPanel">
-        <div class="header-row">
-            <h2 id="lesson-title">Системи рівнянь</h2>
-            <button class="toggle-btn" onclick="toggleLayout()" title="На весь екран"><i class="fas fa-expand-alt"></i></button>
-        </div>
+    <main class="flex flex-col md:flex-row flex-1 overflow-hidden main-container">
+        
+        <div class="w-full md:w-1/2 overflow-y-auto custom-scroll p-4 md:p-6 bg-gray-50 border-r border-gray-200">
+            
+            <div class="task-card border-l-yellow-400">
+                <h3 class="text-lg font-bold mb-4 text-yellow-700 flex items-center gap-2">🧠 Розминка: Увага та усний рахунок</h3>
+                <div class="flex flex-col sm:flex-row gap-6">
+                    <div class="sm:w-1/2 text-center bg-yellow-50 p-3 rounded-xl">
+                        <p class="mb-3 text-sm font-semibold text-yellow-800">Повтори візерунок:</p>
+                        <div class="memory-grid" id="memory-grid"></div>
+                        <button onclick="startGame()" class="mt-4 bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-1.5 rounded-full text-sm font-bold shadow-sm transition">Старт</button>
+                        <p id="memory-status" class="text-xs mt-2 font-medium text-yellow-600 h-4"></p>
+                    </div>
+                    <div class="sm:w-1/2 space-y-3">
+                        <p class="text-sm font-bold text-gray-700">Швидка перевірка:</p>
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between gap-2">\( 2(x+3) = \) <input type="text" class="border rounded-lg px-2 py-1 w-24 text-sm math-input focus:ring-2 focus:ring-indigo-400 outline-none" data-ans="2x+6"></div>
+                            <div class="flex items-center justify-between gap-2">\( -(y-4) = \) <input type="text" class="border rounded-lg px-2 py-1 w-24 text-sm math-input focus:ring-2 focus:ring-indigo-400 outline-none" data-ans="-y+4"></div>
+                            <div class="flex items-center justify-between gap-2">\( 3x + 2x = \) <input type="text" class="border rounded-lg px-2 py-1 w-24 text-sm math-input focus:ring-2 focus:ring-indigo-400 outline-none" data-ans="5x"></div>
+                        </div>
+                        <button onclick="checkWarmup(this)" class="w-full mt-2 bg-indigo-100 hover:bg-indigo-200 text-indigo-700 font-bold py-1.5 rounded-lg text-xs transition">ПЕРЕВІРИТИ РАЗОМ</button>
+                    </div>
+                </div>
+            </div>
 
-        <div class="algorithm-card">
-            <h3 style="margin-top:0; color: var(--text-main);"><i class="fas fa-rocket"></i> Алгоритм підстановки</h3>
-            <div style="margin-top: 15px;">
-                <div class="step"><div class="step-num">1</div><div><b>Виразити:</b> З одного рівняння виразити одну змінну через іншу.</div></div>
-                <div class="step"><div class="step-num">2</div><div><b>Підставити:</b> Підставити вираз у <b>друге</b> рівняння.</div></div>
-                <div class="step"><div class="step-num">3</div><div><b>Розв'язати:</b> Знайти значення однієї змінної.</div></div>
-                <div class="step"><div class="step-num">4</div><div><b>Знайти другу:</b> Підставити знайдене число у вираз з кроку 1.</div></div>
+            <h2 class="text-xl font-bold text-indigo-800 mb-4 flex items-center gap-2">📘 Приклад №1 <span class="text-xs font-normal text-gray-500">(навчальний)</span></h2>
+            <div class="task-card" id="guided-task-1">
+                <div class="mb-4 text-center">
+                    <div class="inline-block bg-indigo-50 border-2 border-indigo-100 p-4 rounded-2xl text-xl shadow-sm">
+                        \( \begin{cases} x + y = 7 \\ 2x - y = 8 \end{cases} \)
+                    </div>
+                </div>
+                <div class="step-box active" id="p1-s1">
+                    <p class="font-semibold text-sm mb-2 text-gray-700">1. Виразимо \(x\) з першого рівняння:</p>
+                    <div class="flex items-center gap-2">\(x =\) <input type="text" class="border rounded-lg px-3 py-1.5 w-full max-w-[150px]" id="p1-i1" placeholder="7-y"> <button onclick="checkStepInput('p1', 1, ['7-y', '-y+7'])" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-1.5 rounded-lg text-sm transition">ОК</button></div>
+                </div>
+                <div class="step-box" id="p1-s2">
+                    <p class="font-semibold text-sm mb-2 text-gray-700">2. Підставимо у друге: \(2(...) - y = 8\):</p>
+                    <div class="flex flex-wrap items-center gap-2"><input type="text" class="border rounded-lg px-3 py-1.5 w-full sm:w-64" id="p1-i2" placeholder="2(7-y)-y=8"> <button onclick="checkStepInput('p1', 2, ['2(7-y)-y=8'])" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-1.5 rounded-lg text-sm">ОК</button></div>
+                </div>
+                <div class="step-box" id="p1-s3">
+                    <p class="font-semibold text-sm mb-2 text-gray-700">3. Розв'яжи отримане рівняння. Чому дорівнює \(y\)?</p>
+                    <div class="flex items-center gap-2">\(y =\) <input type="text" class="border rounded-lg px-3 py-1.5 w-24" id="p1-i3"> <button onclick="checkStepInput('p1', 3, ['2'])" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-1.5 rounded-lg text-sm">ОК</button></div>
+                </div>
+                <div class="step-box" id="p1-s4">
+                    <p class="font-semibold text-sm mb-2 text-gray-700">4. Знайди \(x\), підставивши \(y\) у вираз \(x=7-y\):</p>
+                    <div class="flex items-center gap-2">\(x =\) <input type="text" class="border rounded-lg px-3 py-1.5 w-24" id="p1-i4"> <button onclick="checkStepInput('p1', 4, ['5'])" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-1.5 rounded-lg text-sm">ОК</button></div>
+                    <div class="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg hidden" id="p1-done">
+                        <p class="text-green-700 font-bold text-center italic">Чудово! Відповідь: (5; 2)</p>
+                    </div>
+                </div>
+            </div>
+
+            <h2 class="text-xl font-bold text-indigo-800 mt-8 mb-4 flex items-center gap-2">🏃 Марафон: 15 завдань</h2>
+            <div id="marathon-container"></div>
+
+            <div class="mt-12 mb-20 bg-indigo-900 p-8 rounded-3xl text-center text-white shadow-2xl">
+                <h2 class="text-3xl font-bold mb-2">Фініш! 🏁</h2>
+                <p class="text-indigo-200 mb-6">Ти подолав усі системи. Час дізнатися результат!</p>
+                <button onclick="finishLesson()" class="bg-white text-indigo-900 px-10 py-4 rounded-2xl font-black text-lg shadow-lg hover:scale-105 transition transform">ЗАВЕРШИТИ УРОК</button>
+                <div id="final-result" class="hidden mt-8 p-6 bg-white/10 rounded-2xl backdrop-blur-sm">
+                    <p class="text-5xl font-black text-yellow-400" id="final-score-text"></p>
+                    <p class="mt-4 text-indigo-100 italic">"Математика — це гімнастика розуму. Сьогодні ти у чудовій формі!"</p>
+                </div>
             </div>
         </div>
 
-        <div id="tasks-area"></div>
-        
-        <button class="finish-btn" onclick="finishLesson()">
-            <i class="fas fa-check-circle"></i> Завершити урок
-        </button>
-    </div>
+        <div class="w-full md:w-1/2 relative bg-white flex flex-col h-[50vh] md:h-auto">
+            <div class="bg-white border-b p-2 flex flex-wrap justify-center gap-2 z-10 shadow-sm">
+                <div class="flex bg-gray-100 rounded-lg p-1 gap-1">
+                    <button id="btn-pen" onclick="setTool('pen')" class="p-2 hover:bg-white rounded shadow-sm transition">✏️</button>
+                    <button id="btn-marker" onclick="setTool('marker')" class="p-2 hover:bg-white rounded shadow-sm transition">🖍️</button>
+                    <button id="btn-eraser" onclick="setTool('eraser')" class="p-2 hover:bg-white rounded shadow-sm transition">🧹</button>
+                </div>
+                
+                <div class="flex bg-gray-100 rounded-lg p-1 gap-2 items-center px-3">
+                    <div onclick="setColor('#000000', this)" class="color-btn w-6 h-6 rounded-full bg-black cursor-pointer border selected"></div>
+                    <div onclick="setColor('#ef4444', this)" class="color-btn w-6 h-6 rounded-full bg-red-500 cursor-pointer border"></div>
+                    <div onclick="setColor('#3b82f6', this)" class="color-btn w-6 h-6 rounded-full bg-blue-500 cursor-pointer border"></div>
+                </div>
 
-    <div class="right-panel" id="boardPanel">
-        <div class="toolbar">
-            <button class="tool active" onclick="setTool('pen', this)"><i class="fas fa-pen"></i></button>
-            <button class="tool" onclick="setTool('eraser', this)"><i class="fas fa-eraser"></i></button>
-            <div style="width: 1px; background: #cbd5e1; margin: 0 5px;"></div>
-            <button class="tool" onclick="drawGrid()" title="Сітка"><i class="fas fa-border-all"></i></button>
-            <button class="tool" onclick="drawAxes()" title="Осі"><i class="fas fa-plus"></i></button>
-            <button class="tool" onclick="clearBoard()" title="Очистити"><i class="fas fa-trash"></i></button>
+                <div class="flex gap-1">
+                    <button onclick="undo()" class="p-2 bg-gray-50 hover:bg-gray-200 rounded-lg transition" title="Відмінити">↩️</button>
+                    <button onclick="drawGrid()" class="px-3 py-1 bg-indigo-50 text-indigo-600 rounded-lg text-xs font-bold hover:bg-indigo-100 transition">СІТКА</button>
+                    <button onclick="clearCanvas()" class="px-3 py-1 bg-red-50 text-red-500 rounded-lg text-xs font-bold hover:bg-red-100 transition">ОЧИСТИТИ</button>
+                    <button onclick="savePNG()" class="p-2 bg-green-50 hover:bg-green-100 rounded-lg transition">💾</button>
+                </div>
+            </div>
+            <div class="flex-1 overflow-hidden cursor-crosshair relative bg-[#fcfcfc]">
+                <canvas id="whiteboard" class="absolute top-0 left-0"></canvas>
+            </div>
         </div>
-        <canvas id="board"></canvas>
-    </div>
+    </main>
 
-<script>
-    // ==========================================
-    // 📝 ТУТ ТИ ПИШЕШ ЗАВДАННЯ (ВРУЧНУ)
-    // ==========================================
-    const config = {
-        title: "Системи рівнянь: Практикум",
-        
-        tasks: [
-            // ЗАВДАННЯ 1
-            {
-                id: 1,
-                // LaTeX код системи
-                eq: "\\begin{cases} y = 3x - 1 \\\\ 2x + y = 9 \\end{cases}",
-                x: 2, // Правильна відповідь X
-                y: 5, // Правильна відповідь Y
-                hint: "У першому рівнянні $y$ вже виражено через $x$. Підстав $(3x-1)$ замість $y$ у друге рівняння.",
-                sol: "1) $2x + (3x - 1) = 9$<br>2) $5x - 1 = 9 \\Rightarrow 5x = 10 \\Rightarrow x = 2$<br>3) $y = 3 \\cdot 2 - 1 = 5$."
-            },
-            
-            // ЗАВДАННЯ 2
-            {
-                id: 2,
-                eq: "\\begin{cases} x + y = 4 \\\\ x - y = 2 \\end{cases}",
-                x: 3,
-                y: 1,
-                hint: "Вирази $x$ з другого рівняння: $x = 2 + y$.",
-                sol: "1) $x = 2 + y$<br>2) $(2+y) + y = 4 \\Rightarrow 2y = 2 \\Rightarrow y = 1$<br>3) $x = 2 + 1 = 3$."
-            },
+    <script>
+        // Дані завдань (без змін як у запиті)
+        const tasks = [
+            { id: 't2', tex: '\\begin{cases} y = 3x \\\\ 2x + y = 10 \\end{cases}', s1: { d: '1. y вже виражено. Запиши вираз.', a: ['3x'] }, s2: { d: '2. Підстав у друге рівняння (2x + ... = 10).', a: ['2x+3x=10', '5x=10'] }, s3: { d: '3. Знайди x.', a: ['2'] }, s4: { d: '4. Знайди y (y=3x).', a: ['6'] } },
+            { id: 't3', tex: '\\begin{cases} x = y + 1 \\\\ 3x - 2y = 6 \\end{cases}', s1: { d: '1. x виражено. Запиши вираз.', a: ['y+1', '1+y'] }, s2: { d: '2. Підстав у друге: 3(...) - 2y = 6.', a: ['3(y+1)-2y=6'] }, s3: { d: '3. Розв\'яжи: 3y + 3 - 2y = 6. Знайди y.', a: ['3'] }, s4: { d: '4. Знайди x (x=y+1).', a: ['4'] } },
+            { id: 't4', tex: '\\begin{cases} y = 2x - 1 \\\\ x + y = 8 \\end{cases}', s1: { d: '1. Запиши вираз для y.', a: ['2x-1'] }, s2: { d: '2. Підстав у друге: x + (...) = 8.', a: ['x+2x-1=8', 'x+(2x-1)=8'] }, s3: { d: '3. Знайди x (3x = 9).', a: ['3'] }, s4: { d: '4. Знайди y.', a: ['5'] } },
+            { id: 't5', tex: '\\begin{cases} x = 4y \\\\ x - 2y = 6 \\end{cases}', s1: { d: '1. Запиши вираз для x.', a: ['4y'] }, s2: { d: '2. Підстав: (...) - 2y = 6.', a: ['4y-2y=6', '2y=6'] }, s3: { d: '3. Знайди y.', a: ['3'] }, s4: { d: '4. Знайди x.', a: ['12'] } },
+            { id: 't6', tex: '\\begin{cases} x + y = 5 \\\\ y = x + 1 \\end{cases}', s1: { d: '1. y виражено. Запиши.', a: ['x+1'] }, s2: { d: '2. Підстав у перше: x + (...) = 5.', a: ['x+x+1=5', '2x+1=5'] }, s3: { d: '3. Знайди x.', a: ['2'] }, s4: { d: '4. Знайди y.', a: ['3'] } },
+            { id: 't7', tex: '\\begin{cases} y = x - 2 \\\\ 2x + y = 7 \\end{cases}', s1: { d: '1. Вираз для y.', a: ['x-2'] }, s2: { d: '2. Підстав у друге рівняння.', a: ['2x+x-2=7', '3x-2=7'] }, s3: { d: '3. Знайди x.', a: ['3'] }, s4: { d: '4. Знайди y.', a: ['1'] } },
+            { id: 't8', tex: '\\begin{cases} x = 2y + 3 \\\\ 2x - 3y = 8 \\end{cases}', s1: { d: '1. Вираз для x.', a: ['2y+3'] }, s2: { d: '2. Підстав (обережно з дужками!).', a: ['2(2y+3)-3y=8'] }, s3: { d: '3. Розкрий дужки (4y+6-3y=8) і знайди y.', a: ['2'] }, s4: { d: '4. Знайди x.', a: ['7'] } },
+            { id: 't9', tex: '\\begin{cases} x + 2y = 5 \\\\ x = 3y \\end{cases}', s1: { d: '1. Вираз для x.', a: ['3y'] }, s2: { d: '2. Підстав у перше.', a: ['3y+2y=5', '5y=5'] }, s3: { d: '3. Знайди y.', a: ['1'] }, s4: { d: '4. Знайди x.', a: ['3'] } },
+            { id: 't10', tex: '\\begin{cases} y = 5 - x \\\\ 3x + y = 9 \\end{cases}', s1: { d: '1. Вираз для y.', a: ['5-x'] }, s2: { d: '2. Підстав.', a: ['3x+5-x=9', '2x+5=9'] }, s3: { d: '3. Знайди x.', a: ['2'] }, s4: { d: '4. Знайди y.', a: ['3'] } },
+            { id: 't11', tex: '\\begin{cases} x=y \\\\ x+y=10 \\end{cases}', s1: {d:'1. x=',a:['y']}, s2: {d:'2. Рівняння',a:['y+y=10']}, s3: {d:'3. y=',a:['5']}, s4: {d:'4. x=',a:['5']} },
+            { id: 't12', tex: '\\begin{cases} y=2x \\\\ y-x=4 \\end{cases}', s1: {d:'1. y=',a:['2x']}, s2: {d:'2. Рівняння',a:['2x-x=4']}, s3: {d:'3. x=',a:['4']}, s4: {d:'4. y=',a:['8']} },
+            { id: 't13', tex: '\\begin{cases} x=3y-1 \\\\ x+y=11 \\end{cases}', s1: {d:'1. x=',a:['3y-1']}, s2: {d:'2. Рівняння',a:['3y-1+y=11']}, s3: {d:'3. y=',a:['3']}, s4: {d:'4. x=',a:['8']} },
+            { id: 't14', tex: '\\begin{cases} y=x+4 \\\\ 2x+y=10 \\end{cases}', s1: {d:'1. y=',a:['x+4']}, s2: {d:'2. Рівняння',a:['2x+x+4=10']}, s3: {d:'3. x=',a:['2']}, s4: {d:'4. y=',a:['6']} },
+            { id: 't15', tex: '\\begin{cases} x=5y \\\\ x-3y=4 \\end{cases}', s1: {d:'1. x=',a:['5y']}, s2: {d:'2. Рівняння',a:['5y-3y=4']}, s3: {d:'3. y=',a:['2']}, s4: {d:'4. x=',a:['10']} }
+        ];
 
-            // ЗАВДАННЯ 3
-            {
-                id: 3,
-                eq: "\\begin{cases} x = 2y \\\\ 3x - 5y = 2 \\end{cases}",
-                x: 4,
-                y: 2,
-                hint: "Заміни $x$ на $2y$ у другому рівнянні.",
-                sol: "1) $3(2y) - 5y = 2$<br>2) $6y - 5y = 2 \\Rightarrow y = 2$<br>3) $x = 2 \\cdot 2 = 4$."
-            },
-
-            // ЗАВДАННЯ 4
-            {
-                id: 4,
-                eq: "\\begin{cases} y = x + 5 \\\\ 4x - y = 1 \\end{cases}",
-                x: 2,
-                y: 7,
-                hint: "Підстав $(x+5)$ замість $y$. Обережно з мінусом перед дужками!",
-                sol: "1) $4x - (x+5) = 1$<br>2) $4x - x - 5 = 1 \\Rightarrow 3x = 6 \\Rightarrow x = 2$<br>3) $y = 2 + 5 = 7$."
-            },
-
-            // ЗАВДАННЯ 5
-            {
-                id: 5,
-                eq: "\\begin{cases} 2x + y = 10 \\\\ x - y = 2 \\end{cases}",
-                x: 4,
-                y: 2,
-                hint: "З другого рівняння $x = 2 + y$.",
-                sol: "1) $2(2+y) + y = 10$<br>2) $4 + 2y + y = 10 \\Rightarrow 3y = 6 \\Rightarrow y = 2$<br>3) $x = 2 + 2 = 4$."
-            }
-        ]
-    };
-
-    let score = 0;
-    const solvedTasks = new Set();
-
-    // ==========================================
-    // ⚙️ СИСТЕМНИЙ КОД
-    // ==========================================
-    function initLesson() {
-        document.getElementById('lesson-title').innerText = config.title;
-        const container = document.getElementById('tasks-area');
-
-        config.tasks.forEach(t => {
-            const div = document.createElement('div');
-            div.className = 'task-card';
-            div.id = `card-${t.id}`;
-            
-            div.innerHTML = `
-                <div style="display:flex; justify-content:space-between;">
-                    <span style="font-weight:800; color:#cbd5e1;">ЗАВДАННЯ #${t.id}</span>
-                    <span id="status-${t.id}" style="font-size:12px; font-weight:bold; color:#64748b;">Очікує</span>
+        // Рендер завдань
+        const container = document.getElementById('marathon-container');
+        tasks.forEach((t, index) => {
+            let html = `
+            <div class="task-card border-l-orange-500" id="${t.id}">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-black text-orange-600">ЗАВДАННЯ №${index + 2}</h3>
+                    <span class="text-[10px] bg-orange-100 text-orange-600 px-2 py-0.5 rounded-full font-bold uppercase">Марафон</span>
                 </div>
-                
-                <div style="font-size: 18px; margin: 15px 0;">
-                    $$ ${t.eq} $$
+                <div class="mb-6 text-center">
+                    <div class="inline-block bg-white border shadow-sm p-3 rounded-xl text-lg"> \\( ${t.tex} \\) </div>
                 </div>
-
-                <div class="input-row">
-                    <span class="var-label">x =</span>
-                    <input type="number" id="x-${t.id}">
-                    <span class="var-label" style="margin-left:15px;">y =</span>
-                    <input type="number" id="y-${t.id}">
-                    <button class="check-btn" onclick="checkTask(${t.id}, ${t.x}, ${t.y})">Перевірити</button>
-                </div>
-
-                <div id="msg-${t.id}" class="msg"></div>
-
-                <div class="help-btns">
-                    <button class="help-btn" onclick="toggle('h-${t.id}')"><i class="far fa-lightbulb"></i> Підказка</button>
-                    <button class="help-btn" onclick="toggle('s-${t.id}')"><i class="fas fa-pencil-alt"></i> Розв'язання</button>
-                </div>
-                
-                <div id="h-${t.id}" class="hidden-content hint-box"><b>Підказка:</b> ${t.hint}</div>
-                <div id="s-${t.id}" class="hidden-content sol-box"><b>Розв'язання:</b><br>${t.sol}</div>
-            `;
-            container.appendChild(div);
+                ${[1,2,3,4].map(s => `
+                    <div class="step-box ${s===1?'active':''}" id="${t.id}-s${s}">
+                        <p class="font-semibold text-sm mb-2 text-gray-600">${t[`s${s}`].d}</p>
+                        <div class="flex items-center gap-2">
+                            <input type="text" class="border rounded-lg px-3 py-1.5 w-full max-w-[200px] outline-none focus:ring-2 focus:ring-orange-400" id="${t.id}-i${s}"> 
+                            <button onclick="checkStepInput('${t.id}', ${s})" class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-1.5 rounded-lg text-sm font-bold shadow-sm transition">OK</button>
+                        </div>
+                    </div>
+                `).join('')}
+                <p class="mt-4 text-green-600 font-bold text-sm hidden flex items-center gap-1" id="${t.id}-done"><span>✅</span> Виконано!</p>
+            </div>`;
+            container.innerHTML += html;
         });
-        MathJax.typesetPromise();
-    }
 
-    // --- ЛОГІКА ---
-    function toggle(id) { const el=document.getElementById(id); el.style.display=(el.style.display==='block')?'none':'block'; }
+        // Логіка перевірки
+        let score = 0;
+        function updateScore(p) { score += p; document.getElementById('score-display').innerText = `Бали: ${score}`; }
+        function normalize(str) { return str ? str.replace(/\s+/g, '').toLowerCase().replace(',', '.').replace('*','') : ""; }
 
-    window.checkTask = (id, trueX, trueY) => {
-        const uX = parseFloat(document.getElementById(`x-${id}`).value);
-        const uY = parseFloat(document.getElementById(`y-${id}`).value);
-        const msg = document.getElementById(`msg-${id}`);
-        const status = document.getElementById(`status-${id}`);
-        const card = document.getElementById(`card-${id}`);
+        window.checkStepInput = function(id, step, manualAns) {
+            let input = document.getElementById(`${id}-i${step}`);
+            let taskObj = tasks.find(t => t.id === id);
+            let correctArr = manualAns || taskObj[`s${step}`].a;
 
-        if (uX === trueX && uY === trueY) {
-            msg.style.display = 'block';
-            msg.innerHTML = "Правильно! 🎉"; msg.className = "msg correct";
-            status.innerHTML = '<i class="fas fa-check"></i> Виконано'; status.style.color = "var(--success)";
-            card.style.borderLeftColor = "var(--success)";
-            if (!solvedTasks.has(id)) { score++; solvedTasks.add(id); }
-        } else {
-            msg.style.display = 'block';
-            msg.innerHTML = "Помилка... Перевір обчислення 🧐"; msg.className = "msg wrong";
-            card.style.borderLeftColor = "#dc2626";
+            if(correctArr.some(ans => normalize(input.value) === normalize(ans))) {
+                input.classList.add('correct');
+                input.classList.remove('incorrect');
+                input.disabled = true;
+                updateScore(2);
+                let nextBox = document.getElementById(`${id}-s${step+1}`);
+                if(nextBox) nextBox.classList.add('active');
+                else {
+                    let done = document.getElementById(`${id}-done`);
+                    if(done) done.classList.remove('hidden');
+                }
+            } else {
+                input.classList.add('incorrect');
+                setTimeout(() => input.classList.remove('incorrect'), 500);
+            }
+        };
+
+        // Розминка
+        function checkWarmup(btn) {
+            btn.parentElement.querySelectorAll('.math-input').forEach(i => {
+                if(normalize(i.value) === normalize(i.dataset.ans)) {
+                    i.classList.add('correct');
+                    updateScore(1);
+                } else i.classList.add('incorrect');
+            });
         }
-    }
 
-    window.finishLesson = () => {
-        const modal = document.getElementById('final-modal');
-        modal.style.display = 'flex';
+        // Memory Game (спрощена логіка)
+        const memGrid = document.getElementById('memory-grid');
+        let pat = [], usr = [], turn = false;
+        for(let i=0;i<9;i++){ 
+            let d=document.createElement('div'); d.className='memory-cell'; 
+            d.onclick=()=>memClick(i,d); memGrid.appendChild(d); 
+        }
+        function startGame(){ pat=[]; addPat(); }
+        function addPat(){ 
+            turn=false; pat.push(Math.floor(Math.random()*9)); 
+            document.getElementById('memory-status').innerText="Дивись...";
+            play(0); 
+        }
+        function play(i){ 
+            if(i>=pat.length){ turn=true; usr=[]; document.getElementById('memory-status').innerText="Повторюй!"; return;}
+            let c=memGrid.children[pat[i]]; c.classList.add('active');
+            setTimeout(()=>{ c.classList.remove('active'); setTimeout(()=>play(i+1),300); },500);
+        }
+        function memClick(i,c){
+            if(!turn)return; c.classList.add('active'); setTimeout(()=>c.classList.remove('active'),200);
+            usr.push(i);
+            if(usr[usr.length-1]!==pat[usr.length-1]) {
+                document.getElementById('memory-status').innerText="Ой! Спробуй ще.";
+                turn = false;
+            }
+            else if(usr.length===pat.length) { 
+                updateScore(5); 
+                document.getElementById('memory-status').innerText="Вірно! +5";
+                setTimeout(addPat,1000); 
+            }
+        }
+
+        function finishLesson() {
+            document.getElementById('final-result').classList.remove('hidden');
+            document.getElementById('final-score-text').innerText = `${score} БАЛІВ`;
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        }
+
+        // --- WHITEBOARD LOGIC ---
+        const cvs = document.getElementById('whiteboard');
+        const ctx = cvs.getContext('2d');
+        let painting = false;
+        let tool = 'pen';
+        let color = '#000000';
+        let history = [];
+
+        function resize() {
+            const parent = cvs.parentElement;
+            const temp = ctx.getImageData(0, 0, cvs.width, cvs.height);
+            cvs.width = parent.offsetWidth;
+            cvs.height = parent.offsetHeight;
+            ctx.putImageData(temp, 0, 0);
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        function startDraw(e) {
+            saveState();
+            painting = true;
+            draw(e);
+        }
+        function endDraw() { painting = false; ctx.beginPath(); }
         
-        const mark = Math.round((score / config.tasks.length) * 12);
-        document.getElementById('result-score').innerText = `Твій результат: ${score} з ${config.tasks.length} (${mark} балів)`;
-        
-        let txt = "";
-        if(mark >= 10) txt = "Блискуче! Ти майстер систем! 🌟";
-        else if(mark >= 7) txt = "Гарна робота! Але будь уважніше. 👍";
-        else txt = "Треба ще попрактикуватись. Ти зможеш! 💪";
-        document.getElementById('result-msg').innerText = txt;
-    }
+        function draw(e) {
+            if(!painting) return;
+            const rect = cvs.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
 
-    // --- LAYOUT ---
-    let full = false;
-    window.toggleLayout = () => {
-        full = !full;
-        document.getElementById('taskPanel').classList.toggle('full-width', full);
-        document.getElementById('boardPanel').classList.toggle('hidden-panel', full);
-        setTimeout(resize, 350);
-    }
+            ctx.lineWidth = tool === 'eraser' ? 30 : (tool === 'marker' ? 15 : 3);
+            ctx.lineCap = 'round';
+            ctx.strokeStyle = tool === 'eraser' ? '#fcfcfc' : color;
+            ctx.globalAlpha = tool === 'marker' ? 0.3 : 1.0;
 
-    // --- BOARD ---
-    const canvas = document.getElementById('board'); const ctx = canvas.getContext('2d');
-    let paint = false, tool = 'pen';
-    
-    function resize() { 
-        canvas.width = canvas.parentElement.offsetWidth; 
-        canvas.height = canvas.parentElement.offsetHeight; 
-        if(tool === 'grid') drawGrid(); // Redraw grid if needed
-    }
-    window.onload = () => { initLesson(); resize(); };
-    window.addEventListener('resize', resize);
-    
-    function pos(e) { const r = canvas.getBoundingClientRect(); if(e.touches) return {x:e.touches[0].clientX-r.left, y:e.touches[0].clientY-r.top}; return {x:e.clientX-r.left, y:e.clientY-r.top}; }
-    function start(e) { e.preventDefault(); paint=true; draw(e); }
-    function end(e) { e.preventDefault(); paint=false; ctx.beginPath(); }
-    function draw(e) { if(!paint) return; e.preventDefault(); let p=pos(e); ctx.lineWidth=tool==='pen'?3:25; ctx.lineCap='round'; ctx.strokeStyle=tool==='pen'?'#2563eb':'white'; ctx.lineTo(p.x,p.y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(p.x,p.y); }
-    
-    canvas.addEventListener('mousedown', start); canvas.addEventListener('mouseup', end); canvas.addEventListener('mousemove', draw);
-    canvas.addEventListener('touchstart', start, {passive:false}); canvas.addEventListener('touchend', end); canvas.addEventListener('touchmove', draw, {passive:false});
-    
-    window.setTool = (t,btn) => { tool=t; document.querySelectorAll('.tool').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); };
-    window.clearBoard = () => ctx.clearRect(0,0,canvas.width,canvas.height);
-    
-    window.drawGrid = () => {
-        ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 1; ctx.beginPath();
-        for(let x=0; x<=canvas.width; x+=30) { ctx.moveTo(x,0); ctx.lineTo(x,canvas.height); }
-        for(let y=0; y<=canvas.height; y+=30) { ctx.moveTo(0,y); ctx.lineTo(canvas.width,y); }
-        ctx.stroke();
-    }
-    window.drawAxes = () => {
-        const mx = canvas.width/2, my = canvas.height/2;
-        ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 2; ctx.beginPath();
-        ctx.moveTo(0, my); ctx.lineTo(canvas.width, my);
-        ctx.moveTo(mx, 0); ctx.lineTo(mx, canvas.height); ctx.stroke();
-    }
-</script>
+            ctx.lineTo(x, y);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+        }
+
+        cvs.addEventListener('mousedown', startDraw);
+        cvs.addEventListener('mousemove', draw);
+        window.addEventListener('mouseup', endDraw);
+
+        function setTool(t) { 
+            tool = t; 
+            document.querySelectorAll('.p-2').forEach(b => b.classList.remove('bg-white', 'shadow-sm'));
+            document.getElementById(`btn-${t}`).classList.add('bg-white', 'shadow-sm');
+        }
+        function setColor(c, el) { 
+            color = c; tool = 'pen'; 
+            document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('selected'));
+            el.classList.add('selected');
+        }
+        function saveState() { history.push(cvs.toDataURL()); if(history.length > 20) history.shift(); }
+        function undo() { if(history.length) { let img = new Image(); img.src = history.pop(); img.onload = () => { ctx.clearRect(0,0,cvs.width,cvs.height); ctx.drawImage(img,0,0); } } }
+        function clearCanvas() { saveState(); ctx.clearRect(0,0,cvs.width,cvs.height); }
+        function drawGrid() {
+            saveState();
+            ctx.strokeStyle = '#e5e7eb'; ctx.lineWidth = 0.5;
+            for(let i=0; i<cvs.width; i+=30) { ctx.moveTo(i,0); ctx.lineTo(i,cvs.height); }
+            for(let i=0; i<cvs.height; i+=30) { ctx.moveTo(0,i); ctx.lineTo(cvs.width,i); }
+            ctx.stroke();
+        }
+        function savePNG() { const link = document.createElement('a'); link.download = 'notes.png'; link.href = cvs.toDataURL(); link.click(); }
+    </script>
 </body>
 </html>
