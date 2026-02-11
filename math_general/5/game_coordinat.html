@@ -1,0 +1,1011 @@
+<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Координатний Мега-Курс + Капелюх</title>
+    <style>
+      :root {
+        --primary: #4f46e5;
+        --success: #16a34a;
+        --error: #dc2626;
+        --bg: #f8fafc;
+        --panel: #ffffff;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: var(--bg);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 0;
+        padding: 10px;
+        color: #1e293b;
+        height: 100vh;
+      }
+
+      /* HEADER */
+      .top-bar {
+        width: 100%;
+        max-width: 1200px;
+        background: var(--panel);
+        padding: 10px 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+
+      .level-info {
+        font-size: 1.2rem;
+        font-weight: 800;
+        color: var(--primary);
+      }
+      .score-info {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #64748b;
+      }
+
+      .progress-track {
+        flex-grow: 1;
+        margin: 0 20px;
+        height: 8px;
+        background: #e2e8f0;
+        border-radius: 4px;
+        overflow: hidden;
+      }
+      .progress-fill {
+        height: 100%;
+        background: var(--primary);
+        width: 0%;
+        transition: width 0.3s ease;
+      }
+
+      /* LAYOUT */
+      .game-area {
+        display: flex;
+        gap: 15px;
+        height: calc(100vh - 80px);
+        max-height: 800px;
+        justify-content: center;
+      }
+
+      /* SIDEBAR */
+      .sidebar {
+        width: 350px;
+        background: var(--panel);
+        padding: 20px;
+        border-radius: 16px;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        overflow-y: auto;
+      }
+
+      .task-box {
+        background: #e0e7ff;
+        border-left: 6px solid var(--primary);
+        padding: 15px;
+        border-radius: 8px;
+      }
+
+      .task-cat {
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        color: #6366f1;
+        font-weight: bold;
+        margin-bottom: 5px;
+      }
+      .task-text {
+        font-size: 1.1rem;
+        font-weight: 700;
+        line-height: 1.4;
+      }
+      .task-sub {
+        font-size: 0.9rem;
+        color: #475569;
+        margin-top: 5px;
+        font-style: italic;
+      }
+
+      /* INPUTS */
+      .input-container {
+        display: none;
+        animation: slideDown 0.3s ease;
+      }
+      .input-container.active {
+        display: block;
+      }
+
+      input[type="number"] {
+        width: 100%;
+        padding: 10px;
+        font-size: 1.2rem;
+        border: 2px solid #cbd5e1;
+        border-radius: 8px;
+        text-align: center;
+      }
+      input:focus {
+        border-color: var(--primary);
+        outline: none;
+      }
+
+      /* FEEDBACK */
+      .feedback-msg {
+        margin-top: auto;
+        padding: 10px;
+        text-align: center;
+        font-weight: bold;
+        border-radius: 8px;
+        min-height: 24px;
+      }
+      .feedback-msg.good {
+        background: #dcfce7;
+        color: #166534;
+      }
+      .feedback-msg.bad {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+
+      /* CANVAS */
+      .canvas-wrapper {
+        position: relative;
+        border: 4px solid #334155;
+        border-radius: 8px;
+        background: white;
+        cursor: crosshair;
+      }
+
+      .coords-badge {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        background: rgba(15, 23, 42, 0.9);
+        color: #4ade80;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-family: monospace;
+        font-size: 1rem;
+        pointer-events: none;
+      }
+
+      @keyframes slideDown {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="top-bar">
+      <div class="level-info">Рівень <span id="lvl-display">1</span></div>
+      <div class="progress-track">
+        <div class="progress-fill" id="prog-bar"></div>
+      </div>
+      <div class="score-info">Бали: <span id="score-display">0</span></div>
+    </div>
+
+    <div class="game-area">
+      <div class="sidebar">
+        <div class="task-box">
+          <div class="task-cat" id="t-cat">Категорія</div>
+          <div class="task-text" id="t-text">Завантаження...</div>
+          <div class="task-sub" id="t-sub"></div>
+        </div>
+
+        <div id="inp-num-box" class="input-container">
+          <input
+            type="number"
+            id="inp-num"
+            placeholder="?"
+            oninput="checkNumber()"
+          />
+          <div
+            style="
+              text-align: center;
+              margin-top: 5px;
+              font-size: 0.8rem;
+              color: #64748b;
+            "
+          >
+            Введи число
+          </div>
+        </div>
+
+        <div id="feedback" class="feedback-msg"></div>
+
+        <div
+          style="
+            text-align: center;
+            margin-top: 10px;
+            font-size: 0.8rem;
+            color: #94a3b8;
+          "
+        >
+          *Координати мишки видно внизу екрана
+        </div>
+      </div>
+
+      <div class="canvas-wrapper">
+        <canvas id="gridCanvas" width="650" height="650"></canvas>
+        <div class="coords-badge" id="cursor-coords">(0 | 0)</div>
+      </div>
+    </div>
+
+    <script>
+      // === КОНФІГУРАЦІЯ ===
+      const canvas = document.getElementById("gridCanvas");
+      const ctx = canvas.getContext("2d");
+      const GRID_SIZE = 26; // Щоб вліз Капелюх (до 25)
+      const STEP = 23; // Розмір клітинки
+      const OFFSET = 30; // Відступ
+
+      let currentIdx = 0;
+      let score = 0;
+      let historyPoints = [];
+      let shapeMode = "dot"; // dot, line, polygon
+
+      // === БАЗА ЗАВДАНЬ ===
+      const TASKS = [
+        // --- 1. РОЗМИНКА ---
+        {
+          cat: "Старт",
+          t: "Знайди початок координат (0, 0).",
+          type: "click",
+          target: [0, 0],
+          clear: true,
+        },
+        {
+          cat: "Старт",
+          t: "Клікни на точку (5, 0) на осі X.",
+          type: "click",
+          target: [5, 0],
+        },
+        {
+          cat: "Старт",
+          t: "Клікни на точку (0, 7) на осі Y.",
+          type: "click",
+          target: [0, 7],
+        },
+
+        // --- 2. КВАДРАТ (САМОСТІЙНИЙ) ---
+        {
+          cat: "Квадрат",
+          t: "Будуємо квадрат. Точка A(2, 2).",
+          type: "click",
+          target: [2, 2],
+          drawMode: "polygon",
+          clear: true,
+        },
+        {
+          cat: "Квадрат",
+          t: "Точка B(2, 6).",
+          type: "click",
+          target: [2, 6],
+          drawMode: "polygon",
+          keep: true,
+        },
+        {
+          cat: "Квадрат",
+          t: "Точка C(6, 6).",
+          type: "click",
+          target: [6, 6],
+          drawMode: "polygon",
+          keep: true,
+        },
+        {
+          cat: "Квадрат",
+          t: "Де має бути 4-та точка D? (Знайди сам!)",
+          sub: "Щоб вийшов квадрат",
+          type: "click",
+          target: [6, 2],
+          drawMode: "polygon",
+          keep: true,
+        },
+
+        {
+          cat: "Обчислення",
+          t: "Який ПЕРИМЕТР (P) цього квадрата?",
+          sub: "Сума всіх сторін",
+          type: "input",
+          target: 16,
+          keep: true,
+        },
+        {
+          cat: "Обчислення",
+          t: "Яка ПЛОЩА (S) цього квадрата?",
+          sub: "Кількість клітинок всередині",
+          type: "input",
+          target: 16,
+          keep: true,
+        },
+
+        // --- 3. ПРЯМОКУТНИК (САМОСТІЙНИЙ) ---
+        {
+          cat: "Прямокутник",
+          t: "Нова фігура. Постав K(8, 1).",
+          type: "click",
+          target: [8, 1],
+          drawMode: "polygon",
+          clear: true,
+        },
+        {
+          cat: "Прямокутник",
+          t: "Постав L(13, 1).",
+          type: "click",
+          target: [13, 1],
+          drawMode: "polygon",
+          keep: true,
+        },
+        {
+          cat: "Прямокутник",
+          t: "Постав M(13, 4).",
+          type: "click",
+          target: [13, 4],
+          drawMode: "polygon",
+          keep: true,
+        },
+        {
+          cat: "Прямокутник",
+          t: "Де точка N? Замкни прямокутник.",
+          type: "click",
+          target: [8, 4],
+          drawMode: "polygon",
+          keep: true,
+        },
+
+        {
+          cat: "Обчислення",
+          t: "Чому дорівнює ПЕРИМЕТР (P)?",
+          sub: "Сторони: 5 і 3",
+          type: "input",
+          target: 16,
+          keep: true,
+        },
+        {
+          cat: "Обчислення",
+          t: "Чому дорівнює ПЛОЩА (S)?",
+          sub: "Ширина × Висота",
+          type: "input",
+          target: 15,
+          keep: true,
+        },
+
+        // --- 4. РОБОТ (БЕЗ ПІДКАЗОК) ---
+        {
+          cat: "Робот",
+          t: "Старт у точці (2, 8).",
+          type: "click",
+          target: [2, 8],
+          drawMode: "line",
+          clear: true,
+        },
+        {
+          cat: "Робот",
+          t: "Зроби 3 кроки ВПРАВО.",
+          type: "click",
+          target: [5, 8],
+          drawMode: "line",
+          keep: true,
+        },
+        {
+          cat: "Робот",
+          t: "Зроби 4 кроки ВГОРУ.",
+          type: "click",
+          target: [5, 12],
+          drawMode: "line",
+          keep: true,
+        },
+        {
+          cat: "Робот",
+          t: "Зроби 2 кроки ВЛІВО.",
+          type: "click",
+          target: [3, 12],
+          drawMode: "line",
+          keep: true,
+        },
+        {
+          cat: "Робот",
+          t: "Зроби 4 кроки ВНИЗ.",
+          type: "click",
+          target: [3, 8],
+          drawMode: "line",
+          keep: true,
+        },
+        {
+          cat: "Робот",
+          t: "Зроби 1 крок ВЛІВО (додому).",
+          type: "click",
+          target: [2, 8],
+          drawMode: "line",
+          keep: true,
+        },
+        {
+          cat: "Робот",
+          t: "Яка ПЛОЩА (S) шляху робота?",
+          sub: "Порахуй клітинки",
+          type: "input",
+          target: 8,
+          keep: true,
+        },
+
+        // --- 5. ДЗЕРКАЛО (X=10) ---
+        {
+          cat: "Дзеркало",
+          t: "Дзеркало на лінії X=10. Постав точку (8, 5).",
+          type: "click",
+          target: [8, 5],
+          mirror: 10,
+          mirrorVis: true,
+          clear: true,
+        },
+        {
+          cat: "Дзеркало",
+          t: "Де буде її відображення?",
+          sub: "Відступи стільки ж за дзеркало",
+          type: "click",
+          target: [12, 5],
+          mirror: 10,
+          mirrorVis: true,
+          keep: true,
+        },
+        {
+          cat: "Дзеркало",
+          t: "Точка (5, 8). Постав її.",
+          type: "click",
+          target: [5, 8],
+          mirror: 10,
+          mirrorVis: true,
+          clear: true,
+        },
+        {
+          cat: "Дзеркало",
+          t: "Клікни на відображення.",
+          type: "click",
+          target: [15, 8],
+          mirror: 10,
+          mirrorVis: true,
+          keep: true,
+        },
+
+        // --- 6. НЕВИДИМЕ ДЗЕРКАЛО ---
+        {
+          cat: "Хардкор",
+          t: "Дзеркало на X=10 стало НЕВИДИМИМ. Точка (7, 7).",
+          type: "click",
+          target: [7, 7],
+          mirror: 10,
+          mirrorVis: false,
+          clear: true,
+        },
+        {
+          cat: "Хардкор",
+          t: "Знайди відображення.",
+          sub: "Пам'ятай, лінія була на 10",
+          type: "click",
+          target: [13, 7],
+          mirror: 10,
+          mirrorVis: false,
+          keep: true,
+        },
+
+        // --- 7. СЕРЦЕ ---
+        {
+          cat: "Симетрія",
+          t: "Малюємо серце. Почни з (10, 3).",
+          sub: "Дзеркало на X=10",
+          type: "click",
+          target: [10, 3],
+          mirror: 10,
+          mirrorVis: true,
+          drawMode: "polygon",
+          clear: true,
+        },
+        {
+          cat: "Симетрія",
+          t: "Ліва частина: (7, 6).",
+          type: "click",
+          target: [7, 6],
+          mirror: 10,
+          mirrorVis: true,
+          drawMode: "polygon",
+          keep: true,
+        },
+        {
+          cat: "Симетрія",
+          t: "Лівий верх: (7, 9).",
+          type: "click",
+          target: [7, 9],
+          mirror: 10,
+          mirrorVis: true,
+          drawMode: "polygon",
+          keep: true,
+        },
+        {
+          cat: "Симетрія",
+          t: "Центр зверху: (10, 7).",
+          type: "click",
+          target: [10, 7],
+          mirror: 10,
+          mirrorVis: true,
+          drawMode: "polygon",
+          keep: true,
+        },
+        {
+          cat: "Симетрія",
+          t: "Домалюй праву частину (симетрично до 7,9).",
+          type: "click",
+          target: [13, 9],
+          mirror: 10,
+          mirrorVis: true,
+          drawMode: "polygon",
+          keep: true,
+        },
+        {
+          cat: "Симетрія",
+          t: "Домалюй праву дугу (симетрично до 7,6).",
+          type: "click",
+          target: [13, 6],
+          mirror: 10,
+          mirrorVis: true,
+          drawMode: "polygon",
+          keep: true,
+        },
+        {
+          cat: "Симетрія",
+          t: "Замкни серце внизу (10, 3).",
+          type: "click",
+          target: [10, 3],
+          mirror: 10,
+          mirrorVis: true,
+          drawMode: "polygon",
+          keep: true,
+        },
+
+        // --- 9. ФІНАЛ: КАПЕЛЮХ ВІДЬМИ (З малюнка) ---
+        {
+          cat: "ФІНАЛ: Капелюх",
+          t: "Почни з лівого краю (0, 3).",
+          type: "click",
+          target: [0, 3],
+          drawMode: "line",
+          clear: true,
+        },
+        {
+          cat: "ФІНАЛ: Капелюх",
+          t: "Далі до (3, 2).",
+          type: "click",
+          target: [3, 2],
+          drawMode: "line",
+          keep: true,
+        },
+        {
+          cat: "ФІНАЛ: Капелюх",
+          t: "Низ зліва до (9, 1).",
+          type: "click",
+          target: [9, 1],
+          drawMode: "line",
+          keep: true,
+        },
+        {
+          cat: "ФІНАЛ: Капелюх",
+          t: "Низ справа до (17, 1).",
+          type: "click",
+          target: [17, 1],
+          drawMode: "line",
+          keep: true,
+        },
+        {
+          cat: "ФІНАЛ: Капелюх",
+          t: "Край справа до (22, 2).",
+          type: "click",
+          target: [22, 2],
+          drawMode: "line",
+          keep: true,
+        },
+        {
+          cat: "ФІНАЛ: Капелюх",
+          t: "Кінець поля до (25, 3).",
+          type: "click",
+          target: [25, 3],
+          drawMode: "line",
+          keep: true,
+        },
+        {
+          cat: "ФІНАЛ: Капелюх",
+          t: "Вгору до (22, 4).",
+          type: "click",
+          target: [22, 4],
+          drawMode: "line",
+          keep: true,
+        },
+        {
+          cat: "ФІНАЛ: Капелюх",
+          t: "До пояса (18, 5).",
+          type: "click",
+          target: [18, 5],
+          drawMode: "line",
+          keep: true,
+        },
+        {
+          cat: "ФІНАЛ: Капелюх",
+          t: "Вгору до (17, 7).",
+          type: "click",
+          target: [17, 7],
+          drawMode: "line",
+          keep: true,
+        },
+        {
+          cat: "ФІНАЛ: Капелюх",
+          t: "Схил до (16, 12).",
+          type: "click",
+          target: [16, 12],
+          drawMode: "line",
+          keep: true,
+        },
+        {
+          cat: "ФІНАЛ: Капелюх",
+          t: "Схил до (15, 15).",
+          type: "click",
+          target: [15, 15],
+          drawMode: "line",
+          keep: true,
+        },
+        {
+          cat: "ФІНАЛ: Капелюх",
+          t: "Згин до (13, 19).",
+          type: "click",
+          target: [13, 19],
+          drawMode: "line",
+          keep: true,
+        },
+        {
+          cat: "ФІНАЛ: Капелюх",
+          t: "Верх до (13, 22).",
+          type: "click",
+          target: [13, 22],
+          drawMode: "line",
+          keep: true,
+        },
+        {
+          cat: "ФІНАЛ: Капелюх",
+          t: "Пік до (15, 24).",
+          type: "click",
+          target: [15, 24],
+          drawMode: "line",
+          keep: true,
+        },
+        {
+          cat: "ФІНАЛ: Капелюх",
+          t: "Вниз до (13, 23).",
+          type: "click",
+          target: [13, 23],
+          drawMode: "line",
+          keep: true,
+        },
+        {
+          cat: "ФІНАЛ: Капелюх",
+          t: "Згин до (11, 22).",
+          type: "click",
+          target: [11, 22],
+          drawMode: "line",
+          keep: true,
+        },
+        {
+          cat: "ФІНАЛ: Капелюх",
+          t: "Вниз до (10, 19).",
+          type: "click",
+          target: [10, 19],
+          drawMode: "line",
+          keep: true,
+        },
+        {
+          cat: "ФІНАЛ: Капелюх",
+          t: "Схил до (9, 15).",
+          type: "click",
+          target: [9, 15],
+          drawMode: "line",
+          keep: true,
+        },
+        {
+          cat: "ФІНАЛ: Капелюх",
+          t: "До пояса (9, 7).",
+          type: "click",
+          target: [9, 7],
+          drawMode: "line",
+          keep: true,
+        },
+        {
+          cat: "ФІНАЛ: Капелюх",
+          t: "Вниз до (8, 5).",
+          type: "click",
+          target: [8, 5],
+          drawMode: "line",
+          keep: true,
+        },
+        {
+          cat: "ФІНАЛ: Капелюх",
+          t: "До поля (3, 4).",
+          type: "click",
+          target: [3, 4],
+          drawMode: "line",
+          keep: true,
+        },
+        {
+          cat: "ФІНАЛ: Капелюх",
+          t: "Замкни на (0, 3).",
+          type: "click",
+          target: [0, 3],
+          drawMode: "line",
+          keep: true,
+        },
+        // Малюємо пояс
+        {
+          cat: "ФІНАЛ: Капелюх",
+          t: "Пояс низ: з'єднай (8, 5) і (18, 5). Клікни (18, 5).",
+          type: "click",
+          target: [18, 5],
+          drawMode: "line",
+          extraStart: [8, 5],
+          keep: true,
+        },
+        {
+          cat: "ФІНАЛ: Капелюх",
+          t: "Пояс верх: з'єднай (9, 7) і (17, 7). Клікни (17, 7).",
+          type: "click",
+          target: [17, 7],
+          drawMode: "line",
+          extraStart: [9, 7],
+          keep: true,
+        },
+      ];
+
+      // === ФУНКЦІЇ МАЛЮВАННЯ ===
+      function draw() {
+        ctx.fillStyle = "white";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.save();
+        ctx.translate(OFFSET, canvas.height - OFFSET);
+
+        // Сітка
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = "#e2e8f0";
+        ctx.fillStyle = "#94a3b8";
+        ctx.font = "10px sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+
+        for (let i = 0; i <= GRID_SIZE; i++) {
+          let pos = i * STEP;
+          ctx.beginPath();
+          ctx.moveTo(pos, 0);
+          ctx.lineTo(pos, -GRID_SIZE * STEP);
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.moveTo(0, -pos);
+          ctx.lineTo(GRID_SIZE * STEP, -pos);
+          ctx.stroke();
+
+          if (i > 0) {
+            ctx.fillText(i, pos, 12);
+            ctx.fillText(i, -12, -pos);
+          }
+        }
+        ctx.fillText("0", -8, 8);
+
+        // Осі
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = "#334155";
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(GRID_SIZE * STEP + 5, 0);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(0, -GRID_SIZE * STEP - 5);
+        ctx.stroke();
+        ctx.fillText("x", GRID_SIZE * STEP + 12, 0);
+        ctx.fillText("y", 0, -GRID_SIZE * STEP - 12);
+
+        // Дзеркало
+        const task = TASKS[currentIdx];
+        if (task && task.mirror && task.mirrorVis) {
+          let m = task.mirror * STEP;
+          ctx.strokeStyle = "#ef4444";
+          ctx.lineWidth = 2;
+          ctx.setLineDash([8, 6]);
+          ctx.beginPath();
+          ctx.moveTo(m, 0);
+          ctx.lineTo(m, -GRID_SIZE * STEP);
+          ctx.stroke();
+          ctx.setLineDash([]);
+          ctx.fillStyle = "#ef4444";
+          ctx.fillText("Дзеркало", m, -GRID_SIZE * STEP - 10);
+        }
+
+        // Лінії
+        if (historyPoints.length > 1 && shapeMode !== "dot") {
+          ctx.strokeStyle = "#4f46e5";
+          ctx.lineWidth = 3;
+          ctx.lineJoin = "round";
+          ctx.beginPath();
+
+          // Якщо є розрив (для пояса капелюха), малюємо окремі сегменти
+          // Спрощена логіка: якщо це капелюх пояс, малюємо останню лінію окремо
+          if (task && task.extraStart) {
+            // Малюємо основний контур (без останньої точки)
+            ctx.moveTo(historyPoints[0].x * STEP, -historyPoints[0].y * STEP);
+            for (let i = 1; i < historyPoints.length - 1; i++) {
+              ctx.lineTo(historyPoints[i].x * STEP, -historyPoints[i].y * STEP);
+            }
+            ctx.stroke();
+
+            // Малюємо пояс
+            ctx.beginPath();
+            const last = historyPoints[historyPoints.length - 1];
+            ctx.moveTo(task.extraStart[0] * STEP, -task.extraStart[1] * STEP);
+            ctx.lineTo(last.x * STEP, -last.y * STEP);
+            ctx.stroke();
+          } else {
+            // Стандартне малювання
+            ctx.moveTo(historyPoints[0].x * STEP, -historyPoints[0].y * STEP);
+            for (let i = 1; i < historyPoints.length; i++) {
+              ctx.lineTo(historyPoints[i].x * STEP, -historyPoints[i].y * STEP);
+            }
+            // Замикання
+            if (shapeMode === "polygon" && historyPoints.length > 2) {
+              ctx.lineTo(historyPoints[0].x * STEP, -historyPoints[0].y * STEP);
+            }
+            ctx.stroke();
+          }
+        }
+
+        // Точки
+        historyPoints.forEach((p, idx) => {
+          ctx.fillStyle =
+            idx === historyPoints.length - 1 ? "#10b981" : "#4f46e5";
+          ctx.beginPath();
+          ctx.arc(p.x * STEP, -p.y * STEP, 4, 0, Math.PI * 2);
+          ctx.fill();
+        });
+
+        ctx.restore();
+      }
+
+      // === ЛОГІКА ===
+      function loadTask() {
+        if (currentIdx >= TASKS.length) {
+          document.getElementById("t-cat").textContent = "ФІНІШ";
+          document.getElementById("t-text").textContent =
+            "ВІТАЮ! ТИ ПРОЙШОВ УВЕСЬ КУРС!";
+          document.getElementById("t-sub").textContent =
+            "Ти справжній майстер координат.";
+          return;
+        }
+
+        const task = TASKS[currentIdx];
+
+        document.getElementById("t-cat").textContent = task.cat;
+        document.getElementById("t-text").textContent = task.t;
+        document.getElementById("t-sub").textContent = task.sub || "";
+        document.getElementById("lvl-display").textContent = currentIdx + 1;
+        document.getElementById("prog-bar").style.width =
+          `${(currentIdx / TASKS.length) * 100}%`;
+
+        // Скидання UI
+        document.getElementById("feedback").textContent = "";
+        document.getElementById("feedback").className = "feedback-msg";
+
+        document.getElementById("inp-num-box").className = "input-container";
+
+        // Типи введення
+        if (task.type === "input") {
+          document.getElementById("inp-num-box").className =
+            "input-container active";
+          const inp = document.getElementById("inp-num");
+          inp.value = "";
+          inp.focus();
+        }
+
+        // Очистка / Збереження точок
+        if (task.clear) {
+          historyPoints = [];
+        }
+
+        if (task.drawMode) {
+          shapeMode = task.drawMode;
+        } else if (task.clear) {
+          shapeMode = "dot";
+        }
+
+        draw();
+      }
+
+      function success() {
+        score += 10;
+        document.getElementById("score-display").textContent = score;
+        const fb = document.getElementById("feedback");
+        fb.textContent = "✅ ПРАВИЛЬНО!";
+        fb.className = "feedback-msg good";
+
+        setTimeout(() => {
+          currentIdx++;
+          loadTask();
+        }, 1000);
+      }
+
+      function fail(msg) {
+        const fb = document.getElementById("feedback");
+        fb.textContent = msg;
+        fb.className = "feedback-msg bad";
+      }
+
+      // --- ОБРОБНИКИ ---
+
+      // 1. КЛІК
+      canvas.addEventListener("mousedown", (e) => {
+        const task = TASKS[currentIdx];
+        if (task.type !== "click") return;
+
+        const rect = canvas.getBoundingClientRect();
+        const gx = Math.round((e.clientX - rect.left - OFFSET) / STEP);
+        const gy = Math.round(
+          -(e.clientY - rect.top - (canvas.height - OFFSET)) / STEP,
+        );
+
+        if (gx === task.target[0] && gy === task.target[1]) {
+          historyPoints.push({ x: gx, y: gy });
+          draw();
+          success();
+        } else {
+          fail(`Ні! Це (${gx}, ${gy})`);
+
+          // Червона підказка
+          ctx.save();
+          ctx.translate(OFFSET, canvas.height - OFFSET);
+          ctx.fillStyle = "#ef4444";
+          ctx.beginPath();
+          ctx.arc(gx * STEP, -gy * STEP, 6, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+          setTimeout(draw, 500);
+        }
+      });
+
+      // 2. ЧИСЛО
+      function checkNumber() {
+        const task = TASKS[currentIdx];
+        const val = parseInt(document.getElementById("inp-num").value);
+        if (val === task.target) success();
+      }
+
+      // 3. МИШКА
+      canvas.addEventListener("mousemove", (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const gx = Math.round((e.clientX - rect.left - OFFSET) / STEP);
+        const gy = Math.round(
+          -(e.clientY - rect.top - (canvas.height - OFFSET)) / STEP,
+        );
+        if (gx >= 0 && gy >= 0) {
+          document.getElementById("cursor-coords").textContent =
+            `(${gx} | ${gy})`;
+        }
+      });
+
+      // Старт
+      loadTask();
+    </script>
+  </body>
+</html>

@@ -249,6 +249,16 @@ window.lessonsData = [
     author: "Даша",
   },
   {
+    id: "math-5-coordinate_next",
+    title: "Система координат: продовження",
+    grade: 5,
+    topic: "Математика",
+    link: "math_general/5/game_coordinat.html",
+    subject_code: "math_general",
+    category: "lesson",
+    author: "Даша",
+  },
+  {
     id: "math-5-column-mult",
     title: "Множення чисел у стовпчик",
     grade: 5,
