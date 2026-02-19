@@ -109,6 +109,16 @@ window.lessonsData = [
     author: "Даша",
   },
   {
+    id: "math-2-math-all",
+    title: "Допоможи сумному котику(",
+    grade: 2,
+    topic: "Арифметика",
+    link: "math_general/2/4-all-in-all.html",
+    subject_code: "math_general",
+    category: "lesson",
+    author: "Даша",
+  },
+  {
     id: "math-2-hw-01",
     title: "Домашня1",
     grade: 2,
