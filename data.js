@@ -289,6 +289,16 @@ window.lessonsData = [
     author: "Даша",
   },
   {
+    id: "math-5-quadrat-rechteck-test",
+    title: "Klassenarbeit: Geometrie",
+    grade: 5,
+    topic: "Математика",
+    link: "math_general/5/test-quadrat-rechteck.html",
+    subject_code: "math_general",
+    category: "lesson",
+    author: "Даша",
+  },
+  {
     id: "alg-6-rat-op",
     title: "Додавання, віднімання, множення та ділення раціональних чисел",
     grade: 6,
@@ -805,7 +815,7 @@ window.lessonsData = [
     category: "lesson",
     author: "Соня",
   },
-   {
+  {
     id: "math-6-rozkrittia_duzhok",
     title: "Розкриття дужок",
     grade: 6,

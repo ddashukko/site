@@ -1,0 +1,651 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Klassenarbeit: Geometrie</title>
+    <style>
+      :root {
+        --bg-color: #f0f2f5;
+        --container-bg: #ffffff;
+        --text-color: #333;
+        --accent-color: #1a73e8;
+        --correct-color: #1e8e3e;
+        --incorrect-color: #d93025;
+        --correct-bg: #e6f4ea;
+        --incorrect-bg: #fce8e6;
+        --font-main: "Segoe UI", Roboto, Helvetica, sans-serif;
+      }
+
+      body {
+        font-family: var(--font-main);
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        margin: 0;
+        padding: 20px;
+        display: flex;
+        justify-content: center;
+      }
+
+      body.finished-mode {
+        background-color: #e8f0fe;
+      }
+
+      .test-container {
+        background-color: var(--container-bg);
+        border-radius: 12px;
+        padding: 40px;
+        max-width: 850px;
+        width: 100%;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 30px;
+        border-bottom: 3px solid var(--accent-color);
+        padding-bottom: 15px;
+      }
+
+      h1 {
+        color: #202124;
+        font-size: 28px;
+        margin-bottom: 5px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      h3 {
+        color: var(--accent-color);
+        border-bottom: 2px solid #e0e0e0;
+        padding-bottom: 10px;
+        margin-top: 30px;
+      }
+
+      .task-block {
+        background: #fafafa;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+        border: 1px solid #e0e0e0;
+      }
+
+      .question {
+        margin-bottom: 15px;
+        padding: 12px;
+        border-radius: 6px;
+      }
+
+      label {
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        margin-right: 15px;
+        font-weight: 500;
+      }
+
+      input[type="radio"],
+      input[type="checkbox"] {
+        margin-right: 8px;
+        transform: scale(1.2);
+        accent-color: var(--accent-color);
+      }
+
+      input[type="text"] {
+        padding: 8px 12px;
+        border: 2px solid #ccc;
+        border-radius: 4px;
+        font-size: 16px;
+        outline: none;
+      }
+
+      input[type="text"]:focus {
+        border-color: var(--accent-color);
+      }
+
+      .grid-container {
+        margin-top: 10px;
+        margin-bottom: 15px;
+        position: relative;
+      }
+
+      .grid-canvas {
+        width: 100%;
+        height: 240px;
+        background-color: #fff;
+        background-image:
+          linear-gradient(#e0e0e0 1px, transparent 1px),
+          linear-gradient(90deg, #e0e0e0 1px, transparent 1px),
+          linear-gradient(#999 1px, transparent 1px),
+          linear-gradient(90deg, #999 1px, transparent 1px);
+        background-size:
+          20px 20px,
+          20px 20px,
+          40px 40px,
+          40px 40px;
+        border: 2px solid #555;
+        border-radius: 4px;
+        cursor: crosshair;
+        touch-action: none;
+      }
+
+      .tools {
+        margin-bottom: 5px;
+        text-align: right;
+      }
+
+      .clear-btn {
+        background: #f1f3f4;
+        border: 1px solid #ccc;
+        padding: 5px 10px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 12px;
+      }
+
+      .clear-btn:hover {
+        background: #e8eaed;
+      }
+
+      .btn-submit {
+        background-color: var(--accent-color);
+        color: white;
+        border: none;
+        padding: 15px 40px;
+        font-size: 18px;
+        border-radius: 6px;
+        cursor: pointer;
+        display: block;
+        margin: 40px auto 0;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .btn-submit:hover {
+        background-color: #1557b0;
+      }
+
+      .result-box {
+        display: none;
+        text-align: center;
+        padding: 30px;
+        background: #f8f9fa;
+        border: 2px solid var(--accent-color);
+        border-radius: 8px;
+        margin-top: 30px;
+        font-size: 24px;
+        font-weight: bold;
+      }
+
+      .note {
+        font-size: 36px;
+        display: block;
+        margin-top: 15px;
+        color: var(--accent-color);
+      }
+
+      .correct-highlight {
+        background-color: var(--correct-bg) !important;
+        border-left: 4px solid var(--correct-color);
+      }
+
+      .incorrect-highlight {
+        background-color: var(--incorrect-bg) !important;
+        border-left: 4px solid var(--incorrect-color);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="test-container">
+      <div class="header">
+        <h1>Klassenarbeit: Geometrie</h1>
+        <p>Klasse 5 | Maximal: 30 Punkte</p>
+      </div>
+
+      <div class="task-block">
+        <h3>Aufgabe 1: Wahr oder Falsch? (6 Punkte)</h3>
+
+        <div class="question" data-answer="wahr" data-points="1">
+          <p>
+            1. Ein Quadrat ist ein besonderes Rechteck, bei dem alle vier Seiten
+            gleich lang sind.
+          </p>
+          <label><input type="radio" name="q1" value="wahr" /> Wahr</label>
+          <label><input type="radio" name="q1" value="falsch" /> Falsch</label>
+        </div>
+
+        <div class="question" data-answer="falsch" data-points="1">
+          <p>2. Eine Strecke hat einen Anfangspunkt, aber keinen Endpunkt.</p>
+          <label><input type="radio" name="q2" value="wahr" /> Wahr</label>
+          <label><input type="radio" name="q2" value="falsch" /> Falsch</label>
+        </div>
+
+        <div class="question" data-answer="wahr" data-points="1">
+          <p>
+            3. Bei einem Rechteck sind die gegenüberliegenden Seiten parallel
+            zueinander.
+          </p>
+          <label><input type="radio" name="q3" value="wahr" /> Wahr</label>
+          <label><input type="radio" name="q3" value="falsch" /> Falsch</label>
+        </div>
+
+        <div class="question" data-answer="wahr" data-points="1">
+          <p>
+            4. Zwischen zueinander senkrechten Linien ist immer ein rechter
+            Winkel.
+          </p>
+          <label><input type="radio" name="q4" value="wahr" /> Wahr</label>
+          <label><input type="radio" name="q4" value="falsch" /> Falsch</label>
+        </div>
+
+        <div class="question" data-answer="wahr" data-points="1">
+          <p>
+            5. Eine Gerade ist die kürzeste Verbindung zwischen zwei Punkten.
+          </p>
+          <label><input type="radio" name="q5" value="wahr" /> Wahr</label>
+          <label><input type="radio" name="q5" value="falsch" /> Falsch</label>
+        </div>
+
+        <div class="question" data-answer="wahr" data-points="1">
+          <p>
+            6. Vierecke nennt man alle Figuren mit vier Ecken, egal wie lang
+            deren Seiten sind.
+          </p>
+          <label><input type="radio" name="q6" value="wahr" /> Wahr</label>
+          <label><input type="radio" name="q6" value="falsch" /> Falsch</label>
+        </div>
+      </div>
+
+      <div class="task-block">
+        <h3>Aufgabe 2: Linienarten erkennen und zeichnen (6 Punkte)</h3>
+
+        <div class="question" data-answer="b" data-points="2">
+          <p>
+            a) Was ist der Unterschied zwischen einer Strecke und einem Strahl?
+          </p>
+          <label style="display: block; margin-bottom: 8px"
+            ><input type="radio" name="q7" value="a" /> Eine Strecke hat keinen
+            Endpunkt, ein Strahl hat zwei.</label
+          >
+          <label style="display: block; margin-bottom: 8px"
+            ><input type="radio" name="q7" value="b" /> Eine Strecke hat
+            Anfangs- und Endpunkt, ein Strahl hat nur einen Anfangspunkt.</label
+          >
+          <label style="display: block"
+            ><input type="radio" name="q7" value="c" /> Es gibt keinen
+            Unterschied.</label
+          >
+        </div>
+
+        <p>
+          b) Zeichne die folgenden Linien in das Gitter (2 Kästchen = 1 cm).
+          Hake ab, wenn du fertig bist.
+        </p>
+        <div class="grid-container">
+          <div class="tools">
+            <button
+              class="clear-btn"
+              type="button"
+              onclick="clearCanvas('canvas1')"
+            >
+              Radieren
+            </button>
+          </div>
+          <canvas id="canvas1" class="grid-canvas"></canvas>
+        </div>
+
+        <div class="question draw-q" data-points="1">
+          <label
+            ><input type="checkbox" name="q8_1" /> Strecke AB (5 cm)
+            gezeichnet</label
+          >
+        </div>
+        <div class="question draw-q" data-points="1">
+          <label
+            ><input type="checkbox" name="q8_2" /> Strahl ab Punkt C
+            gezeichnet</label
+          >
+        </div>
+        <div class="question draw-q" data-points="1">
+          <label
+            ><input type="checkbox" name="q8_3" /> Zwei parallele Linien
+            (Abstand 2 cm) gezeichnet</label
+          >
+        </div>
+        <div class="question draw-q" data-points="1">
+          <label
+            ><input type="checkbox" name="q8_4" /> Zwei senkrechte Linien mit
+            rechtem Winkel gezeichnet</label
+          >
+        </div>
+      </div>
+
+      <div class="task-block">
+        <h3>Aufgabe 3: Parallele und senkrechte Linien (4 Punkte)</h3>
+
+        <div class="question" data-answer="1,2,4" data-points="2">
+          <p>
+            Welche der Aussagen stimmen für <b>parallele Linien</b>? (Mehrere
+            möglich)
+          </p>
+          <label style="display: block"
+            ><input type="checkbox" name="q9" value="1" /> (1) Die Linien haben
+            überall denselben Abstand.</label
+          >
+          <label style="display: block"
+            ><input type="checkbox" name="q9" value="2" /> (2) Die beiden Linien
+            schneiden sich nie.</label
+          >
+          <label style="display: block"
+            ><input type="checkbox" name="q9" value="3" /> (3) Man kann rechte
+            Winkel zwischen die beiden Linien legen.</label
+          >
+          <label style="display: block"
+            ><input type="checkbox" name="q9" value="4" /> (4) Beide Linien
+            stehen zu einer dritten Linie senkrecht.</label
+          >
+        </div>
+
+        <div class="question" data-answer="3" data-points="2">
+          <p>
+            Welche der Aussagen stimmen für <b>senkrechte Linien</b>? (Mehrere
+            möglich)
+          </p>
+          <label style="display: block"
+            ><input type="checkbox" name="q10" value="1" /> (1) Die Linien haben
+            überall denselben Abstand.</label
+          >
+          <label style="display: block"
+            ><input type="checkbox" name="q10" value="2" /> (2) Die beiden
+            Linien schneiden sich nie.</label
+          >
+          <label style="display: block"
+            ><input type="checkbox" name="q10" value="3" /> (3) Man kann rechte
+            Winkel zwischen die beiden Linien legen.</label
+          >
+          <label style="display: block"
+            ><input type="checkbox" name="q10" value="4" /> (4) Beide Linien
+            stehen zu einer dritten Linie senkrecht.</label
+          >
+        </div>
+      </div>
+
+      <div class="task-block">
+        <h3>Aufgabe 4: Konstruktion (8 Punkte)</h3>
+        <p>
+          Zeichne in das Gitter (2 Kästchen = 1 cm) und hake ab, wenn du fertig
+          bist.
+        </p>
+
+        <div class="grid-container">
+          <div class="tools">
+            <button
+              class="clear-btn"
+              type="button"
+              onclick="clearCanvas('canvas2')"
+            >
+              Radieren
+            </button>
+          </div>
+          <canvas
+            id="canvas2"
+            class="grid-canvas"
+            style="height: 320px"
+          ></canvas>
+        </div>
+
+        <div class="question draw-q" data-points="2">
+          <label
+            ><input type="checkbox" name="q11" /> a) Rechteck (4 cm und 6 cm)
+            gezeichnet</label
+          >
+        </div>
+        <div class="question draw-q" data-points="2">
+          <label
+            ><input type="checkbox" name="q12" /> b) Quadrat (3 cm)
+            gezeichnet</label
+          >
+        </div>
+        <div class="question draw-q" data-points="4">
+          <label
+            ><input type="checkbox" name="q13" /> c) Knobelaufgabe: Quadrat mit
+            Diagonale 6 cm gezeichnet</label
+          >
+        </div>
+      </div>
+
+      <div class="task-block">
+        <h3>Aufgabe 5: Koordinatensystem (6 Punkte)</h3>
+
+        <div class="grid-container">
+          <div class="tools">
+            <button
+              class="clear-btn"
+              type="button"
+              onclick="clearCanvas('canvas3')"
+            >
+              Radieren
+            </button>
+          </div>
+          <canvas
+            id="canvas3"
+            class="grid-canvas"
+            style="height: 400px"
+          ></canvas>
+        </div>
+
+        <div class="question draw-q" data-points="2">
+          <label
+            ><input type="checkbox" name="q14_1" /> a) Koordinatensystem (bis 8)
+            gezeichnet</label
+          >
+        </div>
+
+        <div class="question draw-q" data-points="3">
+          <label
+            ><input type="checkbox" name="q14_2" /> b) Punkte A(2|1), B(6|1),
+            C(6|5), D(2|5) eingetragen und verbunden</label
+          >
+        </div>
+
+        <div class="question" data-answer="quadrat" data-points="1">
+          <p>c) Welche geometrische Figur ist entstanden?</p>
+          <input type="text" id="q14_3" placeholder="Name der Figur..." />
+        </div>
+      </div>
+
+      <button class="btn-submit" onclick="checkTest()">Test Abgeben</button>
+
+      <div class="result-box" id="resultBox">
+        Dein Ergebnis: <span id="scoreText"></span> / 30 Punkte
+        <span class="note" id="gradeText"></span>
+      </div>
+    </div>
+
+    <script>
+      const canvases = document.querySelectorAll(".grid-canvas");
+
+      canvases.forEach((canvas) => {
+        const ctx = canvas.getContext("2d");
+        let isDrawing = false;
+
+        function resizeCanvas() {
+          canvas.width = canvas.offsetWidth;
+          canvas.height = canvas.offsetHeight;
+        }
+
+        window.addEventListener("resize", resizeCanvas);
+        resizeCanvas();
+
+        function getCoordinates(e) {
+          const rect = canvas.getBoundingClientRect();
+          if (e.touches && e.touches.length > 0) {
+            return {
+              x: e.touches[0].clientX - rect.left,
+              y: e.touches[0].clientY - rect.top,
+            };
+          }
+          return {
+            x: e.clientX - rect.left,
+            y: e.clientY - rect.top,
+          };
+        }
+
+        function startPosition(e) {
+          e.preventDefault();
+          isDrawing = true;
+          draw(e);
+        }
+
+        function endPosition() {
+          isDrawing = false;
+          ctx.beginPath();
+        }
+
+        function draw(e) {
+          if (!isDrawing) return;
+          e.preventDefault();
+
+          const coords = getCoordinates(e);
+
+          ctx.lineWidth = 2;
+          ctx.lineCap = "round";
+          ctx.strokeStyle = "#202124";
+
+          ctx.lineTo(coords.x, coords.y);
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.moveTo(coords.x, coords.y);
+        }
+
+        canvas.addEventListener("mousedown", startPosition);
+        canvas.addEventListener("mouseup", endPosition);
+        canvas.addEventListener("mousemove", draw);
+        canvas.addEventListener("mouseleave", endPosition);
+
+        canvas.addEventListener("touchstart", startPosition, {
+          passive: false,
+        });
+        canvas.addEventListener("touchend", endPosition);
+        canvas.addEventListener("touchmove", draw, { passive: false });
+      });
+
+      function clearCanvas(canvasId) {
+        const canvas = document.getElementById(canvasId);
+        const ctx = canvas.getContext("2d");
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+
+      function checkTest() {
+        let totalScore = 0;
+        document.body.classList.add("finished-mode");
+
+        const checkRadio = (name) => {
+          const qDiv = document
+            .querySelector(`input[name="${name}"]`)
+            .closest(".question");
+          const selected = document.querySelector(
+            `input[name="${name}"]:checked`,
+          );
+          const correctAnswer = qDiv.dataset.answer;
+          const points = parseInt(qDiv.dataset.points);
+
+          if (selected && selected.value === correctAnswer) {
+            totalScore += points;
+            qDiv.classList.add("correct-highlight");
+            qDiv.classList.remove("incorrect-highlight");
+          } else {
+            qDiv.classList.add("incorrect-highlight");
+            qDiv.classList.remove("correct-highlight");
+          }
+        };
+
+        for (let i = 1; i <= 7; i++) {
+          checkRadio(`q${i}`);
+        }
+
+        const checkDrawings = () => {
+          const drawQs = document.querySelectorAll(".draw-q");
+          drawQs.forEach((qDiv) => {
+            const cb = qDiv.querySelector('input[type="checkbox"]');
+            const points = parseInt(qDiv.dataset.points);
+            if (cb.checked) {
+              totalScore += points;
+              qDiv.classList.add("correct-highlight");
+              qDiv.classList.remove("incorrect-highlight");
+            } else {
+              qDiv.classList.add("incorrect-highlight");
+              qDiv.classList.remove("correct-highlight");
+            }
+          });
+        };
+        checkDrawings();
+
+        const checkMultiCheckbox = (name) => {
+          const qDiv = document
+            .querySelector(`input[name="${name}"]`)
+            .closest(".question");
+          const correctAnswers = qDiv.dataset.answer.split(",");
+          const points = parseInt(qDiv.dataset.points);
+
+          const checkedBoxes = Array.from(
+            document.querySelectorAll(`input[name="${name}"]:checked`),
+          ).map((cb) => cb.value);
+
+          const isCorrect =
+            correctAnswers.length === checkedBoxes.length &&
+            correctAnswers.every((val) => checkedBoxes.includes(val));
+
+          if (isCorrect) {
+            totalScore += points;
+            qDiv.classList.add("correct-highlight");
+            qDiv.classList.remove("incorrect-highlight");
+          } else {
+            qDiv.classList.add("incorrect-highlight");
+            qDiv.classList.remove("correct-highlight");
+          }
+        };
+
+        checkMultiCheckbox("q9");
+        checkMultiCheckbox("q10");
+
+        const checkText = (id) => {
+          const input = document.getElementById(id);
+          const qDiv = input.closest(".question");
+          const correctAnswer = qDiv.dataset.answer.toLowerCase();
+          const points = parseInt(qDiv.dataset.points);
+
+          if (input.value.trim().toLowerCase() === correctAnswer) {
+            totalScore += points;
+            qDiv.classList.add("correct-highlight");
+            qDiv.classList.remove("incorrect-highlight");
+          } else {
+            qDiv.classList.add("incorrect-highlight");
+            qDiv.classList.remove("correct-highlight");
+          }
+        };
+
+        checkText("q14_3");
+
+        document.getElementById("scoreText").innerText = totalScore;
+
+        let note = "";
+        if (totalScore >= 28) note = "Note 1 (Sehr gut)";
+        else if (totalScore >= 24) note = "Note 2 (Gut)";
+        else if (totalScore >= 19.5) note = "Note 3 (Befriedigend)";
+        else if (totalScore >= 15) note = "Note 4 (Ausreichend)";
+        else if (totalScore >= 7) note = "Note 5 (Mangelhaft)";
+        else note = "Note 6 (Ungenügend)";
+
+        document.getElementById("gradeText").innerText = note;
+        document.getElementById("resultBox").style.display = "block";
+
+        window.scrollTo({
+          top: document.body.scrollHeight,
+          behavior: "smooth",
+        });
+      }
+    </script>
+  </body>
+</html>
