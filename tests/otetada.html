@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Властивості арифметичного квадратного кореня</title>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap');
+
+:root {
+    --bg-color: #f3f6f8;
+    --card-bg: #ffffff;
+    --text-main: #2d3748;
+    --text-muted: #718096;
+    --accent: #4fd1c5;
+    --border: #e2e8f0;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    line-height: 1.6;
+    padding: 40px 20px;
+}
+
+.page-container {
+    max-width: 900px;
+    margin: 0 auto;
+    background-color: var(--card-bg);
+    padding: 50px 60px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+header {
+    margin-bottom: 40px;
+}
+
+.header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--bg-color);
+}
+
+.title-block h1 {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--text-main);
+    margin-bottom: 5px;
+}
+
+.title-block p {
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+.student-info {
+    display: flex;
+    gap: 20px;
+}
+
+.info-field {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+}
+
+.info-field span {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-muted);
+}
+
+.info-line {
+    width: 150px;
+    border-bottom: 1px solid var(--border);
+}
+
+.section {
+    margin-bottom: 35px;
+}
+
+.section-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.task-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.task-item {
+    background-color: var(--bg-color);
+    padding: 15px 20px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    min-height: 70px;
+}
+
+.task-number {
+    font-weight: 600;
+    color: var(--accent);
+    margin-right: 15px;
+    min-width: 25px;
+}
+
+.task-content {
+    flex-grow: 1;
+}
+
+@media print {
+    body {
+        background-color: transparent;
+        padding: 0;
+    }
+
+    .page-container {
+        box-shadow: none;
+        padding: 0;
+        max-width: 100%;
+        border-radius: 0;
+    }
+
+    .task-item {
+        background-color: transparent;
+        border: 1px solid var(--border);
+        page-break-inside: avoid;
+    }
+
+    .section {
+        page-break-inside: avoid;
+    }
+}
+</style>
+</head>
+<body>
+
+<div class="page-container">
+    <header>
+        <div class="header-top">
+            <div class="title-block">
+                <h1>Властивості арифметичного квадратного кореня</h1>
+                <p>Автор: Даша</p>
+            </div>
+            <div class="student-info">
+                <div class="info-field">
+                    <span>Учень:</span>
+                    <div class="info-line"></div>
+                </div>
+                <div class="info-field">
+                    <span>Дата:</span>
+                    <div class="info-line" style="width: 100px;"></div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="section">
+        <div class="section-title">Рівень 1: Корінь з добутку та частки</div>
+        <div class="task-grid">
+            <div class="task-item">
+                <span class="task-number">1)</span>
+                <span class="task-content">\( \sqrt{36 \cdot 81} = \)</span>
+            </div>
+            <div class="task-item">
+                <span class="task-number">2)</span>
+                <span class="task-content">\( \sqrt{1.44 \cdot 0.04} = \)</span>
+            </div>
+            <div class="task-item">
+                <span class="task-number">3)</span>
+                <span class="task-content">\( \sqrt{\frac{169}{225}} = \)</span>
+            </div>
+            <div class="task-item">
+                <span class="task-number">4)</span>
+                <span class="task-content">\( \sqrt{5^2 \cdot 2^6} = \)</span>
+            </div>
+            <div class="task-item">
+                <span class="task-number">5)</span>
+                <span class="task-content">\( \sqrt{1 \frac{9}{16}} = \)</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Рівень 2: Добуток та частка коренів</div>
+        <div class="task-grid">
+            <div class="task-item">
+                <span class="task-number">6)</span>
+                <span class="task-content">\( \sqrt{2} \cdot \sqrt{18} = \)</span>
+            </div>
+            <div class="task-item">
+                <span class="task-number">7)</span>
+                <span class="task-content">\( \sqrt{20} \cdot \sqrt{5} = \)</span>
+            </div>
+            <div class="task-item">
+                <span class="task-number">8)</span>
+                <span class="task-content">\( \frac{\sqrt{48}}{\sqrt{3}} = \)</span>
+            </div>
+            <div class="task-item">
+                <span class="task-number">9)</span>
+                <span class="task-content">\( \sqrt{13} \cdot \sqrt{52} = \)</span>
+            </div>
+            <div class="task-item">
+                <span class="task-number">10)</span>
+                <span class="task-content">\( \frac{\sqrt{12.5}}{\sqrt{0.5}} = \)</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Рівень 3: Корінь зі степеня</div>
+        <div class="task-grid">
+            <div class="task-item">
+                <span class="task-number">11)</span>
+                <span class="task-content">\( \sqrt{(-7)^2} = \)</span>
+            </div>
+            <div class="task-item">
+                <span class="task-number">12)</span>
+                <span class="task-content">\( \sqrt{(-0.3)^4} = \)</span>
+            </div>
+            <div class="task-item">
+                <span class="task-number">13)</span>
+                <span class="task-content">\( 0.2 \cdot \sqrt{(-10)^6} = \)</span>
+            </div>
+            <div class="task-item">
+                <span class="task-number">14)</span>
+                <span class="task-content">\( \sqrt{2^8 \cdot 3^2} = \)</span>
+            </div>
+            <div class="task-item">
+                <span class="task-number">15)</span>
+                <span class="task-content">\( -5 \cdot \sqrt{(-2)^{10}} = \)</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Рівень 4: Вирази зі змінними (базові)</div>
+        <div class="task-grid">
+            <div class="task-item">
+                <span class="task-number">16)</span>
+                <span class="task-content">\( \sqrt{49a^2} \text{, якщо } a \ge 0 \)</span>
+            </div>
+            <div class="task-item">
+                <span class="task-number">17)</span>
+                <span class="task-content">\( \sqrt{0.64x^6} \text{, якщо } x < 0 \)</span>
+            </div>
+            <div class="task-item">
+                <span class="task-number">18)</span>
+                <span class="task-content">\( -2\sqrt{0.25y^2} \text{, якщо } y < 0 \)</span>
+            </div>
+            <div class="task-item">
+                <span class="task-number">19)</span>
+                <span class="task-content">\( \sqrt{144m^4n^{10}} \text{, якщо } n < 0 \)</span>
+            </div>
+            <div class="task-item">
+                <span class="task-number">20)</span>
+                <span class="task-content">\( \sqrt{\frac{p^8}{x^{12}}} \text{, якщо } p < 0 \)</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Рівень 5: Модуль та квадрат двочлена</div>
+        <div class="task-grid">
+            <div class="task-item">
+                <span class="task-number">21)</span>
+                <span class="task-content">\( \sqrt{(x-5)^2} \text{, якщо } x \ge 5 \)</span>
+            </div>
+            <div class="task-item">
+                <span class="task-number">22)</span>
+                <span class="task-content">\( \sqrt{(a-9)^2} \text{, якщо } a < 9 \)</span>
+            </div>
+            <div class="task-item">
+                <span class="task-number">23)</span>
+                <span class="task-content">\( \sqrt{(\sqrt{5}-3)^2} = \)</span>
+            </div>
+            <div class="task-item">
+                <span class="task-number">24)</span>
+                <span class="task-content">\( \sqrt{(\sqrt{10}-\sqrt{7})^2} = \)</span>
+            </div>
+            <div class="task-item">
+                <span class="task-number">25)</span>
+                <span class="task-content">\( \sqrt{x^2 - 14x + 49} \text{, якщо } x < 7 \)</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Рівень 6: Підвищена складність</div>
+        <div class="task-grid">
+            <div class="task-item">
+                <span class="task-number">26)</span>
+                <span class="task-content">\( \sqrt{p^2 + 10p + 25} \text{, якщо } p \le -5 \)</span>
+            </div>
+            <div class="task-item">
+                <span class="task-number">27)</span>
+                <span class="task-content">\( \sqrt{(\sqrt{8}-3)^2} + \sqrt{(\sqrt{8}-2)^2} = \)</span>
+            </div>
+            <div class="task-item">
+                <span class="task-number">28)</span>
+                <span class="task-content">\( (m-4)\sqrt{\frac{16}{m^2 - 8m + 16}} \text{, якщо } m < 4 \)</span>
+            </div>
+            <div class="task-item">
+                <span class="task-number">29)</span>
+                <span class="task-content">\( \sqrt{\frac{36a^{14}b^{18}}{c^6}} \text{, якщо } a > 0, b < 0, c < 0 \)</span>
+            </div>
+            <div class="task-item">
+                <span class="task-number">30)</span>
+                <span class="task-content">\( \sqrt{(\sqrt{13}-4)^2} - \sqrt{(\sqrt{13}-5)^2} = \)</span>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>
