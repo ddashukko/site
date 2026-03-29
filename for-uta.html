@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Презентація для Юти</title>
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f4f1ea;
+        color: #4a4a4a;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        overflow-x: hidden;
+    }
+    .slide {
+        background: #ffffff;
+        border-radius: 24px;
+        box-shadow: 0 12px 24px rgba(0,0,0,0.08);
+        margin: 50px 20px;
+        padding: 50px;
+        max-width: 700px;
+        width: 85%;
+        text-align: center;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border-top: 8px solid #ffb7b2;
+    }
+    .slide:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 16px 32px rgba(0,0,0,0.12);
+    }
+    .slide:nth-child(2) { border-top-color: #e2f0cb; }
+    .slide:nth-child(3) { border-top-color: #b5ead7; }
+    .slide:nth-child(4) { border-top-color: #ffdac1; }
+    .slide:nth-child(5) { border-top-color: #c7ceea; }
+    
+    h1 { 
+        color: #ff9aa2; 
+        font-size: 2.8em; 
+        margin-bottom: 15px; 
+    }
+    h2 { 
+        color: #6eb5c0; 
+        font-size: 2.2em; 
+        margin-bottom: 25px; 
+    }
+    p { 
+        font-size: 1.3em; 
+        line-height: 1.7; 
+    }
+    .list-container {
+        display: flex;
+        justify-content: center;
+        text-align: left;
+    }
+    ul { 
+        font-size: 1.3em; 
+        line-height: 1.8; 
+        padding-left: 20px;
+        margin: 0;
+    }
+    li { 
+        margin-bottom: 12px; 
+    }
+    .emoji { 
+        font-size: 4em; 
+        margin: 20px 0; 
+        display: inline-block; 
+    }
+    .btn {
+        display: inline-block;
+        background-color: #ff9aa2;
+        color: white;
+        padding: 18px 40px;
+        text-decoration: none;
+        border-radius: 50px;
+        font-size: 1.5em;
+        font-weight: bold;
+        margin-top: 30px;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+        box-shadow: 0 6px 15px rgba(255, 154, 162, 0.4);
+    }
+    .btn:hover { 
+        background-color: #ff7b85; 
+        transform: scale(1.05);
+    }
+    .highlight { 
+        color: #ff7b85; 
+        font-weight: bold; 
+        font-size: 1.2em;
+    }
+</style>
+</head>
+<body>
+
+    <div class="slide">
+        <span class="emoji">✨🧸✨</span>
+        <h1>Юта, ласкаво просимо!</h1>
+        <p>До нашого Аутистичного Центру™ — місця, де твої сенсорні потреби, бажання щось пожужмити в руках і потреба у відмінній компанії будуть задоволені на 100%.</p>
+    </div>
+
+    <div class="slide">
+        <span class="emoji">🖍️🧩</span>
+        <h2>Наша матеріально-технічна база</h2>
+        <p>Що на тебе чекає? (Спойлер: суцільний кайф)</p>
+        <div class="list-container">
+            <ul>
+                <li><strong>Пластилін:</strong> для зняття стресу, агресії та ліплення дуже дивних фігурок.</li>
+                <li><strong>Розмальовки:</strong> бо не думати про доросле життя і просто штрихувати в межах ліній — це найкраща терапія.</li>
+                <li><strong>Гори інших іграшок:</strong> усе, що можна крутити, натискати і складати.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="slide">
+        <span class="emoji">🧘‍♀️💎</span>
+        <h2>Зона глибокої концентрації</h2>
+        <p>Для справжніх поціновувачів гіперфокусу:</p>
+        <div class="list-container">
+            <ul>
+                <li><strong>Алмазна мозаїка:</strong> ідеальний спосіб "відключити" мозок на 4 години поспіль і отримати блискучий результат.</li>
+                <li><strong>Гравюра:</strong> бо шкребти чорний шар до золотого — це окремий вид мистецтва і задоволення.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="slide">
+        <span class="emoji">🍒👑</span>
+        <h2>ВИШЕНЬКА НА ТОРТІ</h2>
+        <p>...барабанний дріб...</p>
+        <p class="highlight">ЦЕ КАСЯ!</p>
+        <p>Найкраща компанія, головний спонсор гарного настрою, комфорту і просто абсолютна причина сказати "Так, я вже виїжджаю" прямо зараз.</p>
+    </div>
+
+    <div class="slide">
+        <span class="emoji">🏃‍♀️💨</span>
+        <h2>Коли тебе чекати?</h2>
+        <p>Наш центр працює ексклюзивно для тебе. Бронюй свій час у нашому VIP-закладі вже сьогодні.</p>
+        <p><em>*Кількість місць обмежена (одне місце, і воно твоє).</em></p>
+        <a href="#" class="btn">Я ВЖЕ ЇДУ!</a>
+    </div>
+
+</body>
+</html>
