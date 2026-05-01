@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тренажер: Множення на 2</title>
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f8f9fa;
+        margin: 0;
+    }
+    .container {
+        background: #ffffff;
+        padding: 8rem;
+        border-radius: 40px;
+        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        width: 95%;
+        max-width: 1600px;
+    }
+    h1 {
+        font-size: 8rem;
+        color: #212529;
+        margin-top: 0;
+        margin-bottom: 4rem;
+    }
+    p {
+        font-size: 4rem;
+        color: #495057;
+        margin-bottom: 5rem;
+    }
+    .stats {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 5rem;
+        font-weight: 600;
+        color: #6c757d;
+        font-size: 5rem;
+    }
+    .question {
+        font-size: 20rem;
+        margin: 6rem 0;
+        color: #495057;
+        font-weight: 700;
+    }
+    input {
+        font-size: 12rem;
+        width: 600px;
+        text-align: center;
+        padding: 3rem;
+        border: 8px solid #dee2e6;
+        border-radius: 40px;
+        outline: none;
+        transition: border-color 0.2s, box-shadow 0.2s;
+        color: #212529;
+    }
+    input:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 16px rgba(59, 130, 246, 0.15);
+    }
+    input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-outer-spin-button { 
+        -webkit-appearance: none; 
+        margin: 0; 
+    }
+    button {
+        background-color: #3b82f6;
+        color: white;
+        border: none;
+        padding: 50px 100px;
+        font-size: 5rem;
+        font-weight: 600;
+        border-radius: 30px;
+        cursor: pointer;
+        transition: background-color 0.2s, transform 0.1s;
+        width: 100%;
+        margin-top: 5rem;
+    }
+    button:hover {
+        background-color: #2563eb;
+    }
+    button:active {
+        transform: scale(0.98);
+    }
+    .hidden {
+        display: none;
+    }
+    #endTitle {
+        font-size: 8rem;
+        color: #10b981;
+        margin-bottom: 3rem;
+    }
+    #endDesc {
+        font-size: 5rem;
+    }
+    .side-counter {
+        position: fixed;
+        right: 60px;
+        top: 60px;
+        background-color: #e0e7ff;
+        color: #4338ca;
+        padding: 40px 80px;
+        border-radius: 30px;
+        font-weight: bold;
+        font-size: 4rem;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+    }
+    @media (max-width: 1400px) {
+        .container {
+            padding: 5rem;
+            max-width: 1000px;
+        }
+        h1 { font-size: 5rem; }
+        p { font-size: 2.5rem; }
+        .stats { font-size: 3rem; }
+        .question { font-size: 12rem; }
+        input { font-size: 8rem; width: 400px; }
+        button { font-size: 3rem; padding: 30px 60px; }
+        .side-counter {
+            padding: 20px 40px;
+            font-size: 2.5rem;
+        }
+    }
+    @media (max-width: 768px) {
+        .container {
+            padding: 2.5rem;
+        }
+        h1 { font-size: 2.5rem; }
+        p { font-size: 1.5rem; }
+        .stats { font-size: 1.8rem; }
+        .question { font-size: 5rem; }
+        input { font-size: 3.5rem; width: 180px; padding: 1rem; border-width: 4px; }
+        button { font-size: 1.5rem; padding: 15px 30px; border-radius: 15px; margin-top: 2rem; }
+        .side-counter {
+            top: 15px;
+            right: 15px;
+            padding: 10px 20px;
+            font-size: 1.2rem;
+            border-radius: 10px;
+        }
+    }
+</style>
+</head>
+<body>
+
+<div id="roundCounter" class="side-counter hidden">Залишилось ще 5 разів</div>
+
+<div class="container">
+    <div id="startScreen">
+        <h1>Множення на 2</h1>
+        <p>Вирішіть усі 10 прикладів. Порядок завжди різний!</p>
+        <button id="startBtn">Почати тест</button>
+    </div>
+
+    <div id="gameScreen" class="hidden">
+        <div class="stats">
+            <span id="progress">Прогрес: 0/10</span>
+        </div>
+        <div class="question" id="question">2 × 2 = ?</div>
+        <input type="number" id="answer" autocomplete="off">
+    </div>
+
+    <div id="endScreen" class="hidden">
+        <h2 id="endTitle">Молодець!</h2>
+        <p id="endDesc">Ви успішно вирішили всі приклади.</p>
+        <button id="restartBtn">Наступний етап</button>
+    </div>
+</div>
+
+<script>
+    const startBtn = document.getElementById('startBtn');
+    const restartBtn = document.getElementById('restartBtn');
+    const startScreen = document.getElementById('startScreen');
+    const gameScreen = document.getElementById('gameScreen');
+    const endScreen = document.getElementById('endScreen');
+    const progressEl = document.getElementById('progress');
+    const questionEl = document.getElementById('question');
+    const answerInput = document.getElementById('answer');
+    const roundCounter = document.getElementById('roundCounter');
+    const endTitle = document.getElementById('endTitle');
+    const endDesc = document.getElementById('endDesc');
+
+    const baseQuestions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    let shuffledQuestions = [];
+    let currentIndex = 0;
+    let currentFactor = 0;
+    let roundsCompleted = 0;
+
+    function startGame() {
+        shuffledQuestions = [...baseQuestions].sort(() => Math.random() - 0.5);
+        currentIndex = 0;
+        
+        startScreen.classList.add('hidden');
+        endScreen.classList.add('hidden');
+        gameScreen.classList.remove('hidden');
+        roundCounter.classList.remove('hidden');
+        
+        updateProgress();
+        updateRoundCounter();
+        nextQuestion();
+        
+        answerInput.value = '';
+        setTimeout(() => answerInput.focus(), 50);
+    }
+
+    function nextQuestion() {
+        if (currentIndex >= shuffledQuestions.length) {
+            endGame();
+            return;
+        }
+
+        currentFactor = shuffledQuestions[currentIndex];
+
+        if (Math.random() > 0.5) {
+            questionEl.textContent = `2 × ${currentFactor}`;
+        } else {
+            questionEl.textContent = `${currentFactor} × 2`;
+        }
+    }
+
+    function updateProgress() {
+        progressEl.textContent = `Прогрес: ${currentIndex}/10`;
+    }
+
+    function updateRoundCounter() {
+        let left = 5 - roundsCompleted;
+        if (left === 0) {
+            roundCounter.textContent = "Урок завершено!";
+        } else {
+            let word = (left === 1) ? 'раз' : ((left >= 2 && left <= 4) ? 'рази' : 'разів');
+            let verb = (left === 1) ? 'Залишився' : 'Залишилось';
+            roundCounter.textContent = `${verb} ще ${left} ${word}`;
+        }
+    }
+
+    function endGame() {
+        roundsCompleted++;
+        updateRoundCounter();
+        
+        gameScreen.classList.add('hidden');
+        endScreen.classList.remove('hidden');
+
+        if (roundsCompleted >= 5) {
+            endTitle.textContent = "Урок завершено!";
+            endTitle.style.color = "#3b82f6";
+            endDesc.textContent = "Ви успішно пройшли всі 5 етапів.";
+            restartBtn.textContent = "Почати новий урок";
+        } else {
+            endTitle.textContent = "Молодець!";
+            endTitle.style.color = "#10b981";
+            endDesc.textContent = "Ви успішно вирішили всі приклади.";
+            restartBtn.textContent = "Наступний етап";
+        }
+    }
+
+    function handleRestart() {
+        if (roundsCompleted >= 5) {
+            roundsCompleted = 0;
+        }
+        startGame();
+    }
+
+    answerInput.addEventListener('input', (e) => {
+        const val = parseInt(e.target.value);
+        if (val === 2 * currentFactor) {
+            currentIndex++;
+            updateProgress();
+            e.target.value = '';
+            nextQuestion();
+        }
+    });
+
+    startBtn.addEventListener('click', startGame);
+    restartBtn.addEventListener('click', handleRestart);
+</script>
+
+</body>
+</html>
