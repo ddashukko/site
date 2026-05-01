@@ -5,6 +5,17 @@ window.lessonsData = [
   // 2 КЛАС (Математика) - Автор: Даша
   // ==========================================
   {
+    id: "math-2-eq-mult",
+
+    title: "Множення на 2",
+    grade: 2,
+    topic: "Арифметика",
+    link: "math_general/2/множення.html",
+    subject_code: "math_general",
+    category: "test",
+    author: "Даша",
+  },
+  {
     id: "math-2-eq-simple",
 
     title: "Прості рівняння з малюнками та без (без переходу через десяток)",
