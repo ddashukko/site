@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Гра: Ділення</title>
+<style>
+    body {
+        font-family: 'Comic Sans MS', sans-serif;
+        background-color: #f0f8ff;
+        text-align: center;
+        margin: 0;
+        padding: 20px;
+    }
+    #game-container {
+        max-width: 600px;
+        margin: 0 auto;
+        background: #ffffff;
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+        color: #333;
+    }
+    #instruction {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #0066cc;
+        margin-bottom: 20px;
+    }
+    .area {
+        min-height: 80px;
+        border: 2px solid #ccc;
+        border-radius: 10px;
+        padding: 10px;
+        margin-bottom: 20px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+        align-items: center;
+        background: #fafafa;
+    }
+    #baskets {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+    .basket {
+        flex: 1;
+        min-height: 120px;
+        border: 3px dashed #ff9900;
+        border-radius: 10px;
+        padding: 10px;
+        display: flex;
+        flex-wrap: wrap;
+        align-content: flex-start;
+        gap: 5px;
+        background: #fffdf5;
+        transition: background 0.2s;
+    }
+    .item {
+        font-size: 2rem;
+        cursor: grab;
+        user-select: none;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .item:active {
+        cursor: grabbing;
+    }
+    button {
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        padding: 15px 30px;
+        font-size: 1.2rem;
+        border-radius: 8px;
+        cursor: pointer;
+        font-family: inherit;
+        font-weight: bold;
+    }
+    button:hover {
+        background-color: #45a049;
+    }
+    #message {
+        margin-top: 15px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        min-height: 30px;
+    }
+</style>
+</head>
+<body>
+
+<div id="game-container">
+    <h2 id="level-info"></h2>
+    <div id="instruction"></div>
+    
+    <div id="source" class="area"></div>
+    
+    <div id="baskets"></div>
+    
+    <button onclick="checkAnswer()">Перевірити</button>
+    <div id="message"></div>
+</div>
+
+<script>
+    const tasks = [
+        { total: 4, divisor: 2, item: '🍎' },
+        { total: 6, divisor: 2, item: '🍊' },
+        { total: 6, divisor: 3, item: '🍓' },
+        { total: 8, divisor: 2, item: '🍇' },
+        { total: 9, divisor: 3, item: '🍎' },
+        { total: 10, divisor: 2, item: '🍌' },
+        { total: 12, divisor: 2, item: '🥝' },
+        { total: 12, divisor: 3, item: '🍉' },
+        { total: 14, divisor: 2, item: '🍑' },
+        { total: 15, divisor: 3, item: '🍒' },
+        { total: 16, divisor: 2, item: '🍍' },
+        { total: 18, divisor: 2, item: '🍋' },
+        { total: 18, divisor: 3, item: '🍏' },
+        { total: 20, divisor: 2, item: '🍐' },
+        { total: 21, divisor: 3, item: '🍓' }
+    ];
+
+    let currentLevel = 0;
+    let draggedItem = null;
+
+    function initLevel() {
+        const task = tasks[currentLevel];
+        document.getElementById('level-info').innerText = `Завдання ${currentLevel + 1} з 15`;
+        document.getElementById('instruction').innerText = `Поділи ${task.total} ${task.item} порівну на ${task.divisor} кошики!`;
+        
+        const source = document.getElementById('source');
+        source.innerHTML = '';
+        for(let i = 0; i < task.total; i++) {
+            const el = document.createElement('div');
+            el.className = 'item';
+            el.innerText = task.item;
+            el.draggable = true;
+            
+            el.addEventListener('dragstart', function(e) {
+                draggedItem = this;
+                setTimeout(() => this.style.display = 'none', 0);
+            });
+            
+            el.addEventListener('dragend', function() {
+                setTimeout(() => {
+                    this.style.display = 'flex';
+                    draggedItem = null;
+                }, 0);
+            });
+            
+            source.appendChild(el);
+        }
+
+        const basketsContainer = document.getElementById('baskets');
+        basketsContainer.innerHTML = '';
+        for(let i = 0; i < task.divisor; i++) {
+            const basket = document.createElement('div');
+            basket.className = 'basket';
+            
+            basket.addEventListener('dragover', e => e.preventDefault());
+            
+            basket.addEventListener('dragenter', function(e) {
+                e.preventDefault();
+                this.style.background = '#ffe0b2';
+            });
+            
+            basket.addEventListener('dragleave', function() {
+                this.style.background = '#fffdf5';
+            });
+            
+            basket.addEventListener('drop', function() {
+                this.style.background = '#fffdf5';
+                if(draggedItem) {
+                    this.appendChild(draggedItem);
+                }
+            });
+            
+            basketsContainer.appendChild(basket);
+        }
+        
+        source.addEventListener('dragover', e => e.preventDefault());
+        source.addEventListener('drop', function() {
+            if(draggedItem) {
+                this.appendChild(draggedItem);
+            }
+        });
+
+        document.getElementById('message').innerText = '';
+    }
+
+    function checkAnswer() {
+        const task = tasks[currentLevel];
+        const targetCount = task.total / task.divisor;
+        const baskets = document.querySelectorAll('.basket');
+        let correct = true;
+        
+        baskets.forEach(basket => {
+            if(basket.children.length !== targetCount) {
+                correct = false;
+            }
+        });
+
+        const msg = document.getElementById('message');
+        if(correct) {
+            msg.style.color = 'green';
+            msg.innerText = 'Правильно! Молодець!';
+            setTimeout(() => {
+                currentLevel++;
+                if(currentLevel < tasks.length) {
+                    initLevel();
+                } else {
+                    document.getElementById('game-container').innerHTML = '<h2>Вітаю! Ти пройшов усі 15 завдань! 🎉</h2>';
+                }
+            }, 1500);
+        } else {
+            msg.style.color = 'red';
+            msg.innerText = 'Щось не так. Перевір, чи в кожному кошику однакова кількість!';
+        }
+    }
+
+    window.onload = initLevel;
+</script>
+
+</body>
+</html>
