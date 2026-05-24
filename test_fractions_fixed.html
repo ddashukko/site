@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тестування: Звичайні дроби</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --primary: #4a90e2;
+            --bg: #f7f9fc;
+            --text: #333;
+            --border: #e1e8ed;
+            --correct: #2ecc71;
+            --wrong: #e74c3c;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        h1 {
+            text-align: center;
+            color: var(--primary);
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+        .question-card {
+            margin-bottom: 25px;
+            padding: 20px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .question-card:hover {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .question-text {
+            font-size: 1.1em;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .option-label {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-size: 1.1em;
+        }
+        .option-label:hover {
+            background: #eef2f5;
+        }
+        input[type="radio"] {
+            margin-right: 10px;
+            transform: scale(1.2);
+            flex-shrink: 0;
+        }
+        .btn-submit {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            font-size: 1.2em;
+            color: #fff;
+            background: var(--primary);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 30px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        .btn-submit:hover {
+            background: #357abd;
+        }
+        .result-box {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+        .correct-ans { background-color: rgba(46, 204, 113, 0.2); border-color: var(--correct); }
+        .wrong-ans { background-color: rgba(231, 76, 60, 0.2); border-color: var(--wrong); }
+        
+        @media (max-width: 600px) {
+            .options { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Тестування: Дробові числа і дії з ними</h1>
+        <form id="quiz-form">
+            <div id="questions-container"></div>
+            <button type="button" class="btn-submit" onclick="checkAnswers()">Перевірити результати</button>
+            <div id="result" class="result-box"></div>
+        </form>
+    </div>
+
+    <script>
+        const questionsData = [
+            { q: "Який дріб показує половину цілого?", opts: ["\\(\\frac{1}{4}\\)", "\\(\\frac{1}{2}\\)", "\\(\\frac{2}{3}\\)", "\\(\\frac{1}{3}\\)"], ans: 1 },
+            { q: "Торт розрізали на 8 рівних частин і з'їли 3 частини. Яка частина торта залишилася?", opts: ["\\(\\frac{3}{8}\\)", "\\(\\frac{5}{8}\\)", "\\(\\frac{8}{5}\\)", "\\(\\frac{8}{3}\\)"], ans: 1 },
+            { q: "Що показує знаменник дробу \\(\\frac{4}{9}\\)?", opts: ["Скільки рівних частин взяли", "На скільки рівних частин поділили ціле", "Суму частин", "Різницю частин"], ans: 1 },
+            { q: "Яку частину години становлять 15 хвилин?", opts: ["\\(\\frac{15}{24}\\)", "\\(\\frac{15}{100}\\)", "\\(\\frac{15}{60}\\)", "\\(\\frac{60}{15}\\)"], ans: 2 },
+            { q: "Чисельник дробу \\(\\frac{7}{12}\\) дорівнює:", opts: ["12", "7", "19", "5"], ans: 1 },
+            { q: "Яку частину метра становить 1 сантиметр?", opts: ["\\(\\frac{1}{10}\\)", "\\(\\frac{1}{100}\\)", "\\(\\frac{1}{1000}\\)", "\\(\\frac{1}{60}\\)"], ans: 1 },
+            
+            { q: "Який з наведених дробів є правильним?", opts: ["\\(\\frac{5}{4}\\)", "\\(\\frac{7}{7}\\)", "\\(\\frac{3}{8}\\)", "\\(\\frac{9}{2}\\)"], ans: 2 },
+            { q: "Який з наведених дробів є неправильним?", opts: ["\\(\\frac{1}{2}\\)", "\\(\\frac{11}{12}\\)", "\\(\\frac{8}{9}\\)", "\\(\\frac{5}{3}\\)"], ans: 3 },
+            { q: "Яке з тверджень є правильним?", opts: ["\\(\\frac{4}{9} > \\frac{7}{9}\\)", "\\(\\frac{5}{11} < \\frac{3}{11}\\)", "\\(\\frac{8}{15} > \\frac{4}{15}\\)", "\\(\\frac{7}{10} = \\frac{10}{7}\\)"], ans: 2 },
+            { q: "Порівняйте дроби: \\(\\frac{12}{17}\\) і \\(\\frac{12}{19}\\)", opts: ["\\(\\frac{12}{17} > \\frac{12}{19}\\)", "\\(\\frac{12}{17} < \\frac{12}{19}\\)", "\\(\\frac{12}{17} = \\frac{12}{19}\\)", "Неможливо порівняти"], ans: 0 },
+            { q: "Скільки існує натуральних значень \\(a\\), при яких дріб \\(\\frac{a}{6}\\) є правильним?", opts: ["5", "6", "7", "Безліч"], ans: 0 },
+            { q: "Будь-який неправильний дріб...", opts: ["Менший за 1", "Дорівнює 0", "Більший або дорівнює 1", "Завжди більший за 2"], ans: 2 },
+            
+            { q: "Обчисліть: \\(\\frac{4}{13} + \\frac{7}{13}\\)", opts: ["\\(\\frac{11}{26}\\)", "\\(\\frac{11}{13}\\)", "\\(\\frac{28}{13}\\)", "\\(\\frac{3}{13}\\)"], ans: 1 },
+            { q: "Обчисліть: \\(\\frac{15}{19} - \\frac{6}{19}\\)", opts: ["\\(\\frac{9}{0}\\)", "\\(\\frac{21}{19}\\)", "\\(\\frac{9}{19}\\)", "\\(\\frac{11}{19}\\)"], ans: 2 },
+            { q: "Знайдіть значення виразу: \\(\\frac{5}{14} + \\frac{8}{14} - \\frac{3}{14}\\)", opts: ["\\(\\frac{10}{14}\\)", "\\(\\frac{16}{14}\\)", "\\(\\frac{0}{14}\\)", "\\(\\frac{10}{42}\\)"], ans: 0 },
+            { q: "Розв'яжіть рівняння: \\(x - \\frac{4}{15} = \\frac{7}{15}\\)", opts: ["\\(\\frac{3}{15}\\)", "\\(\\frac{11}{15}\\)", "\\(\\frac{28}{15}\\)", "\\(\\frac{10}{15}\\)"], ans: 1 },
+            { q: "Обчисліть: \\(1 - \\frac{5}{9}\\)", opts: ["\\(\\frac{4}{9}\\)", "\\(\\frac{5}{9}\\)", "\\(\\frac{14}{9}\\)", "4"], ans: 0 },
+            { q: "Від мотузки завдовжки \\(\\frac{17}{20}\\) м відрізали \\(\\frac{9}{20}\\) м. Яка довжина залишку?", opts: ["\\(\\frac{26}{20}\\) м", "\\(\\frac{6}{20}\\) м", "\\(\\frac{8}{20}\\) м", "\\(\\frac{8}{0}\\) м"], ans: 2 },
+            
+            { q: "Запишіть у вигляді дробу частку \\(5 : 8\\)", opts: ["\\(\\frac{8}{5}\\)", "\\(\\frac{5}{8}\\)", "\\(1 \\frac{3}{5}\\)", "\\(5 \\frac{1}{8}\\)"], ans: 1 },
+            { q: "Яке натуральне число дорівнює дробу \\(\\frac{36}{4}\\)?", opts: ["7", "8", "9", "32"], ans: 2 },
+            { q: "Запишіть число 7 у вигляді дробу зі знаменником 5", opts: ["\\(\\frac{7}{5}\\)", "\\(\\frac{12}{5}\\)", "\\(\\frac{35}{5}\\)", "\\(\\frac{5}{35}\\)"], ans: 2 },
+            { q: "Розв'яжіть рівняння: \\(\\frac{x}{6} = 4\\)", opts: ["24", "10", "2", "1.5"], ans: 0 },
+            { q: "Чому дорівнює частка \\(12 : 12\\)?", opts: ["0", "\\(\\frac{12}{1}\\)", "1", "144"], ans: 2 },
+            { q: "Риска дробу означає дію:", opts: ["Додавання", "Віднімання", "Множення", "Ділення"], ans: 3 },
+            
+            { q: "Перетворіть неправильний дріб \\(\\frac{19}{5}\\) у мішане число", opts: ["\\(3 \\frac{4}{5}\\)", "\\(4 \\frac{1}{5}\\)", "\\(3 \\frac{2}{5}\\)", "\\(2 \\frac{9}{5}\\)"], ans: 0 },
+            { q: "Запишіть мішане число \\(4 \\frac{2}{7}\\) у вигляді неправильного дробу", opts: ["\\(\\frac{15}{7}\\)", "\\(\\frac{30}{7}\\)", "\\(\\frac{14}{7}\\)", "\\(\\frac{30}{4}\\)"], ans: 1 },
+            { q: "Обчисліть: \\(3 \\frac{1}{8} + 2 \\frac{5}{8}\\)", opts: ["\\(5 \\frac{6}{8}\\)", "\\(5 \\frac{6}{16}\\)", "\\(6 \\frac{1}{8}\\)", "\\(1 \\frac{4}{8}\\)"], ans: 0 },
+            { q: "Обчисліть: \\(6 \\frac{7}{11} - 2 \\frac{4}{11}\\)", opts: ["\\(8 \\frac{11}{11}\\)", "\\(4 \\frac{3}{11}\\)", "\\(4 \\frac{11}{11}\\)", "\\(4 \\frac{3}{0}\\)"], ans: 1 },
+            { q: "Обчисліть: \\(5 - 1 \\frac{2}{5}\\)", opts: ["\\(4 \\frac{2}{5}\\)", "\\(4 \\frac{3}{5}\\)", "\\(3 \\frac{3}{5}\\)", "\\(3 \\frac{2}{5}\\)"], ans: 2 },
+            { q: "Обчисліть: \\(4 \\frac{3}{10} - 1 \\frac{7}{10}\\)", opts: ["\\(3 \\frac{4}{10}\\)", "\\(2 \\frac{6}{10}\\)", "\\(3 \\frac{6}{10}\\)", "\\(2 \\frac{4}{10}\\)"], ans: 1 }
+        ];
+
+        const container = document.getElementById('questions-container');
+
+        questionsData.forEach((item, index) => {
+            let optionsHtml = '';
+            item.opts.forEach((opt, optIndex) => {
+                optionsHtml += `
+                    <label class="option-label">
+                        <input type="radio" name="q${index}" value="${optIndex}">
+                        <span>${opt}</span>
+                    </label>
+                `;
+            });
+
+            container.innerHTML += `
+                <div class="question-card" id="card${index}">
+                    <div class="question-text">${index + 1}. ${item.q}</div>
+                    <div class="options">
+                        ${optionsHtml}
+                    </div>
+                </div>
+            `;
+        });
+
+        // Ініціалізуємо рендер формул після додавання в DOM
+        if (window.MathJax) {
+            MathJax.typesetPromise();
+        }
+
+        function checkAnswers() {
+            let score = 0;
+            questionsData.forEach((item, index) => {
+                const selectedCard = document.getElementById(`card${index}`);
+                const selectedOption = document.querySelector(`input[name="q${index}"]:checked`);
+                
+                selectedCard.classList.remove('correct-ans', 'wrong-ans');
+                
+                if (selectedOption) {
+                    if (parseInt(selectedOption.value) === item.ans) {
+                        score++;
+                        selectedCard.classList.add('correct-ans');
+                    } else {
+                        selectedCard.classList.add('wrong-ans');
+                    }
+                } else {
+                    selectedCard.classList.add('wrong-ans');
+                }
+            });
+
+            const resultBox = document.getElementById('result');
+            resultBox.style.display = 'block';
+            
+            let percentage = (score / questionsData.length) * 100;
+            let color = percentage >= 80 ? 'var(--correct)' : (percentage >= 50 ? '#f39c12' : 'var(--wrong)');
+            
+            resultBox.style.color = color;
+            resultBox.style.backgroundColor = percentage >= 80 ? 'rgba(46, 204, 113, 0.1)' : 'rgba(231, 76, 60, 0.1)';
+            resultBox.innerHTML = `Твій результат: ${score} з ${questionsData.length} (${percentage.toFixed(0)}%)`;
+            
+            resultBox.scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
