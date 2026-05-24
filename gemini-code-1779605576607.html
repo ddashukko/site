@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тренажер: Скорочення та розширення дробів</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            color: #1e272e;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .app-container {
+            background: #ffffff;
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            color: #0fb9b1;
+            margin-top: 0;
+            font-size: 2rem;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            background: #f8f9fa;
+            padding: 15px 25px;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #4b6584;
+            margin-bottom: 2rem;
+        }
+
+        .score-green { color: #20bf6b; }
+        .score-red { color: #eb3b5a; }
+
+        .question-area {
+            min-height: 150px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .equation {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+
+        .fraction {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .fraction span:first-child {
+            border-bottom: 4px solid #1e272e;
+            padding: 0 10px;
+        }
+
+        .fraction span:last-child {
+            padding: 0 10px;
+        }
+
+        .question-text {
+            margin-top: 25px;
+            font-size: 1.3rem;
+            color: #778ca3;
+        }
+
+        .input-area {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        input[type="number"] {
+            width: 120px;
+            padding: 15px;
+            font-size: 1.5rem;
+            text-align: center;
+            border: 3px solid #d1d8e0;
+            border-radius: 10px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        input[type="number"]:focus {
+            border-color: #0fb9b1;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: white;
+            background-color: #0fb9b1;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.1s, background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0a9b94;
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        .feedback {
+            font-size: 1.4rem;
+            font-weight: bold;
+            min-height: 40px;
+            margin-bottom: 1rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .feedback.show {
+            opacity: 1;
+        }
+
+        .correct { color: #20bf6b; }
+        .wrong { color: #eb3b5a; }
+
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <h1>Рахуємо в умі!</h1>
+        
+        <div class="stats">
+            <span>Правильно: <span id="score-correct" class="score-green">0</span></span>
+            <span>Помилок: <span id="score-wrong" class="score-red">0</span></span>
+        </div>
+
+        <div class="question-area" id="question-area">
+            </div>
+
+        <div class="feedback" id="feedback">Правильно!</div>
+
+        <div class="input-area">
+            <input type="number" id="answer-input" placeholder="?" autocomplete="off">
+            <button id="submit-btn">Перевірити</button>
+        </div>
+        
+        <p style="color: #a5b1c2; font-size: 0.9rem;">(можна натискати Enter)</p>
+    </div>
+
+    <script>
+        let correctAnswers = 0;
+        let wrongAnswers = 0;
+        let currentExpectedAnswer = 0;
+
+        const questionArea = document.getElementById('question-area');
+        const answerInput = document.getElementById('answer-input');
+        const submitBtn = document.getElementById('submit-btn');
+        const feedback = document.getElementById('feedback');
+        const scoreCorrectEl = document.getElementById('score-correct');
+        const scoreWrongEl = document.getElementById('score-wrong');
+
+        function generateQuestion() {
+            // 0: Розширення (знайти множник), 1: Скорочення (знайти дільник), 2: Знайти знаменник, 3: Знайти чисельник
+            const mode = Math.floor(Math.random() * 4);
+            
+            // Базовий дріб (уникаємо одиниць в знаменнику)
+            let num = Math.floor(Math.random() * 8) + 1; // 1-8
+            let den = num + Math.floor(Math.random() * 5) + 1; // Завжди правильний дріб
+            
+            // Множник для розширення/скорочення
+            const factor = Math.floor(Math.random() * 8) + 2; // 2-9
+            
+            const expNum = num * factor;
+            const expDen = den * factor;
+
+            let html = '';
+
+            if (mode === 0) {
+                html = `
+                    <div class="equation">
+                        <div class="fraction"><span>${num}</span><span>${den}</span></div> = 
+                        <div class="fraction"><span>${expNum}</span><span>${expDen}</span></div>
+                    </div>
+                    <div class="question-text">На яке число <strong>розширили</strong> цей дріб?</div>
+                `;
+                currentExpectedAnswer = factor;
+            } else if (mode === 1) {
+                html = `
+                    <div class="equation">
+                        <div class="fraction"><span>${expNum}</span><span>${expDen}</span></div> = 
+                        <div class="fraction"><span>${num}</span><span>${den}</span></div>
+                    </div>
+                    <div class="question-text">На яке число <strong>скоротили</strong> цей дріб?</div>
+                `;
+                currentExpectedAnswer = factor;
+            } else if (mode === 2) {
+                html = `
+                    <div class="equation">
+                        <div class="fraction"><span>${num}</span><span>${den}</span></div> = 
+                        <div class="fraction"><span>${expNum}</span><span>?</span></div>
+                    </div>
+                    <div class="question-text">Який знаменник має бути замість знака питання?</div>
+                `;
+                currentExpectedAnswer = expDen;
+            } else if (mode === 3) {
+                html = `
+                    <div class="equation">
+                        <div class="fraction"><span>${num}</span><span>${den}</span></div> = 
+                        <div class="fraction"><span>?</span><span>${expDen}</span></div>
+                    </div>
+                    <div class="question-text">Який чисельник має бути замість знака питання?</div>
+                `;
+                currentExpectedAnswer = expNum;
+            }
+
+            questionArea.innerHTML = html;
+            answerInput.value = '';
+            answerInput.focus();
+            feedback.classList.remove('show');
+        }
+
+        function checkAnswer() {
+            const userAnswer = parseInt(answerInput.value);
+            
+            if (isNaN(userAnswer)) return;
+
+            if (userAnswer === currentExpectedAnswer) {
+                correctAnswers++;
+                scoreCorrectEl.textContent = correctAnswers;
+                feedback.textContent = "Супер! Правильно 🎉";
+                feedback.className = "feedback show correct";
+                setTimeout(generateQuestion, 1200);
+            } else {
+                wrongAnswers++;
+                scoreWrongEl.textContent = wrongAnswers;
+                feedback.textContent = `Помилка. Правильна відповідь: ${currentExpectedAnswer}`;
+                feedback.className = "feedback show wrong";
+                setTimeout(generateQuestion, 2500);
+            }
+        }
+
+        submitBtn.addEventListener('click', checkAnswer);
+
+        answerInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkAnswer();
+            }
+        });
+
+        // Запуск першого питання при завантаженні
+        generateQuestion();
+    </script>
+</body>
+</html>
