@@ -16,6 +16,17 @@
         background-size: 25px 25px;
         color: #881337;
     }
+
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    
+    input[type="number"] {
+        -moz-appearance: textfield;
+    }
+
     canvas#confetti {
         position: fixed;
         top: 0;
@@ -406,14 +417,6 @@
         font-weight: bold;
         outline: none;
         padding: 0 !important;
-    }
-    .col-digit-input::-webkit-outer-spin-button,
-    .col-digit-input::-webkit-inner-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-    }
-    .col-digit-input[type=number] {
-        -moz-appearance: textfield;
     }
     .col-digit-input:focus { border-color: #f472b6 !important; background: #fdf2f8 !important; }
     .col-digit-input.correct { border-color: #22c55e !important; background-color: #dcfce7 !important; color: #15803d !important; }
