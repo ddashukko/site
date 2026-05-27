@@ -1,245 +1,217 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Картки: Теорія алгоритмів</title>
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #f4f4f9;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: 100vh;
-        margin: 0;
-    }
-    #progress-container {
-        margin-bottom: 20px;
-        font-size: 18px;
-        font-weight: bold;
-        color: #333;
-    }
-    .card-container {
-        width: 350px;
-        height: 250px;
-        perspective: 1000px;
-        margin-bottom: 30px;
-    }
-    .card-inner {
-        position: relative;
-        width: 100%;
-        height: 100%;
-        text-align: center;
-        transition: transform 0.6s;
-        transform-style: preserve-3d;
-        cursor: pointer;
-    }
-    .card-inner.flipped {
-        transform: rotateY(180deg);
-    }
-    .card-front, .card-back {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        backface-visibility: hidden;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 20px;
-        box-sizing: border-box;
-        border-radius: 12px;
-        box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-    }
-    .card-front {
-        background-color: #ffffff;
-        color: #333;
-        font-weight: bold;
-        font-size: 18px;
-        border: 2px solid #4CAF50;
-    }
-    .card-back {
-        background-color: #4CAF50;
-        color: white;
-        transform: rotateY(180deg);
-        font-size: 15px;
-        overflow-y: auto;
-    }
-    .buttons-container {
-        display: flex;
-        gap: 15px;
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.3s ease;
-    }
-    .buttons-container.visible {
-        opacity: 1;
-        pointer-events: auto;
-    }
-    button {
-        padding: 10px 20px;
-        border: none;
-        border-radius: 8px;
-        font-size: 16px;
-        font-weight: bold;
-        cursor: pointer;
-        color: white;
-        transition: transform 0.2s, background-color 0.2s;
-    }
-    button:active {
-        transform: scale(0.95);
-    }
-    .btn-remember {
-        background-color: #4CAF50;
-    }
-    .btn-remember:hover {
-        background-color: #45a049;
-    }
-    .btn-repeat {
-        background-color: #f44336;
-    }
-    .btn-repeat:hover {
-        background-color: #da190b;
-    }
-    #finish-screen {
-        display: none;
-        text-align: center;
-    }
-    #finish-screen h2 {
-        color: #4CAF50;
-    }
-    .btn-restart {
-        background-color: #2196F3;
-        margin-top: 15px;
-    }
-    .btn-restart:hover {
-        background-color: #0b7dda;
-    }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ПР №4 та ПЗ №7 - Варіант 16</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+        }
+        .math-block {
+            background: #f4f4f4;
+            padding: 15px;
+            border-radius: 4px;
+            display: block;
+            margin-bottom: 15px;
+            font-family: "Times New Roman", Times, serif;
+            font-size: 1.1em;
+            overflow-x: auto;
+        }
+        .simplex-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            text-align: center;
+        }
+        .simplex-table th, .simplex-table td {
+            border: 1px solid #bdc3c7;
+            padding: 8px;
+        }
+        .simplex-table th {
+            background-color: #ecf0f1;
+        }
+        .pivot {
+            background-color: #ffeaa7;
+            font-weight: bold;
+        }
+        .frac {
+            display: inline-flex;
+            flex-direction: column;
+            vertical-align: middle;
+            text-align: center;
+            font-size: 0.9em;
+            margin: 0 0.2em;
+        }
+        .frac .top {
+            border-bottom: 1px solid #333;
+            padding: 0 0.1em;
+        }
+        .frac .bottom {
+            padding: 0 0.1em;
+        }
+    </style>
 </head>
 <body>
 
-<div id="progress-container">Залишилось карток: <span id="cards-left">0</span></div>
-
-<div class="card-container" id="card-container">
-    <div class="card-inner" id="card">
-        <div class="card-front" id="card-front-text"></div>
-        <div class="card-back" id="card-back-text"></div>
+<div class="container">
+    
+    <h2>ПЗ №4. Варіант 16 (Задача 4: М-метод)</h2>
+    <div class="math-block">
+        L = -2x<sub>1</sub> + x<sub>2</sub> &rarr; min<br>
+        x<sub>1</sub> + x<sub>2</sub> &le; 6<br>
+        -3x<sub>1</sub> + 2x<sub>2</sub> &ge; 3<br>
+        x<sub>1</sub>, x<sub>2</sub> &ge; 0
     </div>
+
+    <p>Зведення до канонічної форми (додаткові x<sub>3</sub>, x<sub>4</sub> &ge; 0, штучна x<sub>5</sub> &ge; 0):</p>
+    <div class="math-block">
+        x<sub>1</sub> + x<sub>2</sub> + x<sub>3</sub> = 6<br>
+        -3x<sub>1</sub> + 2x<sub>2</sub> - x<sub>4</sub> + x<sub>5</sub> = 3<br>
+        L = -2x<sub>1</sub> + x<sub>2</sub> + Mx<sub>5</sub> &rarr; min
+    </div>
+
+    <p>Ознака оптимальності для min: &Delta;<sub>j</sub> = z<sub>j</sub> - c<sub>j</sub> &le; 0. Вводимо до базису змінну з найбільшим додатним &Delta;<sub>j</sub>.</p>
+
+    <table class="simplex-table">
+        <tr>
+            <th>Базис</th><th>C<sub>b</sub></th><th>P<sub>0</sub></th><th>x<sub>1</sub></th><th>x<sub>2</sub></th><th>x<sub>3</sub></th><th>x<sub>4</sub></th><th>x<sub>5</sub></th>
+        </tr>
+        <tr>
+            <td>x<sub>3</sub></td><td>0</td><td>6</td><td>1</td><td>1</td><td>1</td><td>0</td><td>0</td>
+        </tr>
+        <tr>
+            <td>x<sub>5</sub></td><td>M</td><td>3</td><td>-3</td><td class="pivot">2</td><td>0</td><td>-1</td><td>1</td>
+        </tr>
+        <tr>
+            <th>&Delta;</th><th></th><th>3M</th><th>-3M+2</th><th>2M-1</th><th>0</th><th>-M</th><th>0</th>
+        </tr>
+    </table>
+
+    <table class="simplex-table">
+        <tr>
+            <th>Базис</th><th>C<sub>b</sub></th><th>P<sub>0</sub></th><th>x<sub>1</sub></th><th>x<sub>2</sub></th><th>x<sub>3</sub></th><th>x<sub>4</sub></th>
+        </tr>
+        <tr>
+            <td>x<sub>3</sub></td><td>0</td><td>9/2</td><td class="pivot">5/2</td><td>0</td><td>1</td><td>1/2</td>
+        </tr>
+        <tr>
+            <td>x<sub>2</sub></td><td>1</td><td>3/2</td><td>-3/2</td><td>1</td><td>0</td><td>-1/2</td>
+        </tr>
+        <tr>
+            <th>&Delta;</th><th></th><th>3/2</th><th>1/2</th><th>0</th><th>0</th><th>-1/2</th>
+        </tr>
+    </table>
+
+    <table class="simplex-table">
+        <tr>
+            <th>Базис</th><th>C<sub>b</sub></th><th>P<sub>0</sub></th><th>x<sub>1</sub></th><th>x<sub>2</sub></th><th>x<sub>3</sub></th><th>x<sub>4</sub></th>
+        </tr>
+        <tr>
+            <td>x<sub>1</sub></td><td>-2</td><td>9/5</td><td>1</td><td>0</td><td>2/5</td><td>1/5</td>
+        </tr>
+        <tr>
+            <td>x<sub>2</sub></td><td>1</td><td>21/5</td><td>0</td><td>1</td><td>3/5</td><td>-1/5</td>
+        </tr>
+        <tr>
+            <th>&Delta;</th><th></th><th>3/5</th><th>0</th><th>0</th><th>-1/5</th><th>-3/5</th>
+        </tr>
+    </table>
+
+    <p><strong>Висновок:</strong> Всі &Delta;<sub>j</sub> &le; 0, отримано оптимальний план.</p>
+    <div class="math-block">
+        X* = (<span class="frac"><span class="top">9</span><span class="bottom">5</span></span>; <span class="frac"><span class="top">21</span><span class="bottom">5</span></span>)<br>
+        L<sub>min</sub> = -2(<span class="frac"><span class="top">9</span><span class="bottom">5</span></span>) + <span class="frac"><span class="top">21</span><span class="bottom">5</span></span> = -<span class="frac"><span class="top">18</span><span class="bottom">5</span></span> + <span class="frac"><span class="top">21</span><span class="bottom">5</span></span> = <strong><span class="frac"><span class="top">3</span><span class="bottom">5</span></span></strong>
+    </div>
+
+    <hr>
+    <h2>ПЗ №7. Варіант 16 (Задача 6: М-метод)</h2>
+    <div class="math-block">
+        L = 6x<sub>1</sub> + 4x<sub>2</sub> &rarr; min<br>
+        2x<sub>1</sub> + x<sub>2</sub> &ge; 3<br>
+        x<sub>1</sub> - x<sub>2</sub> &le; 1<br>
+        x<sub>1</sub>, x<sub>2</sub> &ge; 0
+    </div>
+
+    <p>Зведення до канонічної форми (додаткові x<sub>3</sub>, x<sub>4</sub> &ge; 0, штучна x<sub>5</sub> &ge; 0):</p>
+    <div class="math-block">
+        2x<sub>1</sub> + x<sub>2</sub> - x<sub>3</sub> + x<sub>5</sub> = 3<br>
+        x<sub>1</sub> - x<sub>2</sub> + x<sub>4</sub> = 1<br>
+        L = 6x<sub>1</sub> + 4x<sub>2</sub> + Mx<sub>5</sub> &rarr; min
+    </div>
+
+    <p>Ознака оптимальності для min: &Delta;<sub>j</sub> = z<sub>j</sub> - c<sub>j</sub> &le; 0.</p>
+
+    <table class="simplex-table">
+        <tr>
+            <th>Базис</th><th>C<sub>b</sub></th><th>P<sub>0</sub></th><th>x<sub>1</sub></th><th>x<sub>2</sub></th><th>x<sub>3</sub></th><th>x<sub>4</sub></th><th>x<sub>5</sub></th>
+        </tr>
+        <tr>
+            <td>x<sub>5</sub></td><td>M</td><td>3</td><td>2</td><td>1</td><td>-1</td><td>0</td><td>1</td>
+        </tr>
+        <tr>
+            <td>x<sub>4</sub></td><td>0</td><td>1</td><td class="pivot">1</td><td>-1</td><td>0</td><td>1</td><td>0</td>
+        </tr>
+        <tr>
+            <th>&Delta;</th><th></th><th>3M</th><th>2M-6</th><th>M-4</th><th>-M</th><th>0</th><th>0</th>
+        </tr>
+    </table>
+
+    <table class="simplex-table">
+        <tr>
+            <th>Базис</th><th>C<sub>b</sub></th><th>P<sub>0</sub></th><th>x<sub>1</sub></th><th>x<sub>2</sub></th><th>x<sub>3</sub></th><th>x<sub>4</sub></th><th>x<sub>5</sub></th>
+        </tr>
+        <tr>
+            <td>x<sub>5</sub></td><td>M</td><td>1</td><td>0</td><td class="pivot">3</td><td>-1</td><td>-2</td><td>1</td>
+        </tr>
+        <tr>
+            <td>x<sub>1</sub></td><td>6</td><td>1</td><td>1</td><td>-1</td><td>0</td><td>1</td><td>0</td>
+        </tr>
+        <tr>
+            <th>&Delta;</th><th></th><th>M+6</th><th>0</th><th>3M-10</th><th>-M</th><th>-2M+6</th><th>0</th>
+        </tr>
+    </table>
+
+    <table class="simplex-table">
+        <tr>
+            <th>Базис</th><th>C<sub>b</sub></th><th>P<sub>0</sub></th><th>x<sub>1</sub></th><th>x<sub>2</sub></th><th>x<sub>3</sub></th><th>x<sub>4</sub></th>
+        </tr>
+        <tr>
+            <td>x<sub>2</sub></td><td>4</td><td>1/3</td><td>0</td><td>1</td><td>-1/3</td><td>-2/3</td>
+        </tr>
+        <tr>
+            <td>x<sub>1</sub></td><td>6</td><td>4/3</td><td>1</td><td>0</td><td>-1/3</td><td>1/3</td>
+        </tr>
+        <tr>
+            <th>&Delta;</th><th></th><th>28/3</th><th>0</th><th>0</th><th>-10/3</th><th>-2/3</th>
+        </tr>
+    </table>
+
+    <p><strong>Висновок:</strong> Всі &Delta;<sub>j</sub> &le; 0, отримано оптимальний план. Штучних змінних у базисі немає.</p>
+    <div class="math-block">
+        X* = (<span class="frac"><span class="top">4</span><span class="bottom">3</span></span>; <span class="frac"><span class="top">1</span><span class="bottom">3</span></span>)<br>
+        L<sub>min</sub> = 6(<span class="frac"><span class="top">4</span><span class="bottom">3</span></span>) + 4(<span class="frac"><span class="top">1</span><span class="bottom">3</span></span>) = <span class="frac"><span class="top">24</span><span class="bottom">3</span></span> + <span class="frac"><span class="top">4</span><span class="bottom">3</span></span> = <strong><span class="frac"><span class="top">28</span><span class="bottom">3</span></span></strong>
+    </div>
+
 </div>
-
-<div class="buttons-container" id="buttons">
-    <button class="btn-repeat" onclick="handleCard(false)">Повторити</button>
-    <button class="btn-remember" onclick="handleCard(true)">Запам'ятав</button>
-</div>
-
-<div id="finish-screen">
-    <h2>Вітаю! Усі картки вивчено.</h2>
-    <button class="btn-restart" onclick="restart()">Почати заново</button>
-</div>
-
-<script>
-    const allCards = [
-        { q: "Як отримати ПРФ?", a: "За допомогою скінченної кількості операцій суперпозиції та примітивної рекурсії." },
-        { q: "Що таке РФ?", a: "Це тотальна ЧРФ." },
-        { q: "Як отримати ЧРФ?", a: "За допомогою скінченної кількості операцій суперпозиції, примітивної рекурсії та мінімізації." },
-        { q: "Який зв'язок між ПРМ/РМ/РПМ та функціями?", a: "Характеристична функція цієї множини є відповідно ПРФ / РФ / ЧРФ." },
-        { q: "Ієрархія класів (вкладеність)", a: "ПРФ ⊂ РФ ⊂ ЧРФ<br>ПРМ ⊂ РМ ⊂ РПМ<br>ПРП ⊂ РП ⊂ ЧРП" },
-        { q: "Проблема зупинки Q(x, y)", a: "За кодом x та вхідними даними y встановити, чи визначена функція (чи зупиниться вона)." },
-        { q: "Проблема самозастосовності S(x)", a: "За кодом x встановити, чи визначена функція за вхідних даних x: S(x) = Q(x, x)." },
-        { q: "Що означає 'A зводиться до B'?", a: "З розв'язності B випливає розв'язність A." },
-        { q: "Що таке m-зведення?", a: "A m-зводиться до B, якщо існує РФ f(x): ∀x∈N: x∈A ⇔ f(x)∈B." },
-        { q: "Що таке 1-зведення?", a: "A 1-зводиться до B, якщо A m-зводиться до B за допомогою ін'єктивної функції f." },
-        { q: "Що таке T-зведення?", a: "A T-зводиться до B, якщо A є B-рекурсивною." },
-        { q: "Що таке m/1/T-степені?", a: "Це класи еквівалентності відносно m/1/T-еквівалентності." },
-        { q: "Продуктивна множина", a: "Існує РФ g(x): D_x ⊆ A ⇒ g(x) ∈ A \\ D_x." },
-        { q: "Креативна множина", a: "Множина, яка є РПМ, а її доповнення є продуктивною множиною." },
-        { q: "Теза Черча", a: "Класи ЧРФ та алгоритмічно-обчислювальних функцій збігаються." },
-        { q: "Теорема Кліні про псевдонерухому точку", a: "Нехай h(n, x) — ЧРФ, тоді існує n∈N: ∀x∈N: h(n, x) = φ_n(x)." },
-        { q: "Теорема Поста", a: "Якщо множина та її доповнення є РПМ, то вони є і РМ." },
-        { q: "Теорема про графік", a: "Функція f(x1, ..., xn) є ЧРФ ⇔ її графік є РПМ." },
-        { q: "Теорема Райса", a: "Якщо R — множина ЧРФ з нетривіальною властивістю, то індексна множина N(R) нерекурсивна." },
-        { q: "Теза Т'юрінга", a: "Клас α-ЧРФ збігається з класом n-арних функцій на N, обчислюваних відносно α." },
-        { q: "Теорема Тарського", a: "Множина T номерів усіх індексних арифметичних функцій неарифметична." },
-        { q: "Арифметичний предикат", a: "Існує арифметична формула Ф: P(n1, ..., nn)=T ⇔ N ⊨ Ф(n1, ..., nn)." },
-        { q: "Арифметична множина та функція", a: "Множина арифметична, якщо предикат її належності арифметичний. Функція арифметична, якщо її графік - арифметична множина." }
-    ];
-
-    let activeCards = [];
-    let currentIndex = 0;
-
-    const cardElement = document.getElementById('card');
-    const frontText = document.getElementById('card-front-text');
-    const backText = document.getElementById('card-back-text');
-    const buttons = document.getElementById('buttons');
-    const progressContainer = document.getElementById('progress-container');
-    const cardsLeftSpan = document.getElementById('cards-left');
-    const cardContainer = document.getElementById('card-container');
-    const finishScreen = document.getElementById('finish-screen');
-
-    function init() {
-        activeCards = [...allCards];
-        activeCards.sort(() => Math.random() - 0.5); 
-        currentIndex = 0;
-        updateUI();
-    }
-
-    function updateUI() {
-        if (activeCards.length === 0) {
-            progressContainer.style.display = 'none';
-            cardContainer.style.display = 'none';
-            buttons.classList.remove('visible');
-            finishScreen.style.display = 'block';
-            return;
-        }
-
-        progressContainer.style.display = 'block';
-        cardContainer.style.display = 'block';
-        finishScreen.style.display = 'none';
-        
-        cardsLeftSpan.textContent = activeCards.length;
-        
-        cardElement.classList.remove('flipped');
-        buttons.classList.remove('visible');
-
-        setTimeout(() => {
-            frontText.innerHTML = activeCards[currentIndex].q;
-            backText.innerHTML = activeCards[currentIndex].a;
-        }, 150);
-    }
-
-    cardElement.addEventListener('click', () => {
-        const isFlipped = cardElement.classList.toggle('flipped');
-        if (isFlipped) {
-            buttons.classList.add('visible');
-        } else {
-            buttons.classList.remove('visible');
-        }
-    });
-
-    function handleCard(remembered) {
-        if (remembered) {
-            activeCards.splice(currentIndex, 1);
-            if (currentIndex >= activeCards.length) {
-                currentIndex = 0;
-            }
-        } else {
-            currentIndex++;
-            if (currentIndex >= activeCards.length) {
-                currentIndex = 0;
-            }
-        }
-        updateUI();
-    }
-
-    function restart() {
-        init();
-    }
-
-    init();
-</script>
 
 </body>
 </html>
