@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Чарівний Урок: Дроби</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+        font-family: "Fredoka", sans-serif;
+        background-color: #fff1f2;
+        background-image: radial-gradient(#fda4af 2px, transparent 2px);
+        background-size: 25px 25px;
+        color: #881337;
+    }
+
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    
+    input[type="number"] {
+        -moz-appearance: textfield;
+    }
+
+    canvas#confetti {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 9999;
+    }
+    .hidden {
+        display: none;
+    }
+    
+    .container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 40px 20px;
+    }
+
+    header {
+        text-align: center;
+        margin-bottom: 40px;
+        background: white;
+        padding: 30px;
+        border-radius: 25px;
+        border: 4px solid #f472b6;
+        box-shadow: 0 10px 20px rgba(190, 18, 60, 0.1);
+    }
+
+    h1 {
+        color: #db2777;
+        margin: 0 0 10px 0;
+        font-size: 2.5em;
+        text-shadow: 2px 2px 0px #fff;
+    }
+
+    .lesson-story {
+        font-size: 1.15em;
+        color: #4c0519;
+        line-height: 1.6;
+        background: #ffe4e6;
+        padding: 15px 20px;
+        border-radius: 15px;
+        margin-bottom: 20px;
+        border-left: 5px solid #db2777;
+    }
+
+    .block-card {
+        background: white;
+        border-radius: 25px;
+        padding: 30px;
+        margin-bottom: 40px;
+        box-shadow: 0 10px 20px rgba(190, 18, 60, 0.1);
+        border: 4px solid transparent;
+    }
+    
+    .block-1 { border-color: #fbcfe8; }
+    .block-2 { border-color: #f472b6; }
+    .block-3 { border-color: #fb7185; }
+    .block-4 { border-color: #f43f5e; }
+    .block-5 { border-color: #e11d48; }
+
+    .block-header {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        font-size: 1.5em;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+    .block-1 .block-header { color: #db2777; }
+    .block-2 .block-header { color: #be185d; }
+    .block-3 .block-header { color: #9f1239; }
+    .block-4 .block-header { color: #9f1239; }
+    .block-5 .block-header { color: #881337; }
+
+    .icon-box {
+        width: 50px;
+        height: 50px;
+        background: #fff0f5;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2em;
+        flex-shrink: 0;
+    }
+
+    .examples-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 15px;
+        margin: 20px 0;
+    }
+
+    .example-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #fafafa;
+        padding: 10px 20px;
+        border-radius: 15px;
+        font-size: 1.3em;
+        border: 1px solid #f3f4f6;
+        gap: 10px;
+    }
+
+    .fraction-wrap {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .fraction {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        line-height: 1.1;
+    }
+
+    .fraction .num {
+        border-bottom: 2px solid #db2777;
+        padding: 0 4px;
+    }
+    
+    .fraction .den {
+        padding: 0 4px;
+    }
+
+    .input-fraction {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .input-fraction-col {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        align-items: center;
+    }
+
+    .input-fraction-col .divider {
+        width: 100%;
+        height: 3px;
+        background-color: #db2777;
+        border-radius: 2px;
+    }
+
+    .ans-input {
+        width: 60px;
+        height: 40px;
+        font-size: 1em;
+        text-align: center;
+        border: 3px solid #e5e7eb;
+        border-radius: 10px;
+        color: #881337;
+        font-family: inherit;
+        font-weight: bold;
+        outline: none;
+        transition: 0.3s;
+    }
+    
+    .ans-input-small {
+        width: 45px;
+        height: 35px;
+    }
+
+    select.ans-input {
+        width: auto;
+        padding: 0 10px;
+        appearance: none;
+        background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23db2777%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+        background-repeat: no-repeat;
+        background-position: right 10px top 50%;
+        background-size: 12px auto;
+        padding-right: 30px;
+    }
+
+    .ans-input-text {
+        width: 120px;
+    }
+
+    .ans-input:focus {
+        border-color: #f472b6;
+        background: #fdf2f8;
+    }
+    .ans-input.correct {
+        border-color: #22c55e !important;
+        background-color: #dcfce7 !important;
+        color: #15803d !important;
+    }
+    .ans-input.wrong {
+        border-color: #ef4444 !important;
+        background-color: #fee2e2 !important;
+        color: #b91c1c !important;
+    }
+
+    .fairy-btn {
+        display: block;
+        width: 100%;
+        margin-top: 25px;
+        padding: 15px;
+        font-size: 1.2em;
+        font-weight: bold;
+        color: white;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: transform 0.2s;
+        font-family: inherit;
+    }
+    .btn-block-1 { background: #db2777; box-shadow: 0 4px 0 #9d174d; }
+    .btn-block-2 { background: #be185d; box-shadow: 0 4px 0 #831843; }
+    .btn-block-3 { background: #e11d48; box-shadow: 0 4px 0 #9f1239; }
+    .btn-block-4 { background: #be123c; box-shadow: 0 4px 0 #881337; }
+    .btn-block-5 { background: #9f1239; box-shadow: 0 4px 0 #4c0519; }
+
+    .fairy-btn:active {
+        transform: translateY(4px);
+        box-shadow: none;
+    }
+    .fairy-btn:disabled {
+        opacity: 0.6;
+        cursor: default;
+        transform: none;
+        box-shadow: none;
+    }
+
+    .score-display {
+        text-align: center;
+        margin-top: 15px;
+        font-weight: bold;
+        font-size: 1.2em;
+        min-height: 25px;
+    }
+</style>
+</head>
+<body>
+    <canvas id="confetti" class="hidden"></canvas>
+
+    <div class="container">
+        <header>
+            <h1>Урок 1: Таємниці Одиниці та Нові Дроби</h1>
+            <p style="margin: 5px 0; color: #9f1239; font-size: 1.2em;">Від звичайних дробів до десяткових! 🚀</p>
+        </header>
+
+        <div class="block-card block-1">
+            <div class="block-header"><div class="icon-box">🍕</div><span>Частина 1: Віднімання від цілого та мішаного</span></div>
+            <div class="lesson-story">
+                <b>Таємне правило:</b> Одиниця — це хитра піца! Якщо треба відняти знаменник 6, розріж її на 6/6. А якщо віднімаєш від мішаного числа і не вистачає дробу, «позич» одну цілу та перетвори її!
+            </div>
+            <div class="examples-list">
+                <div class="example-row">
+                    <div class="fraction-wrap">
+                        <span>1 - </span>
+                        <div class="fraction"><span class="num">5</span><span class="den">6</span></div>
+                        <span>=</span>
+                    </div>
+                    <div class="input-fraction">
+                        <div class="input-fraction-col">
+                            <input type="number" class="ans-input ans-input-small quiz-el" data-ans="1" />
+                            <div class="divider"></div>
+                            <input type="number" class="ans-input ans-input-small quiz-el" data-ans="6" />
+                        </div>
+                    </div>
+                </div>
+                <div class="example-row">
+                    <div class="fraction-wrap">
+                        <span>1 - </span>
+                        <div class="fraction"><span class="num">4</span><span class="den">9</span></div>
+                        <span>=</span>
+                    </div>
+                    <div class="input-fraction">
+                        <div class="input-fraction-col">
+                            <input type="number" class="ans-input ans-input-small quiz-el" data-ans="5" />
+                            <div class="divider"></div>
+                            <input type="number" class="ans-input ans-input-small quiz-el" data-ans="9" />
+                        </div>
+                    </div>
+                </div>
+                <div class="example-row">
+                    <div class="fraction-wrap">
+                        <span>2 - </span>
+                        <div class="fraction"><span class="num">3</span><span class="den">7</span></div>
+                        <span>=</span>
+                    </div>
+                    <div class="input-fraction">
+                        <input type="number" class="ans-input ans-input-small quiz-el" data-ans="1" />
+                        <div class="input-fraction-col">
+                            <input type="number" class="ans-input ans-input-small quiz-el" data-ans="4" />
+                            <div class="divider"></div>
+                            <input type="number" class="ans-input ans-input-small quiz-el" data-ans="7" />
+                        </div>
+                    </div>
+                </div>
+                <div class="example-row">
+                    <div class="fraction-wrap">
+                        <span>3 - </span>
+                        <div class="fraction"><span class="num">5</span><span class="den">8</span></div>
+                        <span>=</span>
+                    </div>
+                    <div class="input-fraction">
+                        <input type="number" class="ans-input ans-input-small quiz-el" data-ans="2" />
+                        <div class="input-fraction-col">
+                            <input type="number" class="ans-input ans-input-small quiz-el" data-ans="3" />
+                            <div class="divider"></div>
+                            <input type="number" class="ans-input ans-input-small quiz-el" data-ans="8" />
+                        </div>
+                    </div>
+                </div>
+                <div class="example-row">
+                    <div class="fraction-wrap">
+                        <span>1</span>
+                        <div class="fraction"><span class="num">1</span><span class="den">4</span></div>
+                        <span> - </span>
+                        <div class="fraction"><span class="num">3</span><span class="den">4</span></div>
+                        <span>=</span>
+                    </div>
+                    <div class="input-fraction">
+                        <div class="input-fraction-col">
+                            <input type="number" class="ans-input ans-input-small quiz-el" data-ans="2" />
+                            <div class="divider"></div>
+                            <input type="number" class="ans-input ans-input-small quiz-el" data-ans="4" />
+                        </div>
+                    </div>
+                </div>
+                <div class="example-row">
+                    <div class="fraction-wrap">
+                        <span>1</span>
+                        <div class="fraction"><span class="num">2</span><span class="den">5</span></div>
+                        <span> - </span>
+                        <div class="fraction"><span class="num">4</span><span class="den">5</span></div>
+                        <span>=</span>
+                    </div>
+                    <div class="input-fraction">
+                        <div class="input-fraction-col">
+                            <input type="number" class="ans-input ans-input-small quiz-el" data-ans="3" />
+                            <div class="divider"></div>
+                            <input type="number" class="ans-input ans-input-small quiz-el" data-ans="5" />
+                        </div>
+                    </div>
+                </div>
+                <div class="example-row">
+                    <div class="fraction-wrap">
+                        <span>2</span>
+                        <div class="fraction"><span class="num">1</span><span class="den">3</span></div>
+                        <span> - </span>
+                        <div class="fraction"><span class="num">2</span><span class="den">3</span></div>
+                        <span>=</span>
+                    </div>
+                    <div class="input-fraction">
+                        <input type="number" class="ans-input ans-input-small quiz-el" data-ans="1" />
+                        <div class="input-fraction-col">
+                            <input type="number" class="ans-input ans-input-small quiz-el" data-ans="2" />
+                            <div class="divider"></div>
+                            <input type="number" class="ans-input ans-input-small quiz-el" data-ans="3" />
+                        </div>
+                    </div>
+                </div>
+                <div class="example-row">
+                    <div class="fraction-wrap">
+                        <span>3</span>
+                        <div class="fraction"><span class="num">2</span><span class="den">9</span></div>
+                        <span> - </span>
+                        <div class="fraction"><span class="num">7</span><span class="den">9</span></div>
+                        <span>=</span>
+                    </div>
+                    <div class="input-fraction">
+                        <input type="number" class="ans-input ans-input-small quiz-el" data-ans="2" />
+                        <div class="input-fraction-col">
+                            <input type="number" class="ans-input ans-input-small quiz-el" data-ans="4" />
+                            <div class="divider"></div>
+                            <input type="number" class="ans-input ans-input-small quiz-el" data-ans="9" />
+                        </div>
+                    </div>
+                </div>
+                <div class="example-row">
+                    <div class="fraction-wrap">
+                        <span>5</span>
+                        <div class="fraction"><span class="num">3</span><span class="den">10</span></div>
+                        <span> - </span>
+                        <div class="fraction"><span class="num">9</span><span class="den">10</span></div>
+                        <span>=</span>
+                    </div>
+                    <div class="input-fraction">
+                        <input type="number" class="ans-input ans-input-small quiz-el" data-ans="4" />
+                        <div class="input-fraction-col">
+                            <input type="number" class="ans-input ans-input-small quiz-el" data-ans="4" />
+                            <div class="divider"></div>
+                            <input type="number" class="ans-input ans-input-small quiz-el" data-ans="10" />
+                        </div>
+                    </div>
+                </div>
+                <div class="example-row">
+                    <div class="fraction-wrap">
+                        <span>4</span>
+                        <div class="fraction"><span class="num">5</span><span class="den">11</span></div>
+                        <span> - </span>
+                        <div class="fraction"><span class="num">8</span><span class="den">11</span></div>
+                        <span>=</span>
+                    </div>
+                    <div class="input-fraction">
+                        <input type="number" class="ans-input ans-input-small quiz-el" data-ans="3" />
+                        <div class="input-fraction-col">
+                            <input type="number" class="ans-input ans-input-small quiz-el" data-ans="8" />
+                            <div class="divider"></div>
+                            <input type="number" class="ans-input ans-input-small quiz-el" data-ans="11" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="score-display" id="score-1"></div>
+            <button class="fairy-btn btn-block-1" onclick="checkFairyBlock(this, 'block-1', 'score-1')">Перевірити Блок 1</button>
+        </div>
+
+        <div class="block-card block-2">
+            <div class="block-header"><div class="icon-box">🗣️</div><span>Частина 2: Читання десяткових дробів</span></div>
+            <div class="lesson-story">
+                <b>Нова територія:</b> Десяткові дроби — це ті самі звичайні, але вони одягли смокінг! Підбери правильну назву для кожного дробу.
+            </div>
+            <div class="examples-list">
+                <div class="example-row"><span>0.5</span> 
+                    <select class="ans-input quiz-el" data-ans="1">
+                        <option value=""></option>
+                        <option value="1">Нуль цілих, п'ять десятих</option>
+                        <option value="2">Нуль цілих, п'ять сотих</option>
+                        <option value="3">П'ять цілих, нуль десятих</option>
+                    </select>
+                </div>
+                <div class="example-row"><span>1.2</span> 
+                    <select class="ans-input quiz-el" data-ans="2">
+                        <option value=""></option>
+                        <option value="1">Одна ціла, дві соті</option>
+                        <option value="2">Одна ціла, дві десяті</option>
+                        <option value="3">Дванадцять десятих</option>
+                    </select>
+                </div>
+                <div class="example-row"><span>5.03</span> 
+                    <select class="ans-input quiz-el" data-ans="3">
+                        <option value=""></option>
+                        <option value="1">П'ять цілих, три десяті</option>
+                        <option value="2">П'ять цілих, тридцять сотих</option>
+                        <option value="3">П'ять цілих, три соті</option>
+                    </select>
+                </div>
+                <div class="example-row"><span>0.15</span> 
+                    <select class="ans-input quiz-el" data-ans="2">
+                        <option value=""></option>
+                        <option value="1">Нуль цілих, п'ятнадцять тисячних</option>
+                        <option value="2">Нуль цілих, п'ятнадцять сотих</option>
+                        <option value="3">П'ятнадцять цілих</option>
+                    </select>
+                </div>
+                <div class="example-row"><span>12.008</span> 
+                    <select class="ans-input quiz-el" data-ans="1">
+                        <option value=""></option>
+                        <option value="1">Дванадцять цілих, вісім тисячних</option>
+                        <option value="2">Дванадцять цілих, вісім сотих</option>
+                        <option value="3">Дванадцять цілих, вісімдесят тисячних</option>
+                    </select>
+                </div>
+                <div class="example-row"><span>0.044</span> 
+                    <select class="ans-input quiz-el" data-ans="2">
+                        <option value=""></option>
+                        <option value="1">Нуль цілих, сорок чотири соті</option>
+                        <option value="2">Нуль цілих, сорок чотири тисячні</option>
+                        <option value="3">Нуль цілих, чотириста сорок тисячних</option>
+                    </select>
+                </div>
+                <div class="example-row"><span>3.102</span> 
+                    <select class="ans-input quiz-el" data-ans="3">
+                        <option value=""></option>
+                        <option value="1">Три цілих, дванадцять сотих</option>
+                        <option value="2">Три цілих, сто дві соті</option>
+                        <option value="3">Три цілих, сто дві тисячні</option>
+                    </select>
+                </div>
+                <div class="example-row"><span>10.5</span> 
+                    <select class="ans-input quiz-el" data-ans="1">
+                        <option value=""></option>
+                        <option value="1">Десять цілих, п'ять десятих</option>
+                        <option value="2">Десять цілих, п'ять сотих</option>
+                        <option value="3">Одинадцять цілих, п'ять десятих</option>
+                    </select>
+                </div>
+            </div>
+            <div class="score-display" id="score-2"></div>
+            <button class="fairy-btn btn-block-2" onclick="checkFairyBlock(this, 'block-2', 'score-2')">Перевірити Блок 2</button>
+        </div>
+
+        <div class="block-card block-3">
+            <div class="block-header"><div class="icon-box">✍️</div><span>Частина 3: Запис десяткових дробів</span></div>
+            <div class="lesson-story">
+                <b>Переклад на мову математики:</b> Запиши дроби цифрами. Можна використовувати крапку або кому!
+            </div>
+            <div class="examples-list">
+                <div class="example-row"><span style="font-size: 0.8em;">Дві цілі, п'ять десятих</span> <input type="text" class="ans-input ans-input-text quiz-el" data-ans="2.5|2,5" /></div>
+                <div class="example-row"><span style="font-size: 0.8em;">Нуль цілих, вісім сотих</span> <input type="text" class="ans-input ans-input-text quiz-el" data-ans="0.08|0,08" /></div>
+                <div class="example-row"><span style="font-size: 0.8em;">Тринадцять цілих, одна сота</span> <input type="text" class="ans-input ans-input-text quiz-el" data-ans="13.01|13,01" /></div>
+                <div class="example-row"><span style="font-size: 0.8em;">Нуль цілих, п'ятнадцять тисячних</span> <input type="text" class="ans-input ans-input-text quiz-el" data-ans="0.015|0,015" /></div>
+                <div class="example-row"><span style="font-size: 0.8em;">Одна ціла, триста дві тисячні</span> <input type="text" class="ans-input ans-input-text quiz-el" data-ans="1.302|1,302" /></div>
+                <div class="example-row"><span style="font-size: 0.8em;">Сім цілих, сім десятих</span> <input type="text" class="ans-input ans-input-text quiz-el" data-ans="7.7|7,7" /></div>
+                <div class="example-row"><span style="font-size: 0.8em;">Десять цілих, двадцять п'ять сотих</span> <input type="text" class="ans-input ans-input-text quiz-el" data-ans="10.25|10,25" /></div>
+                <div class="example-row"><span style="font-size: 0.8em;">Нуль цілих, чотири тисячні</span> <input type="text" class="ans-input ans-input-text quiz-el" data-ans="0.004|0,004" /></div>
+            </div>
+            <div class="score-display" id="score-3"></div>
+            <button class="fairy-btn btn-block-3" onclick="checkFairyBlock(this, 'block-3', 'score-3')">Перевірити Блок 3</button>
+        </div>
+
+        <div class="block-card block-4">
+            <div class="block-header"><div class="icon-box">⚖️</div><span>Частина 4: Порівняння</span></div>
+            <div class="lesson-story">
+                <b>Хто більший?</b> У десяткових дробах ми завжди вирівнюємо кількість цифр після коми нулями, щоб чесно порівняти хвостики!
+            </div>
+            <div class="examples-list">
+                <div class="example-row"><span>0.5</span> <select class="ans-input quiz-el" data-ans=">"><option></option><option><</option><option>></option><option>=</option></select> <span>0.05</span></div>
+                <div class="example-row"><span>1.2</span> <select class="ans-input quiz-el" data-ans="="><option></option><option><</option><option>></option><option>=</option></select> <span>1.20</span></div>
+                <div class="example-row"><span>3.45</span> <select class="ans-input quiz-el" data-ans="<"><option></option><option><</option><option>></option><option>=</option></select> <span>3.54</span></div>
+                <div class="example-row"><span>0.09</span> <select class="ans-input quiz-el" data-ans="<"><option></option><option><</option><option>></option><option>=</option></select> <span>0.1</span></div>
+                <div class="example-row"><span>7.1</span> <select class="ans-input quiz-el" data-ans=">"><option></option><option><</option><option>></option><option>=</option></select> <span>7.099</span></div>
+                <div class="example-row"><span>12.50</span> <select class="ans-input quiz-el" data-ans="="><option></option><option><</option><option>></option><option>=</option></select> <span>12.5</span></div>
+                <div class="example-row"><span>0.008</span> <select class="ans-input quiz-el" data-ans="<"><option></option><option><</option><option>></option><option>=</option></select> <span>0.08</span></div>
+                <div class="example-row"><span>5.6</span> <select class="ans-input quiz-el" data-ans=">"><option></option><option><</option><option>></option><option>=</option></select> <span>5.06</span></div>
+                <div class="example-row"><span>9.99</span> <select class="ans-input quiz-el" data-ans="<"><option></option><option><</option><option>></option><option>=</option></select> <span>10.0</span></div>
+                <div class="example-row"><span>4.321</span> <select class="ans-input quiz-el" data-ans=">"><option></option><option><</option><option>></option><option>=</option></select> <span>4.32</span></div>
+            </div>
+            <div class="score-display" id="score-4"></div>
+            <button class="fairy-btn btn-block-4" onclick="checkFairyBlock(this, 'block-4', 'score-4')">Перевірити Блок 4</button>
+        </div>
+
+        <div class="block-card block-5">
+            <div class="block-header"><div class="icon-box">🌟</div><span>Частина 5: Додавання десяткових</span></div>
+            <div class="lesson-story">
+                <b>Головне правило:</b> КОМА ПІД КОМОЮ! Якщо комусь не вистачає цифр — домальовуй нулик. (Приклад: 10.2 + 3.01 = 10.20 + 3.01).
+            </div>
+            <div class="examples-list">
+                <div class="example-row"><span>2.3 + 1.5 =</span> <input type="text" class="ans-input ans-input-text quiz-el" data-ans="3.8|3,8" /></div>
+                <div class="example-row"><span>10.2 + 3.01 =</span> <input type="text" class="ans-input ans-input-text quiz-el" data-ans="13.21|13,21" /></div>
+                <div class="example-row"><span>5.5 + 4.5 =</span> <input type="text" class="ans-input ans-input-text quiz-el" data-ans="10|10.0|10,0" /></div>
+                <div class="example-row"><span>0.08 + 0.2 =</span> <input type="text" class="ans-input ans-input-text quiz-el" data-ans="0.28|0,28" /></div>
+                <div class="example-row"><span>7.15 + 2.8 =</span> <input type="text" class="ans-input ans-input-text quiz-el" data-ans="9.95|9,95" /></div>
+                <div class="example-row"><span>1.99 + 0.01 =</span> <input type="text" class="ans-input ans-input-text quiz-el" data-ans="2|2.0|2.00|2,0|2,00" /></div>
+                <div class="example-row"><span>15.4 + 2.05 =</span> <input type="text" class="ans-input ans-input-text quiz-el" data-ans="17.45|17,45" /></div>
+                <div class="example-row"><span>0.3 + 0.03 =</span> <input type="text" class="ans-input ans-input-text quiz-el" data-ans="0.33|0,33" /></div>
+                <div class="example-row"><span>8.42 + 1.58 =</span> <input type="text" class="ans-input ans-input-text quiz-el" data-ans="10|10.0|10.00|10,0|10,00" /></div>
+                <div class="example-row"><span>20.5 + 4.25 =</span> <input type="text" class="ans-input ans-input-text quiz-el" data-ans="24.75|24,75" /></div>
+            </div>
+
+            <div class="score-display" id="score-5"></div>
+            <button class="fairy-btn btn-block-5" onclick="checkFairyBlock(this, 'block-5', 'score-5')">Перевірити Фінальний Тренажер</button>
+        </div>
+    </div>
+
+    <script>
+        function checkFairyBlock(btn, blockClass, scoreId) {
+            const block = document.querySelector("." + blockClass);
+            const inputs = block.querySelectorAll(".quiz-el");
+            const scoreDiv = document.getElementById(scoreId);
+            let correctCount = 0;
+            let allFilled = true;
+            let totalInputs = inputs.length;
+
+            inputs.forEach((input) => {
+                let val = input.value.trim();
+                const correctValRaw = input.getAttribute("data-ans");
+                input.classList.remove("correct", "wrong");
+
+                if (val === "") {
+                    allFilled = false;
+                    return;
+                }
+                
+                val = val.replace(/\s/g, ''); 
+                
+                const validAnswers = correctValRaw.split('|');
+                let isCorrect = false;
+
+                if (validAnswers.includes(val)) {
+                    isCorrect = true;
+                } else if (val.includes(',')) {
+                    const dotVal = val.replace(',', '.');
+                    if (validAnswers.includes(dotVal)) isCorrect = true;
+                } else if (val.includes('.')) {
+                    const commaVal = val.replace('.', ',');
+                    if (validAnswers.includes(commaVal)) isCorrect = true;
+                }
+
+                if (isCorrect) {
+                    input.classList.add("correct");
+                    correctCount++;
+                } else {
+                    input.classList.add("wrong");
+                }
+            });
+
+            if (!allFilled) {
+                scoreDiv.textContent = "Заповни всі віконечка у цьому блоці!";
+                scoreDiv.style.color = "#be123c";
+                return;
+            }
+
+            if (correctCount === totalInputs) {
+                scoreDiv.textContent = `🎉 Чудово! Всі ${correctCount} з ${totalInputs} відповідей правильні!`;
+                scoreDiv.style.color = "#16a34a";
+                btn.textContent = "Блок успішно пройдено! 🌟";
+                btn.disabled = true;
+                triggerConfetti();
+            } else {
+                scoreDiv.textContent = `Правильно ${correctCount} з ${totalInputs}. Пошукай помилочки у червоних віконцях!`;
+                scoreDiv.style.color = "#be123c";
+            }
+        }
+
+        function triggerConfetti() {
+            const canvas = document.getElementById("confetti");
+            canvas.classList.remove("hidden");
+            const ctx = canvas.getContext("2d");
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            const pieces = [];
+            for (let i = 0; i < 200; i++) {
+                pieces.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height - canvas.height,
+                    color: `hsl(${Math.random() * 360}, 100%, 70%)`,
+                    size: Math.random() * 8 + 4,
+                    speed: Math.random() * 5 + 3,
+                });
+            }
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                let active = false;
+                pieces.forEach((p) => {
+                    p.y += p.speed;
+                    if (p.y < canvas.height) active = true;
+                    ctx.fillStyle = p.color;
+                    ctx.fillRect(p.x, p.y, p.size, p.size);
+                });
+                if (active) requestAnimationFrame(draw);
+                else ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+            draw();
+        }
+    </script>
+</body>
+</html>
