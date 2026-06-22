@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ПР №4 та ПЗ №7 - Варіант 16</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+        }
+        .math-block {
+            background: #f4f4f4;
+            padding: 15px;
+            border-radius: 4px;
+            display: block;
+            margin-bottom: 15px;
+            font-family: "Times New Roman", Times, serif;
+            font-size: 1.1em;
+            overflow-x: auto;
+        }
+        .simplex-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            text-align: center;
+        }
+        .simplex-table th, .simplex-table td {
+            border: 1px solid #bdc3c7;
+            padding: 8px;
+        }
+        .simplex-table th {
+            background-color: #ecf0f1;
+        }
+        .pivot {
+            background-color: #ffeaa7;
+            font-weight: bold;
+        }
+        .frac {
+            display: inline-flex;
+            flex-direction: column;
+            vertical-align: middle;
+            text-align: center;
+            font-size: 0.9em;
+            margin: 0 0.2em;
+        }
+        .frac .top {
+            border-bottom: 1px solid #333;
+            padding: 0 0.1em;
+        }
+        .frac .bottom {
+            padding: 0 0.1em;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    
+    <h2>ПЗ №4. Варіант 16 (Задача 4: М-метод)</h2>
+    <div class="math-block">
+        L = -2x<sub>1</sub> + x<sub>2</sub> &rarr; min<br>
+        x<sub>1</sub> + x<sub>2</sub> &le; 6<br>
+        -3x<sub>1</sub> + 2x<sub>2</sub> &ge; 3<br>
+        x<sub>1</sub>, x<sub>2</sub> &ge; 0
+    </div>
+
+    <p>Зведення до канонічної форми (додаткові x<sub>3</sub>, x<sub>4</sub> &ge; 0, штучна x<sub>5</sub> &ge; 0):</p>
+    <div class="math-block">
+        x<sub>1</sub> + x<sub>2</sub> + x<sub>3</sub> = 6<br>
+        -3x<sub>1</sub> + 2x<sub>2</sub> - x<sub>4</sub> + x<sub>5</sub> = 3<br>
+        L = -2x<sub>1</sub> + x<sub>2</sub> + Mx<sub>5</sub> &rarr; min
+    </div>
+
+    <p>Ознака оптимальності для min: &Delta;<sub>j</sub> = z<sub>j</sub> - c<sub>j</sub> &le; 0. Вводимо до базису змінну з найбільшим додатним &Delta;<sub>j</sub>.</p>
+
+    <table class="simplex-table">
+        <tr>
+            <th>Базис</th><th>C<sub>b</sub></th><th>P<sub>0</sub></th><th>x<sub>1</sub></th><th>x<sub>2</sub></th><th>x<sub>3</sub></th><th>x<sub>4</sub></th><th>x<sub>5</sub></th>
+        </tr>
+        <tr>
+            <td>x<sub>3</sub></td><td>0</td><td>6</td><td>1</td><td>1</td><td>1</td><td>0</td><td>0</td>
+        </tr>
+        <tr>
+            <td>x<sub>5</sub></td><td>M</td><td>3</td><td>-3</td><td class="pivot">2</td><td>0</td><td>-1</td><td>1</td>
+        </tr>
+        <tr>
+            <th>&Delta;</th><th></th><th>3M</th><th>-3M+2</th><th>2M-1</th><th>0</th><th>-M</th><th>0</th>
+        </tr>
+    </table>
+
+    <table class="simplex-table">
+        <tr>
+            <th>Базис</th><th>C<sub>b</sub></th><th>P<sub>0</sub></th><th>x<sub>1</sub></th><th>x<sub>2</sub></th><th>x<sub>3</sub></th><th>x<sub>4</sub></th>
+        </tr>
+        <tr>
+            <td>x<sub>3</sub></td><td>0</td><td>9/2</td><td class="pivot">5/2</td><td>0</td><td>1</td><td>1/2</td>
+        </tr>
+        <tr>
+            <td>x<sub>2</sub></td><td>1</td><td>3/2</td><td>-3/2</td><td>1</td><td>0</td><td>-1/2</td>
+        </tr>
+        <tr>
+            <th>&Delta;</th><th></th><th>3/2</th><th>1/2</th><th>0</th><th>0</th><th>-1/2</th>
+        </tr>
+    </table>
+
+    <table class="simplex-table">
+        <tr>
+            <th>Базис</th><th>C<sub>b</sub></th><th>P<sub>0</sub></th><th>x<sub>1</sub></th><th>x<sub>2</sub></th><th>x<sub>3</sub></th><th>x<sub>4</sub></th>
+        </tr>
+        <tr>
+            <td>x<sub>1</sub></td><td>-2</td><td>9/5</td><td>1</td><td>0</td><td>2/5</td><td>1/5</td>
+        </tr>
+        <tr>
+            <td>x<sub>2</sub></td><td>1</td><td>21/5</td><td>0</td><td>1</td><td>3/5</td><td>-1/5</td>
+        </tr>
+        <tr>
+            <th>&Delta;</th><th></th><th>3/5</th><th>0</th><th>0</th><th>-1/5</th><th>-3/5</th>
+        </tr>
+    </table>
+
+    <p><strong>Висновок:</strong> Всі &Delta;<sub>j</sub> &le; 0, отримано оптимальний план.</p>
+    <div class="math-block">
+        X* = (<span class="frac"><span class="top">9</span><span class="bottom">5</span></span>; <span class="frac"><span class="top">21</span><span class="bottom">5</span></span>)<br>
+        L<sub>min</sub> = -2(<span class="frac"><span class="top">9</span><span class="bottom">5</span></span>) + <span class="frac"><span class="top">21</span><span class="bottom">5</span></span> = -<span class="frac"><span class="top">18</span><span class="bottom">5</span></span> + <span class="frac"><span class="top">21</span><span class="bottom">5</span></span> = <strong><span class="frac"><span class="top">3</span><span class="bottom">5</span></span></strong>
+    </div>
+
+    <hr>
+    <h2>ПЗ №7. Варіант 16 (Задача 6: М-метод)</h2>
+    <div class="math-block">
+        L = 6x<sub>1</sub> + 4x<sub>2</sub> &rarr; min<br>
+        2x<sub>1</sub> + x<sub>2</sub> &ge; 3<br>
+        x<sub>1</sub> - x<sub>2</sub> &le; 1<br>
+        x<sub>1</sub>, x<sub>2</sub> &ge; 0
+    </div>
+
+    <p>Зведення до канонічної форми (додаткові x<sub>3</sub>, x<sub>4</sub> &ge; 0, штучна x<sub>5</sub> &ge; 0):</p>
+    <div class="math-block">
+        2x<sub>1</sub> + x<sub>2</sub> - x<sub>3</sub> + x<sub>5</sub> = 3<br>
+        x<sub>1</sub> - x<sub>2</sub> + x<sub>4</sub> = 1<br>
+        L = 6x<sub>1</sub> + 4x<sub>2</sub> + Mx<sub>5</sub> &rarr; min
+    </div>
+
+    <p>Ознака оптимальності для min: &Delta;<sub>j</sub> = z<sub>j</sub> - c<sub>j</sub> &le; 0.</p>
+
+    <table class="simplex-table">
+        <tr>
+            <th>Базис</th><th>C<sub>b</sub></th><th>P<sub>0</sub></th><th>x<sub>1</sub></th><th>x<sub>2</sub></th><th>x<sub>3</sub></th><th>x<sub>4</sub></th><th>x<sub>5</sub></th>
+        </tr>
+        <tr>
+            <td>x<sub>5</sub></td><td>M</td><td>3</td><td>2</td><td>1</td><td>-1</td><td>0</td><td>1</td>
+        </tr>
+        <tr>
+            <td>x<sub>4</sub></td><td>0</td><td>1</td><td class="pivot">1</td><td>-1</td><td>0</td><td>1</td><td>0</td>
+        </tr>
+        <tr>
+            <th>&Delta;</th><th></th><th>3M</th><th>2M-6</th><th>M-4</th><th>-M</th><th>0</th><th>0</th>
+        </tr>
+    </table>
+
+    <table class="simplex-table">
+        <tr>
+            <th>Базис</th><th>C<sub>b</sub></th><th>P<sub>0</sub></th><th>x<sub>1</sub></th><th>x<sub>2</sub></th><th>x<sub>3</sub></th><th>x<sub>4</sub></th><th>x<sub>5</sub></th>
+        </tr>
+        <tr>
+            <td>x<sub>5</sub></td><td>M</td><td>1</td><td>0</td><td class="pivot">3</td><td>-1</td><td>-2</td><td>1</td>
+        </tr>
+        <tr>
+            <td>x<sub>1</sub></td><td>6</td><td>1</td><td>1</td><td>-1</td><td>0</td><td>1</td><td>0</td>
+        </tr>
+        <tr>
+            <th>&Delta;</th><th></th><th>M+6</th><th>0</th><th>3M-10</th><th>-M</th><th>-2M+6</th><th>0</th>
+        </tr>
+    </table>
+
+    <table class="simplex-table">
+        <tr>
+            <th>Базис</th><th>C<sub>b</sub></th><th>P<sub>0</sub></th><th>x<sub>1</sub></th><th>x<sub>2</sub></th><th>x<sub>3</sub></th><th>x<sub>4</sub></th>
+        </tr>
+        <tr>
+            <td>x<sub>2</sub></td><td>4</td><td>1/3</td><td>0</td><td>1</td><td>-1/3</td><td>-2/3</td>
+        </tr>
+        <tr>
+            <td>x<sub>1</sub></td><td>6</td><td>4/3</td><td>1</td><td>0</td><td>-1/3</td><td>1/3</td>
+        </tr>
+        <tr>
+            <th>&Delta;</th><th></th><th>28/3</th><th>0</th><th>0</th><th>-10/3</th><th>-2/3</th>
+        </tr>
+    </table>
+
+    <p><strong>Висновок:</strong> Всі &Delta;<sub>j</sub> &le; 0, отримано оптимальний план. Штучних змінних у базисі немає.</p>
+    <div class="math-block">
+        X* = (<span class="frac"><span class="top">4</span><span class="bottom">3</span></span>; <span class="frac"><span class="top">1</span><span class="bottom">3</span></span>)<br>
+        L<sub>min</sub> = 6(<span class="frac"><span class="top">4</span><span class="bottom">3</span></span>) + 4(<span class="frac"><span class="top">1</span><span class="bottom">3</span></span>) = <span class="frac"><span class="top">24</span><span class="bottom">3</span></span> + <span class="frac"><span class="top">4</span><span class="bottom">3</span></span> = <strong><span class="frac"><span class="top">28</span><span class="bottom">3</span></span></strong>
+    </div>
+
+</div>
+
+</body>
+</html>

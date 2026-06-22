@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Магічна Лабораторія Множення</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+        font-family: "Fredoka", sans-serif;
+        background-color: #f5f3ff;
+        background-image: radial-gradient(#c084fc 2px, transparent 2px);
+        background-size: 25px 25px;
+        color: #4c1d95;
+    }
+
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    
+    input[type="number"] {
+        -moz-appearance: textfield;
+    }
+
+    canvas#confetti {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 9999;
+    }
+    .hidden {
+        display: none;
+    }
+    .section-divider {
+        height: 50px;
+        background: linear-gradient(to bottom, #f5f3ff, #f3e8ff);
+        border-top: 5px dashed #a855f7;
+        border-bottom: 5px dashed #7c3aed;
+        opacity: 0.5;
+    }
+    #quest-section, #fairy-section {
+        padding: 40px 20px;
+        min-height: 100vh;
+    }
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    #quest-section header {
+        text-align: center;
+        margin-bottom: 30px;
+        background: white;
+        padding: 20px;
+        border-radius: 25px;
+        border: 4px solid #a855f7;
+        box-shadow: 0 10px 20px rgba(76, 29, 149, 0.1);
+    }
+    #quest-section h1 {
+        color: #7c3aed;
+        margin: 0;
+        font-size: 2.5em;
+        text-shadow: 2px 2px 0px #fff;
+    }
+    .progress-container {
+        margin-top: 15px;
+        background: #f3e8ff;
+        height: 20px;
+        border-radius: 10px;
+        overflow: hidden;
+        position: relative;
+    }
+    .progress-bar {
+        height: 100%;
+        background: linear-gradient(90deg, #a855f7, #7c3aed);
+        width: 0%;
+        transition: width 0.5s ease;
+    }
+    .task-card {
+        background: white;
+        border-radius: 25px;
+        padding: 25px;
+        margin-bottom: 30px;
+        border: 3px solid #e9d5ff;
+        position: relative;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s;
+    }
+    .task-card.done {
+        opacity: 0.8;
+        border-color: #bbf7d0;
+        background: #f0fdf4;
+    }
+    .task-card.done::after {
+        content: "✅ Готово!";
+        position: absolute;
+        top: 25px;
+        right: 25px;
+        font-size: 1.5em;
+        color: #16a34a;
+        font-weight: bold;
+        background: rgba(255, 255, 255, 0.9);
+        border: 2px solid #16a34a;
+        padding: 5px 15px;
+        border-radius: 50px;
+        z-index: 10;
+        transform: rotate(5deg);
+    }
+    .badge {
+        padding: 5px 15px;
+        border-radius: 20px;
+        color: white;
+        font-weight: bold;
+        font-size: 0.9em;
+        background: #7c3aed;
+        display: inline-block;
+        margin-bottom: 10px;
+    }
+    .diagram {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+        margin: 20px 0;
+        font-size: 1.8em;
+        font-weight: bold;
+        color: #6d28d9;
+    }
+    .expression-box {
+        padding: 10px 20px;
+        background: #f3e8ff;
+        border-radius: 15px;
+        border: 2px dashed #a855f7;
+        letter-spacing: 2px;
+    }
+    #quest-section input {
+        width: 55px;
+        height: 45px;
+        text-align: center;
+        font-size: 0.9em;
+        border: 2px solid #e5e7eb;
+        border-radius: 12px;
+        font-family: inherit;
+        color: #6d28d9;
+        background: white;
+        font-weight: bold;
+        transition: 0.2s;
+    }
+    #quest-section input:focus {
+        outline: none;
+        border-color: #7c3aed;
+        background: #fdf4ff;
+    }
+    #quest-section input.correct, #fairy-section input.correct {
+        border-color: #22c55e !important;
+        background-color: #dcfce7 !important;
+        color: #15803d !important;
+        opacity: 1 !important; /* Щоб заблоковане віконце не ставало сірим */
+    }
+    .steps-row {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 8px;
+        font-size: 1.3em;
+        background: #f3e8ff;
+        padding: 15px;
+        border-radius: 15px;
+        margin-top: 15px;
+        color: #5b21b6;
+    }
+    #fairy-section h1 {
+        text-align: center;
+        color: #5b21b6;
+        font-size: 2.5em;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 0px #fff;
+    }
+    #fairy-section .subtitle {
+        text-align: center;
+        margin-bottom: 40px;
+        font-size: 1.3em;
+        color: #6d28d9;
+    }
+    .block-card {
+        background: white;
+        border-radius: 25px;
+        padding: 30px;
+        margin-bottom: 40px;
+        box-shadow: 0 10px 20px rgba(124, 58, 237, 0.1);
+        border: 4px solid transparent;
+    }
+    .block-1 { border-color: #e9d5ff; }
+    .block-2 { border-color: #c084fc; }
+    .block-3 { border-color: #a855f7; }
+
+    .block-header {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 25px;
+        font-size: 1.5em;
+        font-weight: bold;
+    }
+    .block-1 .block-header { color: #7c3aed; }
+    .block-2 .block-header { color: #6d28d9; }
+    .block-3 .block-header { color: #5b21b6; }
+
+    .icon-box {
+        width: 50px;
+        height: 50px;
+        background: #f3e8ff;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2em;
+    }
+    .example-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #fafafa;
+        padding: 10px 20px;
+        border-radius: 15px;
+        font-size: 1.5em;
+        border: 1px solid #f3f4f6;
+        margin-bottom: 15px;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    #fairy-section input {
+        width: 80px;
+        height: 50px;
+        font-size: 1em;
+        text-align: center;
+        border: 3px solid #e5e7eb;
+        border-radius: 12px;
+        color: #4c1d95;
+        font-family: inherit;
+        font-weight: bold;
+        outline: none;
+        transition: 0.3s;
+    }
+    #fairy-section input:focus {
+        border-color: #a855f7;
+        background: #fdf4ff;
+    }
+    #fairy-section input.wrong {
+        border-color: #ef4444;
+        background-color: #fee2e2;
+        color: #b91c1c;
+    }
+    .fairy-btn {
+        display: block;
+        width: 100%;
+        margin-top: 25px;
+        padding: 15px;
+        font-size: 1.2em;
+        font-weight: bold;
+        color: white;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: transform 0.2s;
+        font-family: inherit;
+    }
+    .btn-block-1 { background: #7c3aed; box-shadow: 0 4px 0 #5b21b6; }
+    .btn-block-2 { background: #6d28d9; box-shadow: 0 4px 0 #4c1d95; }
+    .btn-block-3 { background: #5b21b6; box-shadow: 0 4px 0 #2e1065; }
+
+    .fairy-btn:active {
+        transform: translateY(4px);
+        box-shadow: none;
+    }
+    .fairy-btn:disabled {
+        opacity: 0.6;
+        cursor: default;
+        transform: none;
+        box-shadow: none;
+    }
+    .score-display {
+        text-align: center;
+        margin-top: 10px;
+        font-weight: bold;
+        font-size: 1.1em;
+        height: 20px;
+    }
+</style>
+</head>
+<body>
+    <canvas id="confetti" class="hidden"></canvas>
+
+    <section id="quest-section">
+        <div class="container">
+            <header>
+                <h1>⚡ Магічний Перекладач</h1>
+                <p style="margin: 5px 0; color: #6d28d9">Частина 1: Перетворюємо плюси на множення (5 завдань)</p>
+                <div class="progress-text">Виконано: <span id="quest-score">0</span> з 5</div>
+                <div class="progress-container">
+                    <div class="progress-bar" id="quest-progress-bar"></div>
+                </div>
+            </header>
+            <div id="tasks-container"></div>
+            <div id="quest-final-message" style="text-align: center; display: none; padding: 40px">
+                <h2 style="font-size: 2.5em; color: #7c3aed">ТИ СУПЕР-МАГ! 🎉</h2>
+                <p style="font-size: 1.5em">Суть множення розгадано! Тепер покажи свої сили Магу Множення 👇</p>
+                <button onclick="document.getElementById('fairy-section').scrollIntoView({behavior: 'smooth'})" style="padding: 15px 30px; font-size: 1.2em; border-radius: 50px; border: none; background: #6d28d9; color: white; cursor: pointer; box-shadow: 0 5px 0 #4c1d95;">Вперед до практики 🚀</button>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <section id="fairy-section">
+        <div class="container">
+            <h1>🔮 Завдання від Мага Множення 🔮</h1>
+            <p class="subtitle">Частина 2: Закріплення суперсили</p>
+
+            <div class="block-card block-1">
+                <div class="block-header"><div class="icon-box">🌟</div><span>Рівень 1: Перші кроки (Таблиця на 2 і 3)</span></div>
+                <div class="examples-list">
+                    <div class="example-row"><span>2 × 4 =</span> <input type="number" data-ans="8" /></div>
+                    <div class="example-row"><span>3 × 3 =</span> <input type="number" data-ans="9" /></div>
+                    <div class="example-row"><span>2 × 7 =</span> <input type="number" data-ans="14" /></div>
+                    <div class="example-row"><span>3 × 5 =</span> <input type="number" data-ans="15" /></div>
+                    <div class="example-row"><span>2 × 9 =</span> <input type="number" data-ans="18" /></div>
+                </div>
+                <div class="score-display" id="score-1"></div>
+                <button class="fairy-btn btn-block-1" onclick="checkFairyBlock(this, 'block-1', 'score-1')">Перевірити результати</button>
+            </div>
+
+            <div class="block-card block-2">
+                <div class="block-header"><div class="icon-box">🎩</div><span>Рівень 2: Магія Одиниці та Нуля (Секретні Фокуси)</span></div>
+                <div class="examples-list">
+                    <div class="example-row"><span>7 × 1 = (Число-дзеркало)</span> <input type="number" data-ans="7" /></div>
+                    <div class="example-row"><span>5 × 0 = (Чорна діра)</span> <input type="number" data-ans="0" /></div>
+                    <div class="example-row"><span>1 × 12 =</span> <input type="number" data-ans="12" /></div>
+                    <div class="example-row"><span>99 × 0 =</span> <input type="number" data-ans="0" /></div>
+                    <div class="example-row"><span>1 × 1 =</span> <input type="number" data-ans="1" /></div>
+                </div>
+                <div class="score-display" id="score-2"></div>
+                <button class="fairy-btn btn-block-2" onclick="checkFairyBlock(this, 'block-2', 'score-2')">Перевірити фокуси</button>
+            </div>
+
+            <div class="block-card block-3">
+                <div class="block-header"><div class="icon-box">🍕</div><span>Рівень 3: Смачні міні-задачки</span></div>
+                <div class="examples-list">
+                    <div class="example-row"><span>На 3 тарілках лежить по 4 тістечка. Скільки всього тістечок?</span> <input type="number" data-ans="12" /></div>
+                    <div class="example-row"><span>У 5 котиків по 2 вушка. Скільки всього вушок разом?</span> <input type="number" data-ans="10" /></div>
+                    <div class="example-row"><span>Купили 2 коробки піци. У кожній піці по 6 шматочків. Скільки шматочків усього?</span> <input type="number" data-ans="12" /></div>
+                </div>
+                <div class="score-display" id="score-3"></div>
+                <button class="fairy-btn btn-block-3" onclick="checkFairyBlock(this, 'block-3', 'score-3')">Перевірити задачі</button>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        const questTasks = [
+            { id: 1, expr: "4 + 4 + 4", num: 4, times: 3, res: 12 },
+            { id: 2, expr: "2 + 2 + 2 + 2 + 2", num: 2, times: 5, res: 10 },
+            { id: 3, expr: "7 + 7", num: 7, times: 2, res: 14 },
+            { id: 4, expr: "3 + 3 + 3 + 3", num: 3, times: 4, res: 12 },
+            { id: 5, expr: "6 + 6 + 6", num: 6, times: 3, res: 18 },
+        ];
+
+        const questContainer = document.getElementById("tasks-container");
+        let questCompleted = 0;
+
+        function renderQuestTask(t) {
+            return `
+            <div class="task-card" id="card-${t.id}">
+                <div class="badge">Завдання ${t.id}</div>
+                <div class="diagram">
+                    <div class="expression-box">${t.expr}</div>
+                </div>
+                <p style="text-align: center; margin: 10px 0; font-size: 1.1em;">
+                    Запиши цей довгий приклад за допомогою <b>множення</b>:
+                </p>
+                <div class="steps-row">
+                    Яке число повторюється? 👉 <input type="number" id="q-${t.id}-num" placeholder="?" oninput="checkQuestTask(${t.id})">
+                </div>
+                <div class="steps-row">
+                    Скільки разів воно додається? 👉 <input type="number" id="q-${t.id}-times" placeholder="?" oninput="checkQuestTask(${t.id})">
+                </div>
+                <div class="steps-row" style="background: #e9d5ff; font-weight: bold;">
+                    Разом: <span style="margin-left: 10px;"></span>
+                    <span id="display-num-${t.id}">?</span> × <span id="display-times-${t.id}">?</span> = 
+                    <input type="number" id="q-${t.id}-res" style="width: 60px; border-color: #a855f7;" placeholder="?" oninput="checkQuestTask(${t.id})">
+                </div>
+                <div class="feedback-msg" id="msg-${t.id}"></div>
+            </div>`;
+        }
+
+        questTasks.forEach(t => questContainer.innerHTML += renderQuestTask(t));
+
+        function checkQuestTask(id) {
+            if (document.getElementById(`card-${id}`).classList.contains("done")) return;
+
+            const t = questTasks.find((x) => x.id === id);
+            const inputNum = document.getElementById(`q-${id}-num`);
+            const inputTimes = document.getElementById(`q-${id}-times`);
+            const inputRes = document.getElementById(`q-${id}-res`);
+            const displayNum = document.getElementById(`display-num-${id}`);
+            const displayTimes = document.getElementById(`display-times-${id}`);
+            const msg = document.getElementById(`msg-${id}`);
+
+            const valNum = parseInt(inputNum.value);
+            const valTimes = parseInt(inputTimes.value);
+            const valRes = parseInt(inputRes.value);
+
+            // 1. Перевірка першого інпуту (число)
+            if (valNum === t.num) {
+                inputNum.classList.add("correct");
+                inputNum.disabled = true; // БЛОКУЄМО після підтвердження
+            }
+
+            // 2. Перевірка другого інпуту (кількість разів)
+            if (valTimes === t.times) {
+                inputTimes.classList.add("correct");
+                inputTimes.disabled = true; // БЛОКУЄМО після підтвердження
+            }
+
+            // 3. Якщо обидва поля правильні — підтягуємо цифри в фінальний рядок
+            if (inputNum.classList.contains("correct") && inputTimes.classList.contains("correct")) {
+                displayNum.textContent = t.num;
+                displayTimes.textContent = t.times;
+                
+                // 4. Перевірка фінальної відповіді
+                if (valRes === t.res) {
+                    inputRes.classList.add("correct");
+                    inputRes.disabled = true; // БЛОКУЄМО фінальне поле
+                    msg.textContent = "Правильно! Ти супер-перекладач! 🎉";
+                    msg.style.color = "#16a34a";
+                    
+                    document.getElementById(`card-${id}`).classList.add("done");
+                    questCompleted++;
+                    document.getElementById("quest-score").innerText = questCompleted;
+                    document.getElementById("quest-progress-bar").style.width = (questCompleted / 5) * 100 + "%";
+
+                    if (questCompleted === 5) {
+                        triggerConfetti();
+                        document.getElementById("quest-final-message").style.display = "block";
+                    }
+                }
+            }
+        }
+
+        function checkFairyBlock(btn, blockClass, scoreId) {
+            const block = document.querySelector("." + blockClass);
+            const inputs = block.querySelectorAll("input");
+            const scoreDiv = document.getElementById(scoreId);
+            let correctCount = 0;
+            let allFilled = true;
+            let totalInputs = inputs.length;
+
+            inputs.forEach((input) => {
+                const val = input.value.trim();
+                const correctVal = input.getAttribute("data-ans");
+                
+                // Якщо поле вже заблоковане (правильне з минулого разу), просто рахуємо його
+                if (input.disabled && input.classList.contains("correct")) {
+                    correctCount++;
+                    return;
+                }
+
+                input.classList.remove("correct", "wrong");
+
+                if (val === "") {
+                    allFilled = false;
+                    return;
+                }
+                if (val === correctVal) {
+                    input.classList.add("correct");
+                    input.disabled = true; // БЛОКУЄМО правильні відповіді у другій частині також!
+                    correctCount++;
+                } else {
+                    input.classList.add("wrong");
+                }
+            });
+
+            if (!allFilled) {
+                scoreDiv.textContent = "Заповни всі порожні віконечка!";
+                scoreDiv.style.color = "#b91c1c";
+                return;
+            }
+
+            if (correctCount === totalInputs) {
+                scoreDiv.textContent = `${correctCount}/${totalInputs} Ідеально! Ти супер-математик! ✨`;
+                scoreDiv.style.color = "#16a34a";
+                btn.textContent = "Рівень пройдено! 🌟";
+                btn.disabled = true;
+                triggerConfetti();
+            } else {
+                scoreDiv.textContent = `Правильно ${correctCount} з ${totalInputs}. Пошукай помилочки у червоних віконцях!`;
+                scoreDiv.style.color = "#b91c1c";
+            }
+        }
+
+        function triggerConfetti() {
+            const canvas = document.getElementById("confetti");
+            canvas.classList.remove("hidden");
+            const ctx = canvas.getContext("2d");
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            const pieces = [];
+            for (let i = 0; i < 200; i++) {
+                pieces.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height - canvas.height,
+                    color: `hsl(${Math.random() * 360}, 100%, 70%)`,
+                    size: Math.random() * 8 + 4,
+                    speed: Math.random() * 5 + 3,
+                });
+            }
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                let active = false;
+                pieces.forEach((p) => {
+                    p.y += p.speed;
+                    if (p.y < canvas.height) active = true;
+                    ctx.fillStyle = p.color;
+                    ctx.fillRect(p.x, p.y, p.size, p.size);
+                });
+                if (active) requestAnimationFrame(draw);
+                else ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+            draw();
+        }
+    </script>
+</body>
+</html>

@@ -1,207 +1,342 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Моя Сонічка ❤️</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Montserrat:wght@300;600&display=swap');
-
-        * {
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            background: #fff5f7;
-            color: #4a4a4a;
-            font-family: 'Montserrat', sans-serif;
-            overflow-x: auto;
-            overflow-y: hidden;
-            display: flex;
-            scroll-snap-type: x mandatory;
-        }
-
-        .bg-glow {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at 50% 50%, #ffe5ec 0%, #fff5f7 100%);
-            z-index: -1;
-        }
-
-        section {
-            min-width: 100vw;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            scroll-snap-align: start;
-            padding: 40px;
-            position: relative;
-        }
-
-        h1 {
-            font-family: 'Caveat', cursive;
-            font-size: 6vw;
-            color: #ff4d6d;
-            margin: 10px 0;
-            opacity: 0;
-            transform: scale(0.9);
-            transition: all 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .active h1 {
-            opacity: 1;
-            transform: scale(1);
-        }
-
-        .kici-kici {
-            font-size: 8vw !important;
-            background: linear-gradient(45deg, #ff4d6d, #ff758f);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .sub-text {
-            font-size: 1.5vw;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            color: #ffb3c1;
-            margin-top: 20px;
-        }
-
-        .cat-icon {
-            font-size: 5vw;
-            margin-bottom: 20px;
-            filter: drop-shadow(0 0 10px rgba(255, 77, 109, 0.3));
-        }
-
-        .floating-elements {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none;
-            z-index: 5;
-        }
-
-        .meow {
-            position: absolute;
-            font-family: 'Caveat', cursive;
-            color: #ff8fa3;
-            font-size: 1.5rem;
-            animation: meowFly 4s linear infinite;
-        }
-
-        @keyframes meowFly {
-            0% { transform: translate(0, 100vh) rotate(0deg); opacity: 0; }
-            20% { opacity: 1; }
-            100% { transform: translate(100px, -10vh) rotate(20deg); opacity: 0; }
-        }
-
-        .hint-right {
-            position: absolute;
-            right: 30px;
-            bottom: 30px;
-            font-size: 2rem;
-            color: #ff4d6d;
-            animation: bounceRight 2s infinite;
-        }
-
-        @keyframes bounceRight {
-            0%, 20%, 50%, 80%, 100% { transform: translateX(0); }
-            40% { transform: translateX(10px); }
-            60% { transform: translateX(5px); }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тест: Звичайні дроби</title>
+<style>
+* { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+body { background-color: #f0f4f8; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; color: #333; }
+.app-container { background: #fff; width: 100%; max-width: 700px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.1); padding: 30px; overflow: hidden; }
+header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px solid #e2e8f0; }
+h1 { font-size: 1.5rem; margin: 0; color: #2c3e50; }
+.progress { font-weight: bold; color: #3498db; }
+.svg-container { display: flex; justify-content: center; align-items: center; background: #f8fafc; border: 2px dashed #cbd5e1; border-radius: 8px; padding: 20px; margin-bottom: 20px; min-height: 200px; }
+svg { max-width: 220px; max-height: 220px; width: 100%; height: auto; }
+.question-text { font-size: 1.2rem; margin-bottom: 20px; font-weight: 500; }
+.options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+button { padding: 15px; font-size: 1.1rem; border: 2px solid #e2e8f0; background: #fff; border-radius: 8px; cursor: pointer; transition: all 0.2s; font-weight: bold; color: #475569; }
+button:hover:not(:disabled) { border-color: #3498db; color: #3498db; background: #f0f8ff; }
+button:disabled { cursor: not-allowed; opacity: 0.8; }
+button.correct { background: #2ecc71 !important; border-color: #2ecc71 !important; color: #fff !important; }
+button.wrong { background: #e74c3c !important; border-color: #e74c3c !important; color: #fff !important; }
+.action-btn { grid-column: span 2; background: #3498db; color: #fff; border: none; padding: 15px; font-size: 1.2rem; border-radius: 8px; margin-top: 20px; cursor: pointer; transition: background 0.3s; display: none; }
+.action-btn:hover { background: #2980b9; }
+.result-screen { text-align: center; display: none; }
+.score-text { font-size: 2rem; font-weight: bold; color: #2c3e50; margin: 20px 0; }
+</style>
 </head>
 <body>
 
-    <div class="bg-glow"></div>
-    <div class="floating-elements" id="meowContainer"></div>
+<div class="app-container">
+    <div id="quiz-screen">
+        <header>
+            <h1>Тестування: Дроби (5 клас)</h1>
+            <div class="progress"><span id="current-q">1</span> / <span id="total-q">35</span></div>
+        </header>
+        <div class="question-text" id="question-text"></div>
+        <div class="svg-container" id="svg-container"></div>
+        <div class="options-grid" id="options-container"></div>
+        <button class="action-btn" id="next-btn">Наступне питання</button>
+    </div>
 
-    <section class="active">
-        <div class="cat-icon">🐾</div>
-        <h1>Сонічка...</h1>
-        <div class="sub-text">гортай далі, моя хароша</div>
-        <div class="hint-right">➔</div>
-    </section>
+    <div id="result-screen" class="result-screen">
+        <h1>Тест завершено!</h1>
+        <div class="score-text">Твій результат: <span id="score-display">0</span> з <span id="total-score">35</span></div>
+        <button class="action-btn" id="restart-btn" style="display: block; margin: 0 auto;">Пройти ще раз</button>
+    </div>
+</div>
 
-    <section>
-        <h1>Ти моя найвкусніша</h1>
-        <div class="sub-text">і найгарніша у світі</div>
-    </section>
+<script>
+const quizData = [
+    {
+        q: "Круг поділено на 4 рівні частини. Який дріб відповідає зафарбованій частині?",
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="none" stroke="#333" stroke-width="2"/><path d="M50,50 L50,5 A45,45 0 0,1 95,50 Z" fill="#3498db"/><line x1="50" y1="5" x2="50" y2="95" stroke="#333"/><line x1="5" y1="50" x2="95" y2="50" stroke="#333"/></svg>',
+        options: ["1/4", "1/2", "4/1", "3/4"],
+        correct: 0
+    },
+    {
+        q: "Яку частину прямокутника НЕ зафарбовано?",
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 40"><rect x="5" y="5" width="110" height="30" fill="none" stroke="#333" stroke-width="2"/><rect x="5" y="5" width="91.66" height="30" fill="#e67e22"/><line x1="23.33" y1="5" x2="23.33" y2="35" stroke="#333"/><line x1="41.66" y1="5" x2="41.66" y2="35" stroke="#333"/><line x1="60" y1="5" x2="60" y2="35" stroke="#333"/><line x1="78.33" y1="5" x2="78.33" y2="35" stroke="#333"/><line x1="96.66" y1="5" x2="96.66" y2="35" stroke="#333"/></svg>',
+        options: ["5/6", "1/6", "1/5", "6/6"],
+        correct: 1
+    },
+    {
+        q: "Оберіть дріб, що відповідає зафарбованій частині квадрата.",
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect x="10" y="10" width="80" height="80" fill="none" stroke="#333" stroke-width="2"/><polygon points="10,10 50,50 50,10" fill="#9b59b6"/><polygon points="50,10 50,50 90,10" fill="#9b59b6"/><polygon points="10,50 50,50 10,90" fill="#9b59b6"/><line x1="10" y1="10" x2="90" y2="90" stroke="#333"/><line x1="90" y1="10" x2="10" y2="90" stroke="#333"/><line x1="50" y1="10" x2="50" y2="90" stroke="#333"/><line x1="10" y1="50" x2="90" y2="50" stroke="#333"/></svg>',
+        options: ["8/3", "5/8", "3/8", "1/2"],
+        correct: 2
+    },
+    {
+        q: "Яка частина відрізка зафарбована?",
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 30"><rect x="10" y="10" width="180" height="10" fill="none" stroke="#333" stroke-width="2"/><rect x="10" y="10" width="126" height="10" fill="#2ecc71"/><line x1="28" y1="10" x2="28" y2="20" stroke="#333"/><line x1="46" y1="10" x2="46" y2="20" stroke="#333"/><line x1="64" y1="10" x2="64" y2="20" stroke="#333"/><line x1="82" y1="10" x2="82" y2="20" stroke="#333"/><line x1="100" y1="10" x2="100" y2="20" stroke="#333"/><line x1="118" y1="10" x2="118" y2="20" stroke="#333"/><line x1="136" y1="10" x2="136" y2="20" stroke="#333"/><line x1="154" y1="10" x2="154" y2="20" stroke="#333"/><line x1="172" y1="10" x2="172" y2="20" stroke="#333"/></svg>',
+        options: ["7/10", "3/10", "10/7", "7/100"],
+        correct: 0
+    },
+    {
+        q: "Яку частину фігури відокремлено?",
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 90"><rect x="0" y="0" width="120" height="90" fill="none" stroke="#333" stroke-width="2"/><rect x="0" y="0" width="30" height="30" fill="#fff"/><rect x="30" y="0" width="30" height="30" fill="#fff"/><rect x="60" y="0" width="30" height="30" fill="#fff"/><rect x="90" y="0" width="30" height="30" fill="#fff"/><rect x="0" y="30" width="120" height="60" fill="#f39c12"/><line x1="30" y1="0" x2="30" y2="90" stroke="#333"/><line x1="60" y1="0" x2="60" y2="90" stroke="#333"/><line x1="90" y1="0" x2="90" y2="90" stroke="#333"/><line x1="0" y1="30" x2="120" y2="30" stroke="#333"/><line x1="0" y1="60" x2="120" y2="60" stroke="#333"/></svg>',
+        options: ["8/12", "4/12", "12/4", "1/3"],
+        correct: 1
+    },
+    {
+        q: "Що означає виділена цифра у цьому дробі?",
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text x="50" y="40" font-size="35" font-weight="bold" text-anchor="middle">2</text><line x1="30" y1="50" x2="70" y2="50" stroke="#333" stroke-width="4"/><text x="50" y="85" font-size="35" font-weight="bold" text-anchor="middle" fill="#e74c3c">5</text></svg>',
+        options: ["Скільки частин було взято", "Різницю між частинами", "На скільки рівних частин поділили ціле", "Кількість цілих предметів"],
+        correct: 2
+    },
+    {
+        q: "Якщо у фігурі зафарбовано всі частини, на які вона поділена, то такий дріб дорівнює:",
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect x="10" y="10" width="80" height="80" fill="#3498db" stroke="#333" stroke-width="2"/><line x1="50" y1="10" x2="50" y2="90" stroke="#333"/><line x1="10" y1="50" x2="90" y2="50" stroke="#333"/></svg>',
+        options: ["Нулю (0)", "Одиниці (1)", "Половині", "Знаменнику"],
+        correct: 1
+    },
+    {
+        q: "Трикутник поділили на 2 рівні частини. Одну частину зафарбували. Яку назву має цей дріб?",
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><polygon points="50,10 90,90 10,90" fill="none" stroke="#333" stroke-width="2"/><polygon points="50,10 50,90 10,90" fill="#9b59b6"/><line x1="50" y1="10" x2="50" y2="90" stroke="#333"/></svg>',
+        options: ["Чверть", "Третина", "Половина", "Ціле"],
+        correct: 2
+    },
+    {
+        q: "Яка частина фігури залишилася незафарбованою?",
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><polygon points="50,5 95,35 75,90 25,90 5,35" fill="none" stroke="#333" stroke-width="2"/><polygon points="50,50 95,35 50,5" fill="#1abc9c"/><polygon points="50,50 50,5 5,35" fill="#1abc9c"/><line x1="50" y1="50" x2="50" y2="5" stroke="#333"/><line x1="50" y1="50" x2="95" y2="35" stroke="#333"/><line x1="50" y1="50" x2="75" y2="90" stroke="#333"/><line x1="50" y1="50" x2="25" y2="90" stroke="#333"/><line x1="50" y1="50" x2="5" y2="35" stroke="#333"/></svg>',
+        options: ["2/5", "3/5", "5/3", "1/5"],
+        correct: 1
+    },
+    {
+        q: "Чи можна вважати зафарбовану частину дробом 1/3?",
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect x="10" y="10" width="80" height="80" fill="none" stroke="#333" stroke-width="2"/><rect x="10" y="10" width="20" height="80" fill="#e74c3c"/><line x1="30" y1="10" x2="30" y2="90" stroke="#333"/><line x1="70" y1="10" x2="70" y2="90" stroke="#333"/></svg>',
+        options: ["Так, головне кількість частин", "Так, якщо фігура симетрична", "Тільки для трикутників", "Ні, частини мають бути обов'язково рівними"],
+        correct: 3
+    },
+    {
+        q: "Дріб 4/9 показує, що:",
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text x="50" y="45" font-size="35" font-weight="bold" text-anchor="middle">4</text><line x1="30" y1="55" x2="70" y2="55" stroke="#333" stroke-width="4"/><text x="50" y="90" font-size="35" font-weight="bold" text-anchor="middle">9</text></svg>',
+        options: ["Ціле поділили на 4 частини і взяли 9", "Ціле поділили на 9 частин і взяли 4", "До 4 частин додали 9", "Зафарбовано 5 частин із 9"],
+        correct: 1
+    },
+    {
+        q: "Який дріб відповідає слову 'чверть'?",
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="none" stroke="#333" stroke-width="2"/><path d="M50,50 L50,5 A45,45 0 0,1 95,50 Z" fill="#f1c40f"/><line x1="50" y1="5" x2="50" y2="95" stroke="#333"/><line x1="5" y1="50" x2="95" y2="50" stroke="#333"/></svg>',
+        options: ["1/4", "1/2", "4/1", "1/40"],
+        correct: 0
+    },
+    {
+        q: "Якому ще простому поняттю відповідає зафарбована частина?",
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="none" stroke="#333" stroke-width="2"/><path d="M50,5 L50,95 A45,45 0 0,0 50,5 Z" fill="#3498db"/><line x1="50" y1="5" x2="50" y2="95" stroke="#333"/><line x1="5" y1="50" x2="95" y2="50" stroke="#333"/><line x1="18.2" y1="18.2" x2="81.8" y2="81.8" stroke="#333"/><line x1="18.2" y1="81.8" x2="81.8" y2="18.2" stroke="#333"/></svg>',
+        options: ["Ціле коло", "Чверть кола", "Половина кола", "Третина кола"],
+        correct: 2
+    },
+    {
+        q: "Як називається виділене число, що стоїть над рискою дробу?",
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text x="50" y="40" font-size="35" font-weight="bold" text-anchor="middle" fill="#2ecc71">3</text><line x1="30" y1="50" x2="70" y2="50" stroke="#333" stroke-width="4"/><text x="50" y="85" font-size="35" font-weight="bold" text-anchor="middle">8</text></svg>',
+        options: ["Знаменник", "Доданок", "Різниця", "Чисельник"],
+        correct: 3
+    },
+    {
+        q: "Який дріб позначає НЕ зафарбовані клітинки?",
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 60"><rect x="0" y="0" width="150" height="60" fill="none" stroke="#333" stroke-width="2"/><rect x="0" y="0" width="30" height="30" fill="#95a5a6"/><rect x="30" y="30" width="30" height="30" fill="#95a5a6"/><line x1="30" y1="0" x2="30" y2="60" stroke="#333"/><line x1="60" y1="0" x2="60" y2="60" stroke="#333"/><line x1="90" y1="0" x2="90" y2="60" stroke="#333"/><line x1="120" y1="0" x2="120" y2="60" stroke="#333"/><line x1="0" y1="30" x2="150" y2="30" stroke="#333"/></svg>',
+        options: ["8/10", "2/10", "10/8", "1/5"],
+        correct: 0
+    },
+    {
+        q: "Що показує виділена риска дробу?",
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text x="50" y="35" font-size="30" font-weight="bold" text-anchor="middle">1</text><line x1="20" y1="45" x2="80" y2="45" stroke="#e74c3c" stroke-width="6"/><text x="50" y="85" font-size="30" font-weight="bold" text-anchor="middle">2</text></svg>',
+        options: ["Дію ділення", "Дію множення", "Дію додавання", "Це просто розділювач"],
+        correct: 0
+    },
+    {
+        q: "Якому дробу відповідає позначка на відрізку?",
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 40"><line x1="10" y1="20" x2="210" y2="20" stroke="#333" stroke-width="2"/><line x1="10" y1="15" x2="10" y2="25" stroke="#333"/><line x1="38.5" y1="15" x2="38.5" y2="25" stroke="#333"/><line x1="67" y1="15" x2="67" y2="25" stroke="#333"/><line x1="95.5" y1="15" x2="95.5" y2="25" stroke="#333"/><line x1="124" y1="15" x2="124" y2="25" stroke="#333"/><line x1="152.5" y1="15" x2="152.5" y2="25" stroke="#333"/><line x1="181" y1="15" x2="181" y2="25" stroke="#333"/><line x1="210" y1="15" x2="210" y2="25" stroke="#333"/><circle cx="124" cy="20" r="5" fill="#3498db"/><text x="6" y="38" font-size="12">0</text><text x="206" y="38" font-size="12">1</text></svg>',
+        options: ["3/7", "7/4", "4/7", "4/1"],
+        correct: 2
+    },
+    {
+        q: "Дріб 1/1 означає:",
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text x="50" y="45" font-size="35" font-weight="bold" text-anchor="middle">1</text><line x1="30" y1="55" x2="70" y2="55" stroke="#333" stroke-width="4"/><text x="50" y="90" font-size="35" font-weight="bold" text-anchor="middle">1</text></svg>',
+        options: ["Нуль", "Половину", "Одне ціле", "Нескінченність"],
+        correct: 2
+    },
+    {
+        q: "Яку частину прямокутника відокремлено світлим кольором?",
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 90"><rect x="0" y="0" width="150" height="90" fill="#795548" stroke="#333" stroke-width="2"/><rect x="0" y="0" width="30" height="90" fill="#fff"/><rect x="30" y="0" width="30" height="60" fill="#fff"/><line x1="30" y1="0" x2="30" y2="90" stroke="#333"/><line x1="60" y1="0" x2="60" y2="90" stroke="#333"/><line x1="90" y1="0" x2="90" y2="90" stroke="#333"/><line x1="120" y1="0" x2="120" y2="90" stroke="#333"/><line x1="0" y1="30" x2="150" y2="30" stroke="#333"/><line x1="0" y1="60" x2="150" y2="60" stroke="#333"/></svg>',
+        options: ["5/15", "10/15", "15/10", "1/3"],
+        correct: 0
+    },
+    {
+        q: "Якщо в знаменнику стоїть число 100, то дріб 1/100 називають:",
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text x="50" y="45" font-size="35" font-weight="bold" text-anchor="middle">1</text><line x1="15" y1="55" x2="85" y2="55" stroke="#333" stroke-width="4"/><text x="50" y="90" font-size="35" font-weight="bold" text-anchor="middle">100</text></svg>',
+        options: ["Одна десята", "Сто перших", "Одна сота", "Відсоток"],
+        correct: 2
+    },
+    {
+        q: "Якому дробу відповідає зафарбована частина смужки?",
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 40"><rect x="10" y="10" width="180" height="20" fill="none" stroke="#333" stroke-width="2"/><rect x="10" y="10" width="135" height="20" fill="#34495e"/><line x1="55" y1="10" x2="55" y2="30" stroke="#333"/><line x1="100" y1="10" x2="100" y2="30" stroke="#333"/><line x1="145" y1="10" x2="145" y2="30" stroke="#333"/></svg>',
+        options: ["3/4", "1/4", "4/3", "1/3"],
+        correct: 0
+    },
+    {
+        q: "Яку частину смужки зафарбовано?",
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 40"><rect x="10" y="10" width="180" height="20" fill="none" stroke="#333" stroke-width="2"/><rect x="10" y="10" width="60" height="20" fill="#95a5a6"/><line x1="40" y1="10" x2="40" y2="30" stroke="#333"/><line x1="70" y1="10" x2="70" y2="30" stroke="#333"/><line x1="100" y1="10" x2="100" y2="30" stroke="#333"/><line x1="130" y1="10" x2="130" y2="30" stroke="#333"/><line x1="160" y1="10" x2="160" y2="30" stroke="#333"/></svg>',
+        options: ["4/6", "2/6", "1/6", "6/2"],
+        correct: 1
+    },
+    {
+        q: "Смужку поділено на 9 рівних частин. Зафарбована лише одна. Який це дріб?",
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 40"><rect x="10" y="10" width="180" height="20" fill="none" stroke="#333" stroke-width="2"/><rect x="10" y="10" width="20" height="20" fill="#bdc3c7"/><line x1="30" y1="10" x2="30" y2="30" stroke="#333"/><line x1="50" y1="10" x2="50" y2="30" stroke="#333"/><line x1="70" y1="10" x2="70" y2="30" stroke="#333"/><line x1="90" y1="10" x2="90" y2="30" stroke="#333"/><line x1="110" y1="10" x2="110" y2="30" stroke="#333"/><line x1="130" y1="10" x2="130" y2="30" stroke="#333"/><line x1="150" y1="10" x2="150" y2="30" stroke="#333"/><line x1="170" y1="10" x2="170" y2="30" stroke="#333"/></svg>',
+        options: ["1/9", "9/1", "8/9", "1/8"],
+        correct: 0
+    },
+    {
+        q: "Пиріг поділили на 8 однакових шматочків. Якщо взяти 5 шматочків, який дріб покаже цю порцію?",
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60"><rect x="10" y="20" width="180" height="20" fill="none" stroke="#333" stroke-width="2"/><rect x="10" y="20" width="112.5" height="20" fill="#e67e22"/><line x1="32.5" y1="20" x2="32.5" y2="40" stroke="#333"/><line x1="55" y1="20" x2="55" y2="40" stroke="#333"/><line x1="77.5" y1="20" x2="77.5" y2="40" stroke="#333"/><line x1="100" y1="20" x2="100" y2="40" stroke="#333"/><line x1="122.5" y1="20" x2="122.5" y2="40" stroke="#333"/><line x1="145" y1="20" x2="145" y2="40" stroke="#333"/><line x1="167.5" y1="20" x2="167.5" y2="40" stroke="#333"/></svg>',
+        options: ["8/5", "3/8", "5/8", "1/8"],
+        correct: 2
+    },
+    {
+        q: "Що показує число під рискою дробу (наприклад, 8 у дробі 5/8)?",
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text x="50" y="40" font-size="35" font-weight="bold" text-anchor="middle">5</text><line x1="30" y1="50" x2="70" y2="50" stroke="#333" stroke-width="4"/><text x="50" y="85" font-size="35" font-weight="bold" text-anchor="middle" fill="#e74c3c">8</text></svg>',
+        options: ["На скільки рівних частин поділено ціле", "Скільки частин узяли", "Яка частина залишилася", "Скільки всього цілих предметів"],
+        correct: 0
+    },
+    {
+        q: "Що показує число над рискою дробу (наприклад, 5 у дробі 5/8)?",
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text x="50" y="40" font-size="35" font-weight="bold" text-anchor="middle" fill="#3498db">5</text><line x1="30" y1="50" x2="70" y2="50" stroke="#333" stroke-width="4"/><text x="50" y="85" font-size="35" font-weight="bold" text-anchor="middle">8</text></svg>',
+        options: ["На скільки частин поділили ціле", "Скільки таких частин ми взяли", "Загальну кількість частин", "Знак ділення"],
+        correct: 1
+    },
+    {
+        q: "Один батончик порівну ділять між 3 друзями. Яку частину батончика отримає кожен?",
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 40"><rect x="10" y="10" width="180" height="20" fill="none" stroke="#333" stroke-width="2"/><rect x="10" y="10" width="60" height="20" fill="#d35400"/><line x1="70" y1="10" x2="70" y2="30" stroke="#333"/><line x1="130" y1="10" x2="130" y2="30" stroke="#333"/></svg>',
+        options: ["1/2", "3/1", "2/3", "1/3"],
+        correct: 3
+    },
+    {
+        q: "Батончик ділять між 4 людьми. Який дріб відповідає порції однієї людини?",
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 40"><rect x="10" y="10" width="180" height="20" fill="none" stroke="#333" stroke-width="2"/><rect x="10" y="10" width="45" height="20" fill="#d35400"/><line x1="55" y1="10" x2="55" y2="30" stroke="#333"/><line x1="100" y1="10" x2="100" y2="30" stroke="#333"/><line x1="145" y1="10" x2="145" y2="30" stroke="#333"/></svg>',
+        options: ["1/4", "4/1", "3/4", "1/5"],
+        correct: 0
+    },
+    {
+        q: "Що відбувається з розміром порції однієї людини, якщо кількість людей, між якими ділять один батончик, збільшується?",
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 90"><rect x="10" y="10" width="90" height="15" fill="#d35400" stroke="#333"/><rect x="100" y="10" width="90" height="15" fill="none" stroke="#333"/><rect x="10" y="35" width="60" height="15" fill="#d35400" stroke="#333"/><rect x="70" y="35" width="120" height="15" fill="none" stroke="#333"/><line x1="130" y1="35" x2="130" y2="50" stroke="#333"/><rect x="10" y="60" width="45" height="15" fill="#d35400" stroke="#333"/><rect x="55" y="60" width="135" height="15" fill="none" stroke="#333"/><line x1="100" y1="60" x2="100" y2="75" stroke="#333"/><line x1="145" y1="60" x2="145" y2="75" stroke="#333"/></svg>',
+        options: ["Порція стає більшою", "Порція не змінюється", "Порція стає меншою", "Батончик стає довшим"],
+        correct: 2
+    },
+    {
+        q: "Якщо порція від цілого батончика стає меншою, що відбувається зі знаменником дробу (який позначає кількість людей)?",
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60"><text x="30" y="35" font-size="20">1/2</text><text x="65" y="35" font-size="20">→</text><text x="90" y="35" font-size="20">1/3</text><text x="125" y="35" font-size="20">→</text><text x="150" y="35" font-size="20">1/4</text></svg>',
+        options: ["Знаменник збільшується", "Знаменник зменшується", "Знаменник залишається таким самим", "Знаменник дорівнює чисельнику"],
+        correct: 0
+    },
+    {
+        q: "У склянці змішали 1 частину вишневого соку і 3 частини бананового. На скільки всього рівних частин поділено напій у склянці?",
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 150"><path d="M30,10 L30,130 C30,140 70,140 70,130 L70,10" fill="none" stroke="#333" stroke-width="3"/><rect x="32" y="100" width="36" height="30" fill="#c0392b"/><rect x="32" y="70" width="36" height="30" fill="#f1c40f"/><rect x="32" y="40" width="36" height="30" fill="#f1c40f"/><rect x="32" y="10" width="36" height="30" fill="#f1c40f"/><line x1="25" y1="100" x2="75" y2="100" stroke="#333"/><line x1="25" y1="70" x2="75" y2="70" stroke="#333"/><line x1="25" y1="40" x2="75" y2="40" stroke="#333"/></svg>',
+        options: ["3", "1", "4", "2"],
+        correct: 2
+    },
+    {
+        q: "У склянці 1 частина вишневого соку і 3 частини бананового. Яким дробом можна записати частку вишневого соку в усьому напої?",
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 150"><path d="M30,10 L30,130 C30,140 70,140 70,130 L70,10" fill="none" stroke="#333" stroke-width="3"/><rect x="32" y="100" width="36" height="30" fill="#c0392b"/><rect x="32" y="70" width="36" height="30" fill="#f1c40f"/><rect x="32" y="40" width="36" height="30" fill="#f1c40f"/><rect x="32" y="10" width="36" height="30" fill="#f1c40f"/><line x1="25" y1="100" x2="75" y2="100" stroke="#333"/><line x1="25" y1="70" x2="75" y2="70" stroke="#333"/><line x1="25" y1="40" x2="75" y2="40" stroke="#333"/></svg>',
+        options: ["1/4", "1/3", "3/4", "4/1"],
+        correct: 0
+    },
+    {
+        q: "Склянка вміщує 5 однакових частин. З них 2 частини – це вишневий сік. Який дріб показує кількість вишневого соку в склянці?",
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 150"><path d="M30,10 L30,130 C30,140 70,140 70,130 L70,10" fill="none" stroke="#333" stroke-width="3"/><rect x="32" y="106" width="36" height="24" fill="#c0392b"/><rect x="32" y="82" width="36" height="24" fill="#c0392b"/><rect x="32" y="58" width="36" height="24" fill="#f1c40f"/><rect x="32" y="34" width="36" height="24" fill="#f1c40f"/><rect x="32" y="10" width="36" height="24" fill="#f1c40f"/><line x1="25" y1="106" x2="75" y2="106" stroke="#333"/><line x1="25" y1="82" x2="75" y2="82" stroke="#333"/><line x1="25" y1="58" x2="75" y2="58" stroke="#333"/><line x1="25" y1="34" x2="75" y2="34" stroke="#333"/></svg>',
+        options: ["3/5", "5/2", "2/3", "2/5"],
+        correct: 3
+    },
+    {
+        q: "Записано дріб 4/5 для вишневого соку в напої. Скільки всього частин рідини у цій склянці?",
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 100"><text x="50" y="45" font-size="35" font-weight="bold" text-anchor="middle">4</text><line x1="30" y1="55" x2="70" y2="55" stroke="#333" stroke-width="4"/><text x="50" y="90" font-size="35" font-weight="bold" text-anchor="middle">5</text><path d="M100,20 L100,80 C100,90 130,90 130,80 L130,20" fill="none" stroke="#333" stroke-width="2"/></svg>',
+        options: ["5", "4", "9", "1"],
+        correct: 0
+    },
+    {
+        q: "В одній склянці 1 частина темного соку і 2 світлого. В іншій - 2 частини темного і 4 світлого. Які дроби відповідають частці темного соку в склянках?",
+        svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 150"><path d="M30,30 L30,110 C30,120 60,120 60,110 L60,30" fill="none" stroke="#333" stroke-width="2"/><rect x="32" y="83" width="26" height="26" fill="#c0392b"/><rect x="32" y="57" width="26" height="26" fill="#f1c40f"/><rect x="32" y="30" width="26" height="26" fill="#f1c40f"/><line x1="25" y1="83" x2="65" y2="83" stroke="#333"/><line x1="25" y1="57" x2="65" y2="57" stroke="#333"/><path d="M120,30 L120,110 C120,120 150,120 150,110 L150,30" fill="none" stroke="#333" stroke-width="2"/><rect x="122" y="96" width="26" height="13" fill="#c0392b"/><rect x="122" y="83" width="26" height="13" fill="#c0392b"/><rect x="122" y="70" width="26" height="13" fill="#f1c40f"/><rect x="122" y="57" width="26" height="13" fill="#f1c40f"/><rect x="122" y="44" width="26" height="13" fill="#f1c40f"/><rect x="122" y="30" width="26" height="14" fill="#f1c40f"/><line x1="115" y1="96" x2="155" y2="96" stroke="#333"/><line x1="115" y1="83" x2="155" y2="83" stroke="#333"/><line x1="115" y1="70" x2="155" y2="70" stroke="#333"/><line x1="115" y1="57" x2="155" y2="57" stroke="#333"/><line x1="115" y1="44" x2="155" y2="44" stroke="#333"/></svg>',
+        options: ["1/2 та 2/4", "1/3 та 2/6", "3/1 та 6/2", "1/4 та 2/8"],
+        correct: 1
+    }
+];
 
-    <section>
-        <div class="cat-icon">🐱</div>
-        <h1 class="kici-kici">Кіцичка</h1>
-    </section>
+let currentQuestionIndex = 0;
+let score = 0;
 
-    <section>
-        <h1 class="kici-kici">Кицюнічка</h1>
-    </section>
+const questionText = document.getElementById('question-text');
+const svgContainer = document.getElementById('svg-container');
+const optionsContainer = document.getElementById('options-container');
+const currentQSpan = document.getElementById('current-q');
+const totalQSpan = document.getElementById('total-q');
+const nextBtn = document.getElementById('next-btn');
+const quizScreen = document.getElementById('quiz-screen');
+const resultScreen = document.getElementById('result-screen');
+const scoreDisplay = document.getElementById('score-display');
+const totalScoreDisplay = document.getElementById('total-score');
+const restartBtn = document.getElementById('restart-btn');
 
-    <section>
-        <h1 class="kici-kici">Хароша моя!</h1>
-    </section>
+function initQuiz() {
+    currentQuestionIndex = 0;
+    score = 0;
+    totalQSpan.textContent = quizData.length;
+    totalScoreDisplay.textContent = quizData.length;
+    quizScreen.style.display = 'block';
+    resultScreen.style.display = 'none';
+    loadQuestion();
+}
 
-    <section>
-        <h1 style="font-size: 10vw;">Няняння ❤️</h1>
-        <div class="sub-text">просто обожнюю тебе</div>
-    </section>
+function loadQuestion() {
+    nextBtn.style.display = 'none';
+    const currentQuiz = quizData[currentQuestionIndex];
+    currentQSpan.textContent = currentQuestionIndex + 1;
+    questionText.textContent = currentQuiz.q;
+    svgContainer.innerHTML = currentQuiz.svg;
+    optionsContainer.innerHTML = '';
 
-    <section>
-        <h1>Я ЛЮБЛЮ ТЕБЕ</h1>
-        <div class="sub-text">навіть сильніше, ніж можна уявити</div>
-    </section>
+    currentQuiz.options.forEach((option, index) => {
+        const button = document.createElement('button');
+        button.textContent = option;
+        button.addEventListener('click', () => selectAnswer(button, index));
+        optionsContainer.appendChild(button);
+    });
+}
 
-    <section>
-        <div class="cat-icon">💖</div>
-        <h1>Ти моє все!</h1>
-        <div class="sub-text">кінець (але моя любов нескінчення чєсна сна)</div>
-    </section>
+function selectAnswer(selectedButton, selectedIndex) {
+    const currentQuiz = quizData[currentQuestionIndex];
+    const allButtons = optionsContainer.querySelectorAll('button');
+    
+    allButtons.forEach(btn => btn.disabled = true);
 
-    <script>
-        // Відстеження активних секцій
-        const sections = document.querySelectorAll('section');
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
-                }
-            });
-        }, { threshold: 0.6 });
+    if (selectedIndex === currentQuiz.correct) {
+        selectedButton.classList.add('correct');
+        score++;
+    } else {
+        selectedButton.classList.add('wrong');
+        allButtons[currentQuiz.correct].classList.add('correct');
+    }
 
-        sections.forEach(s => observer.observe(s));
+    nextBtn.style.display = 'block';
+}
 
-        // Створення літаючих написів "мур", "мяу" та сердечок
-        function createMeow() {
-            const words = ['мур', 'мяу', '❤️', 'love', 'киця'];
-            const el = document.createElement('div');
-            el.classList.add('meow');
-            el.innerText = words[Math.floor(Math.random() * words.length)];
-            el.style.left = Math.random() * 100 + 'vw';
-            el.style.animationDuration = (Math.random() * 2 + 3) + 's';
-            el.style.fontSize = (Math.random() * 1.5 + 1) + 'rem';
-            
-            document.getElementById('meowContainer').appendChild(el);
-            setTimeout(() => el.remove(), 4000);
-        }
+nextBtn.addEventListener('click', () => {
+    currentQuestionIndex++;
+    if (currentQuestionIndex < quizData.length) {
+        loadQuestion();
+    } else {
+        showResults();
+    }
+});
 
-        setInterval(createMeow, 500);
+function showResults() {
+    quizScreen.style.display = 'none';
+    resultScreen.style.display = 'block';
+    scoreDisplay.textContent = score;
+}
 
-        // Горизонтальний скрол мишкою
-        window.addEventListener('wheel', (evt) => {
-            evt.preventDefault();
-            window.scrollBy({
-                left: evt.deltaY * 2,
-                behavior: 'smooth'
-            });
-        }, { passive: false });
-    </script>
+restartBtn.addEventListener('click', initQuiz);
+
+initQuiz();
+</script>
 </body>
 </html>

@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тренажер з математики</title>
+<style>
+    body {
+        font-family: 'Comic Sans MS', cursive, sans-serif;
+        background-color: #f0f8ff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+        color: #333;
+        padding: 20px;
+        box-sizing: border-box;
+    }
+    .container {
+        background-color: #ffffff;
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        text-align: center;
+        max-width: 500px;
+        width: 100%;
+        border: 3px solid #ffb6c1;
+    }
+    h1 {
+        color: #ff69b4;
+        font-size: 26px;
+        margin-bottom: 5px;
+    }
+    #question {
+        font-size: 45px;
+        margin: 20px 0;
+        color: #4682b4;
+    }
+    input {
+        font-size: 28px;
+        padding: 10px;
+        width: 100px;
+        text-align: center;
+        border: 2px solid #87ceeb;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        outline: none;
+    }
+    input:focus {
+        border-color: #ff69b4;
+    }
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+    button {
+        font-size: 18px;
+        padding: 12px 24px;
+        background-color: #98fb98;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        transition: transform 0.1s;
+        color: #2e8b57;
+        font-weight: bold;
+        margin: 5px;
+    }
+    button:active {
+        transform: scale(0.95);
+    }
+    #message {
+        margin-top: 15px;
+        font-size: 20px;
+        height: 30px;
+        font-weight: bold;
+    }
+    #progress {
+        margin-top: 20px;
+        font-size: 16px;
+        color: #888;
+    }
+    .stats-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        font-size: 16px;
+    }
+    .stats-table th, .stats-table td {
+        border: 1px solid #ffb6c1;
+        padding: 8px;
+        text-align: left;
+    }
+    .stats-table th {
+        background-color: #fff0f5;
+    }
+    .wrong-answers {
+        color: #ff4500;
+    }
+    .correct-answer {
+        color: #32cd32;
+        font-weight: bold;
+    }
+</style>
+</head>
+<body>
+
+<div class="container" id="app">
+    <h1 id="title">🌟 Множення! 🌟</h1>
+    
+    <div id="game-area" style="display: none;">
+        <div id="question"></div>
+        <input type="number" id="answer" autocomplete="off" autofocus>
+        <br>
+        <button id="submit-btn">Перевірити</button>
+        <div id="message"></div>
+        <div id="progress"></div>
+    </div>
+
+    <div id="result-area" style="display: none;">
+        <h1>🎉 Молодець! 🎉</h1>
+        <p style="font-size: 18px;">Всі приклади вирішено!</p>
+        <button id="copy-btn">📋 Скопіювати посилання з результатом</button>
+        <br><br>
+        <button id="restart-btn">Грати ще</button>
+    </div>
+
+    <div id="teacher-area" style="display: none;">
+        <h1>📊 Звіт про сесію</h1>
+        <div id="teacher-stats"></div>
+        <br>
+        <button id="home-btn">На головну (Нова гра)</button>
+    </div>
+</div>
+
+<script>
+    const totalQuestions = 15;
+    let questions = [];
+    let currentQuestion = null;
+    let answeredCount = 0;
+    let sessionStats = {}; 
+
+    const titleEl = document.getElementById('title');
+    const questionEl = document.getElementById('question');
+    const answerEl = document.getElementById('answer');
+    const messageEl = document.getElementById('message');
+    const progressEl = document.getElementById('progress');
+    const submitBtn = document.getElementById('submit-btn');
+    
+    const gameArea = document.getElementById('game-area');
+    const resultArea = document.getElementById('result-area');
+    const teacherArea = document.getElementById('teacher-area');
+    
+    const copyBtn = document.getElementById('copy-btn');
+    const restartBtn = document.getElementById('restart-btn');
+    const homeBtn = document.getElementById('home-btn');
+    const teacherStatsEl = document.getElementById('teacher-stats');
+
+    function init() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const dataParam = urlParams.get('data');
+
+        if (dataParam) {
+            showTeacherView(dataParam);
+        } else {
+            startGame();
+        }
+    }
+
+    function startGame() {
+        gameArea.style.display = 'block';
+        resultArea.style.display = 'none';
+        teacherArea.style.display = 'none';
+        
+        sessionStats = {};
+        generateQuestions();
+        showNextQuestion();
+    }
+
+    function generateQuestions() {
+        questions = [];
+        answeredCount = 0;
+        
+        const baseNumbers = [0, 1, 2, 3, 4, 5, 10];
+        let uniquePairs = [];
+
+        for (let i = 0; i < baseNumbers.length; i++) {
+            for (let j = i; j < baseNumbers.length; j++) {
+                uniquePairs.push([baseNumbers[i], baseNumbers[j]]);
+            }
+        }
+
+        for (let i = uniquePairs.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [uniquePairs[i], uniquePairs[j]] = [uniquePairs[j], uniquePairs[i]];
+        }
+
+        const selectedPairs = uniquePairs.slice(0, totalQuestions);
+
+        for (const [a, b] of selectedPairs) {
+            let qText;
+            if (a !== b && Math.random() < 0.5) {
+                qText = `${b} × ${a}`;
+            } else {
+                qText = `${a} × ${b}`;
+            }
+            const qCorrect = a * b;
+            
+            questions.push({ text: qText, correct: qCorrect });
+            sessionStats[qText] = { correct: qCorrect, wrongAttempts: [] };
+        }
+    }
+
+    function showNextQuestion() {
+        if (questions.length === 0) {
+            finishGame();
+            return;
+        }
+        currentQuestion = questions[0];
+        questionEl.textContent = `${currentQuestion.text} = ?`;
+        answerEl.value = '';
+        messageEl.textContent = '';
+        answerEl.focus();
+        progressEl.textContent = `Залишилось: ${questions.length} | Вирішено: ${answeredCount}`;
+    }
+
+    function checkAnswer() {
+        const userAnswer = parseInt(answerEl.value, 10);
+        
+        if (isNaN(userAnswer)) return;
+
+        if (userAnswer === currentQuestion.correct) {
+            messageEl.textContent = '✅ Правильно!';
+            messageEl.style.color = '#32cd32';
+            questions.shift();
+            answeredCount++;
+            setTimeout(showNextQuestion, 800);
+        } else {
+            messageEl.textContent = '❌ Спробуй ще раз!';
+            messageEl.style.color = '#ff4500';
+            
+            sessionStats[currentQuestion.text].wrongAttempts.push(userAnswer);
+
+            const wrongQuestion = questions.shift();
+            questions.push(wrongQuestion);
+            setTimeout(showNextQuestion, 1200);
+        }
+    }
+
+    function finishGame() {
+        gameArea.style.display = 'none';
+        resultArea.style.display = 'block';
+    }
+
+    function getResultLink() {
+        const dataString = JSON.stringify(sessionStats);
+        const encodedData = btoa(encodeURIComponent(dataString));
+        const baseUrl = window.location.href.split('?')[0];
+        return `${baseUrl}?data=${encodedData}`;
+    }
+
+    function showTeacherView(encodedData) {
+        gameArea.style.display = 'none';
+        resultArea.style.display = 'none';
+        teacherArea.style.display = 'block';
+        titleEl.textContent = 'Перевірка результатів';
+
+        try {
+            const dataString = decodeURIComponent(atob(encodedData));
+            const stats = JSON.parse(dataString);
+            
+            let html = '<table class="stats-table"><tr><th>Приклад</th><th>Правильна</th><th>Помилки учня</th></tr>';
+            
+            for (const [qText, data] of Object.entries(stats)) {
+                const wrongStr = data.wrongAttempts.length > 0 
+                    ? `<span class="wrong-answers">${data.wrongAttempts.join(', ')}</span>` 
+                    : '-';
+                
+                html += `<tr>
+                    <td>${qText}</td>
+                    <td class="correct-answer">${data.correct}</td>
+                    <td>${wrongStr}</td>
+                </tr>`;
+            }
+            html += '</table>';
+            teacherStatsEl.innerHTML = html;
+
+        } catch (e) {
+            teacherStatsEl.innerHTML = '<p style="color:red;">Помилка читання даних. Можливо, посилання пошкоджене.</p>';
+        }
+    }
+
+    submitBtn.addEventListener('click', checkAnswer);
+
+    answerEl.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            checkAnswer();
+        }
+    });
+
+    copyBtn.addEventListener('click', () => {
+        const link = getResultLink();
+        navigator.clipboard.writeText(link).then(() => {
+            const originalText = copyBtn.textContent;
+            copyBtn.textContent = '✅ Посилання скопійовано!';
+            setTimeout(() => {
+                copyBtn.textContent = originalText;
+            }, 2000);
+        }).catch(err => {
+            alert('Не вдалося скопіювати. Ось посилання:\n' + link);
+        });
+    });
+
+    restartBtn.addEventListener('click', () => {
+        window.history.replaceState({}, document.title, window.location.pathname);
+        startGame();
+    });
+
+    homeBtn.addEventListener('click', () => {
+        window.history.replaceState({}, document.title, window.location.pathname);
+        startGame();
+    });
+
+    init();
+</script>
+
+</body>
+</html>
