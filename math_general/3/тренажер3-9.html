@@ -144,6 +144,7 @@
     let currentQuestion = null;
     let answeredCount = 0;
     let sessionStats = {}; 
+    let isProcessing = false; 
 
     const titleEl = document.getElementById('title');
     const questionEl = document.getElementById('question');
@@ -237,6 +238,10 @@
             finishGame();
             return;
         }
+        isProcessing = false;
+        answerEl.disabled = false;
+        submitBtn.disabled = false;
+
         currentQuestion = questions[0];
         questionEl.textContent = `${currentQuestion.text} = ?`;
         answerEl.value = '';
@@ -246,9 +251,14 @@
     }
 
     function checkAnswer() {
+        if (isProcessing) return;
+
         const userAnswer = parseInt(answerEl.value, 10);
-        
         if (isNaN(userAnswer)) return;
+
+        isProcessing = true;
+        answerEl.disabled = true;
+        submitBtn.disabled = true;
 
         if (userAnswer === currentQuestion.correct) {
             messageEl.textContent = '✅ Правильно!';
