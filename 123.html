@@ -3,317 +3,185 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Тренажер: Дослідження операцій</title>
-<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<title>Тест: Властивості числових нерівностей</title>
 <script>
-window.MathJax = {
-  tex: {
-    inlineMath: [['$', '$'], ['\\(', '\\)']]
-  }
-};
+  window.MathJax = {
+    tex: {
+      inlineMath: [['\\(', '\\)']],
+      displayMath: [['\\[', '\\]']]
+    }
+  };
 </script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 <style>
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f4f7f6;
-    color: #333;
-    line-height: 1.6;
-    padding: 20px;
-    max-width: 800px;
-    margin: 0 auto;
-}
-.quiz-container {
-    background: #fff;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-}
-h1 {
-    text-align: center;
-    color: #2c3e50;
-}
-.question {
-    font-size: 1.2em;
-    font-weight: bold;
-    margin-bottom: 15px;
-}
-.options {
-    list-style-type: none;
-    padding: 0;
-}
-.options li {
-    margin-bottom: 10px;
-}
-.options label {
-    display: block;
-    padding: 10px;
-    background: #eef2f3;
-    border: 2px solid transparent;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: all 0.3s;
-}
-.options label:hover {
-    background: #dfe6e9;
-}
-input[type="radio"] {
-    display: none;
-}
-input[type="radio"]:checked + label {
-    background: #3498db;
-    color: #fff;
-    border-color: #2980b9;
-}
-button {
-    display: block;
-    width: 100%;
-    padding: 15px;
-    background: #2ecc71;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 1.1em;
-    cursor: pointer;
-    margin-top: 20px;
-    transition: background 0.3s;
-}
-button:hover {
-    background: #27ae60;
-}
-#result {
-    margin-top: 20px;
-    font-size: 1.2em;
-    text-align: center;
-    font-weight: bold;
-}
-.explanation {
-    margin-top: 10px;
-    padding: 15px;
-    background: #fdfefe;
-    border-left: 4px solid #f39c12;
-    display: none;
-}
-.correct-label {
-    background: #2ecc71 !important;
-    color: white !important;
-    border-color: #27ae60 !important;
-}
-.incorrect-label {
-    background: #e74c3c !important;
-    color: white !important;
-    border-color: #c0392b !important;
-}
+  body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; line-height: 1.6; color: #333; background-color: #fcfdfd; }
+  h1 { text-align: center; color: #2c3e50; font-size: 24px; margin-bottom: 30px; border-bottom: 3px solid #34495e; padding-bottom: 10px; }
+  .question { margin-bottom: 25px; padding: 25px; border: 1px solid #e2e8f0; border-radius: 12px; background-color: #ffffff; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+  .question p { margin-top: 0; font-size: 18px; color: #2d3748; font-weight: 600; }
+  .options label { display: block; margin-bottom: 12px; cursor: pointer; padding: 10px 15px; border: 1px solid #edf2f7; border-radius: 8px; transition: all 0.2s; font-size: 16px; }
+  .options label:hover { background-color: #f7fafc; border-color: #cbd5e0; }
+  .options input[type="radio"] { margin-right: 12px; transform: scale(1.1); }
+  button { display: block; width: 100%; padding: 15px; font-size: 18px; font-weight: bold; cursor: pointer; background: #2b6cb0; color: white; border: none; border-radius: 10px; transition: background 0.3s; box-shadow: 0 4px 6px rgba(43,108,176,0.2); }
+  button:hover { background: #2c5282; }
+  #result-container { display: none; margin-top: 30px; padding: 25px; background: #ebf8ff; border: 2px solid #bee3f8; border-radius: 12px; text-align: center; }
+  #result-container h2 { margin-top: 0; color: #2b6cb0; font-size: 22px; }
+  .correct-ans { color: #2f855a; font-weight: bold; background-color: #f0fff4; border: 1px solid #c6f6d5 !important; }
+  .wrong-ans { color: #9b2c2c; font-weight: bold; background-color: #fff5f5; border: 1px solid #fed7d7 !important; }
+  #link-output { width: 100%; padding: 14px; margin-top: 15px; box-sizing: border-box; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 15px; background: #fff; color: #4a5568; }
+  ul { list-style-type: none; padding-left: 0; margin: 0; }
+  li { margin-bottom: 10px; padding: 12px; border-radius: 8px; border: 1px solid transparent; }
 </style>
 </head>
 <body>
 
-<div class="quiz-container">
-    <h1>Білет №14: Перевірка знань</h1>
-    <div id="quiz"></div>
-    <button id="submit">Перевірити відповіді</button>
-    <div id="result"></div>
+<h1>Тест: Властивості числових нерівностей</h1>
+
+<div id="test-container"></div>
+
+<button id="submit-btn" onclick="submitTest()">Завершити тест та отримати посилання</button>
+
+<div id="result-container">
+  <h2>Результат тесту: <span id="score"></span> / 15</h2>
+  <p style="font-size: 16px; color: #4a5568;">Скопіюйте згенероване посилання та надішліть його вчителю:</p>
+  <input type="text" id="link-output" readonly>
+  <button onclick="copyLink()" style="margin-top: 15px; background: #319795; box-shadow: 0 4px 6px rgba(49,151,149,0.2);">Копіювати посилання</button>
 </div>
 
+<div id="teacher-view" style="display:none;"></div>
+
 <script>
-const quizData = [
-    {
-        question: "1. Яка умова обов'язково має виконуватися для закритої транспортної задачі?",
-        options: [
-            "Тарифи на перевезення мають бути нульовими.",
-            "Сумарний запас постачальників дорівнює сумарній потребі споживачів $\\sum a_i = \\sum b_j$.",
-            "Кількість постачальників має дорівнювати кількості споживачів $m = n$.",
-            "Сумарний запас має бути більшим за сумарну потребу."
-        ],
-        correct: 1,
-        explanation: "Закрита модель передбачає повний баланс між запасами та потребами. Якщо балансу немає, задача є відкритою і потребує введення фіктивного пункту."
-    },
-    {
-        question: "2. Що необхідно зробити, якщо у транспортній задачі $\\sum a_i > \\sum b_j$?",
-        options: [
-            "Ввести фіктивного постачальника з тарифами 0.",
-            "Зменшити запаси реальних постачальників.",
-            "Ввести фіктивного споживача з тарифами 0.",
-            "Збільшити потреби існуючих споживачів."
-        ],
-        correct: 2,
-        explanation: "Оскільки запасу більше, ніж потрібно (надлишок), ми створюємо фіктивного споживача, який «забере» цей надлишок. Фізично цей вантаж просто залишиться на складі."
-    },
-    {
-        question: "3. Для якої функції стаціонарна точка (де градієнт дорівнює нулю) гарантовано є точкою глобального мінімуму?",
-        options: [
-            "Для будь-якої неперервної функції.",
-            "Для будь-якої функції багатьох змінних.",
-            "Для опуклої диференційовної функції на опуклій множині.",
-            "Для лінійної функції."
-        ],
-        correct: 2,
-        explanation: "Це наслідок теореми про необхідну і достатню умову глобального мінімуму. Опукла функція не має локальних мінімумів, які не були б глобальними."
-    },
-    {
-        question: "4. Який економічний зміст двоїстих змінних $y_1$ та $y_2$ у вашій задачі?",
-        options: [
-            "Це обсяги виробленої продукції першого та другого типу.",
-            "Це тіньові ціни ресурсів, що показують на скільки зросте прибуток при збільшенні запасу ресурсу на 1 одиницю.",
-            "Це витрати на виробництво однієї одиниці продукції.",
-            "Це залишки невикористаних ресурсів на складі."
-        ],
-        correct: 1,
-        explanation: "Двоїсті змінні (оцінки) показують цінність кожної додаткової одиниці обмеженого ресурсу для максимізації цільової функції."
-    },
-    {
-        question: "5. За першою теоремою двоїстості, якщо існує оптимальний розв'язок прямої задачі, то:",
-        options: [
-            "Двоїста задача не має розв'язку.",
-            "$L_{\\max} = W_{\\min}$ (оптимальні значення цільових функцій збігаються).",
-            "$L_{\\max} > W_{\\min}$.",
-            "Оптимальні плани прямої і двоїстої задач однакові."
-        ],
-        correct: 1,
-        explanation: "Перша теорема (основна теорема двоїстості) стверджує, що екстремальні значення цільових функцій обох задач збігаються."
-    },
-    {
-        question: "6. Якщо оптимальний план двоїстої задачі $y^* = (2.2; 0.6)$, що станеться, якщо запас другого ресурсу збільшити на 10 одиниць?",
-        options: [
-            "Прибуток збільшиться на 6 ум. од.",
-            "Прибуток збільшиться на 22 ум. од.",
-            "Прибуток не зміниться.",
-            "Прибуток зменшиться на 6 ум. од."
-        ],
-        correct: 0,
-        explanation: "Тіньова ціна другого ресурсу $y_2 = 0.6$. Отже, $10 \\times 0.6 = 6$. Прибуток зросте на 6 одиниць."
-    },
-    {
-        question: "7. Що означає термін «ЛП-релаксація» у методі Гоморі?",
-        options: [
-            "Перехід від задачі на мінімум до задачі на максимум.",
-            "Відкидання обмежень на невід'ємність змінних.",
-            "Розв'язання задачі з ігноруванням умови цілочисельності змінних.",
-            "Спрощення цільової функції шляхом відкидання констант."
-        ],
-        correct: 2,
-        explanation: "ЛП-релаксація (від англ. relaxation — послаблення) — це розв'язання задачі звичайним симплекс-методом, тимчасово ігноруючи умову $x_i \\in \\mathbb{Z}$."
-    },
-    {
-        question: "8. Як геометрично діє відтин Гоморі?",
-        options: [
-            "Відсікає частину області допустимих розв'язків разом із знайденим нецілочисельним оптимумом, але не відсікає жодного цілочисельного плану.",
-            "Відсікає всі цілочисельні точки.",
-            "Збільшує область допустимих розв'язків.",
-            "Переносить початок координат у точку знайденого оптимуму."
-        ],
-        correct: 0,
-        explanation: "Сенс методу відтинів — поступово «зрізати» нецілі вершини багатогранника рішень, поки оптимальна вершина не стане цілочисельною."
-    },
-    {
-        question: "9. На основі чого будується перший відтин Гоморі-I?",
-        options: [
-            "На основі цільової функції початкової задачі.",
-            "На основі рівняння для тієї базисної змінної з останньої симплекс-таблиці, яка набула дробового значення.",
-            "На основі будь-якого неактивного обмеження.",
-            "Шляхом випадкового вибору коефіцієнтів."
-        ],
-        correct: 1,
-        explanation: "У вашому розв'язку $x_1 = \\frac{7}{3}$, тому виписано рівняння саме для $x_1$, після чого дробові частини відділені для створення нового обмеження."
-    },
-    {
-        question: "10. Чому після додавання відтину Гоморі до симплекс-таблиці використовується саме двоїстий симплекс-метод?",
-        options: [
-            "Тому що пряма задача стає відкритою.",
-            "Тому що в стовпці вільних членів з'являється від'ємне число (план стає псевдооптимальним).",
-            "Бо цільова функція змінює знак.",
-            "Двоїстий симплекс-метод працює швидше за звичайний."
-        ],
-        correct: 1,
-        explanation: "Відтин вводиться у вигляді $-... + x_k = -\\text{дробова частина}$. Від'ємний вільний член означає, що поточний базис втратив допустимість, тому застосовується двоїстий метод для відновлення допустимості без втрати оптимальності."
-    }
+const questions = [
+    { q: "1. Відомо, що \\(a \\gt b\\). Яка з наведених нерівностей обов'язково є правильною?", options: ["\\(a + 23 \\lt b + 23\\)", "\\(a + 23 \\gt b + 23\\)", "\\(-23a \\gt -23b\\)", "\\(\\frac{a}{23} \\lt \\frac{b}{23}\\)"], ans: 1 },
+    { q: "2. Оцініть значення виразу \\(7x\\), якщо відомо, що \\(2 \\lt x \\lt 5\\).", options: ["\\(9 \\lt 7x \\lt 12\\)", "\\(14 \\lt 7x \\lt 35\\)", "\\(2 \\lt 7x \\lt 5\\)", "\\(14 \\lt x \\lt 35\\)"], ans: 1 },
+    { q: "3. Оцініть значення виразу \\(y - 11\\), якщо відомо, що \\(12 \\lt y \\lt 18\\).", options: ["\\(1 \\lt y - 11 \\lt 7\\)", "\\(23 \\lt y - 11 \\lt 29\\)", "\\(1 \\lt y \\lt 7\\)", "\\(12 \\lt y - 11 \\lt 18\\)"], ans: 0 },
+    { q: "4. О0цініть значення виразу \\(-3p\\), якщо відомо, що \\(4 \\lt p \\lt 6\\).", options: ["\\(-12 \\lt -3p \\lt -18\\)", "\\(-18 \\lt -3p \\lt -12\\)", "\\(12 \\lt 3p \\lt 18\\)", "\\(-12 \\lt -3p\\)"], ans: 1 },
+    { q: "5. Порівняйте числа \\(m\\) і \\(n\\), якщо відомо, що \\(m \\lt 13\\) та \\(13 \\lt n\\).", options: ["\\(m \\gt n\\)", "\\(m = n\\)", "\\(m \\lt n\\)", "Порівняти неможливо"], ans: 2 },
+    { q: "6. Порівняйте число \\(x\\) з нулем, якщо відомо, що \\(x \\gt y\\) та \\(y \\ge 8\\).", options: ["\\(x \\lt 0\\)", "\\(x \\gt 0\\)", "\\(x = 0\\)", "Порівняти неможливо"], ans: 1 },
+    { q: "7. Яким знаком треба замінити зірочку в нерівності \\(-15a \\ast -15b\\), якщо відомо, що \\(a \\lt b\\)?", options: ["\\(\\lt\\)", "\\(=\\)", "\\(\\gt\\)", "\\(\\le\\)"], ans: 2 },
+    { q: "8. Оцініть значення виразу \\(\\frac{c}{9}\\), якщо відомо, що \\(18 \\lt c \\lt 45\\).", options: ["\\(2 \\lt \\frac{c}{9} \\lt 5\\)", "\\(162 \\lt \\frac{c}{9} \\lt 405\\)", "\\(2 \\lt c \\lt 5\\)", "\\(9 \\lt \\frac{c}{9} \\lt 18\\)"], ans: 0 },
+    { q: "9. Відомо, що \\(x \\gt y\\). Порівняйте значення виразів \\(x + 31\\) та \\(y\\).", options: ["\\(x + 31 \\lt y\\)", "\\(x + 31 = y\\)", "Порівняти неможливо", "\\(x + 31 \\gt y\\)"], ans: 3 },
+    { q: "10. Обидві частини нерівності \\(-4 \\lt 3\\) помножили на \\(-2\\). Яку правильну нерівність отримали?", options: ["\\(8 \\gt -6\\)", "\\(8 \\lt -6\\)", "\\(-8 \\gt 6\\)", "\\(-8 \\lt -6\\)"], ans: 0 },
+    { q: "11. Порівняйте значення дробів \\(\\frac{1}{x}\\) і \\(\\frac{1}{17}\\), якщо відомо, що \\(x \\gt 17\\).", options: ["\\(\\frac{1}{x} \\gt \\frac{1}{17}\\)", "\\(\\frac{1}{x} \\lt \\frac{1}{17}\\)", "\\(\\frac{1}{x} = \\frac{1}{17}\\)", "Порівняти неможливо"], ans: 1 },
+    { q: "12. Оцініть значення виразу \\(25 - x\\), якщо відомо, що \\(1 \\lt x \\lt 10\\).", options: ["\\(24 \\lt 25 - x \\lt 15\\)", "\\(26 \\lt 25 - x \\lt 35\\)", "\\(15 \\lt 25 - x \\lt 24\\)", "\\(-15 \\lt 25 - x \\lt -24\\)"], ans: 2 },
+    { q: "13. Відомо, що \\(a \\lt b\\), \\(b \\lt c\\) та \\(c \\lt d\\). Яка з точок розташована на координатній прямій найлівіше?", options: ["Точка d", "Точка c", "Точка b", "Точка a"], ans: 3 },
+    { q: "14. Відомо, що \\(p \\lt q\\). Порівняйте значення виразів \\(p - 50\\) та \\(q - 50\\).", options: ["\\(p - 50 \\gt q - 50\\)", "\\(p - 50 \\lt q - 50\\)", "\\(p - 50 = q - 50\\)", "Порівняти неможливо"], ans: 1 },
+    { q: "15. Оцініть значення виразу \\(8m + 3\\), якщо відомо, що \\(2 \\lt m \\lt 4\\).", options: ["\\(16 \\lt 8m + 3 \\lt 32\\)", "\\(19 \\lt 8m + 3 \\lt 35\\)", "\\(19 \\lt m \\lt 35\\)", "\\(5 \\lt 8m + 3 \\lt 7\\)"], ans: 1 }
 ];
 
-const quizContainer = document.getElementById('quiz');
-const submitButton = document.getElementById('submit');
-const resultContainer = document.getElementById('result');
-
-function buildQuiz() {
-    quizData.forEach((data, index) => {
-        const questionDiv = document.createElement('div');
-        questionDiv.classList.add('question-block');
-
-        const questionTitle = document.createElement('div');
-        questionTitle.classList.add('question');
-        questionTitle.innerHTML = data.question;
-        questionDiv.appendChild(questionTitle);
-
-        const optionsList = document.createElement('ul');
-        optionsList.classList.add('options');
-
-        data.options.forEach((option, optionIndex) => {
-            const listItem = document.createElement('li');
-            
-            const radioInput = document.createElement('input');
-            radioInput.type = 'radio';
-            radioInput.name = `question${index}`;
-            radioInput.id = `q${index}o${optionIndex}`;
-            radioInput.value = optionIndex;
-
-            const label = document.createElement('label');
-            label.htmlFor = `q${index}o${optionIndex}`;
-            label.innerHTML = option;
-
-            listItem.appendChild(radioInput);
-            listItem.appendChild(label);
-            optionsList.appendChild(listItem);
+function renderTest() {
+    const container = document.getElementById('test-container');
+    let html = '';
+    questions.forEach((q, i) => {
+        html += `<div class="question"><p>${q.q}</p><div class="options">`;
+        q.options.forEach((opt, j) => {
+            html += `<label><input type="radio" name="q${i}" value="${j}"> ${opt}</label>`;
         });
-
-        questionDiv.appendChild(optionsList);
-
-        const explanationDiv = document.createElement('div');
-        explanationDiv.classList.add('explanation');
-        explanationDiv.id = `expl${index}`;
-        explanationDiv.innerHTML = `<strong>Пояснення:</strong> ${data.explanation}`;
-        questionDiv.appendChild(explanationDiv);
-
-        quizContainer.appendChild(questionDiv);
+        html += `</div></div>`;
     });
+    container.innerHTML = html;
+    
+    if (window.MathJax && window.MathJax.typesetPromise) {
+        MathJax.typesetPromise();
+    }
 }
 
-function showResults() {
+function submitTest() {
+    let answers = [];
     let score = 0;
+    
+    questions.forEach((q, i) => {
+        const selected = document.querySelector(`input[name="q${i}"]:checked`);
+        const val = selected ? parseInt(selected.value) : -1;
+        answers.push(val);
+        if(val === q.ans) score++;
+    });
+    
+    document.getElementById('score').innerText = score;
+    
+    const data = { a: answers };
+    const hash = btoa(JSON.stringify(data));
+    const url = window.location.href.split('#')[0] + '#' + hash;
+    
+    document.getElementById('link-output').value = url;
+    document.getElementById('result-container').style.display = 'block';
+    document.getElementById('submit-btn').style.display = 'none';
+    
+    const inputs = document.querySelectorAll('input[type="radio"]');
+    inputs.forEach(input => input.disabled = true);
+    
+    window.scrollTo(0, document.body.scrollHeight);
+}
 
-    quizData.forEach((data, index) => {
-        const selectedOption = document.querySelector(`input[name="question${index}"]:checked`);
-        const explanationDiv = document.getElementById(`expl${index}`);
-        const options = document.querySelectorAll(`input[name="question${index}"]`);
+function copyLink() {
+    const copyText = document.getElementById("link-output");
+    copyText.select();
+    document.execCommand("copy");
+    alert("Посилання скопійовано! Надішліть його для перевірки.");
+}
 
-        options.forEach((opt) => {
-            opt.disabled = true;
-            const label = opt.nextElementSibling;
+function renderTeacherView(data) {
+    document.getElementById('test-container').style.display = 'none';
+    document.getElementById('submit-btn').style.display = 'none';
+    
+    const tv = document.getElementById('teacher-view');
+    tv.style.display = 'block';
+    
+    let score = 0;
+    let html = `<div style="background:#fffaf0; padding:20px; border-radius:12px; border:2px solid #feebc8; margin-bottom:30px; text-align:center;">
+                <h2 style="margin:0; color:#dd6b20; font-size:22px;">Режим перевірки відповідей учня</h2></div>`;
+    
+    questions.forEach((q, i) => {
+        const studentAns = data.a[i];
+        const isCorrect = studentAns === q.ans;
+        if(isCorrect) score++;
+        
+        let borderStyle = isCorrect ? "border-left: 6px solid #38a169;" : "border-left: 6px solid #e53e3e;";
+        
+        html += `<div class="question" style="${borderStyle}"><p>${q.q}</p><ul>`;
+        q.options.forEach((opt, j) => {
+            let style = "";
+            let marker = "&nbsp;&nbsp;&nbsp;&nbsp;";
             
-            if (parseInt(opt.value) === data.correct) {
-                label.classList.add('correct-label');
+            if(j === q.ans) {
+                style = "class='correct-ans'";
+                marker = "✓ ";
+            } else if(j === studentAns && !isCorrect) {
+                style = "class='wrong-ans'";
+                marker = "✗ ";
+            } else if (j === studentAns && isCorrect) {
+                marker = "✓ ";
             }
+            
+            html += `<li ${style}>${marker}${opt}</li>`;
         });
-
-        if (selectedOption) {
-            const userAnswer = parseInt(selectedOption.value);
-            if (userAnswer === data.correct) {
-                score++;
-            } else {
-                selectedOption.nextElementSibling.classList.add('incorrect-label');
-            }
+        
+        if (studentAns === -1) {
+            html += `<p style="color:#dd6b20; font-weight:bold; margin-top:10px; font-size:15px;">⚠ Учень пропустив це питання.</p>`;
         }
         
-        explanationDiv.style.display = 'block';
+        html += `</ul></div>`;
     });
-
-    resultContainer.innerHTML = `Твій результат: ${score} з ${quizData.length}`;
-    if(window.MathJax) {
-        window.MathJax.typesetPromise();
+    
+    html = `<h2 style="text-align:center; font-size:26px; color:#2b6cb0; margin-bottom:20px;">Загальний бал учня: ${score} з 15</h2>` + html;
+    tv.innerHTML = html;
+    
+    if (window.MathJax && window.MathJax.typesetPromise) {
+        MathJax.typesetPromise();
     }
-    submitButton.style.display = 'none';
 }
 
-buildQuiz();
-submitButton.addEventListener('click', showResults);
+window.onload = () => {
+    if(window.location.hash) {
+        try {
+            const data = JSON.parse(atob(window.location.hash.substring(1)));
+            renderTeacherView(data);
+        } catch(e) {
+            renderTest();
+        }
+    } else {
+        renderTest();
+    }
+};
 </script>
 </body>
 </html>
