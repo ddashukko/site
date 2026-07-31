@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Генератор Story для Салону Краси</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #1a1a1a;
+      --glass-bg: rgba(255, 255, 255, 0.78);
+      --glass-border: rgba(255, 255, 255, 0.4);
+      --accent-color: #8e7d71;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; }
+
+    body {
+      background: #ece9e6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+      color: #333;
+    }
+
+    .container {
+      display: flex;
+      gap: 30px;
+      max-width: 950px;
+      width: 100%;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    /* Панель введення */
+    .form-panel {
+      flex: 1;
+      min-width: 320px;
+      background: #ffffff;
+      padding: 25px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    }
+
+    .form-panel h2 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 15px;
+      color: var(--primary);
+    }
+
+    .input-group {
+      margin-bottom: 15px;
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 5px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #666;
+    }
+
+    .input-group input, .input-group textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      outline: none;
+      transition: 0.2s;
+    }
+
+    .input-group input:focus, .input-group textarea:focus {
+      border-color: var(--accent-color);
+    }
+
+    /* Попередній перегляд Story (9:16) */
+    .preview-panel {
+      width: 340px;
+      height: 604px; /* Пропорція 9:16 */
+      position: relative;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+      background: #f4f0eb url('https://images.unsplash.com/photo-1560066984-138dadb4c035?q=80&w=1000&auto=format&fit=crop') center/cover no-repeat;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 30px 20px;
+    }
+
+    /* Затемнення фону для читабельності */
+    .preview-panel::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.15);
+      z-index: 1;
+    }
+
+    .story-content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      height: 100%;
+      justify-content: space-between;
+    }
+
+    /* Заголовок дати */
+    .date-badge {
+      align-self: center;
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      padding: 8px 20px;
+      border-radius: 30px;
+      font-weight: 600;
+      font-size: 1rem;
+      letter-spacing: 1px;
+      color: var(--primary);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+
+    /* Головна картка з віконцями */
+    .glass-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    }
+
+    .master-block {
+      margin-bottom: 15px;
+    }
+
+    .master-block:last-child {
+      margin-bottom: 0;
+    }
+
+    .master-title {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--accent-color);
+      margin-bottom: 6px;
+    }
+
+    .slots-list {
+      font-size: 0.9rem;
+      color: var(--primary);
+      line-height: 1.5;
+      white-space: pre-line;
+      font-weight: 500;
+    }
+
+    .divider {
+      height: 1px;
+      background: rgba(0,0,0,0.08);
+      margin: 12px 0;
+    }
+
+    /* Додаткова нотатка та кнопка */
+    .footer-section {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .note-badge {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(10px);
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-style: italic;
+      text-align: center;
+      color: #444;
+    }
+
+    .cta-button {
+      background: var(--primary);
+      color: #fff;
+      text-align: center;
+      padding: 12px;
+      border-radius: 30px;
+      font-weight: 600;
+      font-size: 0.8rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Форма редгування -->
+  <div class="form-panel">
+    <h2>Конструктор Сторіз</h2>
+    
+    <div class="input-group">
+      <label>Дата</label>
+      <input type="text" id="inDate" value="04.08 - 05.08">
+    </div>
+
+    <div class="input-group">
+      <label>Майстер 1 (посада + ім'я)</label>
+      <input type="text" id="inM1Title" value="ТОП-МАЙСТЕР КАТЕРИНА">
+    </div>
+    <div class="input-group">
+      <label>Віконця Майстра 1</label>
+      <textarea id="inM1Slots" rows="2">09:00 — гігієнічний манікюр&#10;17:00 — манікюр з покриттям</textarea>
+    </div>
+
+    <div class="input-group">
+      <label>Майстер 2 (посада + ім'я)</label>
+      <input type="text" id="inM2Title" value="ТОП-МАЙСТЕР ХРИСТИНА">
+    </div>
+    <div class="input-group">
+      <label>Віконця Майстра 2</label>
+      <textarea id="inM2Slots" rows="2">14:30 — комплексний манікюр</textarea>
+    </div>
+
+    <div class="input-group">
+      <label>Примітка / Інші майстри</label>
+      <input type="text" id="inNote" value="✦ Працює майстер-бровист Ілона">
+    </div>
+
+    <div class="input-group">
+      <label>Посилання на фото фону (URL)</label>
+      <input type="text" id="inBg" value="https://images.unsplash.com/photo-1560066984-138dadb4c035?q=80&w=1000&auto=format&fit=crop">
+    </div>
+  </div>
+
+  <!-- Прев'ю Instagram Story -->
+  <div class="preview-panel" id="previewBg">
+    <div class="story-content">
+      
+      <!-- Дата -->
+      <div class="date-badge" id="outDate">04.08 - 05.08</div>
+
+      <!-- Основний блок -->
+      <div class="glass-card">
+        <div class="master-block">
+          <div class="master-title" id="outM1Title">ТОП-МАЙСТЕР КАТЕРИНА</div>
+          <div class="slots-list" id="outM1Slots">09:00 — гігієнічний манікюр<br>17:00 — манікюр з покриттям</div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="master-block">
+          <div class="master-title" id="outM2Title">ТОП-МАЙСТЕР ХРИСТИНА</div>
+          <div class="slots-list" id="outM2Slots">14:30 — комплексний манікюр</div>
+        </div>
+      </div>
+
+      <!-- Футер -->
+      <div class="footer-section">
+        <div class="note-badge" id="outNote">✦ Працює майстер-бровист Ілона</div>
+        <div class="cta-button">Записатись</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  // Інтерактивне оновлення в реальному часі
+  const bindInput = (inputId, outputId, isTextarea = false) => {
+    document.getElementById(inputId).addEventListener('input', (e) => {
+      const val = e.target.value;
+      if (isTextarea) {
+        document.getElementById(outputId).innerHTML = val.replace(/\n/g, '<br>');
+      } else {
+        document.getElementById(outputId).innerText = val;
+      }
+    });
+  };
+
+  bindInput('inDate', 'outDate');
+  bindInput('inM1Title', 'outM1Title');
+  bindInput('inM1Slots', 'outM1Slots', true);
+  bindInput('inM2Title', 'outM2Title');
+  bindInput('inM2Slots', 'outM2Slots', true);
+  bindInput('inNote', 'outNote');
+
+  // Зміна фону
+  document.getElementById('inBg').addEventListener('input', (e) => {
+    document.getElementById('previewBg').style.backgroundImage = `url('${e.target.value}')`;
+  });
+</script>
+
+</body>
+</html>
