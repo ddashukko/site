@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="uk">
 <head>
@@ -15,17 +16,16 @@
       --ui-text: #2c3e50;
       
       /* Картки завжди світлі */
-      --card-bg: rgba(255, 255, 255, 0.75); 
-      --card-border: rgba(255, 255, 255, 0.9);
+      --card-bg: rgba(255, 255, 255, 0.82); 
+      --card-border: rgba(255, 255, 255, 0.95);
       --card-text: #1a1a1a;
       --card-accent: #6b5c51;
-      --card-divider: rgba(0, 0, 0, 0.08);
 
       /* Світла тема: Без затемнення */
       --story-overlay: transparent;
     }
 
-    /* ТЕМНА ТЕМА: Легке затемнення (набагато слабше, ніж раніше) */
+    /* ТЕМНА ТЕМА: Легке затемнення */
     [data-theme="dark"] {
       --story-overlay: linear-gradient(180deg, rgba(0,0,0,0.0) 0%, rgba(0,0,0,0.45) 100%);
     }
@@ -77,6 +77,7 @@
     }
     .form-card.date-card { background: #f8fafc; border-left: 4px solid #7f8c8d; }
     .form-card.master-card { border-left: 4px solid #b8a99a; }
+    .form-card.msg-card { border-left: 4px solid #e67e22; background: #fffdfa; }
     
     .remove-btn {
       position: absolute; top: 15px; right: 15px; background: transparent; color: #e74c3c;
@@ -84,24 +85,26 @@
     }
     .remove-btn:hover { opacity: 1; }
 
-    .add-controls { display: flex; gap: 12px; margin-bottom: 15px; }
+    .add-controls { display: flex; gap: 8px; margin-bottom: 15px; }
     .btn {
-      color: #fff; border: none; padding: 14px 15px; border-radius: 12px; 
-      cursor: pointer; font-weight: 600; font-size: 0.8rem; text-transform: uppercase;
+      color: #fff; border: none; padding: 12px 10px; border-radius: 12px; 
+      cursor: pointer; font-weight: 600; font-size: 0.75rem; text-transform: uppercase;
       letter-spacing: 0.5px; transition: all 0.2s ease; text-align: center; width: 100%; 
     }
     .btn-dark { background: #2c3e50; }
     .btn-dark:hover { background: #1a252f; }
     .btn-gray { background: #95a5a6; }
     .btn-gray:hover { background: #7f8c8d; }
-    .btn-success { background: #b8a99a; margin-top: 10px; font-size: 0.85rem; letter-spacing: 1px; color: #fff; }
+    .btn-orange { background: #d35400; }
+    .btn-orange:hover { background: #e67e22; }
+    .btn-success { background: #b8a99a; margin-top: 5px; font-size: 0.85rem; letter-spacing: 1px; color: #fff; padding: 14px; }
     .btn-success:hover { background: #a39485; }
 
     /* --- СТОРІЗ ПРЕВ'Ю --- */
     .preview-panel {
       width: 360px; height: 640px; position: sticky; top: 40px; border-radius: 20px;
       overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.1);
-      background: #e2e2e2 url('salon.png') center/cover no-repeat;
+      background: #e2e2e2 url('salon.jpg') center/cover no-repeat;
       display: flex; flex-direction: column; flex-shrink: 0;
     }
     
@@ -131,10 +134,10 @@
       border-top: 1px dashed rgba(255,255,255,0.4); color: rgba(255,255,255,0.7);
     }
 
-    /* --- ЛОГІКА РОЗМІЩЕННЯ (ЧЕРГУВАННЯ СТОРІН) --- */
+    /* --- ЛОГІКА РОЗМІЩЕННЯ (ОКРЕМІ БАБЛИ + ЧЕРГУВАННЯ СТОРІН) --- */
     .date-group { 
       display: flex; flex-direction: column; gap: 8px; 
-      max-width: 90%; /* Захист від вилізання за краї */
+      max-width: 88%;
     }
     
     .date-group.align-left { 
@@ -150,22 +153,38 @@
       border: 1px solid var(--card-border); padding: 6px 18px; border-radius: 20px; 
       font-weight: 700; font-size: 0.85rem; color: var(--card-text); 
       box-shadow: 0 4px 15px rgba(0,0,0,0.04); display: inline-block;
+      margin-bottom: 2px;
     }
 
+    /* Бабл для майстрів */
     .glass-card {
       background: var(--card-bg); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
-      border: 1px solid var(--card-border); border-radius: 18px; padding: 14px 18px;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05); 
-      width: fit-content; /* Картка підлаштовується під контент */
-      min-width: 170px; /* Мінімальна ширина, щоб не виглядала надто куцою */
-      text-align: left; /* Текст всередині завжди по лівому краю для зручності читання */
+      border: 1px solid var(--card-border); border-radius: 16px; padding: 12px 16px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.04); 
+      width: fit-content;
+      min-width: 160px;
+      text-align: left;
     }
 
-    .master-block { margin-bottom: 12px; }
-    .master-block:last-child { margin-bottom: 0; }
-    .master-title { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--card-accent); margin-bottom: 4px; }
-    .slots-list { font-size: 0.9rem; color: var(--card-text); line-height: 1.4; white-space: pre-line; font-weight: 600; }
-    .divider { height: 1px; background: var(--card-divider); margin: 10px 0; }
+    .master-title { 
+      font-size: 0.7rem; font-weight: 700; text-transform: uppercase; 
+      letter-spacing: 0.5px; color: var(--card-accent); margin-bottom: 3px; 
+    }
+    .slots-list { 
+      font-size: 0.88rem; color: var(--card-text); line-height: 1.35; 
+      white-space: pre-line; font-weight: 600; 
+    }
+
+    /* Бабл-повідомлення (як смс / статус) */
+    .message-bubble {
+      background: var(--card-bg); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--card-border); border-radius: 18px 18px 18px 6px; 
+      padding: 10px 16px; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.04);
+      font-size: 0.82rem; font-weight: 600; color: var(--card-text);
+      display: inline-flex; align-items: center; gap: 8px; width: fit-content;
+      margin-top: 2px;
+    }
+    .message-bubble span.msg-icon { font-size: 0.9rem; }
   </style>
 </head>
 <body>
@@ -191,7 +210,7 @@
 
       <div class="input-group">
         <label>Фон (Назва файлу або URL)</label>
-        <input type="text" id="inBg" value="salon.png" placeholder="Наприклад: salon.png">
+        <input type="text" id="inBg" value="salon.jpg" placeholder="Наприклад: salon.jpg">
       </div>
     </div>
 
@@ -201,6 +220,7 @@
       <div class="add-controls">
         <button class="btn btn-gray" onclick="addDate()">+ Дата</button>
         <button class="btn btn-dark" onclick="addMaster()">+ Майстер</button>
+        <button class="btn btn-orange" onclick="addMessage()">+ Повідомлення</button>
       </div>
       <button class="btn btn-success" onclick="downloadImage()">Зберегти PNG</button>
     </div>
@@ -227,8 +247,10 @@
   let items = [
     { id: 1, type: 'date', text: '04.08' },
     { id: 2, type: 'master', title: 'топ Катерина', text: '09:00, 10:30' },
-    { id: 3, type: 'date', text: '05.08' },
-    { id: 4, type: 'master', title: 'топ+ Христина', text: '09:00 — гігієнічний манікюр\n17:00 — манікюр' }
+    { id: 3, type: 'master', title: 'топ+ Христина', text: '14:00, 16:30' },
+    { id: 4, type: 'message', text: 'працює майстер-бровист ілона' },
+    { id: 5, type: 'date', text: '05.08' },
+    { id: 6, type: 'master', title: 'топ+ Наталія', text: '09:00 — гігієнічний манікюр\n17:00 — манікюр' }
   ];
 
   document.getElementById('themeSelect').addEventListener('change', e => {
@@ -257,6 +279,15 @@
           <button class="remove-btn" onclick="removeItem(${item.id})">×</button>
           <div class="input-group" style="margin-bottom:0;">
             <label>Дата</label>
+            <input type="text" value="${item.text}" oninput="updateItem(${item.id}, 'text', this.value)">
+          </div>
+        `;
+      } else if(item.type === 'message') {
+        formCard.className = 'form-card msg-card';
+        formCard.innerHTML = `
+          <button class="remove-btn" onclick="removeItem(${item.id})">×</button>
+          <div class="input-group" style="margin-bottom:0;">
+            <label>Повідомлення / Статус</label>
             <input type="text" value="${item.text}" oninput="updateItem(${item.id}, 'text', this.value)">
           </div>
         `;
@@ -290,22 +321,22 @@
     previewContainer.innerHTML = '';
 
     let groups = [];
-    let currentGroup = { date: '', masters: [] };
+    let currentGroup = { date: '', elements: [] };
 
     items.forEach(item => {
       if(item.type === 'date') {
-        if(currentGroup.date !== '' || currentGroup.masters.length > 0) groups.push(currentGroup);
-        currentGroup = { date: item.text, masters: [] };
+        if(currentGroup.date !== '' || currentGroup.elements.length > 0) groups.push(currentGroup);
+        currentGroup = { date: item.text, elements: [] };
       } else {
-        currentGroup.masters.push(item);
+        currentGroup.elements.push(item);
       }
     });
-    if(currentGroup.date !== '' || currentGroup.masters.length > 0) groups.push(currentGroup);
+    if(currentGroup.date !== '' || currentGroup.elements.length > 0) groups.push(currentGroup);
 
     groups.forEach((g, index) => {
-      if (!g.date && g.masters.length === 0) return;
+      if (!g.date && g.elements.length === 0) return;
       
-      // ЧЕРГУВАННЯ СТОРІН (Парні зліва, непарні справа)
+      // ЧЕРГУВАННЯ СТОРІН
       const alignmentClass = (index % 2 === 0) ? 'align-left' : 'align-right';
       
       const groupDiv = document.createElement('div');
@@ -314,19 +345,24 @@
       let html = '';
       if (g.date) html += `<div class="date-badge">${g.date}</div>`;
       
-      if (g.masters.length > 0) {
-        html += `<div class="glass-card">`;
-        g.masters.forEach((m, mIndex) => {
-          const formattedText = m.text.replace(/\n/g, '<br>');
-          html += `
-            <div class="master-block">
-              <div class="master-title">${m.title}</div>
-              <div class="slots-list">${formattedText}</div>
-            </div>
-          `;
-          if(mIndex < g.masters.length - 1) html += `<div class="divider"></div>`;
+      if (g.elements.length > 0) {
+        g.elements.forEach((el) => {
+          if (el.type === 'message') {
+            html += `
+              <div class="message-bubble">
+                <span class="msg-icon">✨</span> ${el.text}
+              </div>
+            `;
+          } else {
+            const formattedText = el.text.replace(/\n/g, '<br>');
+            html += `
+              <div class="glass-card">
+                <div class="master-title">${el.title}</div>
+                <div class="slots-list">${formattedText}</div>
+              </div>
+            `;
+          }
         });
-        html += `</div>`;
       }
       groupDiv.innerHTML = html;
       previewContainer.appendChild(groupDiv);
@@ -347,6 +383,11 @@
 
   function addMaster() {
     items.push({ id: Date.now(), type: 'master', title: MASTERS_LIST[0], text: '10:00, 12:00' });
+    renderForm(); renderPreview(); scrollToBottom();
+  }
+
+  function addMessage() {
+    items.push({ id: Date.now(), type: 'message', text: 'працює майстер-бровист ілона' });
     renderForm(); renderPreview(); scrollToBottom();
   }
 
