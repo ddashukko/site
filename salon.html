@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Генератор Story – Салон Краси (з датами)</title>
+  <title>Генератор Story – Салон Краси</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -12,7 +12,6 @@
       --glass-border: rgba(255, 255, 255, 0.4);
       --accent-color: #8e7d71;
       --danger: #d9534f;
-      --date-bg: rgba(0, 0, 0, 0.06);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; }
@@ -23,7 +22,7 @@
     }
 
     .container {
-      display: flex; gap: 30px; max-width: 1000px; width: 100%; flex-wrap: wrap; justify-content: center;
+      display: flex; gap: 30px; max-width: 1050px; width: 100%; flex-wrap: wrap; justify-content: center;
     }
 
     /* Панель введення */
@@ -66,7 +65,7 @@
       width: 340px; height: 604px; position: sticky; top: 20px; border-radius: 24px;
       overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.15);
       background: #ccc url('salon.jpg') center/cover no-repeat;
-      display: flex; flex-direction: column; justify-content: center; padding: 30px 20px;
+      display: flex; flex-direction: column; justify-content: space-between; padding: 30px 20px;
     }
     .preview-panel::before {
       content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
@@ -74,34 +73,44 @@
     }
 
     .story-content {
-      position: relative; z-index: 2; display: flex; flex-direction: column; gap: 15px; max-height: 100%;
+      position: relative; z-index: 2; display: flex; flex-direction: column; height: 100%;
+    }
+
+    .cards-wrapper {
+      flex: 1; display: flex; flex-direction: column; gap: 20px; overflow-y: auto; padding-bottom: 15px;
+    }
+    .cards-wrapper::-webkit-scrollbar { display: none; }
+
+    .date-group {
+      display: flex; flex-direction: column; gap: 8px; max-width: 85%;
+    }
+    .date-group.align-left { align-self: flex-start; align-items: flex-start; }
+    .date-group.align-right { align-self: flex-end; align-items: flex-end; }
+    .date-group.align-right .glass-card { text-align: left; width: 100%; }
+
+    .date-badge {
+      background: var(--glass-bg); backdrop-filter: blur(12px); border: 1px solid var(--glass-border);
+      padding: 6px 18px; border-radius: 20px; font-weight: 700; font-size: 0.95rem;
+      color: var(--primary); box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: inline-block;
     }
 
     .glass-card {
       background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-      border: 1px solid var(--glass-border); border-radius: 18px; padding: 20px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08); overflow-y: auto;
+      border: 1px solid var(--glass-border); border-radius: 18px; padding: 15px 20px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08); width: 100%;
     }
-
-    /* Стиль для дати всередині картки */
-    .date-separator {
-      text-align: center; font-weight: 700; color: var(--primary);
-      background: var(--date-bg); border-radius: 8px; padding: 6px;
-      margin: 15px 0 10px 0; font-size: 0.9rem; letter-spacing: 1px;
-    }
-    .date-separator:first-child { margin-top: 0; }
 
     .master-block { margin-bottom: 12px; }
     .master-block:last-child { margin-bottom: 0; }
     .master-title { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--accent-color); margin-bottom: 4px; }
     .slots-list { font-size: 0.9rem; color: var(--primary); line-height: 1.4; white-space: pre-line; font-weight: 500; }
-    
     .divider { height: 1px; background: rgba(0,0,0,0.08); margin: 10px 0; }
 
     .cta-button {
       background: var(--primary); color: #fff; text-align: center; padding: 12px;
       border-radius: 30px; font-weight: 600; font-size: 0.8rem; letter-spacing: 1.5px;
-      text-transform: uppercase; box-shadow: 0 4px 15px rgba(0,0,0,0.2); margin-top: auto;
+      text-transform: uppercase; box-shadow: 0 4px 15px rgba(0,0,0,0.2); margin-top: 10px;
+      flex-shrink: 0;
     }
   </style>
 </head>
@@ -119,7 +128,7 @@
     <hr style="margin: 20px 0; border: 0; border-top: 1px solid #ddd;">
     
     <div class="add-controls">
-      <button class="btn-add date-btn" onclick="addDate()">+ ДОДАТИ ДАТУ</button>
+      <button class="btn-add date-btn" onclick="addDate()">+ ДОДАТИ ДАТУ (Нова картка)</button>
     </div>
     
     <div class="add-controls">
@@ -134,16 +143,12 @@
       <button class="btn-add" onclick="addMaster()">+ ДОДАТИ МАЙСТРА</button>
     </div>
 
-    <div id="itemsContainer">
-      <!-- Блоки дат та майстрів -->
-    </div>
+    <div id="itemsContainer"></div>
   </div>
 
   <div class="preview-panel" id="previewBg">
     <div class="story-content">
-      <div class="glass-card" id="outGlassCard" style="display: none;">
-        <!-- Контент -->
-      </div>
+      <div class="cards-wrapper" id="outCardsWrapper"></div>
       <div class="cta-button">Записатись</div>
     </div>
   </div>
@@ -154,26 +159,18 @@
     { id: 1, type: 'date', text: '04.08' },
     { id: 2, type: 'master', title: 'топ Катерина', text: '09:00 — гігієнічний манікюр\n17:00 — манікюр' },
     { id: 3, type: 'date', text: '05.08' },
-    { id: 4, type: 'master', title: 'топ+ Христина', text: '14:30' }
+    { id: 4, type: 'master', title: 'топ Катерина', text: '09:00, 10:30, 16:00' },
+    { id: 5, type: 'master', title: 'топ+ Христина', text: '14:30' }
   ];
 
   document.getElementById('inBg').addEventListener('input', e => document.getElementById('previewBg').style.backgroundImage = `url('${e.target.value}')`);
 
-  function render() {
+  // Малює тільки форму зліва (викликається лише при додаванні/видаленні блоків)
+  function renderForm() {
     const formContainer = document.getElementById('itemsContainer');
-    const previewContainer = document.getElementById('outGlassCard');
-    
     formContainer.innerHTML = '';
-    previewContainer.innerHTML = '';
 
-    if(items.length === 0) {
-      previewContainer.style.display = 'none';
-      return;
-    }
-    previewContainer.style.display = 'block';
-
-    items.forEach((item, index) => {
-      // Рендер форми зліва
+    items.forEach((item) => {
       const formCard = document.createElement('div');
       formCard.className = item.type === 'date' ? 'form-card date-card' : 'form-card';
       
@@ -181,7 +178,7 @@
         formCard.innerHTML = `
           <button class="remove-btn" onclick="removeItem(${item.id})">✕</button>
           <div class="input-group" style="margin-bottom:0;">
-            <label>Дата (розділювач)</label>
+            <label>Дата (Початок нової картки)</label>
             <input type="text" value="${item.text}" oninput="updateItem(${item.id}, 'text', this.value)">
           </div>
         `;
@@ -199,36 +196,69 @@
         `;
       }
       formContainer.appendChild(formCard);
+    });
+  }
 
-      // Рендер прев'ю справа
+  // Малює тільки макет справа (викликається при будь-якій зміні)
+  function renderPreview() {
+    const previewContainer = document.getElementById('outCardsWrapper');
+    previewContainer.innerHTML = '';
+
+    let groups = [];
+    let currentGroup = { date: '', masters: [] };
+
+    items.forEach(item => {
       if(item.type === 'date') {
-        const dateBlock = document.createElement('div');
-        dateBlock.className = 'date-separator';
-        dateBlock.innerText = item.text;
-        previewContainer.appendChild(dateBlock);
-      } else {
-        const masterBlock = document.createElement('div');
-        masterBlock.className = 'master-block';
-        const formattedText = item.text.replace(/\n/g, '<br>');
-        masterBlock.innerHTML = `
-          <div class="master-title">${item.title}</div>
-          <div class="slots-list">${formattedText}</div>
-        `;
-        previewContainer.appendChild(masterBlock);
-        
-        // Додаємо тонку лінію між майстрами, якщо наступний елемент теж майстер
-        if(index < items.length - 1 && items[index + 1].type === 'master') {
-          const divider = document.createElement('div');
-          divider.className = 'divider';
-          previewContainer.appendChild(divider);
+        if(currentGroup.date !== '' || currentGroup.masters.length > 0) {
+          groups.push(currentGroup);
         }
+        currentGroup = { date: item.text, masters: [] };
+      } else {
+        currentGroup.masters.push(item);
       }
+    });
+    if(currentGroup.date !== '' || currentGroup.masters.length > 0) {
+      groups.push(currentGroup);
+    }
+
+    groups.forEach((g, index) => {
+      if (!g.date && g.masters.length === 0) return;
+      
+      const alignmentClass = (index % 2 === 0) ? 'align-left' : 'align-right';
+      const groupDiv = document.createElement('div');
+      groupDiv.className = `date-group ${alignmentClass}`;
+      
+      let html = '';
+      if (g.date) {
+        html += `<div class="date-badge">${g.date}</div>`;
+      }
+      
+      if (g.masters.length > 0) {
+        html += `<div class="glass-card">`;
+        g.masters.forEach((m, mIndex) => {
+          const formattedText = m.text.replace(/\n/g, '<br>');
+          html += `
+            <div class="master-block">
+              <div class="master-title">${m.title}</div>
+              <div class="slots-list">${formattedText}</div>
+            </div>
+          `;
+          if(mIndex < g.masters.length - 1) {
+            html += `<div class="divider"></div>`;
+          }
+        });
+        html += `</div>`;
+      }
+      
+      groupDiv.innerHTML = html;
+      previewContainer.appendChild(groupDiv);
     });
   }
 
   function addDate() {
     items.push({ id: Date.now(), type: 'date', text: 'Нова дата' });
-    render();
+    renderForm();
+    renderPreview();
   }
 
   function addMaster() {
@@ -241,23 +271,27 @@
     };
     if (select.value === "") newItem.text = ""; 
     items.push(newItem);
-    render();
+    renderForm();
+    renderPreview();
   }
 
   function removeItem(id) {
     items = items.filter(i => i.id !== id);
-    render();
+    renderForm();
+    renderPreview();
   }
 
   function updateItem(id, field, value) {
     const item = items.find(i => i.id === id);
     if(item) {
       item[field] = value;
-      render();
+      renderPreview(); // Оновлюємо ТІЛЬКИ прев'ю справа!
     }
   }
 
-  render();
+  // Перший запуск
+  renderForm();
+  renderPreview();
 </script>
 
 </body>
