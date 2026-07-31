@@ -5,158 +5,173 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Генератор Розкладу</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <!-- Бібліотека для збереження PNG -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   
   <style>
-    /* СВІТЛА ТЕМА */
+    /* БАЗОВІ ЗМІННІ (Для додатку) */
     :root {
-      --primary-text: #1a1a1a;
-      --glass-bg: rgba(255, 255, 255, 0.55); 
-      --glass-border: rgba(255, 255, 255, 0.6);
-      --accent-color: #5a4f46; 
-      --overlay: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.65) 100%);
-      --divider: rgba(0, 0, 0, 0.12);
-      --danger: #d9534f;
-      --bg-color: #f4f4f5;
+      --bg-color: #f5f6f8;
+      --panel-bg: #ffffff;
+      --ui-text: #2c3e50;
+      
+      /* Завжди СВІТЛІ картки для сторіз */
+      --card-bg: rgba(255, 255, 255, 0.75); 
+      --card-border: rgba(255, 255, 255, 0.9);
+      --card-text: #1a1a1a;
+      --card-accent: #6b5c51;
+      --card-divider: rgba(0, 0, 0, 0.08);
+
+      /* Світла тема (за замовчуванням): Немає затемнення */
+      --story-overlay: transparent;
     }
 
-    /* ТЕМНА ТЕМА */
+    /* ТЕМНА ТЕМА: Лише затемнення фону (градієнт) */
     [data-theme="dark"] {
-      --primary-text: #ffffff;
-      --glass-bg: rgba(0, 0, 0, 0.55); 
-      --glass-border: rgba(255, 255, 255, 0.15);
-      --accent-color: #d8c8b8; 
-      --overlay: linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.75) 100%);
-      --divider: rgba(255, 255, 255, 0.15);
+      --story-overlay: linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.75) 100%);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; }
 
     body {
       background: var(--bg-color); display: flex; justify-content: center; align-items: flex-start;
-      min-height: 100vh; padding: 20px; color: #222;
+      min-height: 100vh; padding: 40px 20px; color: var(--ui-text);
     }
 
     .container {
-      display: flex; gap: 30px; max-width: 1050px; width: 100%; flex-wrap: wrap; justify-content: center;
+      display: flex; gap: 40px; max-width: 1000px; width: 100%; flex-wrap: wrap; justify-content: center;
     }
 
-    /* ПАНЕЛЬ НАЛАШТУВАНЬ */
+    /* --- ПОВІТРЯНИЙ ІНТЕРФЕЙС НАЛАШТУВАНЬ --- */
     .form-panel {
-      flex: 1; min-width: 340px; max-width: 500px; background: #ffffff; padding: 25px; 
-      border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); 
-      display: flex; flex-direction: column; max-height: 90vh;
+      flex: 1; min-width: 340px; max-width: 450px; background: var(--panel-bg); 
+      padding: 30px; border-radius: 24px; box-shadow: 0 12px 40px rgba(0,0,0,0.03); 
+      display: flex; flex-direction: column; max-height: 85vh;
     }
 
-    .form-panel h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 20px; color: #1a1a1a; text-transform: uppercase; letter-spacing: 1px; }
+    .form-panel h2 { 
+      font-size: 1.1rem; font-weight: 700; margin-bottom: 25px; color: var(--ui-text); 
+      text-transform: uppercase; letter-spacing: 1.5px;
+    }
 
-    .input-group { margin-bottom: 15px; }
-    .input-group label { display: block; font-size: 0.75rem; font-weight: 600; margin-bottom: 6px; text-transform: uppercase; color: #555; }
+    .input-group { margin-bottom: 18px; }
+    .input-group label { display: block; font-size: 0.75rem; font-weight: 600; margin-bottom: 8px; color: #7f8c8d; text-transform: uppercase; letter-spacing: 0.5px; }
     .input-group input, .input-group textarea, .input-group select {
-      width: 100%; padding: 10px 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.9rem; outline: none; background: #fafafa;
+      width: 100%; padding: 12px 16px; border: 1px solid #eef0f2; border-radius: 12px; 
+      font-size: 0.9rem; outline: none; background: #f8f9fa; transition: all 0.2s ease;
+    }
+    .input-group input:focus, .input-group textarea:focus, .input-group select:focus {
+      border-color: #d1d8e0; background: #ffffff; box-shadow: 0 4px 12px rgba(0,0,0,0.02);
     }
     
     .panel-controls { flex-shrink: 0; margin-bottom: 10px; }
     
     #itemsContainer {
-      flex: 1; overflow-y: auto; padding-right: 5px; margin-bottom: 20px;
+      flex: 1; overflow-y: auto; padding-right: 10px; margin-bottom: 20px;
     }
-    #itemsContainer::-webkit-scrollbar { width: 6px; }
-    #itemsContainer::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
+    #itemsContainer::-webkit-scrollbar { width: 4px; }
+    #itemsContainer::-webkit-scrollbar-thumb { background: #dfe4ea; border-radius: 4px; }
 
     .form-card {
-      background: #fff; border: 1px solid #e0e0e0; padding: 15px; border-radius: 8px;
-      margin-bottom: 12px; position: relative; box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+      background: #ffffff; border: 1px solid #f1f2f6; padding: 18px; border-radius: 16px;
+      margin-bottom: 15px; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+      transition: transform 0.2s ease;
     }
-    .form-card.date-card { background: #f8fafc; border-left: 4px solid #4a5568; }
-    .form-card.master-card { border-left: 4px solid #8e7d71; }
+    .form-card:hover { transform: translateY(-2px); }
+    .form-card.date-card { background: #f8fafc; border-left: 4px solid #7f8c8d; }
+    .form-card.master-card { border-left: 4px solid #b8a99a; }
     
     .remove-btn {
-      position: absolute; top: 12px; right: 12px; background: transparent; color: var(--danger);
-      border: none; font-size: 18px; cursor: pointer; line-height: 1;
+      position: absolute; top: 15px; right: 15px; background: transparent; color: #e74c3c;
+      border: none; font-size: 18px; cursor: pointer; line-height: 1; opacity: 0.6; transition: opacity 0.2s;
     }
+    .remove-btn:hover { opacity: 1; }
 
-    .add-controls { display: flex; gap: 10px; margin-bottom: 15px; }
+    .add-controls { display: flex; gap: 12px; margin-bottom: 15px; }
     .btn {
-      color: #fff; border: none; padding: 12px 15px; border-radius: 6px; 
+      color: #fff; border: none; padding: 14px 15px; border-radius: 12px; 
       cursor: pointer; font-weight: 600; font-size: 0.8rem; text-transform: uppercase;
-      transition: opacity 0.2s; text-align: center; width: 100%; display: inline-block;
+      letter-spacing: 0.5px; transition: all 0.2s ease; text-align: center; width: 100%; 
     }
-    .btn:hover { opacity: 0.9; }
-    .btn-dark { background: #1a1a1a; }
-    .btn-gray { background: #4a5568; }
-    .btn-success { background: #2f855a; margin-top: 10px; font-size: 0.9rem; letter-spacing: 1px; }
+    .btn:active { transform: scale(0.98); }
+    .btn-dark { background: #2c3e50; }
+    .btn-dark:hover { background: #1a252f; }
+    .btn-gray { background: #95a5a6; }
+    .btn-gray:hover { background: #7f8c8d; }
+    .btn-success { background: #b8a99a; margin-top: 10px; font-size: 0.85rem; letter-spacing: 1px; color: #fff; }
+    .btn-success:hover { background: #a39485; }
 
-    /* ПРЕВ'Ю (9:16 ПРОПОРЦІЇ) */
+    /* --- СТОРІЗ ПРЕВ'Ю (9:16) --- */
     .preview-panel {
-      width: 360px; height: 640px; /* Суворі пропорції Stories */
-      position: sticky; top: 20px; border-radius: 16px;
-      overflow: hidden; box-shadow: 0 15px 35px rgba(0,0,0,0.15);
-      background: #ccc url('salon.png') center/cover no-repeat;
+      width: 360px; height: 640px; position: sticky; top: 40px; border-radius: 20px;
+      overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+      background: #e2e2e2 url('salon.png') center/cover no-repeat;
       display: flex; flex-direction: column; flex-shrink: 0;
     }
     
+    /* Накладання (градієнт) */
     .preview-panel::before {
       content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-      background: var(--overlay); z-index: 1; transition: background 0.3s;
+      background: var(--story-overlay); z-index: 1; transition: background 0.4s ease;
     }
 
     .story-content {
       position: relative; z-index: 2; display: flex; flex-direction: column; 
-      height: 100%; padding: 25px 20px 0 20px;
+      height: 100%; padding: 40px 35px 0 35px; /* БІЛЬШІ ВІДСТУПИ ВІД СТІНОК (БЛИЖЧЕ ДО ЦЕНТРУ) */
     }
 
     .cards-wrapper {
-      flex: 1; display: flex; flex-direction: column; gap: 15px; 
+      flex: 1; display: flex; flex-direction: column; gap: 18px; 
       transform-origin: top center; transition: transform 0.2s ease;
     }
 
-    /* БЕЗПЕЧНА ЗОНА (ДЛЯ КНОПКИ INSTAGRAM) */
+    /* Безпечна зона */
     .safe-zone {
-      height: 110px; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
-      border-top: 1px dashed rgba(255,255,255,0.4);
-      color: rgba(255,255,255,0.7); font-size: 0.75rem; font-weight: 600; text-transform: uppercase;
+      height: 120px; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+      border-top: 1px dashed rgba(0,0,0,0.2); margin-top: 10px;
+      color: rgba(0,0,0,0.4); font-size: 0.75rem; font-weight: 600; text-transform: uppercase;
       letter-spacing: 1px; text-align: center;
     }
+    /* Якщо темна тема - безпечна зона світлішає для контрасту */
+    [data-theme="dark"] .safe-zone {
+      border-top: 1px dashed rgba(255,255,255,0.4); color: rgba(255,255,255,0.7);
+    }
 
-    .date-group { display: flex; flex-direction: column; gap: 6px; max-width: 90%; }
-    .date-group.align-left { align-self: flex-start; align-items: flex-start; }
-    .date-group.align-right { align-self: flex-end; align-items: flex-end; }
-    .date-group.align-right .glass-card { text-align: left; width: 100%; }
-
+    /* --- ДИЗАЙН КАРТОК (ЗАВЖДИ СВІТЛІ) --- */
+    .date-group { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+    
     .date-badge {
-      background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-      border: 1px solid var(--glass-border); padding: 5px 16px; border-radius: 20px; 
-      font-weight: 700; font-size: 0.9rem; color: var(--primary-text); 
-      box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: inline-block;
+      background: var(--card-bg); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--card-border); padding: 6px 18px; border-radius: 20px; 
+      font-weight: 700; font-size: 0.85rem; color: var(--card-text); 
+      box-shadow: 0 4px 15px rgba(0,0,0,0.04); display: inline-block; align-self: flex-start;
     }
 
     .glass-card {
-      background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-      border: 1px solid var(--glass-border); border-radius: 16px; padding: 12px 16px;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08); width: 100%;
+      background: var(--card-bg); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--card-border); border-radius: 18px; padding: 14px 18px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05); width: 100%;
     }
 
-    .master-block { margin-bottom: 10px; }
+    .master-block { margin-bottom: 12px; }
     .master-block:last-child { margin-bottom: 0; }
-    .master-title { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--accent-color); margin-bottom: 2px; }
-    .slots-list { font-size: 0.9rem; color: var(--primary-text); line-height: 1.35; white-space: pre-line; font-weight: 600; }
-    .divider { height: 1px; background: var(--divider); margin: 8px 0; }
+    .master-title { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--card-accent); margin-bottom: 4px; }
+    .slots-list { font-size: 0.9rem; color: var(--card-text); line-height: 1.4; white-space: pre-line; font-weight: 600; }
+    .divider { height: 1px; background: var(--card-divider); margin: 10px 0; }
   </style>
 </head>
 <body>
 
 <div class="container">
+  <!-- ПАНЕЛЬ НАЛАШТУВАНЬ -->
   <div class="form-panel">
     <h2>Налаштування</h2>
     
     <div class="panel-controls">
       <div class="input-group">
-        <label>Стиль оформлення</label>
+        <label>Стиль фотографії</label>
         <select id="themeSelect">
-          <option value="light">Світла версія</option>
-          <option value="dark">Темна версія</option>
+          <option value="light">Світле фото (Оригінал)</option>
+          <option value="dark">Темне фото (Із затемненням)</option>
         </select>
       </div>
 
@@ -167,7 +182,7 @@
 
       <div class="input-group">
         <label>Фон (Назва файлу або URL)</label>
-        <input type="text" id="inBg" value="salon.png">
+        <input type="text" id="inBg" value="salon.png" placeholder="Наприклад: salon.png">
       </div>
     </div>
 
@@ -175,17 +190,18 @@
 
     <div class="panel-controls" style="margin-top: 10px;">
       <div class="add-controls">
-        <button class="btn btn-gray" onclick="addDate()">+ Додати дату</button>
-        <button class="btn btn-dark" onclick="addMaster()">+ Додати майстра</button>
+        <button class="btn btn-gray" onclick="addDate()">+ Дата</button>
+        <button class="btn btn-dark" onclick="addMaster()">+ Майстер</button>
       </div>
-      <button class="btn btn-success" onclick="downloadImage()">Завантажити PNG</button>
+      <button class="btn btn-success" onclick="downloadImage()">Зберегти PNG</button>
     </div>
   </div>
 
+  <!-- ПРЕВ'Ю -->
   <div class="preview-panel" id="previewBg" data-theme="light">
     <div class="story-content">
       <div class="cards-wrapper" id="outCardsWrapper"></div>
-      <div class="safe-zone" id="safeZone">Місце для кнопки Instagram</div>
+      <div class="safe-zone" id="safeZone">Кнопка Instagram</div>
     </div>
   </div>
 </div>
@@ -204,7 +220,7 @@
     { id: 2, type: 'master', title: 'топ Катерина', text: '09:00 — гігієнічний манікюр\n17:00 — манікюр' }
   ];
 
-  // Зміна теми
+  // Зміна теми (тепер впливає тільки на затемнення фону)
   document.getElementById('themeSelect').addEventListener('change', e => {
     document.getElementById('previewBg').setAttribute('data-theme', e.target.value);
   });
@@ -278,12 +294,11 @@
     });
     if(currentGroup.date !== '' || currentGroup.masters.length > 0) groups.push(currentGroup);
 
-    groups.forEach((g, index) => {
+    groups.forEach((g) => {
       if (!g.date && g.masters.length === 0) return;
       
-      const alignmentClass = (index % 2 === 0) ? 'align-left' : 'align-right';
       const groupDiv = document.createElement('div');
-      groupDiv.className = `date-group ${alignmentClass}`;
+      groupDiv.className = `date-group`;
       
       let html = '';
       if (g.date) html += `<div class="date-badge">${g.date}</div>`;
@@ -338,18 +353,18 @@
     const preview = document.getElementById('previewBg');
     const safeZone = document.getElementById('safeZone');
     
-    // Ховаємо текст безпечної зони для скачування, але залишаємо її розмір
+    // Ховаємо текст і рамку безпечної зони під час скачування
     safeZone.style.color = 'transparent';
-    safeZone.style.borderTop = 'none';
+    safeZone.style.borderTopColor = 'transparent';
 
     html2canvas(preview, { 
-      scale: 3, // Висока якість картинки
+      scale: 3, 
       useCORS: true,
       backgroundColor: null
     }).then(canvas => {
-      // Повертаємо вигляд безпечної зони
+      // Повертаємо стилі
       safeZone.style.color = '';
-      safeZone.style.borderTop = '';
+      safeZone.style.borderTopColor = '';
 
       const link = document.createElement('a');
       link.download = 'schedule_story.png';
