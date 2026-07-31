@@ -3,128 +3,146 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Генератор Story – Естетика</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300&display=swap" rel="stylesheet">
+  <title>Генератор Розкладу</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Бібліотека для збереження PNG -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  
   <style>
+    /* СВІТЛА ТЕМА */
     :root {
-      --primary: #1a1a1a;
-      /* Напівпрозоре матове скло */
-      --glass-bg: rgba(255, 255, 255, 0.45); 
-      --glass-border: rgba(255, 255, 255, 0.3);
-      --accent-color: #5a4f46; /* Трохи темніший акцент для читабельності */
+      --primary-text: #1a1a1a;
+      --glass-bg: rgba(255, 255, 255, 0.55); 
+      --glass-border: rgba(255, 255, 255, 0.6);
+      --accent-color: #5a4f46; 
+      --overlay: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.65) 100%);
+      --divider: rgba(0, 0, 0, 0.12);
       --danger: #d9534f;
+      --bg-color: #f4f4f5;
+    }
+
+    /* ТЕМНА ТЕМА */
+    [data-theme="dark"] {
+      --primary-text: #ffffff;
+      --glass-bg: rgba(0, 0, 0, 0.55); 
+      --glass-border: rgba(255, 255, 255, 0.15);
+      --accent-color: #d8c8b8; 
+      --overlay: linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.75) 100%);
+      --divider: rgba(255, 255, 255, 0.15);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; }
 
     body {
-      background: #ece9e6; display: flex; justify-content: center; align-items: flex-start;
-      min-height: 100vh; padding: 20px; color: #333;
+      background: var(--bg-color); display: flex; justify-content: center; align-items: flex-start;
+      min-height: 100vh; padding: 20px; color: #222;
     }
 
     .container {
       display: flex; gap: 30px; max-width: 1050px; width: 100%; flex-wrap: wrap; justify-content: center;
     }
 
-    /* Панель введення */
+    /* ПАНЕЛЬ НАЛАШТУВАНЬ */
     .form-panel {
-      flex: 1; min-width: 340px; background: #ffffff; padding: 25px; border-radius: 20px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.05); max-height: 90vh; overflow-y: auto;
+      flex: 1; min-width: 340px; max-width: 500px; background: #ffffff; padding: 25px; 
+      border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); 
+      display: flex; flex-direction: column; max-height: 90vh;
     }
 
-    .form-panel h2 { font-size: 1.2rem; font-weight: 700; margin-bottom: 15px; color: var(--primary); }
+    .form-panel h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 20px; color: #1a1a1a; text-transform: uppercase; letter-spacing: 1px; }
 
     .input-group { margin-bottom: 15px; }
-    .input-group label { display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 5px; text-transform: uppercase; color: #666; }
+    .input-group label { display: block; font-size: 0.75rem; font-weight: 600; margin-bottom: 6px; text-transform: uppercase; color: #555; }
     .input-group input, .input-group textarea, .input-group select {
-      width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 0.9rem; outline: none; transition: 0.2s;
+      width: 100%; padding: 10px 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.9rem; outline: none; background: #fafafa;
     }
-    .input-group input:focus, .input-group textarea:focus, .input-group select:focus { border-color: var(--accent-color); }
+    
+    .panel-controls { flex-shrink: 0; margin-bottom: 10px; }
+    
+    #itemsContainer {
+      flex: 1; overflow-y: auto; padding-right: 5px; margin-bottom: 20px;
+    }
+    #itemsContainer::-webkit-scrollbar { width: 6px; }
+    #itemsContainer::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
 
     .form-card {
-      background: #f9f9f9; border: 1px solid #eee; padding: 15px; border-radius: 12px;
-      margin-bottom: 15px; position: relative;
+      background: #fff; border: 1px solid #e0e0e0; padding: 15px; border-radius: 8px;
+      margin-bottom: 12px; position: relative; box-shadow: 0 2px 5px rgba(0,0,0,0.02);
     }
-    .form-card.date-card { background: #f0f4f8; border-color: #d9e2ec; }
+    .form-card.date-card { background: #f8fafc; border-left: 4px solid #4a5568; }
+    .form-card.master-card { border-left: 4px solid #8e7d71; }
     
     .remove-btn {
-      position: absolute; top: 10px; right: 10px; background: var(--danger); color: white;
-      border: none; width: 24px; height: 24px; border-radius: 50%; cursor: pointer;
-      font-weight: bold; font-size: 12px; display: flex; align-items: center; justify-content: center;
+      position: absolute; top: 12px; right: 12px; background: transparent; color: var(--danger);
+      border: none; font-size: 18px; cursor: pointer; line-height: 1;
     }
 
-    .add-controls { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-    .add-controls select { flex: 1; min-width: 150px; }
-    .btn-add {
-      background: var(--primary); color: #fff; border: none; padding: 10px 15px;
-      border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.85rem; flex: 1;
-      transition: 0.2s;
+    .add-controls { display: flex; gap: 10px; margin-bottom: 15px; }
+    .btn {
+      color: #fff; border: none; padding: 12px 15px; border-radius: 6px; 
+      cursor: pointer; font-weight: 600; font-size: 0.8rem; text-transform: uppercase;
+      transition: opacity 0.2s; text-align: center; width: 100%; display: inline-block;
     }
-    .btn-add:hover { background: #333; }
-    .btn-add.date-btn { background: #4a5568; }
+    .btn:hover { opacity: 0.9; }
+    .btn-dark { background: #1a1a1a; }
+    .btn-gray { background: #4a5568; }
+    .btn-success { background: #2f855a; margin-top: 10px; font-size: 0.9rem; letter-spacing: 1px; }
 
-    /* Попередній перегляд Story */
+    /* ПРЕВ'Ю (9:16 ПРОПОРЦІЇ) */
     .preview-panel {
-      width: 340px; height: 604px; position: sticky; top: 20px; border-radius: 24px;
-      overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-      /* За замовчуванням гарне фото з інтернету, щоб одразу працювало */
-      background: #ccc url('https://images.unsplash.com/photo-1600948836101-f9ffda59d250?auto=format&fit=crop&w=1000&q=80') center/cover no-repeat;
-      display: flex; flex-direction: column; justify-content: space-between; padding: 30px 20px;
+      width: 360px; height: 640px; /* Суворі пропорції Stories */
+      position: sticky; top: 20px; border-radius: 16px;
+      overflow: hidden; box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+      background: #ccc url('salon.png') center/cover no-repeat;
+      display: flex; flex-direction: column; flex-shrink: 0;
     }
     
-    /* Естетичне затемнення фону (градієнт) */
     .preview-panel::before {
       content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-      background: linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.55) 100%);
-      z-index: 1;
+      background: var(--overlay); z-index: 1; transition: background 0.3s;
     }
 
     .story-content {
-      position: relative; z-index: 2; display: flex; flex-direction: column; height: 100%;
+      position: relative; z-index: 2; display: flex; flex-direction: column; 
+      height: 100%; padding: 25px 20px 0 20px;
     }
 
     .cards-wrapper {
-      flex: 1; display: flex; flex-direction: column; gap: 20px; overflow-y: auto; padding-bottom: 15px;
+      flex: 1; display: flex; flex-direction: column; gap: 15px; 
+      transform-origin: top center; transition: transform 0.2s ease;
     }
-    .cards-wrapper::-webkit-scrollbar { display: none; }
 
-    .date-group {
-      display: flex; flex-direction: column; gap: 8px; max-width: 88%;
+    /* БЕЗПЕЧНА ЗОНА (ДЛЯ КНОПКИ INSTAGRAM) */
+    .safe-zone {
+      height: 110px; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+      border-top: 1px dashed rgba(255,255,255,0.4);
+      color: rgba(255,255,255,0.7); font-size: 0.75rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 1px; text-align: center;
     }
+
+    .date-group { display: flex; flex-direction: column; gap: 6px; max-width: 90%; }
     .date-group.align-left { align-self: flex-start; align-items: flex-start; }
     .date-group.align-right { align-self: flex-end; align-items: flex-end; }
     .date-group.align-right .glass-card { text-align: left; width: 100%; }
 
-    /* Плашка дати */
     .date-badge {
-      background: var(--glass-bg); 
-      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-      border: 1px solid var(--glass-border);
-      padding: 6px 18px; border-radius: 20px; font-weight: 700; font-size: 0.95rem;
-      color: var(--primary); box-shadow: 0 4px 20px rgba(0,0,0,0.1); display: inline-block;
+      background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border); padding: 5px 16px; border-radius: 20px; 
+      font-weight: 700; font-size: 0.9rem; color: var(--primary-text); 
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: inline-block;
     }
 
-    /* Напівпрозора картка майстрів */
     .glass-card {
-      background: var(--glass-bg); 
-      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-      border: 1px solid var(--glass-border); 
-      border-radius: 18px; padding: 15px 20px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12); width: 100%;
+      background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border); border-radius: 16px; padding: 12px 16px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08); width: 100%;
     }
 
-    .master-block { margin-bottom: 12px; }
+    .master-block { margin-bottom: 10px; }
     .master-block:last-child { margin-bottom: 0; }
-    .master-title { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--accent-color); margin-bottom: 4px; }
-    .slots-list { font-size: 0.95rem; color: var(--primary); line-height: 1.4; white-space: pre-line; font-weight: 600; }
-    .divider { height: 1px; background: rgba(0,0,0,0.12); margin: 10px 0; }
-
-    .cta-button {
-      background: #ffffff; color: var(--primary); text-align: center; padding: 14px;
-      border-radius: 30px; font-weight: 700; font-size: 0.85rem; letter-spacing: 1.5px;
-      text-transform: uppercase; box-shadow: 0 8px 25px rgba(0,0,0,0.25); margin-top: 10px;
-      flex-shrink: 0; transition: transform 0.2s;
-    }
+    .master-title { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--accent-color); margin-bottom: 2px; }
+    .slots-list { font-size: 0.9rem; color: var(--primary-text); line-height: 1.35; white-space: pre-line; font-weight: 600; }
+    .divider { height: 1px; background: var(--divider); margin: 8px 0; }
   </style>
 </head>
 <body>
@@ -133,55 +151,73 @@
   <div class="form-panel">
     <h2>Налаштування</h2>
     
-    <div class="input-group">
-      <label>Фон (Назва файлу або посилання URL)</label>
-      <input type="text" id="inBg" value="https://images.unsplash.com/photo-1600948836101-f9ffda59d250?auto=format&fit=crop&w=1000&q=80">
-    </div>
+    <div class="panel-controls">
+      <div class="input-group">
+        <label>Стиль оформлення</label>
+        <select id="themeSelect">
+          <option value="light">Світла версія</option>
+          <option value="dark">Темна версія</option>
+        </select>
+      </div>
 
-    <hr style="margin: 20px 0; border: 0; border-top: 1px solid #ddd;">
-    
-    <div class="add-controls">
-      <button class="btn-add date-btn" onclick="addDate()">+ ДОДАТИ ДАТУ (Нова картка)</button>
-    </div>
-    
-    <div class="add-controls">
-      <select id="presetMaster">
-        <option value="">-- Власний текст --</option>
-        <option value="топ Катерина">топ Катерина</option>
-        <option value="топ+ Христина">топ+ Христина</option>
-        <option value="топ+ Наталія">топ+ Наталія</option>
-        <option value="топ+ Тетяна">топ+ Тетяна</option>
-        <option value="майстер-бровист Ілона">майстер-бровист Ілона</option>
-      </select>
-      <button class="btn-add" onclick="addMaster()">+ ДОДАТИ МАЙСТРА</button>
+      <div class="input-group">
+        <label>Розмір карток (Масштаб)</label>
+        <input type="range" id="scaleSlider" min="0.6" max="1.1" step="0.05" value="1">
+      </div>
+
+      <div class="input-group">
+        <label>Фон (Назва файлу або URL)</label>
+        <input type="text" id="inBg" value="salon.png">
+      </div>
     </div>
 
     <div id="itemsContainer"></div>
+
+    <div class="panel-controls" style="margin-top: 10px;">
+      <div class="add-controls">
+        <button class="btn btn-gray" onclick="addDate()">+ Додати дату</button>
+        <button class="btn btn-dark" onclick="addMaster()">+ Додати майстра</button>
+      </div>
+      <button class="btn btn-success" onclick="downloadImage()">Завантажити PNG</button>
+    </div>
   </div>
 
-  <div class="preview-panel" id="previewBg">
+  <div class="preview-panel" id="previewBg" data-theme="light">
     <div class="story-content">
       <div class="cards-wrapper" id="outCardsWrapper"></div>
-      <div class="cta-button">ЗАПИСАТИСЬ</div>
+      <div class="safe-zone" id="safeZone">Місце для кнопки Instagram</div>
     </div>
   </div>
 </div>
 
 <script>
-  let items = [
-    { id: 1, type: 'date', text: '04.08' },
-    { id: 2, type: 'master', title: 'топ Катерина', text: '09:00 — гігієнічний манікюр\n17:00 — манікюр' },
-    { id: 3, type: 'date', text: '05.08' },
-    { id: 4, type: 'master', title: 'топ Катерина', text: '09:00, 10:30, 16:00' },
-    { id: 5, type: 'master', title: 'топ+ Христина', text: '14:30' }
+  const MASTERS_LIST = [
+    "топ Катерина",
+    "топ+ Христина",
+    "топ+ Наталія",
+    "топ+ Тетяна",
+    "майстер-бровист Ілона"
   ];
 
-  // Зміна фону з перевіркою (якщо користувач стирає текст)
+  let items = [
+    { id: 1, type: 'date', text: '04.08' },
+    { id: 2, type: 'master', title: 'топ Катерина', text: '09:00 — гігієнічний манікюр\n17:00 — манікюр' }
+  ];
+
+  // Зміна теми
+  document.getElementById('themeSelect').addEventListener('change', e => {
+    document.getElementById('previewBg').setAttribute('data-theme', e.target.value);
+  });
+
+  // Зміна фону
   document.getElementById('inBg').addEventListener('input', e => {
     const bgValue = e.target.value.trim();
-    if(bgValue) {
-      document.getElementById('previewBg').style.backgroundImage = `url('${bgValue}')`;
-    }
+    if(bgValue) document.getElementById('previewBg').style.backgroundImage = `url('${bgValue}')`;
+  });
+
+  // Масштабування контенту
+  document.getElementById('scaleSlider').addEventListener('input', e => {
+    document.getElementById('outCardsWrapper').style.transform = `scale(${e.target.value})`;
   });
 
   function renderForm() {
@@ -190,25 +226,33 @@
 
     items.forEach((item) => {
       const formCard = document.createElement('div');
-      formCard.className = item.type === 'date' ? 'form-card date-card' : 'form-card';
       
       if(item.type === 'date') {
+        formCard.className = 'form-card date-card';
         formCard.innerHTML = `
-          <button class="remove-btn" onclick="removeItem(${item.id})">✕</button>
+          <button class="remove-btn" onclick="removeItem(${item.id})">×</button>
           <div class="input-group" style="margin-bottom:0;">
-            <label>Дата (Початок нової картки)</label>
+            <label>Дата</label>
             <input type="text" value="${item.text}" oninput="updateItem(${item.id}, 'text', this.value)">
           </div>
         `;
       } else {
+        formCard.className = 'form-card master-card';
+        
+        let optionsHtml = MASTERS_LIST.map(m => 
+          `<option value="${m}" ${item.title === m ? 'selected' : ''}>${m}</option>`
+        ).join('');
+
         formCard.innerHTML = `
-          <button class="remove-btn" onclick="removeItem(${item.id})">✕</button>
+          <button class="remove-btn" onclick="removeItem(${item.id})">×</button>
           <div class="input-group">
-            <label>Ім'я / Посада</label>
-            <input type="text" value="${item.title}" oninput="updateItem(${item.id}, 'title', this.value)">
+            <label>Майстер</label>
+            <select onchange="updateItem(${item.id}, 'title', this.value)">
+              ${optionsHtml}
+            </select>
           </div>
           <div class="input-group" style="margin-bottom:0;">
-            <label>Інформація</label>
+            <label>Години</label>
             <textarea rows="2" oninput="updateItem(${item.id}, 'text', this.value)">${item.text}</textarea>
           </div>
         `;
@@ -226,17 +270,13 @@
 
     items.forEach(item => {
       if(item.type === 'date') {
-        if(currentGroup.date !== '' || currentGroup.masters.length > 0) {
-          groups.push(currentGroup);
-        }
+        if(currentGroup.date !== '' || currentGroup.masters.length > 0) groups.push(currentGroup);
         currentGroup = { date: item.text, masters: [] };
       } else {
         currentGroup.masters.push(item);
       }
     });
-    if(currentGroup.date !== '' || currentGroup.masters.length > 0) {
-      groups.push(currentGroup);
-    }
+    if(currentGroup.date !== '' || currentGroup.masters.length > 0) groups.push(currentGroup);
 
     groups.forEach((g, index) => {
       if (!g.date && g.masters.length === 0) return;
@@ -246,9 +286,7 @@
       groupDiv.className = `date-group ${alignmentClass}`;
       
       let html = '';
-      if (g.date) {
-        html += `<div class="date-badge">${g.date}</div>`;
-      }
+      if (g.date) html += `<div class="date-badge">${g.date}</div>`;
       
       if (g.masters.length > 0) {
         html += `<div class="glass-card">`;
@@ -260,50 +298,64 @@
               <div class="slots-list">${formattedText}</div>
             </div>
           `;
-          if(mIndex < g.masters.length - 1) {
-            html += `<div class="divider"></div>`;
-          }
+          if(mIndex < g.masters.length - 1) html += `<div class="divider"></div>`;
         });
         html += `</div>`;
       }
-      
       groupDiv.innerHTML = html;
       previewContainer.appendChild(groupDiv);
     });
   }
 
+  function scrollToBottom() {
+    setTimeout(() => {
+      const container = document.getElementById('itemsContainer');
+      container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
+    }, 50);
+  }
+
   function addDate() {
     items.push({ id: Date.now(), type: 'date', text: 'Нова дата' });
-    renderForm();
-    renderPreview();
+    renderForm(); renderPreview(); scrollToBottom();
   }
 
   function addMaster() {
-    const select = document.getElementById('presetMaster');
-    const newItem = {
-      id: Date.now(),
-      type: 'master',
-      title: select.value || 'Ім\'я майстра',
-      text: select.value === 'майстер-бровист Ілона' ? 'Є вільні місця' : '10:00 - манікюр'
-    };
-    if (select.value === "") newItem.text = ""; 
-    items.push(newItem);
-    renderForm();
-    renderPreview();
+    items.push({ id: Date.now(), type: 'master', title: MASTERS_LIST[0], text: '10:00, 12:00' });
+    renderForm(); renderPreview(); scrollToBottom();
   }
 
   function removeItem(id) {
     items = items.filter(i => i.id !== id);
-    renderForm();
-    renderPreview();
+    renderForm(); renderPreview();
   }
 
   function updateItem(id, field, value) {
     const item = items.find(i => i.id === id);
-    if(item) {
-      item[field] = value;
-      renderPreview();
-    }
+    if(item) { item[field] = value; renderPreview(); }
+  }
+
+  function downloadImage() {
+    const preview = document.getElementById('previewBg');
+    const safeZone = document.getElementById('safeZone');
+    
+    // Ховаємо текст безпечної зони для скачування, але залишаємо її розмір
+    safeZone.style.color = 'transparent';
+    safeZone.style.borderTop = 'none';
+
+    html2canvas(preview, { 
+      scale: 3, // Висока якість картинки
+      useCORS: true,
+      backgroundColor: null
+    }).then(canvas => {
+      // Повертаємо вигляд безпечної зони
+      safeZone.style.color = '';
+      safeZone.style.borderTop = '';
+
+      const link = document.createElement('a');
+      link.download = 'schedule_story.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    });
   }
 
   renderForm();
