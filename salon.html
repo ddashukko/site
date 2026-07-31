@@ -8,26 +8,26 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   
   <style>
-    /* БАЗОВІ ЗМІННІ (Для додатку) */
+    /* БАЗОВІ ЗМІННІ */
     :root {
       --bg-color: #f5f6f8;
       --panel-bg: #ffffff;
       --ui-text: #2c3e50;
       
-      /* Завжди СВІТЛІ картки для сторіз */
+      /* Картки завжди світлі */
       --card-bg: rgba(255, 255, 255, 0.75); 
       --card-border: rgba(255, 255, 255, 0.9);
       --card-text: #1a1a1a;
       --card-accent: #6b5c51;
       --card-divider: rgba(0, 0, 0, 0.08);
 
-      /* Світла тема (за замовчуванням): Немає затемнення */
+      /* Світла тема: Без затемнення */
       --story-overlay: transparent;
     }
 
-    /* ТЕМНА ТЕМА: Лише затемнення фону (градієнт) */
+    /* ТЕМНА ТЕМА: Легке затемнення (набагато слабше, ніж раніше) */
     [data-theme="dark"] {
-      --story-overlay: linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.75) 100%);
+      --story-overlay: linear-gradient(180deg, rgba(0,0,0,0.0) 0%, rgba(0,0,0,0.45) 100%);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; }
@@ -41,7 +41,7 @@
       display: flex; gap: 40px; max-width: 1000px; width: 100%; flex-wrap: wrap; justify-content: center;
     }
 
-    /* --- ПОВІТРЯНИЙ ІНТЕРФЕЙС НАЛАШТУВАНЬ --- */
+    /* --- ПАНЕЛЬ НАЛАШТУВАНЬ --- */
     .form-panel {
       flex: 1; min-width: 340px; max-width: 450px; background: var(--panel-bg); 
       padding: 30px; border-radius: 24px; box-shadow: 0 12px 40px rgba(0,0,0,0.03); 
@@ -74,9 +74,7 @@
     .form-card {
       background: #ffffff; border: 1px solid #f1f2f6; padding: 18px; border-radius: 16px;
       margin-bottom: 15px; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.02);
-      transition: transform 0.2s ease;
     }
-    .form-card:hover { transform: translateY(-2px); }
     .form-card.date-card { background: #f8fafc; border-left: 4px solid #7f8c8d; }
     .form-card.master-card { border-left: 4px solid #b8a99a; }
     
@@ -92,7 +90,6 @@
       cursor: pointer; font-weight: 600; font-size: 0.8rem; text-transform: uppercase;
       letter-spacing: 0.5px; transition: all 0.2s ease; text-align: center; width: 100%; 
     }
-    .btn:active { transform: scale(0.98); }
     .btn-dark { background: #2c3e50; }
     .btn-dark:hover { background: #1a252f; }
     .btn-gray { background: #95a5a6; }
@@ -100,7 +97,7 @@
     .btn-success { background: #b8a99a; margin-top: 10px; font-size: 0.85rem; letter-spacing: 1px; color: #fff; }
     .btn-success:hover { background: #a39485; }
 
-    /* --- СТОРІЗ ПРЕВ'Ю (9:16) --- */
+    /* --- СТОРІЗ ПРЕВ'Ю --- */
     .preview-panel {
       width: 360px; height: 640px; position: sticky; top: 40px; border-radius: 20px;
       overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.1);
@@ -108,7 +105,6 @@
       display: flex; flex-direction: column; flex-shrink: 0;
     }
     
-    /* Накладання (градієнт) */
     .preview-panel::before {
       content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
       background: var(--story-overlay); z-index: 1; transition: background 0.4s ease;
@@ -116,7 +112,7 @@
 
     .story-content {
       position: relative; z-index: 2; display: flex; flex-direction: column; 
-      height: 100%; padding: 40px 35px 0 35px; /* БІЛЬШІ ВІДСТУПИ ВІД СТІНОК (БЛИЖЧЕ ДО ЦЕНТРУ) */
+      height: 100%; padding: 40px 30px 0 30px; 
     }
 
     .cards-wrapper {
@@ -131,25 +127,38 @@
       color: rgba(0,0,0,0.4); font-size: 0.75rem; font-weight: 600; text-transform: uppercase;
       letter-spacing: 1px; text-align: center;
     }
-    /* Якщо темна тема - безпечна зона світлішає для контрасту */
     [data-theme="dark"] .safe-zone {
       border-top: 1px dashed rgba(255,255,255,0.4); color: rgba(255,255,255,0.7);
     }
 
-    /* --- ДИЗАЙН КАРТОК (ЗАВЖДИ СВІТЛІ) --- */
-    .date-group { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+    /* --- ЛОГІКА РОЗМІЩЕННЯ (ЧЕРГУВАННЯ СТОРІН) --- */
+    .date-group { 
+      display: flex; flex-direction: column; gap: 8px; 
+      max-width: 90%; /* Захист від вилізання за краї */
+    }
     
+    .date-group.align-left { 
+      align-self: flex-start; align-items: flex-start; 
+    }
+    
+    .date-group.align-right { 
+      align-self: flex-end; align-items: flex-end; 
+    }
+
     .date-badge {
       background: var(--card-bg); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
       border: 1px solid var(--card-border); padding: 6px 18px; border-radius: 20px; 
       font-weight: 700; font-size: 0.85rem; color: var(--card-text); 
-      box-shadow: 0 4px 15px rgba(0,0,0,0.04); display: inline-block; align-self: flex-start;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.04); display: inline-block;
     }
 
     .glass-card {
       background: var(--card-bg); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
       border: 1px solid var(--card-border); border-radius: 18px; padding: 14px 18px;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05); width: 100%;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05); 
+      width: fit-content; /* Картка підлаштовується під контент */
+      min-width: 170px; /* Мінімальна ширина, щоб не виглядала надто куцою */
+      text-align: left; /* Текст всередині завжди по лівому краю для зручності читання */
     }
 
     .master-block { margin-bottom: 12px; }
@@ -171,7 +180,7 @@
         <label>Стиль фотографії</label>
         <select id="themeSelect">
           <option value="light">Світле фото (Оригінал)</option>
-          <option value="dark">Темне фото (Із затемненням)</option>
+          <option value="dark">Темне фото (Легке затемнення)</option>
         </select>
       </div>
 
@@ -217,21 +226,20 @@
 
   let items = [
     { id: 1, type: 'date', text: '04.08' },
-    { id: 2, type: 'master', title: 'топ Катерина', text: '09:00 — гігієнічний манікюр\n17:00 — манікюр' }
+    { id: 2, type: 'master', title: 'топ Катерина', text: '09:00, 10:30' },
+    { id: 3, type: 'date', text: '05.08' },
+    { id: 4, type: 'master', title: 'топ+ Христина', text: '09:00 — гігієнічний манікюр\n17:00 — манікюр' }
   ];
 
-  // Зміна теми (тепер впливає тільки на затемнення фону)
   document.getElementById('themeSelect').addEventListener('change', e => {
     document.getElementById('previewBg').setAttribute('data-theme', e.target.value);
   });
 
-  // Зміна фону
   document.getElementById('inBg').addEventListener('input', e => {
     const bgValue = e.target.value.trim();
     if(bgValue) document.getElementById('previewBg').style.backgroundImage = `url('${bgValue}')`;
   });
 
-  // Масштабування контенту
   document.getElementById('scaleSlider').addEventListener('input', e => {
     document.getElementById('outCardsWrapper').style.transform = `scale(${e.target.value})`;
   });
@@ -294,11 +302,14 @@
     });
     if(currentGroup.date !== '' || currentGroup.masters.length > 0) groups.push(currentGroup);
 
-    groups.forEach((g) => {
+    groups.forEach((g, index) => {
       if (!g.date && g.masters.length === 0) return;
       
+      // ЧЕРГУВАННЯ СТОРІН (Парні зліва, непарні справа)
+      const alignmentClass = (index % 2 === 0) ? 'align-left' : 'align-right';
+      
       const groupDiv = document.createElement('div');
-      groupDiv.className = `date-group`;
+      groupDiv.className = `date-group ${alignmentClass}`;
       
       let html = '';
       if (g.date) html += `<div class="date-badge">${g.date}</div>`;
@@ -353,7 +364,6 @@
     const preview = document.getElementById('previewBg');
     const safeZone = document.getElementById('safeZone');
     
-    // Ховаємо текст і рамку безпечної зони під час скачування
     safeZone.style.color = 'transparent';
     safeZone.style.borderTopColor = 'transparent';
 
@@ -362,7 +372,6 @@
       useCORS: true,
       backgroundColor: null
     }).then(canvas => {
-      // Повертаємо стилі
       safeZone.style.color = '';
       safeZone.style.borderTopColor = '';
 
