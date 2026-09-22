@@ -3,215 +3,243 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ПР №4 та ПЗ №7 - Варіант 16</title>
+    <title>Інтерактивний тест: Лабораторна №1</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 20px;
-            background-color: #f9f9f9;
-            color: #333;
-        }
-        .container {
-            max-width: 900px;
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            max-width: 800px;
             margin: 0 auto;
-            background: #fff;
-            padding: 30px;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h1 { text-align: center; color: #ffffff; }
+        .question-block {
+            background: #1e1e1e;
+            border: 1px solid #333;
             border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
         }
-        h2 {
-            color: #2c3e50;
-            border-bottom: 2px solid #3498db;
-            padding-bottom: 5px;
-        }
-        .math-block {
-            background: #f4f4f4;
-            padding: 15px;
-            border-radius: 4px;
-            display: block;
-            margin-bottom: 15px;
-            font-family: "Times New Roman", Times, serif;
+        .question-text {
             font-size: 1.1em;
-            overflow-x: auto;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #fff;
         }
-        .simplex-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 15px 0;
-            text-align: center;
-        }
-        .simplex-table th, .simplex-table td {
-            border: 1px solid #bdc3c7;
-            padding: 8px;
-        }
-        .simplex-table th {
-            background-color: #ecf0f1;
-        }
-        .pivot {
-            background-color: #ffeaa7;
-            font-weight: bold;
-        }
-        .frac {
-            display: inline-flex;
+        .options {
+            display: flex;
             flex-direction: column;
-            vertical-align: middle;
+            gap: 10px;
+        }
+        .option-label {
+            background: #2d2d2d;
+            padding: 12px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+        }
+        .option-label:hover { background: #3d3d3d; }
+        .option-label input { margin-right: 15px; transform: scale(1.2); }
+        button {
+            background: #0d6efd;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+        button:hover { background: #0b5ed7; }
+        .correct { background: #198754 !important; color: #fff; }
+        .incorrect { background: #dc3545 !important; color: #fff; }
+        #result {
             text-align: center;
-            font-size: 0.9em;
-            margin: 0 0.2em;
-        }
-        .frac .top {
-            border-bottom: 1px solid #333;
-            padding: 0 0.1em;
-        }
-        .frac .bottom {
-            padding: 0 0.1em;
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    
-    <h2>ПЗ №4. Варіант 16 (Задача 4: М-метод)</h2>
-    <div class="math-block">
-        L = -2x<sub>1</sub> + x<sub>2</sub> &rarr; min<br>
-        x<sub>1</sub> + x<sub>2</sub> &le; 6<br>
-        -3x<sub>1</sub> + 2x<sub>2</sub> &ge; 3<br>
-        x<sub>1</sub>, x<sub>2</sub> &ge; 0
-    </div>
+    <h1>Тест до Лабораторної роботи №1</h1>
 
-    <p>Зведення до канонічної форми (додаткові x<sub>3</sub>, x<sub>4</sub> &ge; 0, штучна x<sub>5</sub> &ge; 0):</p>
-    <div class="math-block">
-        x<sub>1</sub> + x<sub>2</sub> + x<sub>3</sub> = 6<br>
-        -3x<sub>1</sub> + 2x<sub>2</sub> - x<sub>4</sub> + x<sub>5</sub> = 3<br>
-        L = -2x<sub>1</sub> + x<sub>2</sub> + Mx<sub>5</sub> &rarr; min
-    </div>
+    <div id="quiz"></div>
 
-    <p>Ознака оптимальності для min: &Delta;<sub>j</sub> = z<sub>j</sub> - c<sub>j</sub> &le; 0. Вводимо до базису змінну з найбільшим додатним &Delta;<sub>j</sub>.</p>
+    <button onclick="checkAnswers()">Перевірити результати</button>
+    <div id="result"></div>
 
-    <table class="simplex-table">
-        <tr>
-            <th>Базис</th><th>C<sub>b</sub></th><th>P<sub>0</sub></th><th>x<sub>1</sub></th><th>x<sub>2</sub></th><th>x<sub>3</sub></th><th>x<sub>4</sub></th><th>x<sub>5</sub></th>
-        </tr>
-        <tr>
-            <td>x<sub>3</sub></td><td>0</td><td>6</td><td>1</td><td>1</td><td>1</td><td>0</td><td>0</td>
-        </tr>
-        <tr>
-            <td>x<sub>5</sub></td><td>M</td><td>3</td><td>-3</td><td class="pivot">2</td><td>0</td><td>-1</td><td>1</td>
-        </tr>
-        <tr>
-            <th>&Delta;</th><th></th><th>3M</th><th>-3M+2</th><th>2M-1</th><th>0</th><th>-M</th><th>0</th>
-        </tr>
-    </table>
+    <script>
+        const questions = [
+            {
+                q: "Яку умову перевіряли на кінцях відрізка [-0.6, -0.49], щоб довести гарантоване існування кореня?",
+                opts: ["f(a) і f(b) додатні", "f(a) · f(b) < 0", "f'(a) · f'(b) < 0", "f(a) = f(b)"],
+                ans: 1
+            },
+            {
+                q: "Що геометрично означає модифікований метод Ньютона?",
+                opts: ["Кожна нова дотична має свій унікальний кут нахилу", "Будуються паралельні січні з фіксованим кутом нахилу", "Графік відскакує від прямої y=x", "Будуються хорди між двома точками кривої"],
+                ans: 1
+            },
+            {
+                q: "Як розкривається модуль похідної |φ'(x)| на відрізку [-0.6, -0.49] у вашій роботі?",
+                opts: ["Як додатне значення, бо похідна зростає", "Зі знаком мінус, бо похідна зберігає від'ємний знак", "Модуль не розкривається, береться як є", "Дорівнює нулю"],
+                ans: 1
+            },
+            {
+                q: "Яке значення коефіцієнта q було знайдено для методу простої ітерації?",
+                opts: ["0.1356", "0.5568", "0.7317", "1.06"],
+                ans: 2
+            },
+            {
+                q: "Чому максимальне значення модуля похідної досягається саме на лівому кінці відрізка при x = -0.6?",
+                opts: ["Тому що там корінь", "Бо це середина відрізка", "Оскільки функція |φ'(x)| є монотонно зростаючою", "Бо f(-0.6) > 0"],
+                ans: 2
+            },
+            {
+                q: "Що гарантує друга достатня умова збіжності φ([a,b]) ⊆ [a,b]?",
+                opts: ["Що похідна не дорівнює нулю", "Що графік не має розривів", "Що всі наступні наближення не вискочать за межі проміжку", "Що корінь дорівнює нулю"],
+                ans: 2
+            },
+            {
+                q: "Чому у методі простої ітерації використовувалася формула зупинки |x_n - x_{n-1}| ≤ ((1-q)/q) * ε ?",
+                opts: ["Тому що q > 0.5", "Тому що q < 0.5", "Бо так працює будь-який метод", "Це помилка, треба без дробу"],
+                ans: 0
+            },
+            {
+                q: "Який результат дала апріорна оцінка для методу простої ітерації?",
+                opts: ["Рівно 19 кроків", "Не більше 27 кроків", "4 кроки", "Нескінченність"],
+                ans: 1
+            },
+            {
+                q: "Скільки ітерацій фактично знадобилося модифікованому методу Ньютона?",
+                opts: ["4", "19", "27", "1"],
+                ans: 0
+            },
+            {
+                q: "Що перевіряє умова Фур'є f(x0) · f''(x0) > 0?",
+                opts: ["Чи є функція неперервною", "Правильність вибору початкової точки x0", "Чи дорівнює корінь нулю", "Критерій зупинки циклу"],
+                ans: 1
+            },
+            {
+                q: "Чому модифікований метод Ньютона працює швидше за просту ітерацію?",
+                opts: ["Він пропускає парні кроки", "Має вищу швидкість збіжності, ніж лінійна", "Бо ми рахуємо менше знаків після коми", "Він не працює швидше"],
+                ans: 1
+            },
+            {
+                q: "Що в коді означає рядок f_prime_x0 = f_prime(x0) поза циклом while?",
+                opts: ["Обчислення похідної на кожній ітерації", "Фіксація кута нахилу для всіх паралельних січних", "Зупинка програми", "Перевірка умови замкненості"],
+                ans: 1
+            },
+            {
+                q: "Як геометрично виглядає метод простої ітерації при спадаючій функції φ(x)?",
+                opts: ["Віяло з дотичних", "Паралельні лінії", "Прямокутна спіраль (павутинка), що закручується до кореня", "Парабола"],
+                ans: 2
+            },
+            {
+                q: "Що означає 'неперервно диференційовна' функція?",
+                opts: ["Функція має графік у вигляді прямої", "Існує похідна, і графік самої похідної не має розривів", "Функція завжди зростає", "Її неможливо поділити на нуль"],
+                ans: 1
+            },
+            {
+                q: "Чому для модифікованого методу Ньютона ми отримали f'(-0.6) ≈ -3.0221?",
+                opts: ["Це випадкове число", "Це значення фіксованої похідної у стартовій точці", "Це сам корінь рівняння", "Це задана точність"],
+                ans: 1
+            },
+            {
+                q: "Яке значення q_N було отримано при апостеріорній оцінці похибки методу Ньютона?",
+                opts: ["0.7317", "1.06", "0.1356", "3.667"],
+                ans: 2
+            },
+            {
+                q: "Оскільки q_N = 0.1356 (≤ 0.5), який критерій зупинки використовувався для Ньютона?",
+                opts: ["З дробом (1-q)/q", "Стандартний: |x_n - x_{n-1}| ≤ ε", "Цикл не зупинявся", "Зупинка за часом"],
+                ans: 1
+            },
+            {
+                q: "З якого боку відрізка [-0.6, -0.49] ми почали наближення в обох методах?",
+                opts: ["З правого (x0 = -0.49)", "З лівого (x0 = -0.6)", "З центру", "За межами відрізка"],
+                ans: 1
+            },
+            {
+                q: "Який корінь був знайдений в результаті виконання обох методів (з урахуванням похибки)?",
+                opts: ["≈ -0.600000", "≈ -0.494696", "≈ -0.5372...", "≈ 0"],
+                ans: 2
+            },
+            {
+                q: "Що сталося б з методом простої ітерації, якби виявилося, що q > 1?",
+                opts: ["Він би працював швидше", "Ітераційний процес би розбігався (спіраль розкручувалася б назовні)", "Метод автоматично перетворився б на метод Ньютона", "Нічого б не змінилося"],
+                ans: 1
+            }
+        ];
 
-    <table class="simplex-table">
-        <tr>
-            <th>Базис</th><th>C<sub>b</sub></th><th>P<sub>0</sub></th><th>x<sub>1</sub></th><th>x<sub>2</sub></th><th>x<sub>3</sub></th><th>x<sub>4</sub></th>
-        </tr>
-        <tr>
-            <td>x<sub>3</sub></td><td>0</td><td>9/2</td><td class="pivot">5/2</td><td>0</td><td>1</td><td>1/2</td>
-        </tr>
-        <tr>
-            <td>x<sub>2</sub></td><td>1</td><td>3/2</td><td>-3/2</td><td>1</td><td>0</td><td>-1/2</td>
-        </tr>
-        <tr>
-            <th>&Delta;</th><th></th><th>3/2</th><th>1/2</th><th>0</th><th>0</th><th>-1/2</th>
-        </tr>
-    </table>
+        const quizContainer = document.getElementById('quiz');
 
-    <table class="simplex-table">
-        <tr>
-            <th>Базис</th><th>C<sub>b</sub></th><th>P<sub>0</sub></th><th>x<sub>1</sub></th><th>x<sub>2</sub></th><th>x<sub>3</sub></th><th>x<sub>4</sub></th>
-        </tr>
-        <tr>
-            <td>x<sub>1</sub></td><td>-2</td><td>9/5</td><td>1</td><td>0</td><td>2/5</td><td>1/5</td>
-        </tr>
-        <tr>
-            <td>x<sub>2</sub></td><td>1</td><td>21/5</td><td>0</td><td>1</td><td>3/5</td><td>-1/5</td>
-        </tr>
-        <tr>
-            <th>&Delta;</th><th></th><th>3/5</th><th>0</th><th>0</th><th>-1/5</th><th>-3/5</th>
-        </tr>
-    </table>
+        questions.forEach((q, index) => {
+            const block = document.createElement('div');
+            block.className = 'question-block';
+            
+            const title = document.createElement('div');
+            title.className = 'question-text';
+            title.textContent = `${index + 1}. ${q.q}`;
+            block.appendChild(title);
 
-    <p><strong>Висновок:</strong> Всі &Delta;<sub>j</sub> &le; 0, отримано оптимальний план.</p>
-    <div class="math-block">
-        X* = (<span class="frac"><span class="top">9</span><span class="bottom">5</span></span>; <span class="frac"><span class="top">21</span><span class="bottom">5</span></span>)<br>
-        L<sub>min</sub> = -2(<span class="frac"><span class="top">9</span><span class="bottom">5</span></span>) + <span class="frac"><span class="top">21</span><span class="bottom">5</span></span> = -<span class="frac"><span class="top">18</span><span class="bottom">5</span></span> + <span class="frac"><span class="top">21</span><span class="bottom">5</span></span> = <strong><span class="frac"><span class="top">3</span><span class="bottom">5</span></span></strong>
-    </div>
+            const optsDiv = document.createElement('div');
+            optsDiv.className = 'options';
 
-    <hr>
-    <h2>ПЗ №7. Варіант 16 (Задача 6: М-метод)</h2>
-    <div class="math-block">
-        L = 6x<sub>1</sub> + 4x<sub>2</sub> &rarr; min<br>
-        2x<sub>1</sub> + x<sub>2</sub> &ge; 3<br>
-        x<sub>1</sub> - x<sub>2</sub> &le; 1<br>
-        x<sub>1</sub>, x<sub>2</sub> &ge; 0
-    </div>
+            q.opts.forEach((opt, optIndex) => {
+                const label = document.createElement('label');
+                label.className = 'option-label';
+                
+                const input = document.createElement('input');
+                input.type = 'radio';
+                input.name = `q${index}`;
+                input.value = optIndex;
+                
+                label.appendChild(input);
+                label.appendChild(document.createTextNode(opt));
+                optsDiv.appendChild(label);
+            });
 
-    <p>Зведення до канонічної форми (додаткові x<sub>3</sub>, x<sub>4</sub> &ge; 0, штучна x<sub>5</sub> &ge; 0):</p>
-    <div class="math-block">
-        2x<sub>1</sub> + x<sub>2</sub> - x<sub>3</sub> + x<sub>5</sub> = 3<br>
-        x<sub>1</sub> - x<sub>2</sub> + x<sub>4</sub> = 1<br>
-        L = 6x<sub>1</sub> + 4x<sub>2</sub> + Mx<sub>5</sub> &rarr; min
-    </div>
+            block.appendChild(optsDiv);
+            quizContainer.appendChild(block);
+        });
 
-    <p>Ознака оптимальності для min: &Delta;<sub>j</sub> = z<sub>j</sub> - c<sub>j</sub> &le; 0.</p>
+        function checkAnswers() {
+            let score = 0;
+            questions.forEach((q, index) => {
+                const selected = document.querySelector(`input[name="q${index}"]:checked`);
+                const labels = document.querySelectorAll(`input[name="q${index}"]`);
+                
+                labels.forEach(radio => {
+                    const label = radio.parentElement;
+                    label.classList.remove('correct', 'incorrect');
+                    
+                    if (parseInt(radio.value) === q.ans) {
+                        if (selected && selected === radio) score++;
+                        label.classList.add('correct');
+                    } else if (selected === radio) {
+                        label.classList.add('incorrect');
+                    }
+                });
+            });
 
-    <table class="simplex-table">
-        <tr>
-            <th>Базис</th><th>C<sub>b</sub></th><th>P<sub>0</sub></th><th>x<sub>1</sub></th><th>x<sub>2</sub></th><th>x<sub>3</sub></th><th>x<sub>4</sub></th><th>x<sub>5</sub></th>
-        </tr>
-        <tr>
-            <td>x<sub>5</sub></td><td>M</td><td>3</td><td>2</td><td>1</td><td>-1</td><td>0</td><td>1</td>
-        </tr>
-        <tr>
-            <td>x<sub>4</sub></td><td>0</td><td>1</td><td class="pivot">1</td><td>-1</td><td>0</td><td>1</td><td>0</td>
-        </tr>
-        <tr>
-            <th>&Delta;</th><th></th><th>3M</th><th>2M-6</th><th>M-4</th><th>-M</th><th>0</th><th>0</th>
-        </tr>
-    </table>
-
-    <table class="simplex-table">
-        <tr>
-            <th>Базис</th><th>C<sub>b</sub></th><th>P<sub>0</sub></th><th>x<sub>1</sub></th><th>x<sub>2</sub></th><th>x<sub>3</sub></th><th>x<sub>4</sub></th><th>x<sub>5</sub></th>
-        </tr>
-        <tr>
-            <td>x<sub>5</sub></td><td>M</td><td>1</td><td>0</td><td class="pivot">3</td><td>-1</td><td>-2</td><td>1</td>
-        </tr>
-        <tr>
-            <td>x<sub>1</sub></td><td>6</td><td>1</td><td>1</td><td>-1</td><td>0</td><td>1</td><td>0</td>
-        </tr>
-        <tr>
-            <th>&Delta;</th><th></th><th>M+6</th><th>0</th><th>3M-10</th><th>-M</th><th>-2M+6</th><th>0</th>
-        </tr>
-    </table>
-
-    <table class="simplex-table">
-        <tr>
-            <th>Базис</th><th>C<sub>b</sub></th><th>P<sub>0</sub></th><th>x<sub>1</sub></th><th>x<sub>2</sub></th><th>x<sub>3</sub></th><th>x<sub>4</sub></th>
-        </tr>
-        <tr>
-            <td>x<sub>2</sub></td><td>4</td><td>1/3</td><td>0</td><td>1</td><td>-1/3</td><td>-2/3</td>
-        </tr>
-        <tr>
-            <td>x<sub>1</sub></td><td>6</td><td>4/3</td><td>1</td><td>0</td><td>-1/3</td><td>1/3</td>
-        </tr>
-        <tr>
-            <th>&Delta;</th><th></th><th>28/3</th><th>0</th><th>0</th><th>-10/3</th><th>-2/3</th>
-        </tr>
-    </table>
-
-    <p><strong>Висновок:</strong> Всі &Delta;<sub>j</sub> &le; 0, отримано оптимальний план. Штучних змінних у базисі немає.</p>
-    <div class="math-block">
-        X* = (<span class="frac"><span class="top">4</span><span class="bottom">3</span></span>; <span class="frac"><span class="top">1</span><span class="bottom">3</span></span>)<br>
-        L<sub>min</sub> = 6(<span class="frac"><span class="top">4</span><span class="bottom">3</span></span>) + 4(<span class="frac"><span class="top">1</span><span class="bottom">3</span></span>) = <span class="frac"><span class="top">24</span><span class="bottom">3</span></span> + <span class="frac"><span class="top">4</span><span class="bottom">3</span></span> = <strong><span class="frac"><span class="top">28</span><span class="bottom">3</span></span></strong>
-    </div>
-
-</div>
-
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.textContent = `Ваш результат: ${score} / 20`;
+            resultDiv.style.background = score >= 15 ? '#198754' : '#dc3545';
+            
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        }
+    </script>
 </body>
 </html>
